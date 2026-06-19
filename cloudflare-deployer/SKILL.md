@@ -232,6 +232,29 @@ python _vectorize-papers.py
 
 ---
 
+
+---
+
+## Skills Backup & Recovery (v1.3)
+
+All 28 QNFO DeepChat skills are redundantly backed up. This skill itself is recoverable from:
+
+| Source | Location | Recovery Command |
+|:-------|:---------|:-----------------|
+| **GitHub** | `rwnq8/qnfo-skills` | `git clone https://github.com/rwnq8/qnfo-skills.git %APPDATA%\.deepchat\skills` |
+| **R2** | `qnfo/prompts/skills/cloudflare-deployer/SKILL.md` | `python bootstrap_skills.py --source r2` |
+| **Discovery Index** | `qnfo/discovery/index.json` (skills_backup) | JSON lookup |
+
+**Bootstrap tools on R2:**
+- `qnfo/tools/bootstrap_skills.py` — One-command restore from GitHub or R2
+- `qnfo/tools/skills-recovery-guide.md` — Full recovery documentation
+
+**Keep synced after any skill change:**
+```bash
+python "%APPDATA%\.deepchat\skills\bootstrap_skills.py" --sync
+```
+This pushes to GitHub AND uploads to R2 in a single command.
+
 ## Common Patterns
 
 ### Deploy a Publication
