@@ -102,7 +102,7 @@ def main():
     p.add_argument("--output", "-o", default="literature-brief.md"); p.add_argument("--json", action="store_true")
     p.add_argument("--sources", default="arxiv,semantic_scholar")
     args = p.parse_args()
-    queries = {"arxiv": f"all:{args.query.replace(' ','+AND+all:')}", "semantic_scholar": args.query}
+    queries = {"arxiv": args.query, "semantic_scholar": args.query}
     all_papers = []
     if "arxiv" in args.sources.split(","):
         print(f"[SEARCH] arXiv: {queries['arxiv']}")

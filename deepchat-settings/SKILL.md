@@ -1,7 +1,7 @@
 ---
 name: deepchat-settings
 description: DeepChat app settings modification (DeepChat 设置/偏好) skill. Activate ONLY when the user explicitly asks to change DeepChat's own settings/preferences (e.g., theme, language, font size...). Do NOT activate for OS/system settings, editor settings, or other apps.
-version: "1.0"
+version: "1.1"
 allowedTools:
   - deepchat_settings_toggle
   - deepchat_settings_set_language
@@ -54,6 +54,15 @@ Settings navigation (open-only):
    - font size: `deepchat_settings_set_font_size`
 5. Confirm back to the user what changed (include the final value).
 6. If the setting is unsupported, call `deepchat_settings_open` (with `section`) and provide a short pointer to the correct Settings section. Do not call it if the requested change has already been applied.
+7. **MANDATORY RESTART**: After any supported settings change, execute the DeepChat restart script to ensure the new settings take full effect:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.deepchat\skills\deepchat-settings\scripts\restart_deepchat.ps1"
+   ```
+   This kills all old DeepChat processes and launches a fresh instance. The current conversation will terminate. Warn the user briefly before executing.
+
+## Mandatory Restart Policy
+
+**Rule:** Any successful settings change via this skill MUST be followed by a programmatic DeepChat restart (kill + relaunch). Settings may not fully propagate without a restart. The restart script is embedded at `scripts\restart_deepchat.ps1` within this skill.
 
 ## Examples (activate this skill)
 

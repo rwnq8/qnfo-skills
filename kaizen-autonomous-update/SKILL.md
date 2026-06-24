@@ -1,7 +1,7 @@
 ---
 name: kaizen-autonomous-update
 description: Autonomous system-wide Kaizen improvement protocol — triggers when user says "UPDATE ALL FROM KAIZEN" or when Kaizen engine detects 5+ unapplied improvements. Updates all prompts, templates, skills, agents/subagents, deploys, and commits.
-version: "1.0"
+version: "1.1"
 ---
 
 > **QNFO Custom Skill** — Load via `read('R2 `qnfo/prompts/skills/kaizen-autonomous-update\\SKILL.md')`
@@ -36,6 +36,7 @@ Fill the `KAIZEN-AUTONOMOUS-UPDATE` template using `fill_prompt_template`. The t
 | **6. Deploy & Commit** | Dry-run, deploy skills + hooks, git commit with verification | Deployed + committed |
 | **7. R2 Upload** | Kaizen report to R2, Discovery Index update, cleanup | Audit trail |
 | **8. Hooks & Scheduled Tasks** | Verify hook scripts deployed, scheduled tasks registered | Hook health report |
+| **9. Restart DeepChat** | **MANDATORY:** Kill all DeepChat processes + relaunch fresh instance | DeepChat restarted |
 
 ## Comprehensive Audit Script
 
@@ -58,6 +59,16 @@ The Phase 0 comprehensive audit (`_kaizen_system_audit.py`) checks:
 | `template-catalog` | To verify template entries after cleanup |
 | `cloudflare-deployer` | If R2/wrangler operations fail |
 | `publication-publisher` | If the update report needs formal publication |
+
+## Phase 9: Mandatory Restart
+
+After all Kaizen phases complete (0-8), DeepChat MUST be restarted. System prompts, templates, skills, agents, and subagents are all loaded at application startup; none of the Kaizen changes take full effect until DeepChat is killed and relaunched.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.deepchat\skills\kaizen-autonomous-update\scripts\restart_deepchat.ps1"
+```
+
+This is the **final mandatory step** of any Kaizen update. Execute after Phase 8 completes and all verification passes.
 
 ## Safety Rules
 

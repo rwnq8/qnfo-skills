@@ -355,3 +355,13 @@ After testing the skill, users may request improvements. Often this happens righ
 2. Notice struggles or inefficiencies
 3. Identify how SKILL.md or bundled resources should be updated
 4. Implement changes and test again
+
+### Step 7: Restart DeepChat (MANDATORY)
+
+After creating, editing, packaging, or installing any skill, DeepChat MUST be restarted programmatically. Skills are loaded at application startup; changes do not take effect until DeepChat is killed and relaunched.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.deepchat\skills\skill-creator\scripts\restart_deepchat.ps1"
+```
+
+Execute this as the final step after any skill creation/modification workflow completes. Warn the user briefly, then execute. The current conversation will terminate.

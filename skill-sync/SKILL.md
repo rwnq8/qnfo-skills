@@ -79,4 +79,16 @@ Must exist locally for this skill to work:
 
 ---
 
-*skill-sync v1.0 — Monitors and syncs skills between local, GitHub, and R2. Keeps backups current.*
+## Mandatory Post-Sync Restart
+
+**Rule:** After any successful skill sync (push to GitHub + R2), DeepChat MUST be restarted programmatically. Skills are loaded at application startup; changes made via sync do not take effect until DeepChat is killed and relaunched.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.deepchat\skills\skill-sync\scripts\restart_deepchat.ps1"
+```
+
+This kills all old DeepChat processes and launches a fresh instance. Execute this as the final step after confirming sync success. The current conversation will terminate.
+
+---
+
+*skill-sync v1.1 — Monitors and syncs skills between local, GitHub, and R2. Keeps backups current. Includes mandatory post-sync restart.*
