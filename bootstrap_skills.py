@@ -13,7 +13,7 @@ Usage:
 Sources (in priority order):
     1. GitHub: https://github.com/rwnq8/qnfo-skills (public, git-tracked)
     2. Cloudflare R2: qnfo/prompts/skills/<name>/SKILL.md
-    3. Local: %APPDATA%\.deepchat\skills\ (thin client cache)
+    3. Local: %%APPDATA%%\\.deepchat\\skills\\ (thin client cache)
 """
 
 import os, sys, json, urllib.request, subprocess, shutil
