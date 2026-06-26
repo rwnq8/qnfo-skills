@@ -4,8 +4,9 @@ description: Session close-out procedures — autonomous trigger detection, task
 version: "2.4"
 ---
 
-# CLOSEOUT MANAGER SKILL — v2.4
+# CLOSEOUT MANAGER SKILL — v3.0
 
+> **D1-FIRST.** Handoffs, audits, and itemized data now write to Cloudflare D1 as canonical storage. R2 is backup-only for itemized data. See `qnfo-agent` §10 for D1 lifecycle integration.
 > **LIFECYCLE-AWARE.** This release integrates with the automated lifecycle pipeline — `last_active` timestamps are reset on closeout to prevent premature staleness. Archive paths follow the ultrametric `qnfo/archive/projects/<name>/` convention.
 > **AUTONOMOUS skill.** Do NOT wait for user to say "TERMINATE." Detect completion and auto-initiate closeout.
 > Source: `CLOSEOUT-CHECKLIST` template + execution-guard skill
@@ -104,7 +105,37 @@ c. **For any project MISSING HANDOFF.md:** Create one using `fill_prompt_templat
 
 d. **Verify:** Re-run the scan to confirm all projects have HANDOFF.md with non-zero size.
 
-### 4. Audit Trail Export to R2
+### 3.5 D1 Handoff Insertion (MANDATORY — D1-FIRST v3.0)
+
+Write the session handoff to the `portfolio-state` D1 database as the canonical source:
+
+```bash
+# Generate a URN and insert handoff row
+npx wrangler d1 execute portfolio-state --remote --command="
+INSERT INTO handoffs (id, from_agent, to_agent, r2_path, tasks_count, created_at, status, urn, session_id, summary)
+VALUES ('H-<date>-<seq>', '<agent-name>', 'urn:qacp:agent:next-session', '<project-name>', <N>, '<ISO-8601>', 'active', 'urn:qnfo:handoff:H-<date>-<seq>', '<session-id>', '<summary>');
+"
+```
+
+**Verify insertion:**
+```bash
+npx wrangler d1 execute portfolio-state --remote --command="SELECT id, status, urn, created_at FROM handoffs WHERE id='H-<date>-<seq>';"
+```
+
+**GATE:** If handoff insertion fails or returns 0 rows → closeout BLOCKED. Fix D1 connectivity before proceeding.
+
+### 3.6 Knowledge Graph Handoff Node (RECOMMENDED)
+
+Seed the Knowledge Graph with Handoff and Session nodes for cross-system traceability:
+
+```python
+# Seed via graph-api POST /sync
+# Handoff node: id=handoff-<id>, label=Handoff
+# Session node: id=session-<id>, label=Session
+# Edge: Session -[PRODUCED]-> Handoff -[BELONGS_TO]-> Project
+```
+
+### 4. Audit Trail Export to D1 + R2 Backup
 
 Write session summary to temp file `YYYY-MM-DD-topic.md` containing:
 - Agent name, session date, summary
@@ -351,7 +382,9 @@ The automated lifecycle pipeline runs daily at 06:00 UTC (`qnfo-lifecycle` Worke
 | Claiming tasks done without verification | Phantom claims (Rule 14 violation) | Test-Path + Get-Content + git log audit |
 | Asking "shall I close out?" | Unnecessary user intervention | Just close out and present summary |
 | **Skipping `last_active` update** | Project auto-archives after 180 days | **Reset timestamp EVERY closeout** |
+| **Writing handoffs ONLY to R2** | D1 handoffs table sits empty (0 rows) — next agent starts cold | **INSERT into portfolio-state.handoffs D1 table as canonical** |
+| **Trusting R2 over D1 for itemized data** | R2 flat files have no schema, no FTS, no verification | **D1 is canonical for tasks, handoffs, decisions, projects** |
 
 ---
 
-*closeout-manager skill v2.4 — LIFECYCLE-AWARE. Resets last_active timestamps to prevent premature auto-archival. R2 archive paths follow ultrametric convention.*
+*closeout-manager skill v3.0 — D1-FIRST. Handoffs write to portfolio-state D1. LIFECYCLE-AWARE. R2 archive paths follow ultrametric convention.*
