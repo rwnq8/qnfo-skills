@@ -127,4 +127,30 @@ All build artifacts are stored at: `%TEMP%\qnfo-seo-build\<project-name>\`
 
 ---
 
+
+
+## Embedded Scripts
+
+Per DEFAULT.md §6.1, this skill's dependent scripts are documented below.
+**Canonical source: Cloudflare R2 (`qnfo/tools/`). Tools execute as ephemeral `_<name>.py` files — pull from R2, execute, discard. Never persist locally.**
+
+| Script | Canonical (R2) | Ephemeral Execution Cache | Purpose |
+|:-------|:---------------|:--------------------------|:--------|
+| `toolkit.py` | `qnfo/tools/toolkit.py` | `_toolkit.py` (ephemeral) | SEO audit toolkit — robots.txt, sitemaps, meta tags |
+| `phase2.py` | `qnfo/tools/phase2.py` | `_phase2.py` (ephemeral) | Phase 2 AI crawler discoverability optimization |
+
+### Execution Protocol (Ephemeral)
+Tools execute locally (Python requires filesystem access) but do NOT persist:
+1. **Pull:** `npx wrangler r2 object get qnfo/tools/<name>.py --remote --file=_<name>.py`
+2. **Execute:** `python _<name>.py`
+3. **Discard:** `Remove-Item _<name>.py`
+4. If R2 copy missing: flag `[SKILL-GAP: script <name>.py missing from R2, cannot bootstrap]`
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v1.0** | 2026-06-26 | Skill audit — added version history. Current version. |
+
+
 *seo-discoverability v1.1 — Automated SEO + AI crawler optimization for QNFO/QWAV*

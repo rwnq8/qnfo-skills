@@ -1,5 +1,6 @@
 ---
 name: citation-manager
+version: "1.0"
 description: Academic citation management for QNFO research pipeline. Extract citations from Markdown, verify against BibTeX bibliographies, auto-generate BibTeX entries from DOIs, flag missing/unused citations, and produce citation verification reports. Use when user says "check my citations," "verify bibliography," "generate BibTeX entries," "are all citations accounted for," or when Phase 2 of LRAP requires citation validation before publication.
 ---
 
@@ -469,5 +470,30 @@ python citation_manager.py --paper paper.md --fix
 | Zero citations in text | `[NO-CITATIONS]` — warn, suggest adding citations for claims |
 
 ---
+
+
+
+## Embedded Scripts
+
+Per DEFAULT.md §6.1, this skill's dependent scripts are documented below.
+**Canonical source: Cloudflare R2 (`qnfo/tools/`). Tools execute as ephemeral `_<name>.py` files — pull from R2, execute, discard. Never persist locally.**
+
+| Script | Canonical (R2) | Ephemeral Execution Cache | Purpose |
+|:-------|:---------------|:--------------------------|:--------|
+| `manager.py` | `qnfo/tools/manager.py` | `_manager.py` (ephemeral) | Citation extraction, verification, and BibTeX generation |
+
+### Execution Protocol (Ephemeral)
+Tools execute locally (Python requires filesystem access) but do NOT persist:
+1. **Pull:** `npx wrangler r2 object get qnfo/tools/<name>.py --remote --file=_<name>.py`
+2. **Execute:** `python _<name>.py`
+3. **Discard:** `Remove-Item _<name>.py`
+4. If R2 copy missing: flag `[SKILL-GAP: script <name>.py missing from R2, cannot bootstrap]`
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v1.0** | 2026-06-26 | Skill audit — added version history. Current version. |
+
 
 *citation-manager v1.0 — Phase 2 gateway of LRAP. Verifies citation integrity and auto-generates BibTeX from DOIs.*

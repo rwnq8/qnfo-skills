@@ -309,3 +309,9 @@ This skill is self-contained — no external scripts required. All checks are ma
 ---
 
 *PROMPT-AUDIT Skill v1.0 — Self-audit for system prompts, skills, and templates against 19 industry patterns and anti-patterns. GIT: Skip. All output labeled [LLM-INFERRED].*
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v1.0** | 2026-06-26 | Skill audit — added version history. Current version. |

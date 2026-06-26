@@ -537,6 +537,14 @@ DO NOT attempt publication without these scripts.
 
 ---
 
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v1.5** | 2026-06-26 | Skill audit — added version history. Current version. |
+
+
 *publication-publisher skill v1.5 — Load on-demand via skill_view(). HTML pages MUST be generated from canonical Markdown with MathJax config BEFORE script.*
 
 ---

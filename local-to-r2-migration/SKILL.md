@@ -676,3 +676,9 @@ Agent:
 ---
 
 *Local-to-R2 Migration Skill v1.0 — Scan, classify, purge, upload, index, clean. Thin-client enforcement tool.*
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v1.0** | 2026-06-26 | Skill audit — added version history. Current version. |

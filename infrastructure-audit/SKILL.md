@@ -193,4 +193,12 @@ No action needed.
 
 ---
 
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v1.2** | 2026-06-26 | Skill audit — added version history. Current version. |
+
+
 *infrastructure-audit v1.2 — Lifecycle-aware. Pipeline health checks, archival integrity, ultrametric taxonomy validation.*

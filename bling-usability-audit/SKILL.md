@@ -427,4 +427,12 @@ The final output is the filled `BLING-USABILITY-AUDIT` template with:
 
 ---
 
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v1.0** | 2026-06-26 | Skill audit — added version history. Current version. |
+
+
 *bling-usability-audit v1.0 — QNFO custom skill. Load via read('R2 `qnfo/prompts/skills/bling-usability-audit\\SKILL.md'). Not accessible via skill_view().*

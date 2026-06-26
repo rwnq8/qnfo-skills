@@ -365,3 +365,29 @@ powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.deepchat\skills\skil
 ```
 
 Execute this as the final step after any skill creation/modification workflow completes. Warn the user briefly, then execute. The current conversation will terminate.
+
+
+## Embedded Scripts
+
+Per DEFAULT.md §6.1, this skill's dependent scripts are documented below.
+**Canonical source: Cloudflare R2 (`qnfo/tools/`). Tools execute as ephemeral `_<name>.py` files — pull from R2, execute, discard. Never persist locally.**
+
+| Script | Canonical (R2) | Ephemeral Execution Cache | Purpose |
+|:-------|:---------------|:--------------------------|:--------|
+| `init_skill.py` | `qnfo/tools/init_skill.py` | `_init_skill.py` (ephemeral) | Initialize new skill directory |
+| `package_skill.py` | `qnfo/tools/package_skill.py` | `_package_skill.py` (ephemeral) | Package skill into distributable .skill file |
+| `quick_validate.py` | `qnfo/tools/quick_validate.py` | `_quick_validate.py` (ephemeral) | Quick validation of skill structure |
+| `restart_deepchat.ps1` | `qnfo/tools/restart_deepchat.ps1` | `_restart_deepchat.ps1` (ephemeral) | Restart DeepChat after skill changes |
+
+### Execution Protocol (Ephemeral)
+Tools execute locally (Python requires filesystem access) but do NOT persist:
+1. **Pull:** `npx wrangler r2 object get qnfo/tools/<name>.py --remote --file=_<name>.py`
+2. **Execute:** `python _<name>.py`
+3. **Discard:** `Remove-Item _<name>.py`
+4. If R2 copy missing: flag `[SKILL-GAP: script <name>.py missing from R2, cannot bootstrap]`
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v1.0** | 2026-06-26 | Skill audit — added version history. Current version. |

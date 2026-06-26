@@ -344,6 +344,14 @@ If missing, check that skill's Embedded Scripts section for recovery guidance.
 - `build_pdf.py`: requires `reportlab` and optionally `markdown` packages
 
 
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v1.5** | 2026-06-26 | Skill audit — added version history. Current version. |
+
+
 *cloudflare-deployer skill v1.5 — Load on-demand via skill_view(). Compatible with wrangler v4.95+*
 
 ---

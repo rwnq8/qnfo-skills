@@ -1,5 +1,6 @@
 ---
 name: buffer-integration
+version: "2.0"
 description: Buffer API integration for social media posting on QNFO/QWAV channels. Create, schedule, and manage social media posts across Twitter/X, LinkedIn, and Bluesky via Buffer. Use when user says "post this to social media," "schedule a tweet," "publish to LinkedIn," or when Phase 5 of LRAP requires social dissemination of a new publication.
 ---
 
@@ -546,5 +547,30 @@ python buffer_post.py --title "..." --finding "..." --schedule-for "2026-06-25T0
 | Rate limit (100 req/15min) | Buffer API enforces; back off and retry |
 
 ---
+
+
+
+## Embedded Scripts
+
+Per DEFAULT.md §6.1, this skill's dependent scripts are documented below.
+**Canonical source: Cloudflare R2 (`qnfo/tools/`). Tools execute as ephemeral `_<name>.py` files — pull from R2, execute, discard. Never persist locally.**
+
+| Script | Canonical (R2) | Ephemeral Execution Cache | Purpose |
+|:-------|:---------------|:--------------------------|:--------|
+| `post.py` | `qnfo/tools/post.py` | `_post.py` (ephemeral) | Buffer GraphQL API posting script |
+
+### Execution Protocol (Ephemeral)
+Tools execute locally (Python requires filesystem access) but do NOT persist:
+1. **Pull:** `npx wrangler r2 object get qnfo/tools/<name>.py --remote --file=_<name>.py`
+2. **Execute:** `python _<name>.py`
+3. **Discard:** `Remove-Item _<name>.py`
+4. If R2 copy missing: flag `[SKILL-GAP: script <name>.py missing from R2, cannot bootstrap]`
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v2.0** | 2026-06-26 | Skill audit — added version history. Current version. |
+
 
 *buffer-integration v2.0 — Phase 5 of LRAP. Buffer GraphQL API integration for automated social media dissemination.*

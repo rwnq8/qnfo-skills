@@ -113,6 +113,14 @@ pdf-builder (skill) → ZENODO-PUBLISH → CLOUDFLARE-DEPLOYMENT → SOCIAL-ORCH
 
 ---
 
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v1.1** | 2026-06-26 | Skill audit — added version history. Current version. |
+
+
 *template-catalog v1.1 — QNFO custom skill. Load on-demand via skill_view() for template discovery*
 
 ---

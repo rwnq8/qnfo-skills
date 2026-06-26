@@ -1,5 +1,6 @@
 ---
 name: ultrametric-engine
+version: "1.0"
 description: Deploy 20 mathematical principles (ultrametric distance, p-adic valuation, Ostrowski's theorem, Hensel's lemma, Mahler compression, Berkovich spaces, Tate/Amice spectral analysis, Hasse local-global, Witt vectors, Bruhat-Tits buildings, p-adic caching, intrinsic Amice transform) as a production Cloudflare discovery engine. Use when building ultrametric tree-based search, p-adic ranked paper corpora, hierarchical dendrogram visualizations, or multi-endpoint Workers with R2/D1/Pages/Vectorize bindings.
 ---
 
@@ -111,3 +112,9 @@ function getPAdicCacheTTL(query) {
 - [ ] `/buffer-schedule` returns "token not configured" until secret is set
 - [ ] Tree persists across cold starts via R2
 - [ ] Frontend renders D3 dendrogram
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v1.0** | 2026-06-26 | Skill audit — added version history. Current version. |

@@ -120,6 +120,14 @@ If MISSING: these are project-level scripts. Check the `email-agent` project in 
 
 ---
 
+
+## VERSION HISTORY
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| **v2.1** | 2026-06-26 | Skill audit — added version history. Current version. |
+
+
 *email-composer skill v2.1 — Load on-demand via skill_view(). Email scripts moved to projects/email-agent/.*
 
 ---

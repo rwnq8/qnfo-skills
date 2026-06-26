@@ -72,4 +72,21 @@ CMS (8) | Pages (55) | KG (6) | D1 (8) | Vectorize (3) | R2 (4) | Skills (8) | C
 
 ---
 
+## Embedded Scripts
+
+Per DEFAULT.md §6.1, this skill's dependent scripts are documented below.
+**Canonical source: Cloudflare R2 (`qnfo/tools/`). Tools execute as ephemeral `_<name>.py` files — pull from R2, execute, discard. Never persist locally.**
+
+| Script | Canonical (R2) | Ephemeral Execution Cache | Purpose |
+|:-------|:---------------|:--------------------------|:--------|
+| `test_suite.py` | `qnfo/tools/test_suite.py` | `_test_suite.py` (ephemeral) | Canonical test suite (80+ tests across 9 domains) |
+
+### Execution Protocol (Ephemeral)
+Tools execute locally (Python requires filesystem access) but do NOT persist:
+1. **Pull:** `npx wrangler r2 object get qnfo/tools/<name>.py --remote --file=_<name>.py`
+2. **Execute:** `python _<name>.py`
+3. **Discard:** `Remove-Item _<name>.py`
+4. If R2 copy missing: flag `[SKILL-GAP: script <name>.py missing from R2, cannot bootstrap]`
+
+
 *test-enforcement v1.0 — PRIORITY 1. Pinned. Mandatory for ALL actions.*
