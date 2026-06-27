@@ -214,7 +214,7 @@ Every massive particle is a clock, a cyclic process whose tick rate is determine
 
 ### 6.2 Zitterbewegung Across the Cosmological Time‑Reversal Boundary
 
-Toupin (2026) proves that Zitterbewegung is "the physical signature of oscillation across the cosmological time‑reversal boundary." In a T‑symmetric cosmology, negative‑energy solutions of the Dirac equation — identified via the Feynman–Stueckelberg correspondence as particles propagating on the opposite side of the $t=0$ boundary — interfere with positive‑energy components to produce the observed trembling at $2mc^2/\hbar$.
+Toupin (2026), in a preprint not yet peer‑reviewed or independently replicated, argues that Zitterbewegung is "the physical signature of oscillation across the cosmological time‑reversal boundary." In the proposed T‑symmetric cosmology, negative‑energy solutions of the Dirac equation — identified via the Feynman–Stueckelberg correspondence as particles propagating on the opposite side of the $t=0$ boundary — would interfere with positive‑energy components to produce the observed trembling at $2mc^2/\hbar$. **Caveat:** This is a single preprint. The Zitterbewegung phenomenon itself is `[established]`, but its interpretation as cosmological boundary oscillation is `[speculative — single preprint, not replicated]`. The thesis does not depend on this interpretation; the cyclic hierarchy claim stands on the Compton frequency itself, which is `[established]`.
 
 This yields structural consequences proven as theorems:
 1. Both fermion helicities are observed because the oscillation samples both sides within every Compton cycle.
@@ -257,10 +257,10 @@ Zero, in positional notation, is the absence of any completed cycle at a given l
 ### 7.3 The Descriptive and Prescriptive Theses
 
 **Descriptive Thesis (What Is):**
-Positional notation is the formal inscription of counting cycles. It constructs a tree where each level's branching factor is the number of sub‑cycles that compose one cycle at the next level. This tree intrinsically carries an ultrametric. Historically, the radix was made silent and the tree was flattened into an Archimedean line, erasing the cyclic origin and making the metric an unspoken Euclidean default. This erasure is the root of all errors that arise from mistaking a culturally arbitrary, linear abstraction for the native geometry of number `[my conjecture — this is the central thesis of Part I; the existence of the ultrametric is established, but the causal claim that erasure 'is the root of all errors' is synthetic]`.
+Positional notation is the formal inscription of counting cycles. It constructs a tree where each level's branching factor is the number of sub‑cycles that compose one cycle at the next level. This tree intrinsically carries an ultrametric. Historically, the radix was made silent and the tree was flattened into an Archimedean line, erasing the cyclic origin and making the metric an unspoken Euclidean default. This erasure is proposed as the root of errors that arise from mistaking a culturally arbitrary, linear abstraction for the native geometry of number `[my conjecture — this is the central thesis of Part I; the existence of the ultrametric is established, but the causal claim that erasure 'is the root of all errors' is synthetic]`.
 
 **Prescriptive Thesis (What Should Be):**
-Measurement should explicitly declare its cyclic grouping (base) as part of the quantity's representation. The native ultrametric of that representation should be the default geometry, with any Archimedean projection flagged as a secondary, applied frame. The foundation of such a system is the calculus of indications, where the primitive act of drawing a distinction is marking a cycle. In this foundation, the self‑referential "10" is the cycle that marks its own completion — the minimal act of self‑measurement and the origin of the observer.
+The prescription does not follow deductively from the description — it requires an additional normative premise: that representations should faithfully reflect the structure of what they represent when that structure matters for the task at hand. Given the descriptive thesis, and given that many domains (calendars, time-series data, hierarchical measurement systems) are cyclic by nature, the prescriptive recommendation is that measurement should explicitly declare its cyclic grouping (base) as part of the quantity's representation, with the native ultrametric as the default geometry and any Archimedean projection flagged as a secondary, applied frame. The foundation of such a system is the calculus of indications, where the primitive act of drawing a distinction is marking a cycle. The self‑referential "10" becomes the cycle that marks its own completion — the minimal act of self‑measurement and the origin of the observer `[my conjecture — the prescriptive claim is normative and therefore not mathematically provable; it is proposed as a design principle, not a theorem]`.
 
 ---
 
@@ -336,7 +336,7 @@ The cure is architectural. Genuine knowledge systems are distinguished not by th
 
 ### 9.5 The Manifesto Statement
 
-> **Knowledge is not the elegance of a pattern but the survival of a prediction. Any claim that will not declare in advance the evidence that would kill it is not a theory but a story; any community that does not build its institutions around that demand is not a science but a priesthood.**
+> **Knowledge is not the elegance of a pattern but the survival of a prediction. Any claim that will not declare in advance the evidence that would kill it cannot claim the authority of scientific knowledge; any community that systematically refuses to build institutions that expose its claims to such risk is not organized as a science.** `[my conjecture — this is a normative epistemological claim consistent with Popperian falsificationism; it is proposed as a design principle for knowledge institutions, not as a descriptive statement about all existing scientific communities]`
 
 ---
 
