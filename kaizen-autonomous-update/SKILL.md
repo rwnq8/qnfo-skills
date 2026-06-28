@@ -49,6 +49,7 @@ The Phase 0 comprehensive audit (`_kaizen_system_audit.py`) checks:
 5. **Template staleness** — every template must be referenced somewhere
 6. **Guardrail completeness** — all essential guardrails present
 7. **Kaizen engine health** — conversation search, R2 integration
+8. **GAP AUDIT (v1.2 — per closeout-manager §2.6):** Run the full POST-PHASE GAP AUDIT (A-F categories) as part of Phase 0. Any BLOCKING gaps → halt the Kaizen update. Document all gaps in the Kaizen report.
 
 ## Related Skills
 

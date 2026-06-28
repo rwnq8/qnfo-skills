@@ -74,18 +74,26 @@ print(f'\nSync Status: {status}')
 ## Bootstrap Tools
 
 Must exist locally for this skill to work:
-- `bootstrap_skills.py` — One-command sync tool
+- `bootstrap_skills.py` — One-command sync tool (located at `%APPDATA%\DeepChat\skills\bootstrap_skills.py`)
 - Recoverable from R2: `qnfo/tools/bootstrap_skills.py`
 - Recoverable from GitHub: `rwnq8/qnfo-skills/blob/master/bootstrap_skills.py`
 
 ---
+
+## Auto-Gap-Audit Integration (v1.3)
+
+After sync completes (GitHub + R2), this skill automatically triggers the POST-PHASE GAP AUDIT (closeout-manager §2.6):
+1. Verify R2 sync count matches local count
+2. Verify GitHub HEAD matches local commit
+3. Verify Discovery Index is updated with current versions
+4. Report any desync or drift as gaps
 
 ## Mandatory Post-Sync Restart
 
 **Rule:** After any successful skill sync (push to GitHub + R2), DeepChat MUST be restarted programmatically. Skills are loaded at application startup; changes made via sync do not take effect until DeepChat is killed and relaunched.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.deepchat\skills\skill-sync\scripts\restart_deepchat.ps1"
+powershell -ExecutionPolicy Bypass -File "$env:APPDATA\DeepChat\skills\skill-sync\scripts\restart_deepchat.ps1"
 ```
 
 This kills all old DeepChat processes and launches a fresh instance. Execute this as the final step after confirming sync success. The current conversation will terminate.
