@@ -6,9 +6,9 @@ version: "1.2"
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
 
-# INFRASTRUCTURE AUDIT SKILL — v1.3
+# INFRASTRUCTURE AUDIT SKILL — v1.4
 
-> **LIFECYCLE-AWARE. GAP-AUDIT INTEGRATION.** This release adds lifecycle pipeline health checks, archival path verification, ultrametric taxonomy validation, and §0.5 GAP AUDIT INTEGRATION — Phase 4 health recommendations now output gap-audit-compatible report format.
+> **LIFECYCLE-AWARE. GAP-AUDIT INTEGRATION. RED-TEAM-DOD INTEGRATION.** This release adds the RED-TEAM → DoD → ITERATE → REFINE cycle to infrastructure audits. See `skill_view('red-team-dod')`. Also includes lifecycle pipeline health checks, archival path verification, ultrametric taxonomy validation, and §0.5 GAP AUDIT INTEGRATION — Phase 4 health recommendations now output gap-audit-compatible report format.
 
 ---
 
@@ -205,7 +205,7 @@ When the infrastructure audit runs (session start or on-demand), it automaticall
 
 ---
 
-*infrastructure-audit v1.3 — Lifecycle-aware. Gap-audit integration (§0.5). Pipeline health checks, archival integrity, ultrametric taxonomy validation.*
+*infrastructure-audit v1.4 — Lifecycle-aware. RED-TEAM-DOD integration. Gap-audit integration (§0.5). Pipeline health checks, archival integrity, ultrametric taxonomy validation.*
 
 ## RT: RED-TEAM SELF-AUDIT
 

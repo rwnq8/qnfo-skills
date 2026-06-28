@@ -3,7 +3,7 @@ import os, sys, json, urllib.request
 
 ACCOUNT = 'edb167b78c9fb901ea5bca3ce58ccc4b'
 BUCKET = 'qnfo'
-SKILLS_DIR = os.path.expandvars(r'%APPDATA%\DeepChat\skills')
+SKILLS_DIR = os.path.expanduser('~/.deepchat/skills')
 
 def cf(endpoint, method='GET', body=None):
     token = os.environ.get('CLOUDFLARE_API_TOKEN', '')

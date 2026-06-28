@@ -111,6 +111,6 @@ Before claiming this skill complete, autonomously run:
 4. DoD Integration (run _dod_enforce.py if exists)
 5. Iteration (retry on failure, max 3)
 
-ANTI-PATTERN: User should NEVER ask about quality.
+ANTI-PATTERN: User should NEVER ask about quality.\n**Skill-Specific Checks:**\n6. Banned Fonts: Verify NO Inter, Roboto, Arial, system-ui as primary font\n7. WCAG Contrast: Verify body text >=4.5:1, large text >=3:1\n8. Uniqueness: Would another generation produce the same design? If yes, FAIL.\n9. Tone Consistency: Does the design match its declared aesthetic direction?
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 

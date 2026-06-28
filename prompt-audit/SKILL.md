@@ -6,11 +6,12 @@ version: 1.0
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
 
-# PROMPT-AUDIT SKILL (v1.0)
+# PROMPT-AUDIT SKILL (v1.1)
 
 > **Role:** Self-audit skill — agents use this to evaluate their own system prompts against industry best practices
+> **RED-TEAM-DOD INTEGRATION.** This skill self-applies: after auditing a prompt, the auditor red-teams its own findings. Autonomous trigger: any time a prompt/skill/template is modified, run a prompt audit. See `skill_view('red-team-dod')`.
 > **Generated from:** Research synthesis — pecollective.com (9 Patterns, Feb 2026), paxrel.com (10 Agent Prompt Patterns, Mar 2026), Anthropic (Prompting Best Practices for Claude Opus 4.8), promptingguide.ai (LLM Agents)
-> **Date:** 2026-06-02
+> **Date:** 2026-06-02 (v1.1: 2026-06-28)
 
 ---
 
@@ -23,6 +24,8 @@ Load this skill when:
 - Checking an agent prompt for known anti-patterns
 - Running pre-deployment prompt quality assurance
 - Responding to "audit my prompt" or "review this prompt"
+
+**AUTONOMOUS TRIGGER:** The agent MUST self-audit ANY modified prompt/skill/template BEFORE committing the change. This is the prompt-audit instance of the RED-TEAM-DOD cycle (§Phase 1: Red-Team). No user prompting required.
 
 ---
 
@@ -310,7 +313,7 @@ This skill is self-contained — no external scripts required. All checks are ma
 
 ---
 
-*PROMPT-AUDIT Skill v1.0 — Self-audit for system prompts, skills, and templates against 19 industry patterns and anti-patterns. GIT: Skip. All output labeled [LLM-INFERRED].*
+*PROMPT-AUDIT Skill v1.1 — Self-audit for system prompts, skills, and templates against 19 industry patterns and anti-patterns. RED-TEAM-DOD integrated. Autonomous trigger on prompt modification. GIT: Skip. All output labeled [LLM-INFERRED].*
 
 ## RT: RED-TEAM SELF-AUDIT
 

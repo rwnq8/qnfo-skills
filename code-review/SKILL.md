@@ -11,9 +11,10 @@ allowedTools:
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
 
-# CODE REVIEW SKILL — v2.0
+# CODE REVIEW SKILL — v2.1
 
 > **On-demand skill.** Load via `skill_view('code-review')` for comprehensive code analysis.
+> **RED-TEAM-DOD INTEGRATION.** This skill self-applies red-team: every CRITICAL finding must cite a specific line number. After review, the reviewer red-teams its own findings (could any be false positives?). See `skill_view('red-team-dod')`.
 
 ---
 
@@ -113,12 +114,13 @@ Structure the review output as follows:
 [Audit results, known vulnerabilities, upgrade recommendations]
 ```
 
-### Phase 4: Verification (Before Delivering Review)
+### Phase 4: Verification & Red-Team (Before Delivering Review)
 
 1. **Evidence check:** Every CRITICAL/MAJOR issue cites a specific line or pattern
-2. **False positive check:** Did I verify the issue actually exists by reading the code?
+2. **False positive check:** Red-team each finding — could it be a false positive? Re-read the code.
 3. **Completeness:** Did I cover all four focus areas?
 4. **Actionability:** Can the developer act on every recommendation without additional research?
+5. **Red-team the review itself:** If I claim "this is a security vulnerability," try to prove it's NOT one first.
 
 ---
 

@@ -364,6 +364,6 @@ Before claiming this skill complete, autonomously run:
 4. DoD Integration (run _dod_enforce.py if exists)
 5. Iteration (retry on failure, max 3)
 
-ANTI-PATTERN: User should NEVER ask about quality.
+ANTI-PATTERN: User should NEVER ask about quality.\n**Skill-Specific Checks:**\n6. Pages Preview URL: Verify deploy accessible at *.pages.dev before custom domain\n7. R2 Sync: Verify qnfo-cms-client.js exists on R2 with correct version\n8. CDN Purge: Verify custom domain serves latest deploy after CDN propagation\n9. MathJax Config: For publication pages, verify MathJax config BEFORE script tag
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 

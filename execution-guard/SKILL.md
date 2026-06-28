@@ -163,7 +163,7 @@ Session closeout writes execution statistics to audit trail:
 
 ---
 
-*execution-guard v1.2 — PRIORITY 0. Auto-gap detection via WHAT-ELSE hook (§1.4). Red-team self-testing. Cannot be disabled. Pinned and always active.*
+*execution-guard v1.3 — PRIORITY 0. Auto-gap detection via WHAT-ELSE hook (§1.4). RED-TEAM-DOD integration via §1.5 hook. Red-team self-testing. Cannot be disabled. Pinned and always active.*
 
 ## RT: RED-TEAM SELF-AUDIT
 
