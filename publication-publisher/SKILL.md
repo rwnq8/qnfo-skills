@@ -1,12 +1,7 @@
----
-name: publication-publisher
-description: End-to-end publication workflow — formatting, PDF building, complete artifact bundling, Zenodo upload (with semantic versioning), Cloudflare deployment, social media orchestration, and post-publication draft cleanup. Use when publishing papers, reports, or other documents.
-version: "1.5"
----
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
 
-# PUBLICATION PUBLISHER SKILL — v1.5
+# PUBLICATION PUBLISHER SKILL — v1.6
 
 > **On-demand skill.** Load via `skill_view('publication-publisher')` for publication workflows.
 > Source: DEFAULT.md §11 + `ZENODO-PUBLISH.md` + `pdf-builder` skill
@@ -54,14 +49,28 @@ All publication documents use curly/smart quotes (Unicode: \u201c \u201d \u2018 
 
 ---
 
-## Step 2: Build PDF
+## Step 2: Build PDF (v1.6 — Updated for pdf-builder v2.0)
 
 Use `skill_view('pdf-builder')` to load the skill, then follow its workflow:
-1. Verify prerequisites: `python -c "import reportlab, matplotlib; print('OK')"`
-2. Build: `python "%APPDATA%\DeepChat\skills\pdf-builder\scripts\build_pdf.py" --input "paper.md" --output "paper.pdf"`
-3. Verify rendering (MANDATORY): See skill's Step 4 for the fitz verification script.
 
-For math-free drafts, add `--no-math` for lighter/faster builds.
+### Primary Pipeline (RECOMMENDED — Obsidian-quality PDFs)
+
+```bash
+# Verify prerequisites
+python -c "import playwright, markdown, yaml; print('OK')"
+
+# Build PDF (MD → HTML+CSS+MathJax → playwright PDF)
+python "%APPDATA%\DeepChat\skills\pdf-builder\scripts\build_pdf.py" --input "paper.md" --output "paper.pdf" --title "Paper Title" --author "Author Name"
+
+# Verify rendering (MANDATORY)
+python "%APPDATA%\DeepChat\skills\pdf-builder\scripts\build_pdf.py" --input "paper.pdf" --verify
+```
+
+### Legacy Pipeline (fallback only — lower quality)
+
+```bash
+python "%APPDATA%\DeepChat\skills\pdf-builder\scripts\build_pdf.py" --input "paper.md" --output "paper.pdf" --legacy --no-math
+```
 
 ### PDF Rendering Verification (MANDATORY)
 After building PDF, extract text and verify ALL Unicode characters render correctly:
@@ -157,7 +166,6 @@ categories = {
     ".yaml": "configuration",
     ".toml": "configuration",
     ".cfg": "configuration",
-    ".txt": "supplementary"
 }
 
 for filepath in sorted(project_dir.rglob('*')):
@@ -310,27 +318,23 @@ print('Compare Zenodo file count against manifest — must match')
 
 ### 4.1 HTML Generation from Canonical Markdown (MANDATORY)
 
-**HARD RULE: ALL publication HTML pages MUST be generated from canonical Markdown.** HTML is a derived output format, not a content source. Use the `HTML-PUBLICATION-PAGE` template:
+**HARD RULE: ALL publication HTML pages MUST be generated from canonical Markdown.** HTML is a derived output format, not a content source. Use the `md_to_html.py` script from the pdf-builder skill:
 
-```
-fill_prompt_template("HTML-PUBLICATION-PAGE", {
-  "title": "<publication_title>",
-  "author": "<Author Name (Affiliation)>",
-  "date": "<YYYY-MM-DD>",
-  "doi": "<10.5281/zenodo.XXXXXXXX>",
-  "description": "<one-sentence description>",
-  "stylesheet_path": "stylesheets/papers.css",
-  "canonical_md_path": "<path/to/paper.md>",
-  "extra_macros": "{...}"  // optional publication-specific macros
-})
+```bash
+# Generate styled HTML from canonical markdown
+python "%APPDATA%\DeepChat\skills\pdf-builder\scripts\md_to_html.py" \
+  --input "paper.md" \
+  --output "index.html" \
+  --title "Publication Title" \
+  --author "Author Name (Affiliation)"
 ```
 
-The template generates `index.html` from `paper.md` with:
+This generates `index.html` from `paper.md` with:
 - Correct MathJax config-before-script ordering
 - QNFO standard macros (blackboard bold, calligraphic, Greek shortcuts)
 - Publication metadata (citation_* meta tags)
 - Responsive viewport
-- GA4 integration (if measurement ID provided)
+- Embedded `papers.css` professional stylesheet
 
 ### 4.2 MathJax Config Order Verification (MANDATORY)
 
@@ -360,8 +364,6 @@ print('  Config at pos {}, Script at pos {}'.format(config_pos, script_pos))
 ```
 
 **GATE:** If config is AFTER script → `[BLOCKED: MathJax order]`. Fix `index.html` BEFORE deploying. This is the #1 cause of "MathJax isn't rendering."
-
-For the canonical MathJax configuration, see `templates/MATHJAX-CONFIG.md`.
 
 ### 4.3 Deploy
 
@@ -502,7 +504,7 @@ NOT: `paper.pdf`, `final.pdf`, `output.pdf`
 | `zenodo_publish.py` | `qnfo/tools/zenodo_publish.py` | `_zenodo_publish.py` (ephemeral) | Zenodo DOI registration via REST API |
 | `generate-seo.py` | `qnfo/tools/generate-seo.py` | `_generate-seo.py` (ephemeral) | sitemap.xml, robots.txt, llms.txt generator |
 
-> **Note:** `build_pdf.py` is now bundled in the `pdf-builder` skill (`skills/pdf-builder/scripts/build_pdf.py`). Use `skill_view('pdf-builder')` for PDF generation. R2 backup at `qnfo/tools/build_pdf.py`.
+> **Note:** `build_pdf.py` and `md_to_html.py` are now bundled in the `pdf-builder` skill (`skills/pdf-builder/scripts/`). Use `skill_view('pdf-builder')` for PDF generation. R2 backup at `qnfo/tools/build_pdf.py`.
 
 ### Bootstrap Protocol
 
@@ -521,29 +523,32 @@ NOT: `paper.pdf`, `final.pdf`, `output.pdf`
 DO NOT attempt publication without these scripts.
 
 ### Dependencies
-- `build_pdf.py`: requires `reportlab` and optionally `markdown` packages
+- `build_pdf.py` (v2.0): requires `playwright`, `markdown`, `pyyaml`, `pymupdf` (primary) OR `reportlab`, `matplotlib` (legacy fallback)
+- `md_to_html.py`: requires `markdown`, `pyyaml`
 - `zenodo_publish.py`: requires `%USERPROFILE%\.zenodo_token` (Zenodo API token with deposit:actions, deposit:write)
 - `generate-seo.py`: standard library only, no external dependencies
 
 ### Cross-Reference
-- `build_pdf.py` is now bundled in the `pdf-builder` skill (`skill_view('pdf-builder')`)
+- `build_pdf.py` and `md_to_html.py` are bundled in the `pdf-builder` skill (`skill_view('pdf-builder')`)
+- `papers.css` is bundled at `skills/pdf-builder/references/papers.css`
 - These scripts are embedded in the `publication-publisher` skill as their primary documentation home
 
 ## Reference Files
 
 - Publication standards: DEFAULT.md §11
-- PDF builder: `skill_view('pdf-builder')` (bundled skill with `scripts/build_pdf.py`)
+- PDF builder: `skill_view('pdf-builder')` (bundled skill with `scripts/build_pdf.py` and `scripts/md_to_html.py`)
+- CSS stylesheet: `skills/pdf-builder/references/papers.css`
 - Zenodo: `templates/ZENODO-PUBLISH.md`
 - Social orchestrator: `templates/SOCIAL-ORCHESTRATOR-TEMPLATE.md`
 - Cloudflare deploy: `templates/CLOUDFLARE-DEPLOYMENT.md`
 
 ---
 
-*publication-publisher skill v1.5 — Load on-demand via skill_view(). HTML pages MUST be generated from canonical Markdown with MathJax config BEFORE script.*
+*publication-publisher skill v1.6 — Load on-demand via skill_view(). HTML pages MUST be generated from canonical Markdown using md_to_html.py with MathJax config BEFORE script. PDFs via pdf-builder v2.0 primary pipeline (Obsidian-quality).*
 
 ---
 
-*publication-publisher v1.5 — QNFO custom skill. Load via read('R2 `qnfo/prompts/skills/publication-publisher\\SKILL.md'). Not accessible via skill_view().*
+*publication-publisher v1.6 — QNFO custom skill. Load via read('R2 `qnfo/prompts/skills/publication-publisher\\SKILL.md'). Not accessible via skill_view().*
 
 ## RT: RED-TEAM SELF-AUDIT
 
@@ -557,4 +562,3 @@ Before claiming this skill complete, autonomously run:
 
 ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
-
