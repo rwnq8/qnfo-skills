@@ -5,10 +5,12 @@ description: QACP-HANDOFF protocol for structured agent-to-agent session handoff
 category: protocol
 pinned: true
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
-# HANDOFF PROTOCOL SKILL — v1.1.0
 
-> **QACP-HANDOFF v1.1.** Structured agent-to-agent handoff protocol with auto-gap detection and red-team verification.
+# HANDOFF PROTOCOL SKILL — v1.2.0
+
+> **QACP-HANDOFF v1.2.** Structured agent-to-agent handoff protocol with auto-gap detection, red-team verification, AND mandatory copy-paste continuation prompts.
 > **PINNED.** This skill should be loaded for ALL QNFO agent sessions to ensure consistent handoffs.
 
 ---
@@ -241,7 +243,57 @@ QACP-ENVELOPE:
 
 **infrastructure_snapshot** — Query LIVE systems at handoff time, not from memory. Every count in the snapshot should be verifiable by re-running the query.
 
-### 1.5 AUTO-GAP DETECTION TRIGGERS (v1.1 — RED-TEAM BEST PRACTICES)
+### 1.6 CONTINUATION PROMPT (REQUIRED — v1.2)
+
+**Every handoff MUST include a verbatim copy-paste continuation prompt** that the user can paste directly into a new LLM session. This eliminates the #1 handoff failure mode: the next agent having to re-discover context.
+
+#### 1.6.1 Format Requirements
+
+The continuation prompt MUST be:
+
+1. **In a code block** — triple-backtick fenced, no language tag, easily copyable
+2. **Verbatim-executable** — copy/paste into a new session and the agent should know EXACTLY what to do
+3. **Self-contained** — includes the HANDOFF file path to read, the DoD enforcement command, and the priority queue
+4. **Specific** — names concrete files, commands, and URLs. No "fix the CMS" — must be "RUN _dod_enforce.py TO VERIFY, THEN..."
+5. **Prioritized** — tasks listed in execution order with explicit dependencies
+
+#### 1.6.2 Required Elements
+
+```
+REQUIRED in every continuation prompt:
+  ☐ HANDOFF file path (e.g., "projects/cms/HANDOFF.md")
+  ☐ DoD enforcement command (e.g., "RUN python _dod_enforce.py BEFORE CLOSEOUT")
+  ☐ Priority queue (ranked list of next actions, most urgent first)
+  ☐ Infrastructure verification step (what to check before executing)
+  ☐ Critical blockers (what's currently broken and how to diagnose)
+  ☐ Evidence requirement reminder (every claim needs tool output)
+
+OPTIONAL elements:
+  ☐ Specific commands to run (copy-paste executable)
+  ☐ URLs to verify (live site checks)
+  ☐ Version numbers to confirm (CMS v2.3, Ask QWAV v2.1, etc.)
+  ☐ Expected state after completion (what success looks like)
+```
+
+#### 1.6.3 Example (from production handoff 2026-06-28)
+
+```
+LOAD ALL QNFO SKILLS. CONTINUE FROM HANDOFF IN projects/cms/HANDOFF.md. 
+
+RUN python _dod_enforce.py TO VERIFY INFRASTRUCTURE STATE, THEN EXECUTE:
+
+1. VERIFY all 7 Pages sites render correct content with CMS Client JS v2.7 and LP sections
+2. PURGE Cloudflare CDN cache for laws.qnfo.org (stale content)
+3. BATCH-IMPORT remaining Living Papers as CMS publications (72 done, ~383 pending)
+4. SEED Vectorize paper-similarity index with Workers AI embeddings for all 455 papers
+5. CREATE dedicated Pages projects for benchmark.qnfo.org, knowing.qnfo.org, solo.qnfo.org
+6. ASSIGN DOIs to remaining 449 papers via Zenodo API
+7. RUN python _dod_enforce.py before closeout — exit 0 required
+
+CRITICAL: Every action must have verification evidence. No claim without tool output.
+```
+
+**Violation:** If a handoff is produced WITHOUT a continuation prompt in a copy-paste code block → the handoff is INCOMPLETE. Do not close the session until this is added.
 
 The `gaps` array in the handoff payload is REQUIRED, but filling it has historically been ad-hoc — agents listed obvious blockers and missed subtle gaps. This section defines structured triggers that auto-populate the gaps list.
 
@@ -536,3 +588,17 @@ This protocol registers with QACP:
 ---
 
 *handoff-protocol skill v1.1.0 — QACP-HANDOFF v1.1. Auto-gap detection, red-team verification. Pinned. Load for all QNFO agent sessions.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

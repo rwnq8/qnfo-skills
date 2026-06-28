@@ -5,6 +5,8 @@ version: "2.0"
 allowedTools:
   - exec
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 
 # GIT COMMIT SKILL — v2.0
 
@@ -134,3 +136,17 @@ to config.yaml. Use the migration script in scripts/migrate-config.js.
 ---
 
 *git-commit v2.0 — Conventional commit message generation with verification.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

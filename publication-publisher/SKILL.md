@@ -3,6 +3,8 @@ name: publication-publisher
 description: End-to-end publication workflow — formatting, PDF building, complete artifact bundling, Zenodo upload (with semantic versioning), Cloudflare deployment, social media orchestration, and post-publication draft cleanup. Use when publishing papers, reports, or other documents.
 version: "1.5"
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 
 # PUBLICATION PUBLISHER SKILL — v1.5
 
@@ -542,3 +544,17 @@ DO NOT attempt publication without these scripts.
 ---
 
 *publication-publisher v1.5 — QNFO custom skill. Load via read('R2 `qnfo/prompts/skills/publication-publisher\\SKILL.md'). Not accessible via skill_view().*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

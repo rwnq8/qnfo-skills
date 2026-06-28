@@ -3,6 +3,8 @@ name: cloudflare-deployer
 description: Cloudflare platform deployment operations — Pages, R2, Workers, Vectorize, DNS, redirects, and Containers. Use when the agent needs to deploy, manage, or troubleshoot Cloudflare infrastructure.
 version: "1.5"
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 
 # CLOUDFLARE DEPLOYER SKILL — v1.5
 
@@ -122,9 +124,11 @@ npx wrangler pages deployment rollback --project-name <name>
 **Active Projects:** qwav (deep.qwav.tech), prompts-wiki, qnfo-archive (archive.qnfo.org),
 quantum-laws-of-form (laws.qnfo.org), qlof-primer (primer.qwav.tech), +11 more.
 
-### Post-Deploy Verification (MANDATORY for ALL deploys — v1.6)
+### Post-Deploy Verification (MANDATORY for ALL deploys — v1.7)
 
-After deploying ANY content to Cloudflare Pages or Workers, verify with the canonical test suite:
+**This is the deployment instance of the RED-TEAM → DoD → ITERATE → REFINE cycle.** See `skill_view('red-team-dod')` for the canonical framework.
+
+After deploying ANY content to Cloudflare Pages or Workers, run the post-deploy red-team:
 
 ```bash
 # Pull test suite from R2 (ephemeral)
@@ -344,8 +348,22 @@ If missing, check that skill's Embedded Scripts section for recovery guidance.
 - `build_pdf.py`: requires `reportlab` and optionally `markdown` packages
 
 
-*cloudflare-deployer skill v1.5 — Load on-demand via skill_view(). Compatible with wrangler v4.95+*
+*cloudflare-deployer skill v1.6 — Load on-demand via skill_view(). RED-TEAM-DOD post-deploy verification. Compatible with wrangler v4.95+*
 
 ---
 
 *cloudflare-deployer v1.5 — QNFO custom skill. Load via read('R2 `qnfo/prompts/skills/cloudflare-deployer\\SKILL.md'). Not accessible via skill_view().*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

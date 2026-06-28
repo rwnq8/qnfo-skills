@@ -3,6 +3,8 @@ name: execution-guard
 description: "PRIORITY 0 execution enforcement guard. Always active. Prevents planning spirals and phantom completion claims by checking task register before every response. Use when: ANY agent is operating — this skill must be loaded for all QNFO agent sessions. Triggers: session start, before any response, when tasks are pending."
 version: "1.1"
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 
 # EXECUTION GUARD SKILL — v1.0
 
@@ -162,3 +164,17 @@ Session closeout writes execution statistics to audit trail:
 ---
 
 *execution-guard v1.2 — PRIORITY 0. Auto-gap detection via WHAT-ELSE hook (§1.4). Red-team self-testing. Cannot be disabled. Pinned and always active.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

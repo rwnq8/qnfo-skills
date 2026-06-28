@@ -9,6 +9,8 @@ allowedTools:
   - deepchat_settings_set_font_size
   - deepchat_settings_open
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 
 # DeepChat Settings Modification Skill
 
@@ -78,3 +80,17 @@ Settings navigation (open-only):
 - "把 Windows 的系统代理改成..."
 - "帮我改 VS Code 的字体"
 - "把电脑的声音关掉"
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

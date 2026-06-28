@@ -3,6 +3,8 @@ name: local-to-r2-migration
 description: Migrate local project files to Cloudflare R2 canonical storage — scan, classify, purge orphaned ephemeral files, upload project assets, update Discovery Index, and clean up local copies. Use when migrating local project clutter to R2 or when the user wants to enforce thin-client architecture.
 version: "1.0"
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 
 # Local-to-R2 Migration Skill (v1.0)
 
@@ -676,3 +678,17 @@ Agent:
 ---
 
 *Local-to-R2 Migration Skill v1.0 — Scan, classify, purge, upload, index, clean. Thin-client enforcement tool.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

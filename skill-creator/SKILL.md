@@ -4,6 +4,8 @@ description: Guide for creating effective skills. This skill should be used when
 version: "1.0"
 license: Complete terms in LICENSE.txt
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 
 # Skill Creator
 
@@ -365,3 +367,17 @@ powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.deepchat\skills\skil
 ```
 
 Execute this as the final step after any skill creation/modification workflow completes. Warn the user briefly, then execute. The current conversation will terminate.
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

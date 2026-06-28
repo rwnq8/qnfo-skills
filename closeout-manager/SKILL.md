@@ -3,6 +3,8 @@ name: closeout-manager
 description: Session close-out procedures — autonomous trigger detection, task execution verification, project handoff initialization, audit trail export, R2 state upload, lifecycle timestamp update, archive operations, draft artifact cleanup, and handoff documentation. Auto-executes at session end without user prompting.
 version: "3.1"
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 
 # CLOSEOUT MANAGER SKILL — v3.1
 
@@ -77,7 +79,9 @@ e. **Unfinished items:** Any planned-but-unexecuted item is a BLOCKER. Either ex
 #### GATE
 If ratio < 0.3 → closeout BLOCKED. The session did not execute enough. Fix before closing.
 
-### 2.6 POST-PHASE GAP AUDIT (v3.1 — AUTONOMOUS WHAT-ELSE DETECTION)
+### 2.6 POST-PHASE GAP AUDIT (v3.2 — RED-TEAM-DOD INTEGRATION)
+
+**This section is the closeout instance of the RED-TEAM → DoD → ITERATE → REFINE cycle.** See `skill_view('red-team-dod')` for the canonical framework. The closeout-manager executes the cycle at session boundaries; the execution-guard (§1.5) enforces it per-task.
 
 **The #2 undetected failure mode: the user having to ask "WHAT ELSE? WHAT'S NEXT? WHAT REMAINS?" because the agent didn't auto-detect gaps.** This protocol ELIMINATES that pattern. After EVERY major task/phase (not just closeout), the agent MUST run this audit autonomously — the user should NEVER have to ask.
 
@@ -498,4 +502,18 @@ The automated lifecycle pipeline runs daily at 06:00 UTC (`qnfo-lifecycle` Worke
 
 ---
 
-*closeout-manager skill v3.1 — D1-FIRST. POST-PHASE GAP AUDIT (§2.6) with red-team self-testing. LIFECYCLE-AWARE. R2 archive paths follow ultrametric convention.*
+*closeout-manager skill v3.2 — D1-FIRST. RED-TEAM-DOD INTEGRATION (§2.6). POST-PHASE GAP AUDIT with red-team self-testing. LIFECYCLE-AWARE. R2 archive paths follow ultrametric convention.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

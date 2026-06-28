@@ -3,6 +3,8 @@ name: skill-sync
 description: Sync all DeepChat skills between local disk, GitHub, and Cloudflare R2. Monitors skill modifications and auto-syncs after changes. Updates Discovery Index with current versions. Use when skills are modified and need to be pushed to redundant backups, or to check sync status.
 version: "1.1"
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 
 # SKILL SYNC SKILL — v1.3
 
@@ -101,3 +103,17 @@ This kills all old DeepChat processes and launches a fresh instance. Execute thi
 ---
 
 *skill-sync v1.3 — Monitors and syncs skills between local, GitHub, and R2. Auto-gap-audit integration. Paths corrected (%APPDATA%\DeepChat\skills). Includes mandatory post-sync restart.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

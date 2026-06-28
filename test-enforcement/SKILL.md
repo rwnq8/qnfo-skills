@@ -1,8 +1,3 @@
-# TEST ENFORCEMENT SKILL — v1.1
-
-> **PRIORITY 1 — MANDATORY for ALL code changes, deployments, and infrastructure modifications. GAP-AUDIT BRIDGE (§2.5).**
-> **PINNED.** This skill must be loaded for ALL QNFO agent sessions.
-
 ---
 
 ## 0. WHY THIS EXISTS
@@ -12,7 +7,9 @@ QNFO/QWAV production sites were stub content. No test suite existed. This skill 
 ## 1. TEST GATES
 
 | Action | Required Test | Severity |
-|:-------|:-------------|:---------|
+|:---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+----|:-------------|:---------|
 | Pages deploy | `_test_suite.py --pages` — no stubs, all load | BLOCKING |
 | Worker deploy | `_test_suite.py --cms` — all endpoints OK | BLOCKING |
 | D1 schema change | `_test_suite.py --d1` — tables accessible | BLOCKING |
@@ -77,3 +74,17 @@ CMS (8) | Pages (55) | KG (6) | D1 (8) | Vectorize (3) | R2 (4) | Skills (8) | C
 ---
 
 *test-enforcement v1.1 — PRIORITY 1. Gap-audit bridge (§2.5). Pinned. Mandatory for ALL actions.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

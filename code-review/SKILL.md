@@ -8,6 +8,8 @@ allowedTools:
   - write
   - edit
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 
 # CODE REVIEW SKILL — v2.0
 
@@ -154,3 +156,17 @@ Structure the review output as follows:
 ---
 
 *code-review v2.0 — Comprehensive code quality, security, and best practices analysis. All output labeled [LLM-INFERRED] unless verified against execution evidence.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

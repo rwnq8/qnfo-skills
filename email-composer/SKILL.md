@@ -3,6 +3,8 @@ name: email-composer
 description: Outlook email composition, sending, reading, and management via COM automation. Use when the agent needs to send, read, search, or manage emails through Outlook.
 version: "2.1"
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 # EMAIL COMPOSER SKILL — v2.1
 
 > **On-demand skill.** Load via `skill_view('email-composer')` when email operations are needed.
@@ -125,3 +127,17 @@ If MISSING: these are project-level scripts. Check the `email-agent` project in 
 ---
 
 *email-composer v2.1 — QNFO custom skill. Load via read('R2 `qnfo/prompts/skills/email-composer\\SKILL.md'). Not accessible via skill_view().*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+
