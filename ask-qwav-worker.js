@@ -1,6 +1,8 @@
 /**
- * QNFO Ask QWAV v2.4 + SEED + CLEANUP endpoint
+ * QNFO Ask QWAV v2.6 + SEED + VECTOR-PURGE + PAPER-DOI endpoint
  * /api/seed — batch-seeds Vectorize with paper embeddings
+ * /api/vector-purge — deletes vectors by ID from Vectorize
+ * /api/paper-doi — updates paper DOI in D1 (POST {paper_id, doi})
  */
 export default {
   async fetch(request, env) {
@@ -11,7 +13,7 @@ export default {
 
     try {
       if (p === '/' || p === '/api') {
-        return J({ service: 'QNFO Ask QWAV v2.4', models: { embedding: '@cf/baai/bge-m3 (1024-dim)', textgen: '@cf/deepseek-ai/deepseek-r1-distill-qwen-32b' }, endpoints: ['/health','/api/search?q=X','/api/papers','/api/ask?q=X','/api/stats','/api/seed','/api/cleanup'] }, 200, h);
+        return J({ service: 'QNFO Ask QWAV v2.6', models: { embedding: '@cf/baai/bge-m3 (1024-dim)', textgen: '@cf/deepseek-ai/deepseek-r1-distill-qwen-32b' }, endpoints: ['/health','/api/search?q=X','/api/papers','/api/ask?q=X','/api/stats','/api/seed','/api/cleanup','/api/vector-purge','/api/vector-list','/api/paper-doi'] }, 200, h);
       }
 
       if (p === '/health' || p === '/api/health') {
@@ -19,7 +21,7 @@ export default {
         try { const r = await env.PAPERS_DB.prepare('SELECT count(*) as c FROM papers').all(); n = r.results?.[0]?.c || 0; } catch(e) {}
         try { const idx = await env.VECTORIZE_INDEX.describe(); vs = 'dim='+(idx.dimensions||'?')+' vectors='+(idx.vectorCount||'?'); } catch(e) {}
         try { const emb = await env.AI.run('@cf/baai/bge-m3', { text: ['test'] }); aiOk = emb?.data ? 'ok' : 'no-data'; embTest = emb?.data ? `shape=[${emb.data.length},${emb.data[0]?.length||'?'}]` : 'no-embedding'; } catch(e) { aiOk = 'error'; embTest = e.message.substring(0,80); }
-        return J({ status: 'ok', version: '2.4', papers: n, vectorize: vs, ai: aiOk, embedding_test: embTest }, 200, h);
+        return J({ status: 'ok', version: '2.6', papers: n, vectorize: vs, ai: aiOk, embedding_test: embTest }, 200, h);
       }
 
       if (p === '/api/papers') {
@@ -135,6 +137,7 @@ export default {
         return J({ success: true, stats: { total_papers: t[0]?.c||0, with_doi: d[0]?.c||0, with_ipfs: c[0]?.c||0 } }, 200, h);
       }
 
+      // /api/cleanup — Delete papers from D1 (legacy, for stub removal)
       if (p === '/api/cleanup' && request.method === 'POST') {
         const body = await request.json();
         const ids = body.ids || [];
@@ -147,6 +150,55 @@ export default {
           } catch(e) { errors.push(`${id}: ${e.message?.substring(0,50)}`); }
         }
         return J({ success: true, deleted, total: ids.length, errors: errors.slice(0,10) }, 200, h);
+      }
+
+      // ═══ v2.5: /api/vector-purge — Delete vectors from Vectorize index ═══
+      if (p === '/api/vector-purge' && request.method === 'POST') {
+        const body = await request.json();
+        const ids = body.ids || [];
+        if (!ids.length) return J({ success: false, error: 'Missing ids array' }, 400, h);
+        
+        let deleted = 0, errors = [];
+        // Delete in batches of 50 (Vectorize limit)
+        const batchSize = 50;
+        for (let i = 0; i < ids.length; i += batchSize) {
+          const batch = ids.slice(i, i + batchSize);
+          try {
+            await env.VECTORIZE_INDEX.deleteByIds(batch);
+            deleted += batch.length;
+          } catch(e) {
+            errors.push(`batch ${i}: ${e.message?.substring(0,80)}`);
+          }
+        }
+        
+        // Check vector count after purge
+        let vc = 0;
+        try { const idx = await env.VECTORIZE_INDEX.describe(); vc = idx.vectorCount || 0; } catch(e) {}
+        
+        return J({ success: true, deleted, total: ids.length, remaining: vc, errors: errors.slice(0,5) }, 200, h);
+      }
+
+      // ═══ v2.6: /api/paper-doi — Update paper DOI in D1 ═══
+      if (p === '/api/paper-doi' && request.method === 'POST') {
+        const body = await request.json();
+        const paper_id = body.paper_id;
+        const doi = body.doi;
+        if (!paper_id || !doi) return J({ success: false, error: 'Missing paper_id or doi' }, 400, h);
+        try {
+          await env.PAPERS_DB.prepare('UPDATE papers SET doi = ?, updated_at = datetime(\'now\') WHERE id = ?').bind(doi, paper_id).run();
+          return J({ success: true, paper_id, doi, updated: true }, 200, h);
+        } catch(e) {
+          return J({ success: false, error: e.message?.substring(0,100) }, 500, h);
+        }
+      }
+
+      // ═══ v2.5: /api/vector-list — List paper IDs that SHOULD be in Vectorize ═══
+      if (p === '/api/vector-list') {
+        const { results } = await env.PAPERS_DB.prepare('SELECT id FROM papers WHERE abstract IS NOT NULL AND abstract != \'\' ORDER BY id').all();
+        const ids = (results||[]).map(r=>r.id);
+        let vc = 0;
+        try { const idx = await env.VECTORIZE_INDEX.describe(); vc = idx.vectorCount || 0; } catch(e) {}
+        return J({ success: true, paper_count: ids.length, vector_count: vc, paper_ids: ids }, 200, h);
       }
 
       return J({ error: 'Not found', path: p }, 404, h);
