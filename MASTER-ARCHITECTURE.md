@@ -16,7 +16,7 @@ The session-based LLM system can actively maintain ~15 Workers with deep quality
 | Database | ID | Size | Content | Status |
 |:---------|:---|:-----|:--------|:------|
 | qnfo-audit | 35e2e573 | 954KB | tasks(73), projects(78) | ESSENTIAL |
-| qnfo-graph | a1954b92 | 368KB | KG(621n/1308e) | ESSENTIAL — all CF assets now tracked |
+| qnfo-graph | a1954b92 | 368KB | KG(703n/2126e) — 19 node types, 28 edge types | ESSENTIAL — all CF assets tracked, research edges added 2026-06-29 |
 | qnfo-cms | 0458a344 | 208KB | CMS(34e/5t) | ESSENTIAL |
 | living-paper | 70a58cb3 | 241KB | papers(170) | ESSENTIAL — schema incomplete (8 cols missing) |
 | portfolio-state | d80fdf2a | 118KB | resources(66), handoffs(8), decisions(26) | ESSENTIAL — canonical infra inventory |
@@ -58,7 +58,7 @@ The session-based LLM system can actively maintain ~15 Workers with deep quality
 |:-------|:-------|:----------|
 | **ask-qwav** (v2.4) | AI Synthesis | Core AI pipeline — search + LLM synthesis |
 | **api-gateway** (v2.2) | Routing | Single entry point per MASTER-PLAN |
-| **graph-api** | Knowledge | KG queries — 621n/1308e |
+| **graph-api** | Knowledge | KG queries — 703n/2126e (19 node types, 28 edge types incl. AUTHORED_BY, PUBLISHED_IN, LICENSED_UNDER) |
 | **cms-api** | Content | CMS client dependency — also absorbs seo-injector, seo-metadata-injector, document-preview |
 | **qnfo-data-api** (v2.0) | Data | Cross-system aggregation — absorbs qnfo-asset-api |
 | **qnfo-lifecycle** | Lifecycle | Daily 06:00 UTC cron — project lifecycle |
@@ -137,7 +137,7 @@ Pages serves static shell + qnfo-cms-client.js
 | MASTER-INVENTORY.md: Rewritten with full tier classification | ✅ DONE |
 | MASTER-ARCHITECTURE.md: Updated to v2.0 with LLM maintenance model | ✅ DONE |
 | Portfolio-state D1: 66 resources verified, KG cross-referenced | ✅ DONE |
-| Knowledge Graph: 621 nodes, 1308 edges | ✅ VERIFIED |
+| Knowledge Graph: 703 nodes, 2126 edges (incl. AUTHORED_BY 220, LICENSED_UNDER 218, PUBLISHED_IN 63, REFERENCES 28, AFFECTS 38) | ✅ VERIFIED 2026-06-29 |
 
 ### PENDING
 

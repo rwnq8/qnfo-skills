@@ -101,9 +101,9 @@ Stores page content, blog posts, assets, and CMS-type structural content. **Does
 
 ### qnfo-graph D1 (`a1954b92`) — KNOWLEDGE GRAPH
 
-Current state: 621 nodes, 1308 edges. All 49 Cloudflare assets tracked as CloudflareAsset nodes with consolidation tier tagging.
+Current state: 703 nodes, 2126 edges. All 49 Cloudflare assets tracked as CloudflareAsset nodes with consolidation tier tagging. Includes AUTHORED_BY(220), LICENSED_UNDER(218), PUBLISHED_IN(63), REFERENCES(28) research edges.
 
-**Still needed: research edges.** The KG tracks infrastructure (OWNS edges) but not research content (REFERENCES edges for paper citations).
+**Research edges added (2026-06-29):** AUTHORED_BY(220) connects papers to authors, LICENSED_UNDER(218) tracks publication licensing, PUBLISHED_IN(63) links Zenodo records, REFERENCES(28) paper-to-paper citations. **Still needed:** Complete citation graph (limited by missing paper_refs data in living-paper D1).
 
 ### portfolio-state D1 (`d80fdf2a`) — INFRASTRUCTURE INVENTORY
 
@@ -253,14 +253,14 @@ qnfo-handoffs, qnfo-tasks (vectorize)
 #### Phase 3: API GATEWAY UNIFICATION
 Route all Workers through single api-gateway.
 
-#### Phase 4: KNOWLEDGE GRAPH RESEARCH EDGES
-Add 170 papers as KG nodes with REFERENCES edges.
+#### Phase 4: KNOWLEDGE GRAPH RESEARCH EDGES ✅ PARTIALLY COMPLETE (2026-06-29)
+Added 171 papers as KG nodes with AUTHORED_BY(220), PUBLISHED_IN(63), LICENSED_UNDER(218), REFERENCES(28), PINNED_ON(2), AFFECTS(38) edges. Citation graph incomplete — requires CrossRef/Semantic Scholar API integration for paper_refs data.
 
 #### Phase 5: AI SYNTHESIS INTEGRATION
 Embed Ask QWAV on every paper page. Connect search → AI → KG.
 
 #### Phase 6: DOCUMENTATION + SKILL UPDATE
-Update stale skills. Close out 43 stale KG Projects.
+Update stale skills. Close out 43 stale KG Projects. **MASTER documents updated 2026-06-29 to reflect KG state: 703n/2126e. Infrastructure-audit skill SKILL.md and MASTER-INVENTORY.md still reference outdated KG stats (261n/401e, 621n/1308e).**
 
 ---
 
@@ -276,7 +276,7 @@ Update stale skills. Close out 43 stale KG Projects.
 | Queues | 1 | **1** |
 | **Total CF Assets** | **49** | **31** |
 | **LLM Active Maintenance** | 29 Workers | **15 Workers ✓** |
-| Knowledge Graph | Infra-only (621n/1308e) | Research papers + citations |
+| Knowledge Graph | Infra-only (621n/1308e) | Research papers + citations (703n/2126e, AUTHORED_BY/PUBLISHED_IN/LICENSED_UNDER added 2026-06-29) |
 | API Gateways | Fragmented | Single api-gateway |
 | Domains | 6 | **1** (papers.qnfo.org) |
 
