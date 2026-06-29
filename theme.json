@@ -1,0 +1,56 @@
+{
+  "version": "1.2",
+  "updated": "2026-06-28",
+  "default_mode": "dark",
+  "base": {
+    "dark": {
+      "--qds-bg": "#0a0a0f",
+      "--qds-surface": "#12121a",
+      "--qds-surface-raised": "#1a1a24",
+      "--qds-border": "#252532",
+      "--qds-text": "#e4e4ed",
+      "--qds-text-secondary": "#8b8b9e",
+      "--qds-text-muted": "#8888a0",
+      "--qds-accent": "#6366f1",
+      "--qds-accent-hover": "#818cf8",
+      "--qds-accent-dim": "rgba(99, 102, 241, 0.12)",
+      "--qds-green": "#22c55e",
+      "--qds-amber": "#f59e0b",
+      "--qds-red": "#ef4444",
+      "--qds-purple": "#a855f7",
+      "--qds-zenodo": "#2c6fbb",
+      "--qds-font": "system-ui, -apple-system, sans-serif",
+      "--qds-font-mono": "JetBrains Mono, Fira Code, SF Mono, monospace"
+    },
+    "light": {
+      "--qds-bg": "#fafbfc",
+      "--qds-surface": "#ffffff",
+      "--qds-surface-raised": "#f4f5f7",
+      "--qds-border": "#e1e4e8",
+      "--qds-text": "#1a1a2e",
+      "--qds-text-secondary": "#4a4a6a",
+      "--qds-text-muted": "#6b6b82",
+      "--qds-accent": "#4f46e5",
+      "--qds-accent-hover": "#6366f1",
+      "--qds-accent-dim": "rgba(79, 70, 229, 0.08)",
+      "--qds-green": "#059669",
+      "--qds-amber": "#d97706",
+      "--qds-red": "#dc2626",
+      "--qds-purple": "#7c3aed",
+      "--qds-zenodo": "#2563eb",
+      "--qds-font": "system-ui, -apple-system, sans-serif",
+      "--qds-font-mono": "JetBrains Mono, Fira Code, SF Mono, monospace"
+    }
+  },
+  "overrides": {
+    "deep.qwav.tech": {
+      "--qds-accent": "#10b981",
+      "--qds-accent-hover": "#34d399",
+      "--qds-accent-dim": "rgba(16,185,129,0.10)"
+    },
+    "laws.qnfo.org": {
+      "--qds-font": "Palatino, Book Antiqua, serif"
+    }
+  },
+  "cache_seconds": 300
+}
