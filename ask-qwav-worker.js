@@ -1,8 +1,8 @@
 /**
- * QNFO Ask QWAV v2.6 + SEED + VECTOR-PURGE + PAPER-DOI endpoint
+ * QNFO Ask QWAV v2.8 + PAPER-DETAIL + SEED + VECTOR-PURGE + PAPER-DOI
  * /api/seed — batch-seeds Vectorize with paper embeddings
  * /api/vector-purge — deletes vectors by ID from Vectorize
- * /api/paper-doi — updates paper DOI in D1 (POST {paper_id, doi})
+ * /api/paper-doi — updates paper DOI + zenodo_url + status in D1
  */
 export default {
   async fetch(request, env) {
@@ -13,7 +13,7 @@ export default {
 
     try {
       if (p === '/' || p === '/api') {
-        return J({ service: 'QNFO Ask QWAV v2.6', models: { embedding: '@cf/baai/bge-m3 (1024-dim)', textgen: '@cf/deepseek-ai/deepseek-r1-distill-qwen-32b' }, endpoints: ['/health','/api/search?q=X','/api/papers','/api/ask?q=X','/api/stats','/api/seed','/api/cleanup','/api/vector-purge','/api/vector-list','/api/paper-doi'] }, 200, h);
+        return J({ service: 'QNFO Ask QWAV v2.8', models: { embedding: '@cf/baai/bge-m3 (1024-dim)', textgen: '@cf/deepseek-ai/deepseek-r1-distill-qwen-32b' }, endpoints: ['/health','/api/search?q=X','/api/papers','/api/papers/:id','/api/ask?q=X','/api/stats','/api/seed','/api/cleanup','/api/vector-purge','/api/vector-list','/api/paper-doi'] }, 200, h);
       }
 
       if (p === '/health' || p === '/api/health') {
@@ -21,7 +21,7 @@ export default {
         try { const r = await env.PAPERS_DB.prepare('SELECT count(*) as c FROM papers').all(); n = r.results?.[0]?.c || 0; } catch(e) {}
         try { const idx = await env.VECTORIZE_INDEX.describe(); vs = 'dim='+(idx.dimensions||'?')+' vectors='+(idx.vectorCount||'?'); } catch(e) {}
         try { const emb = await env.AI.run('@cf/baai/bge-m3', { text: ['test'] }); aiOk = emb?.data ? 'ok' : 'no-data'; embTest = emb?.data ? `shape=[${emb.data.length},${emb.data[0]?.length||'?'}]` : 'no-embedding'; } catch(e) { aiOk = 'error'; embTest = e.message.substring(0,80); }
-        return J({ status: 'ok', version: '2.6', papers: n, vectorize: vs, ai: aiOk, embedding_test: embTest }, 200, h);
+        return J({ status: 'ok', version: '2.8', papers: n, vectorize: vs, ai: aiOk, embedding_test: embTest }, 200, h);
       }
 
       if (p === '/api/papers') {
@@ -30,6 +30,33 @@ export default {
         const { results } = await env.PAPERS_DB.prepare('SELECT id, title, authors, doi, abstract, published, ipfs_cid FROM papers ORDER BY updated_at DESC LIMIT ? OFFSET ?').bind(lim, off).all();
         const { results: c } = await env.PAPERS_DB.prepare('SELECT count(*) as c FROM papers').all();
         return J({ success: true, total: c[0]?.c||0, limit: lim, offset: off, data: results }, 200, h);
+      }
+
+      // ═══ v2.8: /api/papers/:id — Return single paper with full body_md ═══
+      const paperMatch = p.match(/^\/api\/papers\/([a-f0-9]+)$/);
+      if (paperMatch && request.method === 'GET') {
+        const paperId = paperMatch[1];
+        try {
+          const { results } = await env.PAPERS_DB.prepare(
+            'SELECT id, title, authors, doi, abstract, body_md, published, ipfs_cid, r2_key FROM papers WHERE id = ?'
+          ).bind(paperId).all();
+          if (results && results.length) {
+            const paper = results[0];
+            // Try to get KG neighbors for related papers
+            let related = [];
+            try {
+              const kgResp = await fetch(`https://graph-api.q08.workers.dev/neighbors/paper-${paperId}`);
+              if (kgResp.ok) {
+                const kgData = await kgResp.json();
+                related = (kgData.neighbors || []).filter(n => n.label === 'Paper').map(n => n.name || n.id).slice(0, 5);
+              }
+            } catch(e) {}
+            return J({ success: true, paper, related_papers: related }, 200, h);
+          }
+          return J({ success: false, error: 'Paper not found', id: paperId }, 404, h);
+        } catch(e) {
+          return J({ success: false, error: e.message?.substring(0,200) }, 500, h);
+        }
       }
 
       if (p === '/api/search') {
@@ -178,15 +205,26 @@ export default {
         return J({ success: true, deleted, total: ids.length, remaining: vc, errors: errors.slice(0,5) }, 200, h);
       }
 
-      // ═══ v2.6: /api/paper-doi — Update paper DOI in D1 ═══
+      // ═══ v2.7: /api/paper-doi — Update paper DOI + zenodo_url in D1 ═══
       if (p === '/api/paper-doi' && request.method === 'POST') {
         const body = await request.json();
         const paper_id = body.paper_id;
         const doi = body.doi;
         if (!paper_id || !doi) return J({ success: false, error: 'Missing paper_id or doi' }, 400, h);
         try {
-          await env.PAPERS_DB.prepare('UPDATE papers SET doi = ?, updated_at = datetime(\'now\') WHERE id = ?').bind(doi, paper_id).run();
-          return J({ success: true, paper_id, doi, updated: true }, 200, h);
+          // Try update with zenodo_url column; if it fails, fall back to doi-only
+          const zu = body.zenodo_url || '';
+          if (zu) {
+            try {
+              await env.PAPERS_DB.prepare("UPDATE papers SET doi = ?, zenodo_url = ?, status = 'published', updated_at = datetime('now') WHERE id = ?").bind(doi, zu, paper_id).run();
+            } catch(colErr) {
+              // zenodo_url column may not exist yet — fall back
+              await env.PAPERS_DB.prepare("UPDATE papers SET doi = ?, status = 'published', updated_at = datetime('now') WHERE id = ?").bind(doi, paper_id).run();
+            }
+          } else {
+            await env.PAPERS_DB.prepare("UPDATE papers SET doi = ?, status = 'published', updated_at = datetime('now') WHERE id = ?").bind(doi, paper_id).run();
+          }
+          return J({ success: true, paper_id, doi, zenodo_url: zu || null, updated: true }, 200, h);
         } catch(e) {
           return J({ success: false, error: e.message?.substring(0,100) }, 500, h);
         }

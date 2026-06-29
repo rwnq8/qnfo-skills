@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QNFO Research Hub</title>
+<meta name="description" content="QNFO Research Platform — ultrametric quantum computing, p-adic physics, quantum laws of form. Search 170 papers, ask AI.">
+<meta name="theme-color" content="#0a0a0f">
+<meta property="og:title" content="QNFO Research Hub — 170 papers, AI search">
+<meta property="og:url" content="https://qnfo.org/">
+<style>
+:root{--bg:#0a0a0f;--surf:#12121a;--text:#e4e4ed;--muted:#8b8b9e;--acc:#6366f1;--acc-hover:#818cf8;--bd:#252532;--radius:8px;--font:system-ui,-apple-system,sans-serif}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;min-height:100vh}
+.shell{max-width:1100px;margin:0 auto;padding:1.5rem}
+.hero{padding:3rem 0 2rem;text-align:center;border-bottom:1px solid var(--bd);margin-bottom:2rem}
+.hero h1{font-size:2.5rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:.5rem}
+.hero h1 span{background:linear-gradient(135deg,#818cf8,var(--acc));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--muted);font-size:1.1rem;max-width:600px;margin:0 auto}
+.nav{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--bd);justify-content:center}
+.nav a{color:var(--muted);text-decoration:none;font-size:.85rem;padding:.3rem .7rem;border-radius:4px;transition:all .15s}
+.nav a:hover,.nav a.on{color:var(--acc);background:rgba(99,102,241,.1)}
+.nav a.on{font-weight:600}
+/* Search */
+.search{max-width:650px;margin:0 auto 2.5rem}
+.search-box{display:flex;gap:.5rem}
+.search-box input{flex:1;padding:.9rem 1.2rem;background:var(--surf);border:1px solid var(--bd);border-radius:var(--radius);color:var(--text);font-size:1rem}
+.search-box input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+.search-box button{padding:.9rem 1.5rem;background:var(--acc);border:none;border-radius:var(--radius);color:#fff;font-size:1rem;font-weight:600;cursor:pointer}
+.search-box button:hover{background:var(--acc-hover)}
+.search-hint{color:var(--muted);font-size:.8rem;margin-top:.5rem;text-align:center}
+/* Results */
+.results{display:grid;gap:.75rem;max-width:900px;margin:0 auto}
+.card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--radius);padding:1.2rem;transition:all .15s;cursor:pointer}
+.card:hover{border-color:var(--acc);box-shadow:0 4px 20px rgba(99,102,241,.1)}
+.card h3{font-size:1rem;font-weight:600;margin-bottom:.2rem;line-height:1.4}
+.card .authors{color:var(--muted);font-size:.8rem;margin-bottom:.4rem}
+.card .preview{color:var(--muted);font-size:.8rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .meta{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;font-size:.72rem;align-items:center}
+.doi-badge{display:inline-flex;align-items:center;padding:.15rem .5rem;background:rgba(44,111,187,.15);border:1px solid rgba(44,111,187,.3);border-radius:4px;color:#6ba3d6;font-size:.7rem;text-decoration:none;font-family:"JetBrains Mono",monospace}
+.doi-badge:hover{border-color:#4a8fd4;color:#8ec5f7}
+.empty{text-align:center;padding:3rem;color:var(--muted)}
+/* Stats */
+.stats-row{display:flex;justify-content:center;gap:3rem;margin-bottom:2rem;flex-wrap:wrap}
+.stats-row .st{text-align:center}
+.stats-row .st .n{font-size:2rem;font-weight:700;color:var(--acc)}
+.stats-row .st .l{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+footer{margin-top:4rem;padding:1.5rem 0;border-top:1px solid var(--bd);text-align:center;color:var(--muted);font-size:.8rem}
+footer a{color:var(--muted);text-decoration:none;margin:0 .5rem}
+footer a:hover{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hero">
+    <h1>QNFO <span>Research Hub</span></h1>
+    <p>Ultrametric quantum computing · p-Adic physics · Quantum Laws of Form — 170 papers, AI-powered search</p>
+  </div>
+  <nav class="nav">
+    <a href="https://qnfo.org" class="on">Hub</a>
+    <a href="https://papers.qnfo.org">Papers</a>
+    <a href="https://laws.qnfo.org">Laws of Form</a>
+    <a href="https://legal.qnfo.org">Legal</a>
+  </nav>
+
+  <div class="stats-row" id="stats-row">
+    <div class="st"><div class="n" id="stat-total">—</div><div class="l">Papers</div></div>
+    <div class="st"><div class="n" id="stat-doi">—</div><div class="l">DOIs</div></div>
+    <div class="st"><div class="n" id="stat-vec">—</div><div class="l">Vectorize</div></div>
+  </div>
+
+  <div class="search">
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="Search all 170 papers — try 'ultrametric', 'p-adic', 'quantum'…" onkeydown="if(event.key==='Enter')searchPapers()">
+      <button onclick="searchPapers()">Search</button>
+    </div>
+    <p class="search-hint" id="search-hint">Type to search by title or abstract · <span style="color:var(--acc);cursor:pointer" onclick="document.getElementById('search-input').value='';searchPapers()">Show all</span></p>
+  </div>
+
+  <div class="results" id="results"></div>
+</div>
+
+<footer>
+  <p><a href="https://papers.qnfo.org">All Papers</a> · <a href="https://legal.qnfo.org">License</a> · <a href="https://api-gateway.q08.workers.dev">API</a></p>
+  <p style="margin-top:.5rem">QNFO Research Platform · 170 papers · &copy; 2026</p>
+</footer>
+
+<script>
+var API = 'https://ask-qwav.q08.workers.dev';
+var allPapers = [];
+
+async function init() {
+  try {
+    // Fetch all papers
+    var all = [];
+    for (var off = 0; off < 170; off += 100) {
+      var r = await fetch(API + '/api/papers?limit=100&offset=' + off);
+      var d = await r.json();
+      if (d.success) all = all.concat(d.data);
+    }
+    allPapers = all;
+    
+    // Stats
+    var s = await fetch(API + '/api/stats');
+    var sd = await s.json();
+    if (sd.success) {
+      document.getElementById('stat-total').textContent = sd.stats.total_papers;
+      document.getElementById('stat-doi').textContent = sd.stats.with_doi;
+    }
+    var h = await fetch(API + '/api/health');
+    var hd = await h.json();
+    if (hd.vectorize) {
+      document.getElementById('stat-vec').textContent = hd.vectorize.match(/vectors=(\d+)/)?.[1] || '—';
+    }
+    
+    renderResults(all.slice(0, 12));
+    document.getElementById('search-hint').textContent = 'Showing 12 papers · Click any card to read full text + ask AI';
+  } catch(e) {
+    document.getElementById('results').innerHTML = '<div class="empty">Failed to load papers: ' + e.message + '</div>';
+  }
+}
+
+var searchTimer;
+document.getElementById('search-input').addEventListener('input', function() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(searchPapers, 250);
+});
+
+function searchPapers() {
+  var q = document.getElementById('search-input').value.toLowerCase().trim();
+  var results = document.getElementById('results');
+  var hint = document.getElementById('search-hint');
+  
+  if (!q) {
+    renderResults(allPapers.slice(0, 12));
+    hint.textContent = 'Showing 12 papers · Click any card to read full text + ask AI on papers.qnfo.org';
+    return;
+  }
+  
+  var filtered = allPapers.filter(function(p) {
+    var t = (p.title || '').toLowerCase();
+    var a = (p.abstract || '').toLowerCase();
+    return t.indexOf(q) >= 0 || a.indexOf(q) >= 0;
+  });
+  
+  renderResults(filtered);
+  hint.textContent = filtered.length + ' results for "' + esc(q) + '" · Click any card to read on papers.qnfo.org';
+}
+
+function renderResults(papers) {
+  var el = document.getElementById('results');
+  if (!papers.length) { el.innerHTML = '<div class="empty">No results found</div>'; return; }
+  
+  el.innerHTML = papers.map(function(p) {
+    var doi = p.doi || '';
+    return '<div class="card" onclick="window.location=\'https://papers.qnfo.org/#paper=' + p.id + '\'">' +
+      '<h3>' + esc((p.title || 'Untitled').substring(0, 120)) + '</h3>' +
+      '<div class="authors">' + esc(parseFirstAuthor(p.authors)) + '</div>' +
+      '<div class="preview">' + esc(stripYaml(p.abstract || '').substring(0, 180)) + '</div>' +
+      '<div class="meta">' +
+        (doi ? '<span class="doi-badge">' + doi.substring(doi.lastIndexOf('/')+1) + '</span>' : '') +
+        '<span style="color:var(--muted)">' + p.id.substring(0,8) + ' — 📄 Read full text + 🤖 Ask AI on papers.qnfo.org</span>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function parseFirstAuthor(a) { try { var p = JSON.parse(a); return (Array.isArray(p) ? p[0] : String(p)) || 'QNFO Research Collective'; } catch(e) { return (a || 'QNFO Research Collective'); } }
+function stripYaml(t) { if (!t) return ''; var idx = t.indexOf('---', 3); return idx >= 0 ? t.substring(idx + 3).trim() : t; }
+
+init();
+</script>
+</body>
+</html>
