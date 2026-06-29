@@ -153,6 +153,18 @@ LLM CAPACITY: 15 Workers deep quality + 5 support = 20 ✓
 12. Close out 43 stale KG Projects (archive, add HANDOFF nodes)
 13. Update infrastructure-audit + cloudflare-deployer skills
 
+### 🟣 PHASE 7: R2→D1 CANONICAL DATA MIGRATION (ARCHITECTURAL DECISION)
+
+**Rule:** D1 for structured data. R2 for files only.
+
+14. **Audit all R2 paths** — classify every object as FILE or DATA
+15. **Migrate `audit/state/*.json`** → `qnfo-audit.discovery_projects` rows
+16. **Migrate `audit/backlog/*.json`** → `qnfo-audit.tasks` rows
+17. **Deprecate `discovery/index.json`** — auto-generate from D1 on read (already has `discovery_projects` + `resources`)
+18. **Delete all R2 flat data files** after migration verified
+19. **Add D1 constraints:** UNIQUE indexes on project names, worker names; CHECK on status values
+20. **Update all skills** to query D1 instead of R2 for discovery (closeout-manager §3.1, execution-guard, infrastructure-audit)
+
 ---
 
 ## CONTINUATION PROMPT (copy-paste into new session)
