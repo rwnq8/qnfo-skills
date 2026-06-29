@@ -149,3 +149,24 @@ Pages serves static shell + qnfo-cms-client.js
 | DELETE: umbrella-router, qnfo-kaizen-analytics, qnfo-design-system-worker | MEDIUM |
 | 301: 4 Pages projects → papers.qnfo.org | MEDIUM |
 | COMPLETE: living-paper D1 schema (8 missing columns) | HIGH (MASTER-PLAN Phase 1) |
+
+---
+
+## ARCHITECTURAL RULE: D1 for Data, R2 for Files Only
+
+**Decision (2026-06-29):** All structured records (projects, tasks, handoffs, decisions, audit logs, resource inventories, conversation histories) MUST be canonical in D1. R2 is for **files only** — PDFs, Markdown sources, prompts, tools, images.
+
+**Why:** R2 flat files have no schema, no unique constraints, no foreign keys, no search. Using R2 for structured data is the root cause of ~40% of QNFO maintenance overhead (DI desync, duplicate resources, phantom claims, cross-reference failures).
+
+**Migration status:** D1 already has tables for everything (`discovery_projects`, `tasks`, `handoffs`, `decisions`, `resources`, `pipeline_runs`, `events`). R2 flat files (`discovery/index.json`, `audit/state/*.json`, `audit/backlog/*.json`) are REDUNDANT and should be deprecated after verification.
+
+| R2 Flat File | D1 Canonical | Action |
+|:-------------|:-------------|:------|
+| `discovery/index.json` | `portfolio-state.resources` + `qnfo-audit.discovery_projects` | DEPRECATE |
+| `audit/conversations/*.md` | `portfolio-state.audit_log` + `qnfo-audit.events` | MIGRATE |
+| `audit/state/<project>.json` | `qnfo-audit.discovery_projects` (row) | MIGRATE |
+| `audit/backlog/<project>.json` | `qnfo-audit.tasks` (73 rows, FTS5) | MIGRATE |
+| `audit/decisions/DECISION-LOG.md` | `portfolio-state.decisions` (26 rows) | MIGRATE |
+| `qnfo/releases/**/*.pdf` | STAY ON R2 | FILE |
+| `qnfo/prompts/**` | STAY ON R2 | FILE |
+| `qnfo/tools/*.py` | STAY ON R2 | FILE |

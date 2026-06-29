@@ -284,6 +284,86 @@ Update stale skills. Close out 43 stale KG Projects.
 
 ---
 
+## ARCHITECTURAL DECISION: R2→D1 CANONICAL DATA MIGRATION (v2.1)
+
+### Problem
+
+R2 flat files (`index.json`, `audit/state/*.json`, `audit/conversations/*.md`, `pipeline-status.json`) are being used as structured data stores. R2 has **no schema enforcement, no unique constraints, no foreign keys, no search, no rule validation**. This means:
+
+| Failure Mode | Example | Root Cause |
+|:-------------|:--------|:-----------|
+| **DI vs D1 desync** | DI says 18 projects, D1 `discovery_projects` has 78 | Manual sync of flat JSON |
+| **Duplicate resources** | 67 paper re-uploads because stale handoff said "pending" | No unique constraint on `r2_key` in flat file |
+| **Status drift** | Projects marked ACTIVE in DI but STALE in D1 `stale_projects` | Two sources of truth diverge |
+| **No cross-reference validation** | KG says 100 CloudflareAssets, D1 says 66 resources | No FK between flat files |
+| **Unsearchable history** | `audit/conversations/*.md` — flat Markdown, no FTS | No SQL query capability |
+| **Phantom task claims** | Agent says "task done" but no D1 row to audit | No schema to reject invalid states |
+
+**R2 is a file store. D1 is a database.** Using R2 for structured data is the root cause of ~40% of QNFO's maintenance overhead.
+
+### Decision
+
+All structured records MUST live in D1. R2 is for **files only** (PDFs, Markdown sources, prompts, tools, images).
+
+### Migration Map
+
+| R2 Flat File | Migrate To | D1 Table | Status |
+|:-------------|:-----------|:---------|:------|
+| `discovery/index.json` | DROP — auto-generate from D1 | `portfolio-state.resources` + `qnfo-audit.discovery_projects` | ⬜ |
+| `audit/conversations/*.md` | `qnfo-audit.events` or `portfolio-state.audit_log` | Already exists — just need write path | ⬜ |
+| `audit/state/<project>.json` | `qnfo-audit.discovery_projects` (row per project) | Already exists — verify completeness | ⬜ |
+| `audit/backlog/<project>.json` | `qnfo-audit.tasks` (73 rows, FTS5) | Already exists — verify all backlogs ingested | ⬜ |
+| `audit/decisions/DECISION-LOG.md` | `portfolio-state.decisions` (26 rows) | Already exists — verify completeness | ⬜ |
+| `pipeline-status.json` | `portfolio-state.pipeline_runs` | Already exists — deprecate flat file | ⬜ |
+| `audit/handoffs/*.json` | `portfolio-state.handoffs` (8 rows) | ✅ Done (v3.0 D1-first) | ✅ |
+| `qnfo/releases/YYYY/MM/*.pdf` | STAY ON R2 | File storage | ✅ |
+| `qnfo/prompts/**` | STAY ON R2 | Import surface | ✅ |
+| `qnfo/tools/*.py` | STAY ON R2 | Tools | ✅ |
+
+### D1 Schema Enhancements Needed
+
+```sql
+-- Enforce unique project names
+CREATE UNIQUE INDEX IF NOT EXISTS idx_projects_name ON discovery_projects(name);
+
+-- Enforce unique worker names
+CREATE UNIQUE INDEX IF NOT EXISTS idx_resources_worker ON resources(type, name) WHERE type = 'worker';
+
+-- Add status constraint via CHECK or app-level validation
+-- discovery_projects.status IN ('ACTIVE', 'STALE', 'ARCHIVED', 'NEEDS-TRIAGE')
+
+-- Add last_verified timestamp to all audit tables
+-- For automatic staleness detection
+```
+
+### LLM Benefit
+
+After migration, the LLM's discovery step becomes a single D1 query instead of:
+1. Pull `_discovery_index.json` from R2 (flat file)
+2. Parse JSON
+3. Pull `qnfo/audit/state/<project>.json` for each project
+4. Cross-reference against live infrastructure
+5. Detect desync manually
+
+New workflow:
+```sql
+SELECT * FROM discovery_projects WHERE status = 'ACTIVE' ORDER BY last_active DESC;
+SELECT type, name, status FROM resources ORDER BY type;
+```
+
+### Phase 7: DEPRECATE R2 FOR STRUCTURED DATA (NEW)
+
+| Action | Impact |
+|:-------|:-------|
+| Audit all R2 paths — classify as FILE or DATA | Complete inventory |
+| Migrate all `audit/state/*.json` → `discovery_projects` rows | Single source of truth |
+| Migrate all `audit/backlog/*.json` → `tasks` rows | FTS5-searchable tasks |
+| Deprecate `discovery/index.json` — auto-generate from D1 on read | Eliminate desync |
+| Delete all R2 flat data files after migration verified | Clean R2 |
+| Update all skills/agents to query D1 instead of R2 for discovery | LLM workflow efficiency |
+
+---
+
 ## CONSOLIDATION EXECUTED THIS SESSION (2026-06-29)
 
 | Action | Result |
