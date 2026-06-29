@@ -1,66 +1,139 @@
-# CLOUDFLARE ECOSYSTEM MASTER INVENTORY — 2026-06-28
+# CLOUDFLARE ECOSYSTEM MASTER INVENTORY — 2026-06-29
+## Consolidated for LLM Maintenance Capacity
 
-## D1 DATABASES (5)
-# 1. qnfo-audit       (35e2e573) | 954KB | tasks(73), projects(78) | ESSENTIAL
-# 2. qnfo-graph       (a1954b92) | 368KB | KG(261n/401e) | ESSENTIAL
-# 3. qnfo-cms         (0458a344) | 208KB | CMS(34e/5t) | ESSENTIAL
-# 4. living-paper     (70a58cb3) | 241KB | papers(9) | ESSENTIAL — needs schema completion
-# 5. portfolio-state  (d80fdf2a) | 118KB | handoffs(6), decisions(26) | ESSENTIAL
+---
 
-## VECTORIZE INDEXES (5)
-# 1. qwav-research    (768-dim) | OBSOLETE — replaced by v2
-# 2. qwav-research-v2 (1024-dim) | 461 vectors | ESSENTIAL — Ask QWAV uses this
-# 3. paper-similarity (1024-dim) | empty, created today | REDUNDANT — merge/delete
-# 4. qnfo-handoffs    (768-dim) | UNDERDEVELOPED — exists but usage unclear
-# 5. qnfo-tasks       (768-dim) | UNDERDEVELOPED — exists but usage unclear
+## D1 DATABASES — 5 (ALL ESSENTIAL)
 
-## PAGES PROJECTS (9 from wrangler)
-# 1. qnfo-hub          | hub.qnfo.org, qnfo.org, www.qnfo.org | ESSENTIAL
-# 2. qnfo-publications | papers.qnfo.org + 5 other domains | ESSENTIAL
-# 3. quantum-laws-of-form | laws.qnfo.org (301→papers) | KEEP REDIRECT
-# 4. qnfo-legal        | legal.qnfo.org | KEEP
-# 5. qwav              | deep.qwav.tech | MERGE → papers.qnfo.org
-# 6. qnfo-archive      | archive.qnfo.org | MERGE → papers.qnfo.org/archive
-# 7. adelic-qft        | adelic.qnfo.org | REDIRECT → papers
-# 8. qlof-primer       | primer.qwav.tech | REDIRECT → papers
-# 9. qnfo-openclaw-hermes-analysis | .pages.dev only | DELETE (internal tool)
+| Database | ID | Content | Status |
+|:---------|:---|:--------|:------|
+| qnfo-audit | 35e2e573 | tasks(73), projects(78) | ESSENTIAL — task/project audit |
+| qnfo-graph | a1954b92 | KG(621n/1308e) | ESSENTIAL — knowledge graph |
+| qnfo-cms | 0458a344 | CMS(34e/5t) | ESSENTIAL — content management |
+| living-paper | 70a58cb3 | papers(170) | ESSENTIAL — needs schema completion |
+| portfolio-state | d80fdf2a | resources(66), handoffs(8), decisions(26) | ESSENTIAL — infrastructure inventory |
 
-## WORKERS (identified so far)
-# ESSENTIAL: ask-qwav, api-gateway, graph-api, qnfo-data-api
-# REDUNDANT: qnfo-data-api vs api-gateway overlap
-# OPERATIONAL: qnfo-lifecycle, qnfo-archive-worker, qnfo-archive-verify
-# DEPRECATED: umbrella-router (DNS routing better done via Pages aliases)
-# RESEARCH: ultrametric-tree-api (demo, keep)
+---
 
-## QUEUES (2)
-# 1. qnfo-lifecycle-queue         | ESSENTIAL — project lifecycle
-# 2. git-on-cloudflare-repo-maint | DEPRECATED? — GitHub deprecated per ADR-001
+## VECTORIZE INDEXES — 3
 
-## KV (2)
-# 1. equation-cache            | KEEP — MathJax equation caching
-# 2. git-on-cloudflare-routes  | DEPRECATED — GitHub deprecated
+| Index | Dimensions | Vectors | Tier | Status |
+|:------|:-----------|:--------|:-----|:------|
+| qwav-research-v2 | 1024 | 461 | ESSENTIAL | Ask QWAV semantic search |
+| qnfo-handoffs | 768 | ? | SUPPORT | Handoff semantic search |
+| qnfo-tasks | 768 | ? | SUPPORT | Task semantic search |
 
-## CONSOLIDATION PLAN
+---
 
-### PHASE 1: DELETE OBSOLETE/DUPLICATE (30 min)
-# Delete Vectorize: qwav-research (768-dim OLD)
-# Delete Vectorize: paper-similarity (empty duplicate)
-# Delete Pages: qnfo-openclaw-hermes-analysis (internal tool)
-# Delete KV: git-on-cloudflare-routes (GitHub deprecated)
+## PAGES PROJECTS — 10 → TARGET 6
 
-### PHASE 2: MERGE/REDIRECT (20 min)
-# 301 adelic.qnfo.org → papers.qnfo.org?topic=adelic-qft
-# 301 primer.qwav.tech → papers.qnfo.org?topic=qlof-primer
-# 301 deep.qwav.tech → papers.qnfo.org?search (embed Ask QWAV on papers)
-# 301 archive.qnfo.org → papers.qnfo.org/archive
+| Project | Domain(s) | Tier | Action |
+|:--------|:----------|:-----|:------|
+| qnfo-hub | hub.qnfo.org, qnfo.org, www.qnfo.org | ESSENTIAL | KEEP — landing |
+| qnfo-publications | papers.qnfo.org + 5 topic domains | ESSENTIAL | KEEP — library |
+| qnfo-legal | legal.qnfo.org | ESSENTIAL | KEEP — legal |
+| quantum-laws-of-form | laws.qnfo.org → 301 | SUPPORT | KEEP_REDIRECT |
+| qnfo-ipfs-archive | .pages.dev | SUPPORT | KEEP — IPFS archive |
+| qnfo-design-system | .pages.dev | SUPPORT | KEEP — CSS/components |
+| qwav | deep.qwav.tech | CONSOLIDATE | 301→papers.qnfo.org |
+| qnfo-archive | archive.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org/archive |
+| adelic-qft | adelic.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
+| qlof-primer | primer.qwav.tech | CONSOLIDATE | 301→papers.qnfo.org |
 
-### PHASE 3: COMPLETE SCHEMA (15 min)
-# ALTER living-paper: ADD body_md, zenodo_url, pdf_url, version, status, updated_at
+---
 
-### PHASE 4: BUILD MASTER ARCHITECTURE DOC (20 min)
-# Single document describing the consolidated ecosystem
+## WORKERS — 29 → TARGET 15
 
-### RESULT: 5 D1 → 5 D1 (all essential)
-###         5 Vectorize → 2 Vectorize (qwav-research-v2 + 1 handoff index)
-###         9 Pages → 3 Pages (hub, papers, legal)
-###         Workers → consolidate QNFO-DATA-API into API-GATEWAY
+### TIER 1: ESSENTIAL CORE (10 — actively maintained by LLM)
+
+| Worker | Domain | Rationale |
+|:-------|:-------|:----------|
+| ask-qwav (v2.4) | AI Synthesis | Core AI pipeline — semantic search + LLM synthesis |
+| api-gateway (v2.2) | Routing | Single entry point per MASTER-PLAN |
+| graph-api | Knowledge | KG queries — 621n/1308e |
+| cms-api | Content | Content management — CMS client depends on this |
+| qnfo-data-api (v2.0) | Data | Cross-system data aggregation |
+| qnfo-lifecycle | Lifecycle | Automated project lifecycle (cron daily 06:00 UTC) |
+| qnfo-archive-worker | Archive | Queue consumer for R2 archival migration |
+| qnfo-archive-verify | Archive | Archive verification |
+| living-papers-api | Publications | Single paper API (post-merge of living-paper-api, living-paper-proxy) |
+| ultrametric-tree-api | Research | Ultrametric tree computations |
+
+### TIER 2: SUPPORT (5 — surface audit only)
+
+| Worker | Domain |
+|:-------|:-------|
+| search-worker | Search |
+| portfolio-api | Portfolio state |
+| qacp-api | Agent protocol |
+| annotation-store | Research annotations |
+| audit-worker | Audit trails |
+
+### TIER 3: CONSOLIDATE — MERGE (10 → absorbed into Tier 1)
+
+| Worker | Merge Target | Rationale |
+|:-------|:-------------|:----------|
+| seo-injector | → cms-api | Near-duplicate of seo-metadata-injector |
+| seo-metadata-injector | → cms-api | Near-duplicate of seo-injector |
+| living-paper-api | → living-papers-api | Near-duplicate API |
+| living-paper-ai | → ask-qwav | AI synthesis in ask-qwav |
+| living-paper-proxy | → DELETE | Unnecessary proxy layer |
+| document-preview | → cms-api | Content preview = CMS domain |
+| qnfo-asset-api | → qnfo-data-api | Asset queries = data API domain |
+
+### TIER 4: CRON — MERGE (5 → single cron-scheduler Worker)
+
+| Worker | Merge Target |
+|:-------|:-------------|
+| cron-dead-link-check | → cron-scheduler |
+| cron-graph-re-seed | → cron-scheduler |
+| cron-paper-index-refresh | → cron-scheduler |
+| cron-r2-state-audit | → cron-scheduler |
+| cron-stale-project-flag | → cron-scheduler |
+
+### TIER 5: DEPRECATE — DELETE (3)
+
+| Worker | Rationale |
+|:-------|:----------|
+| umbrella-router | DNS routing via Pages aliases + redirect rules |
+| qnfo-kaizen-analytics | Covered by audit-worker + qnfo-data-api |
+| qnfo-design-system-worker | Design system = static Pages site, not Worker |
+
+---
+
+## QUEUES — 1
+
+| Queue | Status |
+|:------|:------|
+| qnfo-lifecycle-queue | ESSENTIAL — consumed by qnfo-archive-worker |
+
+---
+
+## KV NAMESPACES — 1
+
+| Namespace | Status |
+|:----------|:------|
+| equation-cache | ESSENTIAL — MathJax caching |
+
+---
+
+## CONSOLIDATION PROGRESS
+
+| Resource | Before | After |
+|:---------|:------:|:-----:|
+| Workers | 29 | **15** (−14) |
+| Pages | 10 | **6** (−4 via 301) |
+| D1 | 5 | 5 |
+| Vectorize | 3 | 3 |
+| KV | 1 | 1 |
+| Queues | 1 | 1 |
+| **Total** | **49** | **31** (−18) |
+| **LLM Active Maintenance** | 29 workers | **15 workers** ✓ |
+
+### Execution Plan
+
+1. **MERGE Workers** (create cron-scheduler, merge into cms-api/ask-qwav/living-papers-api/qnfo-data-api)
+2. **DELETE** deprecated Workers (umbrella-router, qnfo-kaizen-analytics, qnfo-design-system-worker, living-paper-proxy)
+3. **301 REDIRECT** Pages (qwav, qnfo-archive, adelic-qft, qlof-primer → papers.qnfo.org)
+4. **COMPLETE** living-paper D1 schema (8 missing columns per MASTER-PLAN Phase 1)
+5. **UPDATE** KG to reflect new state, OWNS edges updated

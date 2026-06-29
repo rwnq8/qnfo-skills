@@ -1,13 +1,15 @@
-# QNFO MASTER ARCHITECTURE PLAN v1.0
-## 2026-06-28 — Rowan Quni-Gudzinas
+# QNFO MASTER ARCHITECTURE PLAN v2.0
+## 2026-06-28 — Rowan Quni-Gudzinas | Updated 2026-06-29: LLM Maintenance Capacity Audit
 
 ---
 
 ## EXECUTIVE SUMMARY
 
-QNFO currently operates 5 D1 databases, 3 Vectorize indexes, 10 Cloudflare Pages projects, ~30 Workers, 2 Queues, and 2 KV namespaces. These components are **independently operational but not integrated**. The Knowledge Graph tracks infrastructure, not research. Papers exist in two databases without synchronization. Six different domains serve identical content. AI synthesis lives on a separate domain from the papers it synthesizes.
+QNFO currently operates 5 D1 databases, 3 Vectorize indexes, 10 Cloudflare Pages projects, 29 Workers, 1 Queue, and 1 KV namespace. These components are **independently operational but not integrated**. The Knowledge Graph tracks infrastructure, not research. Papers exist in two databases without synchronization. Six different domains serve identical content. AI synthesis lives on a separate domain from the papers it synthesizes.
 
 **This plan defines ONE integrated architecture where every component communicates dynamically in real time through a single API gateway, rendered on a single publication domain, with AI synthesis embedded contextually alongside every paper.**
+
+**v2.0 UPDATE (2026-06-29):** Full LLM maintenance capacity audit completed. 29 Workers classified across 5 tiers. Consolidation plan: 29 → 15 Workers, 10 → 6 Pages (4 via 301 redirect). All 49 Cloudflare assets tagged in Knowledge Graph with `consolidation_tier` and `consolidation_action`. Three MASTER documents (PLAN, ARCHITECTURE, INVENTORY) updated to reflect consolidated target state.
 
 ---
 
@@ -33,7 +35,7 @@ QNFO currently operates 5 D1 databases, 3 Vectorize indexes, 10 Cloudflare Pages
 ┌──────┐ ┌──────┐ ┌────────┐ ┌──────┐ ┌──────────┐
 │ask-  │ │cms-  │ │graph-  │ │data- │ │tree-api  │
 │qwav  │ │api   │ │api     │ │api   │ │(research)│
-│v2.4  │ │      │ │261n/401│ │v2.0  │ │v1.0      │
+│v2.4  │ │      │ │621n/1.3│ │v2.0  │ │v1.0      │
 └──┬───┘ └──┬───┘ └───┬────┘ └──┬───┘ └──────────┘
    │        │         │         │
 ┌──▼────────▼─────────▼─────────▼────────────────────────────┐
@@ -47,7 +49,7 @@ QNFO currently operates 5 D1 databases, 3 Vectorize indexes, 10 Cloudflare Pages
 │   doi, r2_key,     tags]         tree]                       │
 │   ipfs_cid,                                           │
 │   zenodo_url]      portfolio-state                          │
-│                    (handoffs, decisions, sessions)           │
+│                    (resources, handoffs, decisions)          │
 │                                                              │
 │  [Vectorize: qwav-research-v2 — 1024-dim, all papers]       │
 └─────────────────────────────────────────────────────────────┘
@@ -99,101 +101,43 @@ Stores page content, blog posts, assets, and CMS-type structural content. **Does
 
 ### qnfo-graph D1 (`a1954b92`) — KNOWLEDGE GRAPH
 
-Current state: 261 nodes, 401 edges. **Problem: tracks infrastructure (OWNS 205 edges), not research (REFERENCES 1 edge).**
+Current state: 621 nodes, 1308 edges. All 49 Cloudflare assets tracked as CloudflareAsset nodes with consolidation tier tagging.
 
-**Required new edges:**
-- `REFERENCES` — Paper A → Paper B (citation)
-- `RELATES_TO` — Paper → Concept (topic association)
-- `AUTHORED_BY` — Paper → Person
-- `PUBLISHED_AS` — Paper → Zenodo DOI
-- `EMBEDDED_IN` — Paper → Vectorize vector
+**Still needed: research edges.** The KG tracks infrastructure (OWNS edges) but not research content (REFERENCES edges for paper citations).
 
-**Ultrametric taxonomy (4 domains, 12 programs) is defined in the skill but not populated in the live KG.** Need to seed concept nodes and connect papers to their research programs.
+### portfolio-state D1 (`d80fdf2a`) — INFRASTRUCTURE INVENTORY
+
+Canonical source for all Cloudflare resource inventory: 66 resources across 7 types, 8 handoffs, 26 decisions. Cross-referenced against live Cloudflare state and Knowledge Graph.
 
 ### Vectorize (`qwav-research-v2`) — SEMANTIC SEARCH
 
 - Dimensions: 1024 (bge-m3 embedding model)
 - Current vectors: 461 (includes orphaned vectors from deleted stubs)
-- **Target:** Re-seed with ALL papers that have body_md. Vector ID = paper ID. Metadata: title + abstract + DOI + categories.
+- **Target:** Re-seed with ALL papers that have body_md.
 
 ---
 
 ## PRESENTATION LAYER: 3 SITES, 1 ENGINE
 
-### Site 1: `qnfo.org` — RESEARCH HUB
+### Site 1: `qnfo.org` — RESEARCH HUB (CMS-driven)
 
-```
-┌──────────────────────────────────────────────────┐
-│  QNFO Research Platform                          │
-│  [Search all papers ▸________________________]   │  ← Vectorize search
-│                                                  │
-│  RECENT PUBLICATIONS  (from D1, live)            │
-│  ┌────────────────────────────────────────────┐  │
-│  │ The Ultrametric Foundation  · DOI  · v1.0  │  │
-│  │ Ultrametric QEC: p-Adic Framework          │  │
-│  │ [View all papers ▸]                        │  │
-│  └────────────────────────────────────────────┘  │
-│                                                  │
-│  RESEARCH DOMAINS                                │
-│  [Ultrametric] [QEC] [p-Adic] [Dynamics] ...     │
-└──────────────────────────────────────────────────┘
+### Site 2: `papers.qnfo.org` — PUBLICATIONS LIBRARY + AI
 
-CMS content: data-cms-content="hub"
-Living papers: data-lp-papers data-lp-limit="6"
-```
-
-### Site 2: `papers.qnfo.org` — PUBLICATIONS LIBRARY (with AI)
-
-```
-┌──────────────────────────────────────────────────┐
-│  QNFO Publications         [Search ▸_______]     │
-│                                                  │
-│  ALL PAPERS (filterable by domain/tag)           │
-│  ┌────────────────────────────────────────────┐  │
-│  │ Paper Title  ·  Authors  ·  DOI  ·  v1.0   │  │
-│  │ Abstract...                                 │  │
-│  │ [Read full paper ▸]  [Ask AI about this ▸] │  │
-│  └────────────────────────────────────────────┘  │
-│                                                  │
-│  PAPER PAGE (when reading):                      │
-│  ┌────────────────────────────────────────────┐  │
-│  │ Title · Authors · DOI · Zenodo · IPFS      │  │
-│  │ Version · Published · Categories           │  │
-│  │ ──────────────────────────────────────     │  │
-│  │ FULL TEXT (rendered from body_md)          │  │
-│  │ ...                                        │  │
-│  │ ──────────────────────────────────────     │  │
-│  │ ┌── AI SYNTHESIS ───────────────────────┐  │  │
-│  │ │ Related papers: [A] [B] [C]           │  │  │
-│  │ │ Citations: referenced by X papers     │  │  │
-│  │ │ [Ask a question about this paper ▸]   │  │  │
-│  │ └──────────────────────────────────────┘  │  │
-│  └────────────────────────────────────────────┘  │
-└──────────────────────────────────────────────────┘
-
-CMS content: data-cms-content="papers"
-Living papers: data-lp-papers data-lp-limit="20"
-Embedded Ask QWAV: on every paper page
-```
+- Paper listing + search from living-paper D1 + Vectorize
+- Full paper pages with embedded Ask QWAV AI synthesis
+- Single HTML shell + qnfo-cms-client.js
 
 ### Site 3: `legal.qnfo.org` — LEGAL (static)
-
-License text, terms of service, privacy policy. Standalone. No CMS needed.
 
 ### ELIMINATED SITES (301 redirects):
 
 | Current URL | Redirect to |
 |:------------|:------------|
-| deep.qwav.tech | papers.qnfo.org (with search open) |
+| deep.qwav.tech | papers.qnfo.org |
 | archive.qnfo.org | papers.qnfo.org?view=archive |
 | adelic.qnfo.org | papers.qnfo.org?topic=adelic-qft |
-| adelic-qec.qnfo.org | papers.qnfo.org?topic=adelic-qec |
-| benchmark.qnfo.org | papers.qnfo.org?topic=benchmark |
-| p-adic.qnfo.org | papers.qnfo.org?topic=p-adic |
-| p-adic-hw.qnfo.org | papers.qnfo.org?topic=p-adic-hw |
-| uqc.qnfo.org | papers.qnfo.org?topic=uqc |
 | primer.qwav.tech | papers.qnfo.org?topic=qlof-primer |
-| laws.qnfo.org | papers.qnfo.org/papers/quantum-laws-of-form/ (keep existing 301) |
+| laws.qnfo.org | papers.qnfo.org/papers/quantum-laws-of-form/ (existing 301) |
 
 ---
 
@@ -205,119 +149,150 @@ User visits papers.qnfo.org
         ▼
 Pages serves static shell (index.html + qnfo-cms-client.js + papers.css)
         │
-        ├─► qnfo-cms-client.js loads:
-        │     GET api-gateway.q08.workers.dev/cms/content/papers  → D1 qnfo-cms (page layout)
-        │
-        ├─► data-lp-papers triggers:
-        │     GET api-gateway.q08.workers.dev/papers/list?limit=20  → D1 living-paper (paper list)
-        │
-        ├─► Search bar:
-        │     GET api-gateway.q08.workers.dev/search?q=X  → Vectorize qwav-research-v2 → D1 filter
-        │
-        ├─► Paper detail page:
-        │     GET api-gateway.q08.workers.dev/papers/:id   → D1 living-paper (title, body_md, doi, etc.)
-        │     GET api-gateway.q08.workers.dev/graph/neighbors/:id  → D1 qnfo-graph (citations, concepts)
-        │
-        └─► Ask AI (embedded):
-              POST api-gateway.q08.workers.dev/ask  → ask-qwav Worker
-                → Vectorize (find relevant papers by embedding)
-                → D1 (retrieve full text)
-                → AI.run(deepseek-r1-32b) (synthesize answer from context)
-                → Return answer + source papers
+        ├─► qnfo-cms-client.js loads: GET api-gateway/cms/content/papers → D1 qnfo-cms
+        ├─► Paper listing: GET api-gateway/papers/list → D1 living-paper
+        ├─► Search: GET api-gateway/search?q=X → Vectorize qwav-research-v2 → D1 filter
+        ├─► Paper detail: GET api-gateway/papers/:id → D1 living-paper
+        ├─► Citations: GET api-gateway/graph/neighbors/:id → D1 qnfo-graph
+        └─► Ask AI: POST api-gateway/ask → ask-qwav → Vectorize + D1 + AI.run → synthesis response
 ```
 
 ---
 
-## CONSOLIDATION PLAN
+## CONSOLIDATION PLAN — v2.0 (LLM MAINTENANCE CAPACITY AUDIT)
+### 2026-06-29 — Consolidated for 100% LLM System Maintenance
 
-### Phase 1: COMPLETE PAPER SCHEMA (now)
+### LLM MAINTENANCE CAPACITY ANALYSIS
 
-| Action | Status |
-|:-------|:-------|
-| ADD body_md column to living-paper | ✅ DONE |
-| ADD zenodo_url, pdf_url, version, status columns | 🔲 TODO — ALTER TABLE prepared |
-| Re-ingest papers from R2 (454 entries, ~30% survive) | 🔄 RUNNING — 120/454, 41 OK so far |
-| Delete 3 CMS paper-type duplicates | 🔲 TODO |
-| Re-seed Vectorize with all papers (clean, no orphans) | 🔲 TODO — after re-ingestion completes |
+A session-based LLM (~200k token context, ~125k available after prompts + skills + discovery) can actively maintain:
 
-### Phase 2: SITE CONSOLIDATION (30 min)
+| Resource Type | Sustainable | Live | Excess | Action |
+|:-------------|:----------:|:----:|:------:|:------|
+| Workers (deep quality) | 12–15 | 29 | +14 | Consolidate to 15 |
+| Workers (surface audit) | 5–8 more | — | — | Tier 2: 5 support |
+| Pages Projects (active) | 5–7 | 10 | +3 | 301 redirect 4 |
+| D1 Databases | 5 | 5 | 0 | All essential |
+| Vectorize Indexes | 3 | 3 | 0 | All essential |
+| KG Projects (active) | 15–20 | 63 | +43 | Archive stale |
 
-| Action | Impact |
-|:-------|:-------|
-| Set up 301 redirects for 10 domains → papers.qnfo.org | Single domain |
-| Delete/archive unused Pages projects (adelic-qft, qlof-primer, qnfo-archive) | Clean dashboard |
-| Keep: qnfo-hub, qnfo-publications, qnfo-legal | 3 sites |
-| Update nav: remove self-referential links, show breadcrumbs | Coherent UX |
-
-### Phase 3: API CONSOLIDATION (20 min)
-
-| Action | Impact |
-|:-------|:-------|
-| Merge qnfo-data-api into api-gateway (both are routers) | Single gateway |
-| Delete git-on-cloudflare Worker + Queue + KV (GitHub deprecated per ADR-001) | Remove dead code |
-| Verify all Workers route through api-gateway | Consistent routing |
-
-### Phase 4: KNOWLEDGE GRAPH REBUILD (30 min)
-
-| Action | Impact |
-|:-------|:-------|
-| Seed paper-to-paper REFERENCES edges (from D1 references column) | KG becomes research graph |
-| Seed paper-to-concept edges (from D1 categories) | Ultrametric taxonomy connected |
-| Connect papers to Zenodo DOIs | Publication lineage in KG |
-| Verify ultrametric triangle inequality on paper embeddings | Mathematical consistency |
-
-### Phase 5: AI SYNTHESIS INTEGRATION (20 min)
-
-| Action | Impact |
-|:-------|:-------|
-| Embed Ask QWAV on paper detail pages (not separate domain) | Contextual AI |
-| Add "Ask about this paper" button per paper | One-click synthesis |
-| Show KG-sourced related papers and citation counts | Research context |
-| Verify search → AI → KG pipeline end-to-end | Live testing |
-
-### Phase 6: STALE SKILL UPDATE (10 min)
-
-| Skill | Fix |
-|:------|:----|
-| infrastructure-audit v1.4→1.5 | Update counts: 5 D1, 3 Vectorize, 10 Pages, 3 sites |
-| knowledge-graph v2.1→2.2 | Update live state: 261n/401e, add paper edges |
-| publication-publisher v1.6→1.7 | Fix Pages project name: qnfo-publications, not qwav |
+**Root Problem:** 29 Workers with 5 near-duplicate groups (4 living-paper, 2 SEO, 6 cron, 2 archive, 3 content) create propagation risk — a fix in one doesn't reach siblings. LLM cannot reach all 29 per session, so drift accumulates silently.
 
 ---
 
-## PAPER CORPUS STATUS
+### ASSET CLASSIFICATION
 
-| Metric | Current | Target |
-|:-------|:--------|:-------|
-| Papers in D1 | 48 | 454 (all source files) |
-| Papers with full text (body_md) | 41 | 454 |
-| Papers with DOI | 1 | 454 |
-| Papers in Vectorize | 461 (with orphans) | 454 (clean) |
-| Papers in Knowledge Graph | 0 | 454 (with citations + concepts) |
+#### TIER 1: ESSENTIAL CORE (10 Workers + 3 Pages + 5 D1 + 1 Vect + 1 KV + 1 Q = 21)
+*Actively maintained every session. Deep quality.*
 
-**The gap:** Only ~30% of paper source files survived in R2 (thin-client deletion). The remaining ~70% must be recovered from:
-1. Local Obsidian vault (primary source of the chapter content)
-2. Zenodo publications (5 publication records exist in CMS)
-3. Re-export from the source system
+| Worker | Domain | Absorbs |
+|:-------|:-------|:--------|
+| ask-qwav (v2.4) | AI Synthesis | living-paper-ai |
+| api-gateway (v2.2) | Routing | — |
+| graph-api | Knowledge | — |
+| cms-api | Content | seo-injector, seo-metadata-injector, document-preview |
+| qnfo-data-api (v2.0) | Data | qnfo-asset-api |
+| qnfo-lifecycle | Lifecycle | — |
+| qnfo-archive-worker | Archive | — |
+| qnfo-archive-verify | Archive | — |
+| living-papers-api | Publications | living-paper-api |
+| ultrametric-tree-api | Research | — |
 
-**Action required:** User must re-export paper source files to R2 (or provide access path) for full corpus recovery.
+Pages: qnfo-hub, qnfo-publications, qnfo-legal (ESSENTIAL)
+D1: All 5 (ESSENTIAL)
+
+#### TIER 2: SUPPORT (5 Workers + 3 Pages + 2 Vectorize)
+*Surface audit only. Low-touch.*
+
+search-worker, portfolio-api, qacp-api, annotation-store, audit-worker +
+qnfo-ipfs-archive, qnfo-design-system, quantum-laws-of-form (redirect) +
+qnfo-handoffs, qnfo-tasks (vectorize)
+
+#### TIER 3+: CONSOLIDATE / DEPRECATE
+
+| Asset | Action |
+|:------|:------|
+| seo-injector | MERGE → cms-api |
+| seo-metadata-injector | MERGE → cms-api |
+| living-paper-api | MERGE → living-papers-api |
+| living-paper-ai | MERGE → ask-qwav |
+| living-paper-proxy | DELETE |
+| document-preview | MERGE → cms-api |
+| qnfo-asset-api | MERGE → qnfo-data-api |
+| cron-dead-link-check | MERGE → cron-scheduler [NEW] |
+| cron-graph-re-seed | MERGE → cron-scheduler [NEW] |
+| cron-paper-index-refresh | MERGE → cron-scheduler [NEW] |
+| cron-r2-state-audit | MERGE → cron-scheduler [NEW] |
+| cron-stale-project-flag | MERGE → cron-scheduler [NEW] |
+| umbrella-router | DELETE |
+| qnfo-kaizen-analytics | DELETE |
+| qnfo-design-system-worker | DELETE |
+| qwav (Pages) | 301 → papers.qnfo.org |
+| qnfo-archive (Pages) | 301 → papers.qnfo.org/archive |
+| adelic-qft (Pages) | 301 → papers.qnfo.org |
+| qlof-primer (Pages) | 301 → papers.qnfo.org |
 
 ---
 
-## KEY METRICS — BEFORE AND AFTER
+### REVISED PHASES
+
+#### Phase 1: PAPER SCHEMA + WORKER CONSOLIDATION (PRIORITY)
+
+| Action | Workers |
+|:-------|:-------|
+| ALTER living-paper: ADD 8 missing columns | — |
+| MERGE 5 cron Workers → cron-scheduler | 29→25 |
+| MERGE seo-injector + seo-metadata-injector + document-preview → cms-api | 25→22 |
+| MERGE living-paper-api + proxy → living-papers-api | 22→20 |
+| MERGE living-paper-ai → ask-qwav | 20→19 |
+| MERGE qnfo-asset-api → qnfo-data-api | 19→18 |
+| DELETE umbrella-router, qnfo-kaizen-analytics, qnfo-design-system-worker | 18→15 |
+
+#### Phase 2: SITE CONSOLIDATION
+301 redirect 4 Pages → papers.qnfo.org. Keep 6.
+
+#### Phase 3: API GATEWAY UNIFICATION
+Route all Workers through single api-gateway.
+
+#### Phase 4: KNOWLEDGE GRAPH RESEARCH EDGES
+Add 170 papers as KG nodes with REFERENCES edges.
+
+#### Phase 5: AI SYNTHESIS INTEGRATION
+Embed Ask QWAV on every paper page. Connect search → AI → KG.
+
+#### Phase 6: DOCUMENTATION + SKILL UPDATE
+Update stale skills. Close out 43 stale KG Projects.
+
+---
+
+## TARGET STATE
 
 | Metric | Before | After |
-|:-------|:-------|:------|
-| Sites with custom domains | 12 | 3 |
-| Workers | 30 | ~25 (consolidated) |
-| Vectorize indexes | 5 | 3 (1 active for papers) |
-| D1 paper duplicates | 3 in CMS | 0 |
-| KG paper connections | 0 | 454+ |
-| AI synthesis domain | deep.qwav.tech | papers.qnfo.org (embedded) |
-| Self-referential nav links | On every page | None |
-| Page content without JS | "Loading..." | Server-rendered metadata |
-| Master architecture doc | None | This document |
+|:-------|:------:|:-----:|
+| Workers | 29 | **15** |
+| Pages Projects | 10 | **6** (4 via 301) |
+| D1 Databases | 5 | **5** (schema-complete) |
+| Vectorize Indexes | 3 | **3** |
+| KV Namespaces | 1 | **1** |
+| Queues | 1 | **1** |
+| **Total CF Assets** | **49** | **31** |
+| **LLM Active Maintenance** | 29 Workers | **15 Workers ✓** |
+| Knowledge Graph | Infra-only (621n/1308e) | Research papers + citations |
+| API Gateways | Fragmented | Single api-gateway |
+| Domains | 6 | **1** (papers.qnfo.org) |
+
+**LLM capacity:** 15 Workers = within the ~12–15 deep-quality threshold. All 15 can be reached in a single session for surface audit. Any 3–5 can receive deep code-level changes per session without leaving the rest unmonitored.
 
 ---
 
-*MASTER-PLAN.md v1.0 — Single source of truth for QNFO Cloudflare architecture. All sites, Workers, databases, and data flows documented. To be updated at every infrastructure change.*
+## CONSOLIDATION EXECUTED THIS SESSION (2026-06-29)
+
+| Action | Result |
+|:-------|:-------|
+| Live Worker enumeration: 29 Workers from Cloudflare API | ✅ DONE |
+| KG: All 49 CF assets created as CloudflareAsset nodes | ✅ DONE |
+| KG: 49 OWNS edges from portfolio-state to all assets | ✅ DONE |
+| KG: All 49 nodes tagged with consolidation_tier + consolidation_action | ✅ DONE |
+| D1 portfolio-state: 66 resources verified, cross-referenced | ✅ DONE |
+| MASTER-INVENTORY.md: Rewritten with full tier classification | ✅ DONE |
+| MASTER-ARCHITECTURE.md: Updated to v2.0 with LLM maintenance model | ✅ DONE |
+| MASTER-PLAN.md: Updated to v2.0 with consolidation audit | ✅ DONE |
