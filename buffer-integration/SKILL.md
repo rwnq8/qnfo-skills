@@ -5,7 +5,7 @@ description: Buffer API integration for social media posting on QNFO/QWAV channe
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
 
-# BUFFER INTEGRATION SKILL — v2.0
+# BUFFER INTEGRATION SKILL — v2.1
 
 > **Phase 5 of LRAP.** Enables automated social media dissemination of QNFO/QWAV publications via Buffer **GraphQL API**.
 
@@ -266,273 +266,55 @@ def format_for_channel(service: str, paper_title: str, paper_doi: str,
 
 ---
 
-> **⚠️ DEPRECATED REST API (v1.0):** The embedded `buffer_post.py` script below uses the REST API at `api.bufferapp.com`, which is **deprecated** and returns HTTP 401 Unauthorized. Use the **GraphQL API** workflow (Section "Workflow — 4 Stages" above) instead. The REST API script is retained for reference only.
+## ⚠️ REST API PERMANENTLY REMOVED (v2.1)
 
-## Embedded Script
+The legacy REST API at `api.bufferapp.com` is **permanently shut down** and returns HTTP 401 for all requests. The `scripts/buffer_post.py` has been removed from this skill. **All posting MUST use the GraphQL API** (Section "Workflow — 4 Stages" above).
 
-### `scripts/buffer_post.py`
+---
+
+## 🔑 CRITICAL: ChannelId Must Be Exact 24-Char Hex
+
+> **THE #1 CAUSE OF FAILURE:** Truncated or wrong ChannelIds.
+
+The Buffer GraphQL channels query returns `id` fields that are **exactly 24 hexadecimal characters**. Copy them verbatim — do NOT truncate, do NOT change case, do NOT add prefixes. Example:
+
+```json
+{"id": "679f024fd7abca001fddb4c2"}
+```
+
+A truncated ID like `679f024fd7abca` (12 chars) will NOT work. Verify your channel IDs have 24 characters before calling `create_post()`.
+
+### Verify Channel IDs
 
 ```python
-#!/usr/bin/env python3
-"""
-Buffer Integration — Create and schedule social media posts.
-Usage: python buffer_post.py --title "Paper Title" --doi "10.5281/zenodo.XXXXX"
-
-Environment:
-  BUFFER_ACCESS_TOKEN (or stored at %USERPROFILE%\.buffer_token)
-"""
-
-import argparse
-import json
-import os
-import sys
-import urllib.parse
-import urllib.request
-from datetime import datetime, timedelta, timezone
-
-
-def load_token() -> str:
-    """Load Buffer token from environment or token file."""
-    token = os.environ.get("BUFFER_ACCESS_TOKEN", "")
-    if token:
-        return token
-    
-    token_path = os.path.expandvars(r"%USERPROFILE%\.buffer_token")
-    if os.path.exists(token_path):
-        with open(token_path, "r") as f:
-            return f.read().strip()
-    
-    raise FileNotFoundError(
-        "[BLOCKED] Buffer token not found.\n"
-        "Set BUFFER_ACCESS_TOKEN env var or store at %USERPROFILE%\\.buffer_token\n"
-        "Get token from: https://bufferapp.com/developers/apps"
-    )
-
-
-def list_profiles(token: str) -> list[dict]:
-    """List all Buffer social media profiles."""
-    url = "https://api.bufferapp.com/1/profiles.json"
-    req = urllib.request.Request(url)
-    req.add_header("Authorization", f"Bearer {token}")
-    req.add_header("User-Agent", "QNFO-BufferIntegration/1.0")
-
-    response = urllib.request.urlopen(req, timeout=15)
-    profiles = json.loads(response.read().decode("utf-8"))
-
-    return [
-        {
-            "id": p["id"],
-            "service": p["service"],
-            "name": p.get("formatted_username", p["service"]),
-            "timezone": p.get("timezone", "UTC"),
-        }
-        for p in profiles
-    ]
-
-
-def create_update(token: str, profile_id: str, text: str, 
-                  link_url: str = None, schedule_at: str = None, 
-                  now: bool = False) -> dict:
-    """Create a Buffer post/update."""
-    params = {
-        "profile_ids[]": profile_id,
-        "text": text,
-    }
-    
-    if link_url:
-        params["media[link]"] = link_url
-    
-    if now:
-        params["now"] = "true"
-    elif schedule_at:
-        params["scheduled_at"] = schedule_at
-    else:
-        # Default: notification mode (manual approval)
-        params["schedulingType"] = "notification"
-    
-    data = urllib.parse.urlencode(params).encode("utf-8")
-    
-    url = "https://api.bufferapp.com/1/updates/create.json"
-    req = urllib.request.Request(url, data=data, method="POST")
-    req.add_header("Authorization", f"Bearer {token}")
-    req.add_header("Content-Type", "application/x-www-form-urlencoded")
-    req.add_header("User-Agent", "QNFO-BufferIntegration/1.0")
-
-    response = urllib.request.urlopen(req, timeout=15)
-    result = json.loads(response.read().decode("utf-8"))
-    
-    success = result.get("success", False)
-    return {
-        "success": success,
-        "post_id": result.get("buffer_count") or result.get("id", ""),
-        "error": result.get("message", "") if not success else "",
-    }
-
-
-def format_for_channel(service: str, paper_title: str, paper_doi: str = "",
-                       key_finding: str = "", paper_url: str = "",
-                       custom_text: str = "") -> str:
-    """Generate channel-optimized post text."""
-    if custom_text:
-        return custom_text
-    
-    templates = {
-        "twitter": (
-            "🚀 New research: {title}\n"
-            "Key finding: {finding}\n"
-            "📄 Full paper: {link}"
-        ),
-        "linkedin": (
-            "📄 New Research Publication: {title}\n\n"
-            "{finding}\n\n"
-            "Read the full paper: {link}"
-        ),
-        "bluesky": (
-            "📄 New QNFO/QWAV research: {title}\n\n"
-            "{finding}\n\n"
-            "Read: {link}"
-        ),
-    }
-    
-    tmpl = templates.get(service, templates["twitter"])
-    short_title = paper_title[:100] + "..." if len(paper_title) > 100 else paper_title
-    link = paper_url or (f"https://doi.org/{paper_doi}" if paper_doi else "[link pending]")
-    finding = key_finding or "Published on QNFO/QWAV via Zenodo."
-    
-    return tmpl.format(title=short_title, finding=finding, link=link)
-
-
-def stagger_schedule(base_time: datetime, channel_index: int) -> str:
-    """Stagger posts by 2-4 hours between channels to avoid bot-like behavior."""
-    stagger_hours = 2 + channel_index * 2  # 2h, 4h, 6h gaps
-    scheduled = base_time + timedelta(hours=stagger_hours)
-    return scheduled.isoformat()
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Create and schedule Buffer social media posts")
-    parser.add_argument("--title", "-t", required=True, help="Publication title")
-    parser.add_argument("--doi", "-d", default="", help="Zenodo DOI")
-    parser.add_argument("--url", "-u", default="", help="Publication page URL")
-    parser.add_argument("--finding", "-f", default="", help="Key finding (one sentence)")
-    parser.add_argument("--text", default="", help="Custom text (overrides auto-format)")
-    parser.add_argument("--channels", default="twitter,linkedin,bluesky",
-                        help="Comma-separated channels to post to")
-    parser.add_argument("--now", action="store_true", help="Post immediately (no scheduling)")
-    parser.add_argument("--schedule-for", default="",
-                        help="Schedule for specific ISO datetime")
-    parser.add_argument("--list", action="store_true", help="List profiles only, don't post")
-    parser.add_argument("--dry-run", action="store_true", help="Preview posts without creating")
-    args = parser.parse_args()
-
-    token = load_token()
-    profiles = list_profiles(token)
-    
-    if args.list:
-        print(f"Buffer Profiles ({len(profiles)}):")
-        for p in profiles:
-            print(f"  [{p['service']}] {p['name']} (ID: {p['id']})")
-        return 0
-
-    # Find profiles for requested channels
-    channels = [c.strip().lower() for c in args.channels.split(",")]
-    target_profiles = [p for p in profiles if p["service"] in channels]
-    
-    if not target_profiles:
-        available = [p["service"] for p in profiles]
-        print(f"[BLOCKED] No profiles found for channels: {channels}")
-        print(f"Available services: {available}")
-        return 1
-
-    # Determine schedule time
-    if args.now:
-        schedule_at = None
-        now_mode = True
-    elif args.schedule_for:
-        schedule_at = args.schedule_for
-        now_mode = False
-    else:
-        schedule_at = stagger_schedule(datetime.now(timezone.utc), 0)
-        now_mode = False
-
-    results = []
-    for i, profile in enumerate(target_profiles):
-        text = format_for_channel(
-            service=profile["service"],
-            paper_title=args.title,
-            paper_doi=args.doi,
-            paper_url=args.url,
-            key_finding=args.finding,
-            custom_text=args.text,
-        )
-        
-        channel_schedule = stagger_schedule(
-            datetime.now(timezone.utc), i
-        ) if not args.now and not args.schedule_for else (args.schedule_for or None)
-        
-        if args.dry_run:
-            print(f"\n[Dry Run] {profile['service']} ({profile['name']}):")
-            print(f"  Text: {text[:100]}...")
-            print(f"  Schedule: {channel_schedule or 'now'}")
-            continue
-        
-        result = create_update(
-            token=token,
-            profile_id=profile["id"],
-            text=text,
-            link_url=args.url or f"https://doi.org/{args.doi}" if args.doi else None,
-            schedule_at=channel_schedule,
-            now=now_mode,
-        )
-        
-        status = "✅ Created" if result["success"] else f"❌ Failed: {result['error']}"
-        results.append({
-            "channel": profile["service"],
-            "profile": profile["name"],
-            "status": status,
-            "post_id": result.get("post_id", ""),
-            "scheduled_at": channel_schedule,
-        })
-        print(f"  [{profile['service']}] {status} (ID: {result.get('post_id', 'N/A')})")
-
-    # Summary
-    successes = sum(1 for r in results if "✅" in r["status"])
-    print(f"\n[SUMMARY] {successes}/{len(results)} posts created")
-    
-    if not args.now and not args.dry_run:
-        print(f"[SCHEDULED] First post at: {results[0]['scheduled_at'] if results else 'N/A'}")
-
-    return 0 if successes == len(results) else 1
-
-
-if __name__ == "__main__":
-    sys.exit(main())
+def verify_channel_ids(channels):
+    """Check all channel IDs are valid 24-char hex strings."""
+    for ch in channels:
+        cid = ch.get("id", "")
+        if len(cid) != 24:
+            print(f"  WARN: Bad ChannelId for {ch['service']}: {cid} ({len(cid)} chars, needs 24)")
+        else:
+            print(f"  OK   {ch['service']}: {cid}")
 ```
 
-### Dependencies
-- Python 3.8+ (standard library only)
-- Buffer Access Token (free tier supports 3 social channels)
+---
 
-### Usage
+## ✅ Verified Working (v2.1 — 2026-06-30)
 
-```bash
-# Post a new publication to all channels
-python buffer_post.py --title "Ultrametric Emergence in Quantum Cognition" \
-  --doi "10.5281/zenodo.XXXXX" \
-  --finding "p-Adic ultrametric hierarchies provide a formal framework for emergent cognitive structures in quantum decision theory."
+The GraphQL API was **proven working** for 6 posts across 3 channels:
 
-# Post to Twitter only, immediately
-python buffer_post.py --title "..." --finding "..." --channels twitter --now
+| Paper | DOI | Twitter | Bluesky | LinkedIn |
+|:------|:----|:--------|:--------|:---------|
+| Silent Radix | 10.5281/zenodo.21067593 | `6a43d23a1ec479235021c836` | `6a43d23c1e42905afea3b54c` | `6a43d23d9c6ee994bd422862` |
+| Cyclic Measurement | 10.5281/zenodo.21047527 | `6a43d2519c6ee994bd422947` | `6a43d2533a82910a41251a3c` | `6a43d254032afd2413bd5075` |
 
-# Preview posts without creating them
-python buffer_post.py --title "..." --finding "..." --dry-run
+**Key corrections in v2.1:**
+1. `schedulingType` and `mode` are **separate top-level fields** in CreatePostInput (not nested)
+2. `isQueuePaused` is the correct field name (not `isPaused`)
+3. ChannelId must be the **exact 24-char hex** from the channels query — never truncated
+4. GraphQL endpoint: `https://api.buffer.com/1/graphql.json` — REST API `api.bufferapp.com` is dead
 
-# List configured Buffer profiles
-python buffer_post.py --list
 
-# Schedule for a specific time
-python buffer_post.py --title "..." --finding "..." --schedule-for "2026-06-25T09:00:00Z"
-```
 
 ---
 
@@ -569,7 +351,7 @@ python buffer_post.py --title "..." --finding "..." --schedule-for "2026-06-25T0
 
 ---
 
-*buffer-integration v2.0 — Phase 5 of LRAP. Buffer GraphQL API integration for automated social media dissemination.*
+*buffer-integration v2.1 — Phase 5 of LRAP. Buffer GraphQL API integration for automated social media dissemination.*
 
 ## RT: RED-TEAM SELF-AUDIT
 
