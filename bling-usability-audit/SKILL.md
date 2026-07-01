@@ -6,6 +6,32 @@ version: 1.0
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
 
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('bling-usability-audit')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
+
 # BLING USABILITY AUDIT SKILL — v1.0
 
 > **Executable workflow skill.** Drives YoBrowser for real browser-based usability testing.
@@ -460,7 +486,7 @@ The final output is the filled `BLING-USABILITY-AUDIT` template with:
 
 ---
 
-## QNFO Design System Compliance (v2.0 — 2026-06-30)
+## QNFO Design System Compliance (v3.0 — LOCKED 2026-07-01 — 2026-06-30)
 
 ### Dark Theme Detection — BLING Audit Enhancement
 
@@ -488,9 +514,9 @@ cdp_send(method="Runtime.evaluate", params={
 })
 
 # If isDarkTheme or hasDarkHex → FAIL
-# All QNFO pages must use Silent Radix Light Theme:
-# - Canonical CSS: https://qnfo.org/design-system/qnfo-light.css
-# - White background (#FFFFFF), dark text (#363636)
+# All QNFO pages must use papers.qnfo.org canonical design (LOCKED v3.0):
+# - Canonical CSS: https://qnfo.org/design-system/papers.qnfo.org canonical design (LOCKED v3.0)
+# - Inter + Source Serif 4 fonts, #1a1a2e text, #1a56db blue palette, 960px max-width
 ```
 
 ### Visual Polish Checklist Addition
@@ -498,7 +524,7 @@ cdp_send(method="Runtime.evaluate", params={
 | Check | Method | Gate |
 |:------|:-------|:-----|
 | Dark theme detection | Evaluate body background + scan HTML for dark hex | FAIL if detected |
-| Design system CSS present | Check for `qnfo-light` or `QNFO Design System v2` in HTML | WARN if missing |
+| Design system CSS present | Check for `.ai-query` and `.related-section` classes in HTML | WARN if missing |
 | MathJax config before script | Verify config position < script position | FAIL if reversed |
  SELF-AUDIT
 

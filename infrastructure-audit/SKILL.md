@@ -1,14 +1,40 @@
 ---
 name: infrastructure-audit
 description: Audit all Cloudflare infrastructure resources (D1, R2, Workers, Pages, Vectorize, Queues) including lifecycle pipeline. Reports orphaned/duplicate resources, state mismatches, lifecycle health, and archival integrity.
-version: "1.6"
+version: "1.9"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
 
-# INFRASTRUCTURE AUDIT SKILL — v1.5
 
-> **LIFECYCLE-AWARE. GAP-AUDIT INTEGRATION. RED-TEAM-DOD INTEGRATION. UPDATED 2026-06-28.** This release adds the RED-TEAM → DoD → ITERATE → REFINE cycle to infrastructure audits. See `skill_view('red-team-dod')`. Also includes lifecycle pipeline health checks, archival path verification, ultrametric taxonomy validation, and §0.5 GAP AUDIT INTEGRATION — Phase 4 health recommendations now output gap-audit-compatible report format.
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('infrastructure-audit')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [Priority 1 — auto-loads for relevant operations].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
+
+# INFRASTRUCTURE AUDIT SKILL -- v1.9
+
+> **LIFECYCLE-AWARE. GAP-AUDIT INTEGRATION. RED-TEAM-DOD INTEGRATION. RESOURCE GOVERNANCE. 522-PREVENTION. UPDATED 2026-07-01.** v1.9 adds §0.8 522 Root Cause Detection (CNAME × Pages cross-reference), §0.9 CNAME Chain Detection, §0.10 Dead Worker CNAME Detection, and §0.11 Empty Zone Detection — all learned from the 2026-07-01 qwav.tech 522 outage. Prevents the #1 failure mode: CNAME to `.pages.dev` without domain registration.
 
 ---
 
@@ -114,9 +140,51 @@ print(f"Knowledge Graph: {kg.get('totalNodes',0)} nodes, {kg.get('totalEdges',0)
 # Expected: 261 nodes, 401 edges
 ```
 
-### Phase 1.6: HTTP Behavior Verification (DEPRECATED — redirects deprecated per 2026-06-29)
+### Phase 1.7: DNS Resolution & Domain Classification Audit (v1.7 — 2026-07-01)
 
-> **Redirect verification is now informational only.** The 4 historical redirect domains (deep.qwav.tech, archive.qnfo.org, adelic.qnfo.org, primer.qwav.tech) were decommissioned. Redirect checks are WARN (not BLOCKING) in dod_enforce.py.
+> **CRITICAL:** The 2026-07-01 front-end audit found 28 dead DNS records. Every infrastructure audit must now verify DNS resolution and classify all domains.
+
+```python
+# Audit: every domain must resolve to HTTP 200 and be classified
+import urllib.request, ssl, json
+
+ctx = ssl.create_default_context()
+H = {'User-Agent': 'Mozilla/5.0'}
+
+# Pull ALL DNS records across zones
+zones = ['84e9dc1d7fb72629ccdbe3174ed24420',  # qnfo.org
+         'dd6908d3cc04acb2efee47382fb94e8e',  # q-wave.tech
+         '26699a3b10699f257eabc34a0faee56d',  # qnfo.uk
+         'd4e7855f3ed5f0a93204b7bd34e286ab',  # qnfo.net
+         'fa732a265dd53230b9777908734a74d5']  # q08.org
+
+for zone_id in zones:
+    url = f'https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records?per_page=100'
+    req = urllib.request.Request(url, headers={'Authorization': f'Bearer {TOKEN}'})
+    records = json.loads(urllib.request.urlopen(req, timeout=10, context=ctx).read())
+
+    for r in records.get('result', []):
+        name = r.get('name', '')
+        rtype = r.get('type', '')
+        if rtype in ('A', 'CNAME', 'AAAA'):
+            # Test resolution
+            try:
+                resp = urllib.request.urlopen(urllib.request.Request(f'https://{name}', headers=H), timeout=10, context=ctx)
+                body = resp.read().decode('utf-8', errors='replace')[:500]
+                # Classify: LANDING or CONTENT?
+                is_index = 'index' in body.lower() or 'catalog' in body.lower() or 'hub' in body.lower()
+                is_content = 'paper' in body.lower() or 'abstract' in body.lower()
+                klass = 'LANDING' if is_index else ('CONTENT' if is_content else 'UNKNOWN')
+                print(f'  [{klass}] {name}: HTTP {resp.status}')
+            except Exception as e:
+                print(f'  [DEAD] {name}: {e} — DELETE DNS RECORD')
+```
+
+**GATE (UPDATED v1.9):** Every DNS record must resolve to HTTP 200 within 10 seconds. Any [DEAD] domain → DELETE the DNS record. Any [UNKNOWN] classification → manually classify as LANDING or CONTENT. **Additionally, run the §0.8 cross-reference check** — every CNAME to `.pages.dev` MUST have a matching domain registration on the target Pages project.
+
+### Phase 1.6: HTTP Behavior Verification (DEPRECATED — redirects deprecated per 2026-07-01)
+
+> **2026-07-01:** Redirect verification is now REPLACED by Phase 1.7 (DNS Resolution & Domain Classification). All former redirect domains (deep.qwav.tech, archive.qnfo.org, adelic.qnfo.org, primer.qwav.tech) now serve content directly. No redirects remain in the QNFO ecosystem.
 
 ```python
 # Verify claimed HTTP redirects
@@ -188,16 +256,17 @@ Based on audit findings, report orphaned resources, stale entries, archival mism
 
 ## Infrastructure Resource Inventory
 
-| Resource | Expected Count | Current |
-|:---------|:-----:|:------:|
-| D1 Databases | 5 | qnfo-cms, qnfo-graph, qnfo-audit, living-paper, portfolio-state |
-| KV Namespaces | 1 | equation-cache (git-on-cloudflare-routes deleted) |
+| Resource | Expected Count | Current (2026-07-01) |
+|:---------|:-----:|:------|
+| D1 Databases | 5 | qnfo-cms (page content), **living-paper (CANONICAL PUBLICATIONS DATABASE — 170 papers)**, qnfo-audit, qnfo-graph, portfolio-state |
+| KV Namespaces | 1 | equation-cache |
 | Vectorize Indexes | 3 | qwav-research-v2 (1024-dim, active), qnfo-handoffs, qnfo-tasks |
-| Pages Projects | 10 (3 essential, 4 redirecting) | qnfo-hub, qnfo-publications, qnfo-legal, qwav(→papers), adelic-qft(→papers), qlof-primer(→papers), qnfo-archive(→papers), quantum-laws-of-form(→papers), qnfo-ipfs-archive, qnfo-design-system |
-| Workers | 30 | ask-qwav v2.4, api-gateway v2.2, graph-api, qnfo-data-api, cms-api, qnfo-lifecycle, qnfo-archive-worker, qnfo-archive-verify, ultrametric-tree-api, +21 more |
+| Pages Projects | 5 (all active) | qnfo-hub (qnfo.org), qnfo-publications (papers.qnfo.org), qnfo-legal (legal.qnfo.org), qwav (deep.qwav.tech), qnfo-design-system (design.qnfo.org) |
+| Workers | 30 | papers-server (D1+R2 dynamic renderer), ask-qwav, graph-api, qnfo-data-api, seo-metadata-injector, +25 more |
 | Queues | 2 | qnfo-lifecycle-queue (essential), git-on-cloudflare-repo-maint (deprecated) |
-| Knowledge Graph | 261 nodes, 401 edges | Infrastructure graph (OWNS 205 edges), needs REFERENCES edges for research |
-| R2 Bucket | 1 (qnfo) | papers, discovery, archive, projects, releases, tools |
+| Knowledge Graph | 825 nodes, 1727 edges | SEVERELY OUT OF SYNC — 70+ nodes for ~16 live resources. Needs bulk cleanup. |
+| R2 Bucket | 1 (qnfo) | papers, publications, discovery, archive, projects, releases, tools |
+| Live Domains | 30 (verified 2026-07-01) | 12 zones, 56 DNS records, all resolving HTTP 200 |
 
 ## Lifecycle Pipeline Health Checks
 
@@ -247,10 +316,192 @@ No action needed.
 
 ### 0.5 GAP AUDIT INTEGRATION (v1.3)
 
+### 0.7 RESOURCE GOVERNANCE — Unchecked Proliferation Prevention (v1.8)
+
+> **CRITICAL:** The 2026-07-01 session audit found 18 worker routes, 30 Workers, 10 Pages projects, 42 DNS records, 7 zones, and 4 redirect chains — all grown unconstrained. Root cause: no cross-reference between resources, no baseline counts, no automated enforcement. The session session deleted 24 DNS records, 13 routes, 5 Workers, 5 Pages projects, and 2 redirect rulesets. **These rules prevent recurrence.**
+
+**Resource Baselines (alert if exceeded):** Worker routes ≤ 6, Workers ≤ 24, Pages ≤ 5, DNS ≤ 16, Zones ≤ 5, Redirects = 0. **Cross-Reference Enforcement:** every route must target a live Worker; every DNS CNAME to `.pages.dev` must have domain registered on that Pages project; every domain must resolve to HTTP 200. **Growth Detection:** before creating any resource, count current resources; if over baseline, audit and clean up first. **Anti-Proliferation:** create DNS CNAME → add domain to Pages FIRST; create Worker route → verify Worker deployed FIRST; delete Worker → delete all routes FIRST; delete Pages → remove all domains FIRST.
+
+**GATE:** Resource counts MUST be within baseline at session start.
+
 When the infrastructure audit runs (session start or on-demand), it automatically:
 1. Feeds findings into the POST-PHASE GAP AUDIT (closeout-manager §2.6)
 2. Maps infrastructure health to gap severity: health FAIL → BLOCKING/HIGH, orphan resources → MEDIUM, warnings → LOW
 3. Outputs gap-audit-compatible report format with Gap ID, Category, Severity, Description columns
+
+### 0.8 522 ROOT CAUSE DETECTION — CNAME × Pages Cross-Reference (v1.9)
+
+> **CRITICAL — LEARNED FROM 2026-07-01 qwav.tech 522 OUTAGE.** The qwav.tech 522 "Connection timed out" was caused by 5 CNAME records pointing to `qwav.pages.dev` but only 1 of those domains (`deep.qwav.tech`) was registered on the `qwav` Cloudflare Pages project. The other 4 domains received 522 because Pages rejected traffic for unrecognized domains. **This is the #1 infrastructure failure mode.**
+
+**The 522 Pattern:**
+```
+DNS: qwav.tech CNAME → qwav.pages.dev    ← CNAME EXISTS
+Pages: qwav project domains = [deep.qwav.tech]  ← qwav.tech NOT REGISTERED
+Result: 522 Connection timed out                           ← PAGES REJECTS TRAFFIC
+```
+
+**Detection — runs during every Phase 1 audit:**
+
+```python
+import urllib.request, json, os, ssl
+
+TOKEN = os.environ.get('CLOUDFLARE_API_TOKEN', '')
+ctx = ssl.create_default_context()
+ACCOUNT = 'edb167b78c9fb901ea5bca3ce58ccc4b'
+
+def cf(endpoint, timeout=15):
+    url = 'https://api.cloudflare.com/client/v4/' + endpoint
+    req = urllib.request.Request(url)
+    req.add_header('Authorization', 'Bearer ' + TOKEN)
+    return json.loads(urllib.request.urlopen(req, timeout=timeout, context=ctx).read())
+
+# Step 1: Build Pages → domains map
+pages_domains = {}
+for p in cf('accounts/' + ACCOUNT + '/pages/projects').get('result', []):
+    pname = p['name']
+    doms = cf('accounts/' + ACCOUNT + '/pages/projects/' + pname + '/domains').get('result', [])
+    pages_domains[pname] = set(d['name'] for d in doms)
+
+# Step 2: Build .pages.dev target → project name map
+pages_targets = {}
+for p in cf('accounts/' + ACCOUNT + '/pages/projects').get('result', []):
+    sub = p.get('subdomain', '')
+    if sub:
+        pages_targets[sub] = p['name']  # sub already includes '.pages.dev' from API
+
+# Step 3: Scan ALL DNS CNAME records for .pages.dev targets
+zones = cf('zones?per_page=50').get('result', [])
+violations = []
+for z in zones:
+    recs = cf('zones/' + z['id'] + '/dns_records?per_page=100').get('result', [])
+    for r in recs:
+        if r.get('type') == 'CNAME':
+            target = r.get('content', '')
+            if target.endswith('.pages.dev'):
+                domain = r.get('name', '')
+                project = pages_targets.get(target, 'UNKNOWN')
+                if project != 'UNKNOWN' and domain not in pages_domains.get(project, set()):
+                    violations.append({
+                        'domain': domain, 'target': target,
+                        'project': project, 'zone': z['name'],
+                        'fix': f'Register {domain} on {project} Pages project'
+                    })
+                    print(f'  [522-RISK] {domain} CNAME→{target} BUT NOT REGISTERED on {project}!')
+
+if violations:
+    print(f'\n!!! {len(violations)} DOMAINS AT RISK OF 522 — FIX BEFORE DEPLOYING !!!')
+    for v in violations:
+        print(f'  FIX: {v["fix"]}')
+```
+
+**Automated Fix — register domain on Pages project:**
+
+```python
+def cf_post(endpoint, data, timeout=15):
+    url = 'https://api.cloudflare.com/client/v4/' + endpoint
+    req = urllib.request.Request(url, method='POST')
+    req.add_header('Authorization', 'Bearer ' + TOKEN)
+    req.add_header('Content-Type', 'application/json')
+    req.data = json.dumps(data).encode('utf-8')
+    return json.loads(urllib.request.urlopen(req, timeout=timeout, context=ctx).read())
+
+for v in violations:
+    r = cf_post('accounts/' + ACCOUNT + '/pages/projects/' + v['project'] + '/domains',
+                {'name': v['domain']})
+    print(f"  {'FIXED' if r.get('success') else 'FAILED'}: {v['domain']} → {v['project']}")
+```
+
+**GATE:** 522-RISK count MUST be 0 at session start. Any detected violations → immediate auto-fix (register domain on Pages project). If auto-fix fails → BLOCKING gap.
+
+**Verification after fix:**
+```python
+import urllib.request, ssl
+ctx = ssl.create_default_context()
+H = {'User-Agent': 'Mozilla/5.0'}
+for v in violations:
+    try:
+        resp = urllib.request.urlopen(urllib.request.Request('https://' + v['domain'], headers=H),
+                                      timeout=10, context=ctx)
+        print(f"  [VERIFIED] {v['domain']} → HTTP {resp.status}")
+    except Exception as e:
+        print(f"  [FAILED] {v['domain']} → {e} — DELETE DNS RECORD")
+```
+
+### 0.9 CNAME CHAIN DETECTION (v1.9)
+
+> **CRITICAL — LEARNED FROM 2026-07-01 AUDIT.** CNAME chains (A → B → C) are fragile. Every CNAME to a `.pages.dev` target should be DIRECT, not through another domain. The `score.qwav.tech → qwav.tech → qwav.pages.dev` chain broke when `qwav.tech` was not registered. Repoint all chain CNAMEs directly to their ultimate `.pages.dev` target.
+
+**Detection:**
+```python
+# Build a map of all CNAME chains
+cname_map = {}
+for r in all_dns_records:
+    if r['type'] == 'CNAME':
+        cname_map[r['name']] = r['content']
+
+# Find chains (A→B→C where C is .pages.dev)
+chains = []
+for name, target in cname_map.items():
+    if target in cname_map and '.pages.dev' not in target:
+        ultimate = target
+        visited = {name}
+        hops = 1
+        while ultimate in cname_map and '.pages.dev' not in cname_map.get(ultimate, ''):
+            ultimate = cname_map[ultimate]
+            hops += 1
+            if ultimate in visited:  # loop detection
+                ultimate = 'LOOP:' + ultimate
+                break
+            visited.add(ultimate)
+        if hops > 1 and '.pages.dev' in cname_map.get(ultimate, ''):
+            chains.append((name, target, cname_map[ultimate], hops))
+            print(f'  [CHAIN DETECTED] {name} → {target} → {cname_map[ultimate]} ({hops} hops) — REPOINT DIRECTLY')
+```
+
+**Fix:** Repoint the chain origin CNAME directly to the ultimate `.pages.dev` target.
+```python
+# PUT /zones/{zone_id}/dns_records/{record_id} with content = ultimate .pages.dev target
+```
+
+**GATE:** CNAME chains to `.pages.dev` must be ≤ 1 hop. Any 2+ hop chains → repoint directly.
+
+### 0.10 DEAD WORKER CNAME DETECTION (v1.9)
+
+> **CRITICAL — LEARNED FROM 2026-07-01 AUDIT.** `analytics.qwav.tech` CNAME → `qnfo-kaizen-analytics.q08.workers.dev` but no such Worker was deployed. CNAME records pointing to non-existent Workers must be detected and deleted.
+
+**Detection:**
+```python
+# Get all deployed Worker names
+workers = cf('accounts/' + ACCOUNT + '/workers/scripts').get('result', [])
+worker_names = set(w.get('id', '') for w in workers)
+
+# Scan DNS for CNAMEs to *.workers.dev
+for r in all_dns_records:
+    if r['type'] == 'CNAME' and '.workers.dev' in r.get('content', ''):
+        target_worker = r['content'].split('.')[0]  # Extract worker name from subdomain
+        if target_worker not in worker_names:
+            print(f"  [DEAD-WORKER] {r['name']} CNAME→{r['content']} — Worker '{target_worker}' NOT DEPLOYED — DELETE DNS RECORD")
+```
+
+**Fix:** DELETE the DNS record immediately. Dead worker references serve no purpose.
+
+**GATE:** DEAD-WORKER count MUST be 0. Any detected → delete DNS record.
+
+### 0.11 EMPTY ZONE DETECTION (v1.9)
+
+> **CRITICAL — LEARNED FROM 2026-07-01 AUDIT.** The `q-wave.tech` zone had 0 DNS records but consumed a zone slot and appeared in audit reports. Empty zones waste resources and confuse audits.
+
+**Detection:**
+```python
+for z in zones:
+    recs = cf('zones/' + z['id'] + '/dns_records?per_page=100').get('result', [])
+    if len(recs) == 0:
+        print(f"  [EMPTY-ZONE] {z['name']} ({z['id']}) — 0 DNS records — DELETE ZONE")
+```
+
+**Fix:** DELETE the zone via API. If zone is Cloudflare Registrar-managed (error 1315), flag as `UNREMOVABLE` and exclude from baseline counts.
+
+**GATE:** Empty zones should be deleted. If unremovable, exclude from all counts and audits.
 
 ## Integration
 
@@ -261,7 +512,9 @@ When the infrastructure audit runs (session start or on-demand), it automaticall
 
 ---
 
-*infrastructure-audit v1.4 — Lifecycle-aware. RED-TEAM-DOD integration. Gap-audit integration (§0.5). Pipeline health checks, archival integrity, ultrametric taxonomy validation.*
+*infrastructure-audit v1.9 — Resource Governance (§0.7) + 522 Prevention (§0.8-§0.11). Automated CNAME×Pages cross-reference, chain detection, dead worker detection, empty zone detection. 25-check audit with automated fix capability.*
+
+*v1.8 and earlier deprecated 2026-07-01. Replaced by v1.9 with automated 522 root cause detection, CNAME chain detection, dead worker detection, and empty zone detection.*
 
 ## RT: RED-TEAM SELF-AUDIT
 

@@ -1,9 +1,35 @@
 ---
 name: test-enforcement
 description: MANDATORY test enforcement for ALL code changes, deployments, and infrastructure modifications. Runs canonical test suite before claiming any action as EXECUTED. Priority 1 — pinned and always active.
-version: "1.0"
+version: "1.1"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('test-enforcement')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [Priority 1 — auto-loads for relevant operations].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
+
 ----|:-------------|:---------|
 | Pages deploy | `_test_suite.py --pages` — no stubs, all load | BLOCKING |
 | Worker deploy | `_test_suite.py --cms` — all endpoints OK | BLOCKING |

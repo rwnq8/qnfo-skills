@@ -1,6 +1,8 @@
 ---
 name: handoff-protocol
-version: "1.2.0"
+version: "1.3.0"
+deprecated: true
+superseded_by: closeout-manager
 description: QACP-HANDOFF protocol for structured agent-to-agent session handoffs. Defines message schema, task registers, infrastructure snapshots, gap identification (with auto-detection and red-team testing), and cross-system verification. Use when terminating a session, handing off to another agent, or reading a previous agent's handoff.
 category: protocol
 pinned: true
@@ -8,7 +10,33 @@ pinned: true
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
 
-# HANDOFF PROTOCOL SKILL — v1.2.0
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('handoff-protocol')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
+
+# HANDOFF PROTOCOL SKILL — v1.3.0
 
 > **QACP-HANDOFF v1.2.** Structured agent-to-agent handoff protocol with auto-gap detection, red-team verification, AND mandatory copy-paste continuation prompts.
 > **PINNED.** This skill should be loaded for ALL QNFO agent sessions to ensure consistent handoffs.

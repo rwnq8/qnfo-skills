@@ -1,10 +1,36 @@
 ---
 name: skill-sync
 description: Sync all DeepChat skills between local disk, GitHub, and Cloudflare R2. Monitors skill modifications and auto-syncs after changes. Updates Discovery Index with current versions. Use when skills are modified and need to be pushed to redundant backups, or to check sync status.
-version: "1.1"
+version: "1.3"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
+
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('skill-sync')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
 
 # SKILL SYNC SKILL — v1.3
 
@@ -28,7 +54,7 @@ Skills are modified locally but must be pushed to GitHub and R2 for redundancy. 
 ## Quick Sync (One Command)
 
 ```bash
-python "%APPDATA%\DeepChat\skills\bootstrap_skills.py" --sync
+python "%USERPROFILE%\.deepchat\skills\bootstrap_skills.py" --sync
 ```
 
 This:
@@ -44,7 +70,7 @@ import os, urllib.request
 
 TOKEN = os.environ.get('CLOUDFLARE_API_TOKEN', '')
 ACCOUNT = 'edb167b78c9fb901ea5bca3ce58ccc4b'
-SKILLS_DIR = os.path.expandvars(r'%APPDATA%\DeepChat\skills')
+SKILLS_DIR = os.path.expandvars(r'%USERPROFILE%\.deepchat\skills')
 
 local_skills = []
 for d in sorted(os.listdir(SKILLS_DIR)):
@@ -76,7 +102,7 @@ print(f'\nSync Status: {status}')
 ## Bootstrap Tools
 
 Must exist locally for this skill to work:
-- `bootstrap_skills.py` — One-command sync tool (located at `%APPDATA%\DeepChat\skills\bootstrap_skills.py`)
+- `bootstrap_skills.py` — One-command sync tool (located at `%USERPROFILE%\.deepchat\skills\bootstrap_skills.py`)
 - Recoverable from R2: `qnfo/tools/bootstrap_skills.py`
 - Recoverable from GitHub: `rwnq8/qnfo-skills/blob/master/bootstrap_skills.py`
 
@@ -95,14 +121,14 @@ After sync completes (GitHub + R2), this skill automatically triggers the POST-P
 **Rule:** After any successful skill sync (push to GitHub + R2), DeepChat MUST be restarted programmatically. Skills are loaded at application startup; changes made via sync do not take effect until DeepChat is killed and relaunched.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File "$env:APPDATA\DeepChat\skills\skill-sync\scripts\restart_deepchat.ps1"
+powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.deepchat\skills\skill-sync\scripts\restart_deepchat.ps1"
 ```
 
 This kills all old DeepChat processes and launches a fresh instance. Execute this as the final step after confirming sync success. The current conversation will terminate.
 
 ---
 
-*skill-sync v1.3 — Monitors and syncs skills between local, GitHub, and R2. Auto-gap-audit integration. Paths corrected (%APPDATA%\DeepChat\skills). Includes mandatory post-sync restart.*
+*skill-sync v1.3 — Monitors and syncs skills between local, GitHub, and R2. Auto-gap-audit integration. Paths corrected (%USERPROFILE%\.deepchat\skills). Includes mandatory post-sync restart.*
 
 ## RT: RED-TEAM SELF-AUDIT
 

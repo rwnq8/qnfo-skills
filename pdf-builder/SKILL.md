@@ -6,6 +6,32 @@ version: "2.0"
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
 
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('pdf-builder')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
+
 # PDF BUILDER SKILL — v2.0
 
 > **Bundled skill.** All scripts and references are self-contained in this skill directory.
@@ -130,7 +156,7 @@ Obsidian renders Markdown → HTML with CSS → then prints to PDF via the brows
 
 | File | Purpose |
 |:-----|:--------|
-| `scripts/build_pdf.py` | Main PDF builder (v2.0 with playwright primary + legacy fallback) |
+| `scripts/build_pdf.py` | Main PDF builder (v3.0 — LOCKED 2026-07-01) |
 | `scripts/md_to_html.py` | Markdown → styled HTML converter (CSS + MathJax embedding) |
 | `references/papers.css` | Professional academic CSS stylesheet (Obsidian-quality typography) |
 
@@ -316,26 +342,23 @@ Always use PRIMARY pipeline (v2.0) ──→ Obsidian-quality output
 
 ---
 
-## QNFO Design System Compliance (v2.0 — 2026-06-30)
+## QNFO Design System Compliance (v3.0 — LOCKED 2026-07-01 — 2026-06-30)
 
-**ALL QNFO/QWAV publications, pages, PDFs, and web artifacts MUST use the Silent Radix Light Theme.**
+**ALL QNFO/QWAV publications, pages, PDFs, and web artifacts MUST use the papers.qnfo.org canonical design (LOCKED v3.0).**
 
 | Resource | Location |
 |:---------|:---------|
-| Canonical CSS | `https://qnfo.org/design-system/qnfo-light.css` |
-| PDF builder (v2.0) | `qnfo/design-system/build_pdf.py` |
-| HTML template | `qnfo/design-system/publication-template.html` |
-| Design doc | `qnfo/design-system/QNFO-DESIGN-SYSTEM.md` |
-| Page rebuild tool | `qnfo/design-system/rebuild_page.py` |
+| Design doc (full spec) | `qnfo/design-system/QNFO-DESIGN-SYSTEM.md` |
+| PDF builder (v3.0) | `qnfo/design-system/build_pdf.py` |
 
 ### Mandatory Rules
 
 🚫 **DARK THEMES FORBIDDEN.** All output must use:
-- White background (#FFFFFF), dark text (#363636)
-- System font stack, max-width 800px centered layout
+- Inter + Source Serif 4 fonts, #1a1a2e text, #1a56db blue palette
+- Max-width 960px centered layout
 - Clean tables with border-collapse: collapse
 - MathJax CHTML with left-aligned display equations
-- No gradients, glass effects, dark backgrounds, or wonky tables
+- AI Query box + Related Papers mandatory on all paper pages
 
 ### Verification
 ```bash

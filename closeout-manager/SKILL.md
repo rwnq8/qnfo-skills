@@ -1,12 +1,38 @@
 ---
 name: closeout-manager
 description: Session close-out procedures — autonomous trigger detection, task execution verification, project handoff initialization, audit trail export, R2 state upload, lifecycle timestamp update, archive operations, draft artifact cleanup, and handoff documentation. Auto-executes at session end without user prompting.
-version: "3.2"
+version: "3.3"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
 
-# CLOSEOUT MANAGER SKILL — v3.1
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('closeout-manager')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [Priority 0 — always active, cannot be disabled].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
+
+# CLOSEOUT MANAGER SKILL — v3.3
 
 > **D1-FIRST. R2 DEPRECATED FOR STRUCTURED DATA (§2.6).** Handoffs, audits, decisions, state files, and the discovery index now live EXCLUSIVELY in D1. R2 is for file artifacts ONLY (PDFs, scripts, templates). R2 flat files (index.json, handoff .md, state .json) are DEPRECATED — never read from R2, never write to R2 for structured records. See `qnfo-agent` §10 for D1 lifecycle integration.
 > **LIFECYCLE-AWARE.** This release integrates with the automated lifecycle pipeline — `last_active` timestamps are reset on closeout to prevent premature staleness. Archive paths follow the ultrametric `qnfo/archive/projects/<name>/` convention.
@@ -35,7 +61,7 @@ update_plan([
   {"step": "Step 2: Task Execution Verification audit", "status": "pending"},
   {"step": "Step 2.6: POST-PHASE GAP AUDIT (all categories A-F)", "status": "pending"},
   {"step": "Step 3: Project Handoff Initialization", "status": "pending"},
-  {"step": "Step 3.5: D1 Handoff Insertion", "status": "pending"},
+  {"step": "Step 3.1: D1 Handoff Insertion (EXECUTE FIRST)\", \"status\": \"pending\"},
   {"step": "Step 4: Audit Trail Export to D1 + R2", "status": "pending"},
   {"step": "Step 5: Update D1 tables + lifecycle timestamps", "status": "pending"},
   {"step": "Step 9: Clean up temporary files (JIT enforcement)", "status": "pending"},
@@ -250,6 +276,35 @@ c. **For any project MISSING HANDOFF.md:** Create one using `fill_prompt_templat
 
 d. **Verify:** Re-run the scan to confirm all projects have HANDOFF.md with non-zero size.
 
+### 3.1 D1 Handoff Insertion (MANDATORY — EXECUTE FIRST v3.3)
+
+**D1 IS THE CANONICAL HANDOFF STORE.** This step MUST run BEFORE any local HANDOFF.md is written. The D1 record is the single source of truth for all subsequent agents.
+
+Write the session handoff to the `qnfo-audit` D1 database `audit_sessions` table as the canonical source:
+
+```bash
+npx wrangler d1 execute qnfo-audit --remote --command="
+INSERT INTO audit_sessions (session_id, agent, start_time, end_time, tasks_completed, tasks_total, notes)
+VALUES ('<session-id>', '<agent-name>', '<ISO-start>', '<ISO-end>', <N-done>, <N-total>, '<summary>. R2: qnfo/silent-radix/<handoff-filename>');
+"
+```
+
+Also insert into `portfolio-state.handoffs` for lifecycle tracking:
+
+```bash
+npx wrangler d1 execute portfolio-state --remote --command="
+INSERT INTO handoffs (id, from_agent, to_agent, r2_path, tasks_count, created_at, status, urn, session_id, summary)
+VALUES ('H-<date>-<seq>', '<agent-name>', 'urn:qacp:agent:next-session', '<project-name>', <N>, '<ISO-8601>', 'active', 'urn:qnfo:handoff:H-<date>-<seq>', '<session-id>', '<summary>');
+"
+```
+
+**Verify insertion:**
+```bash
+npx wrangler d1 execute qnfo-audit --remote --command="SELECT id, session_id, created_at FROM audit_sessions WHERE session_id='<session-id>';"
+```
+
+**GATE:** If handoff insertion fails or returns 0 rows ? closeout BLOCKED. Fix D1 connectivity before proceeding.
+
 ### 3.5 D1 Handoff Insertion (MANDATORY — D1-FIRST v3.0)
 
 Write the session handoff to the `portfolio-state` D1 database as the canonical source:
@@ -269,7 +324,18 @@ npx wrangler d1 execute portfolio-state --remote --command="SELECT id, status, u
 
 **GATE:** If handoff insertion fails or returns 0 rows → closeout BLOCKED. Fix D1 connectivity before proceeding.
 
-### 3.6 Knowledge Graph Handoff Node (RECOMMENDED)
+#### 3.2 Local HANDOFF.md (OPTIONAL — Ephemeral Trace Only)
+
+**This is NOT canonical.** The D1 record (§3.1) is the single source of truth. A local `HANDOFF.md` may be written as a human-readable convenience for the current session, but:
+
+1. It MUST be deleted at session closeout (§9)
+2. It MUST NOT be considered authoritative by any subsequent agent
+3. It MUST NOT be git-tracked or persisted between sessions
+4. Any agent encountering a local `HANDOFF.md` from a prior session MUST query D1 instead
+
+**ANTI-PATTERN:** Writing a local `HANDOFF.md` and treating it as the canonical handoff without inserting into D1 first. This is a *fabrication-level offense (Rule 14)* — the file will be deleted at closeout and the handoff data will be LOST.
+
+#### 3.3 Knowledge Graph Handoff Node (RECOMMENDED)
 
 Seed the Knowledge Graph with Handoff and Session nodes for cross-system traceability:
 
@@ -536,10 +602,13 @@ The automated lifecycle pipeline runs daily at 06:00 UTC (`qnfo-lifecycle` Worke
 | **Skipping `last_active` update** | Project auto-archives after 180 days | **Reset timestamp EVERY closeout** |
 | **Writing handoffs ONLY to R2** | D1 handoffs table sits empty (0 rows) — next agent starts cold | **INSERT into portfolio-state.handoffs D1 table as canonical** |
 | **Trusting R2 over D1 for itemized data** | R2 flat files have no schema, no FTS, no verification | **D1 is canonical for tasks, handoffs, decisions, projects** |
+| **Writing handoffs to local `.md` files instead of D1** | File deleted at closeout (§9), handoff data LOST, next agent starts cold | **INSERT into D1 `audit_sessions` or `portfolio-state.handoffs` FIRST; local .md is optional ephemeral trace** |
+| **Persisting canonical files on local disk** | Violates thin-client mandate — files at risk of drive loss, sync drift, session clutter | **R2 is canonical for ALL artifacts. Local copies are ephemeral caches deleted at closeout (§9). .git/ is the only exception.** |
+| **Writing to local disk without R2 upload** | Data exists only on fragile local filesystem — single drive failure = total loss | **Upload to R2 BEFORE considering any write complete. The R2 copy is the canonical output.** |
 
 ---
 
-*closeout-manager skill v3.2 — D1-FIRST. RED-TEAM-DOD INTEGRATION (§2.6). POST-PHASE GAP AUDIT with red-team self-testing. LIFECYCLE-AWARE. R2 archive paths follow ultrametric convention.*
+*closeout-manager skill v3.3 — D1-FIRST. RED-TEAM-DOD INTEGRATION (§2.6). POST-PHASE GAP AUDIT with red-team self-testing. LIFECYCLE-AWARE. R2 archive paths follow ultrametric convention.*
 
 ## RT: RED-TEAM SELF-AUDIT
 

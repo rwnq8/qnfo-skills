@@ -1,9 +1,35 @@
 ---
 name: red-team-dod
 description: AUTONOMOUS red-team + Definition of Done enforcement protocol. Runs output verification, assumption challenges, edge case checks, DoD integration, and iteration for EVERY agent response. The user should NEVER prompt for quality checks.
-version: "1.0"
+version: "1.1"
 ---
-# RED-TEAM-DOD SKILL — v1.0
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('red-team-dod')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [Priority 0 — always active, cannot be disabled].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
+
+# RED-TEAM-DOD SKILL — v1.1
 
 > **AUTONOMOUS.** The user should NEVER have to prompt for red-teaming, DoD verification, iteration, or refinement. This skill mandates these behaviors natively in EVERY QNFO agent session.
 > **PRIORITY 0 INTEGRATION.** This skill hooks into execution-guard (§1.5) and is auto-loaded at session start. All other skills inherit red-team/DoD/iterate/refine behavior through this framework.
@@ -76,6 +102,7 @@ Execute these tests for EVERY change:
 4. CONCURRENT test: What if two things try to modify simultaneously?
 5. STALE test: What if data is from last week/month?
 6. NONSENSE test: What if input is completely random/gibberish?
+7. **DNS CROSS-REFERENCE test (v1.1):** For every CNAME→`.pages.dev`, is the domain registered on the target Pages project? Does any CNAME chain to a `.pages.dev` through another domain? Does any CNAME point to a non-existent Worker? (See infrastructure-audit §0.8-§0.10)
 
 ### 2.3 Negative Verification
 
@@ -120,12 +147,13 @@ Detection checklist:
 
 | Task Type | Additional DoD Criteria |
 |:----------|:----------------------|
-| **Deployment** | Post-deploy verification (URL accessible, content correct, API working) |
+| **Deployment** | Post-deploy verification (URL accessible, content correct, API working). **For DNS/domain changes: run infrastructure-audit §0.8 cross-reference — all CNAME→`.pages.dev` must have matching domain registrations, 0 522-RISK.** |
 | **Publication** | Publication Language Gate passed, PDF verified, DOI resolved |
 | **Code Change** | Unicode scan (Rule 12), no python -c (Rule 13), test suite passed |
 | **Data Change** | Row counts verified, data integrity checked, backup created |
 | **Config Change** | Old config still works (no regression), new config verified |
 | **Skill Change** | Skill loads without errors, all hooks fire, no regressions |
+| **Infrastructure Audit** | All §0.8-§0.11 gates pass: 0 522-RISK, 0 CNAME chains, 0 DEAD-WORKER, 0 EMPTY-ZONE. 30 domains resolve HTTP 200. Resource counts within baselines. |
 
 ---
 
@@ -190,7 +218,7 @@ The pre-response hook now includes RED-TEAM-DOD sub-checks (Section 1.5). Before
 The gap audit (Section 2.6) is the closeout instance of the RED-TEAM-DOD cycle.
 
 ### 7.3 Cloudflare-Deployer
-Post-deploy verification includes red-team: try to break the deployment.
+Post-deploy verification includes red-team: try to break the deployment. **Specifically: verify all CNAME→`.pages.dev` domains have matching Pages project registrations (522 prevention).** See infrastructure-audit §0.8.
 
 ### 7.4 Code-Review
 Self-applies: red-team findings must cite specific line numbers.
@@ -212,4 +240,6 @@ Includes prompt injection red-team and autonomous trigger on any prompt modifica
 
 ---
 
-*red-team-dod v1.0 — Autonomous RED-TEAM to DoD to ITERATE to REFINE cycle. Priority 0 via execution-guard integration.*
+*v1.0 deprecated 2026-07-01. Replaced by v1.1 with DNS cross-reference edge case and Infrastructure Audit DoD criteria.*
+
+*red-team-dod v1.1 — Autonomous RED-TEAM to DoD to ITERATE to REFINE cycle. Priority 0 via execution-guard integration. v1.1 adds DNS cross-reference edge case + Infrastructure Audit DoD criteria.*

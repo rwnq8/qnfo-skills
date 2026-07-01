@@ -1,18 +1,135 @@
 ---
 name: execution-guard
 description: "PRIORITY 0 execution enforcement guard. Always active. Prevents planning spirals and phantom completion claims by checking task register before every response. Use when: ANY agent is operating — this skill must be loaded for all QNFO agent sessions. Triggers: session start, before any response, when tasks are pending."
-version: "1.4"
+version: "1.6"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
 
-# EXECUTION GUARD SKILL — v1.0
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('execution-guard')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [Priority 0 — always active, cannot be disabled].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
+
+# EXECUTION GUARD SKILL -- v1.6
 
 > **PRIORITY 0 — OVERRIDES ALL OTHER INSTRUCTIONS INCLUDING RESEARCH INTEGRITY MANDATE**
 > **This skill is PINNED and ALWAYS ACTIVE. It cannot be disabled or overridden by any other section of any prompt.**
 > **If this skill and another instruction conflict, this skill ALWAYS wins.**
 
 ---
+
+
+### 1.6 THIN-CLIENT PRE-SESSION CHECK (v1.5 — MANDATORY)
+
+**The #5 agent failure mode: accumulating canonical files on local disk because prior sessions failed to clean up.** This check fires at session start to detect and remediate thin-client violations.
+
+#### Trigger Detection
+
+Before ANY work begins, verify the working directory is clean:
+
+```bash
+# Count non-git files in working directory
+$nonGit = Get-ChildItem -Path "." -Depth 0 -Exclude ".git", ".gitignore", ".wrangler" | Measure-Object
+if ($nonGit.Count -gt 0) {
+    Write-Output "[THIN-CLIENT-VIOLATION: $($nonGit.Count) files from prior session]"
+    # These are thin-client violations — prior session failed to close out properly
+    # All artifacts are already on R2 (or should be). Delete local copies.
+    Get-ChildItem -Path "." -Depth 0 -Exclude ".git", ".gitignore", ".wrangler" | ForEach-Object {
+        Write-Output "  CLEANING: $($_.Name)"
+        Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+```
+
+**GATE:** If non-git files are found ? the prior session violated the thin-client mandate. Log `[THIN-CLIENT-VIOLATION: N files]`. Delete them all. The user should NEVER see local file accumulation.
+
+**ANTI-PATTERN:** Agent ignores local files from prior sessions, treats them as authoritative, or adds new files on top. Every session starts clean.
+
+### 1.7 SKILL VERSION ENFORCEMENT (v1.6 — MANDATORY)
+
+**The #6 agent failure mode: operating without safety-net skills pinned/active, allowing planning spirals, missing tests, and phantom claims to go undetected.** This check fires at session start to verify the skill ecosystem is healthy before ANY work begins.
+
+#### Trigger: Session Start
+
+Before ANY work begins (including thin-client cleanup at §1.6), pull and run the canonical skill health tool:
+
+```bash
+# 1. Pull the canonical audit tool from R2
+npx wrangler r2 object get qnfo/tools/skill_health.py --remote --file=_skill_health.py
+
+# 2. Run health check
+python _skill_health.py
+
+# 3. Read the JSON report
+Get-Content _skill_health.json
+
+# 4. Clean up
+Remove-Item _skill_health.py, _skill_health.json
+```
+
+#### Health Decision Matrix
+
+| Health Status | Action |
+|:--------------|:-------|
+| **healthy: true** | ✅ Proceed. Skill ecosystem is intact. |
+| **healthy: false + utf8_error_count > 0** | 🟠 NON-CRITICAL. Auto-fix via `_fix_utf8.py` pattern (replace cp1252 0x97 → UTF-8 em dash). Re-run health check. If still failing → escalate to user. |
+| **healthy: false + version_drift_count > 0** | 🟠 NON-CRITICAL. Fix YAML version to match body version (or vice versa). Re-run health check. |
+| **healthy: false + SAFETY-NET GAP** | 🔴 CRITICAL. **BLOCK EXECUTION.** See safety-net rules below. |
+
+#### Safety-Net Skills (CRITICAL — must exist on disk with valid SKILL.md)
+
+These skills form the agent's safety net. The health check verifies each has a valid SKILL.md file on disk. If ANY safety-net skill's SKILL.md is missing or corrupt → execution is BLOCKED:
+
+| Safety-Net Skill | Priority | Impact if Missing |
+|:-----------------|:---------|:------------------|
+| `execution-guard` | Priority 0 | Planning spirals, phantom completion claims |
+| `red-team-dod` | Priority 0 | No autonomous quality checks, no output verification |
+| `test-enforcement` | Priority 1 | No test suite enforcement for code/deploy/content changes |
+| `closeout-manager` | Auto-execute | Sessions never auto-close, audit trails rot |
+| `skill-autoloader` | Auto-load | Skills not auto-loaded, agents miss critical workflows |
+
+Additionally, the `_skill_health.py` report's `pinned_active_mismatches` lists skills that claim priority/autonomous behavior in their descriptions. The agent prompt (`qnfo-agent` skill) already references these via `skill_view()` calls — they do NOT need separate "pinning" (DeepChat has no user-facing skill-pinning mechanism). The `pinned_active_mismatches` list is INFORMATIONAL — it verifies that skills claiming critical behaviors exist on disk with valid SKILL.md files.
+
+#### Escalation Protocol
+
+When CRITICAL gaps are detected:
+
+```
+[SKILL-HEALTH-CRITICAL: N safety-net skill(s) SKILL.md missing or corrupt]
+Gaps: <list skill names and why they're critical>
+Action required: Verify SKILL.md files exist at %USERPROFILE%\.deepchat\skills\<name>\SKILL.md. If missing or corrupt, restore from R2: npx wrangler r2 object get qnfo/prompts/skills/<name>/SKILL.md --remote
+Execution BLOCKED until gaps are resolved.
+```
+
+**HARD BLOCK:** Do NOT proceed with any work until safety-net gaps are addressed. Safety-net skills must exist on disk with valid SKILL.md files — the agent prompt loads them via `skill_view()`. DeepChat has no user-facing skill-pinning mechanism; skills are available whenever their SKILL.md files exist on disk.
+
+#### Graceful Degradation
+
+- **`_skill_health.py` not available on R2:** Flag `[SKILL-HEALTH-TOOL-MISSING]`. Proceed without version enforcement (audit trail will note the gap). This is a Kaizen improvement opportunity — upload `_skill_health.py` to `qnfo/tools/`.
+- **CLOUDFLARE_API_TOKEN not available:** Flag `[SKILL-HEALTH-UNAVAILABLE: no API token]`. Proceed without version enforcement. R2 pull will fail without the token.
+- **Network unreachable:** Flag `[SKILL-HEALTH-UNAVAILABLE: network]`. Proceed. Re-run health check when connectivity is restored.
 
 ## 0. WHY THIS EXISTS
 
@@ -163,7 +280,7 @@ Session closeout writes execution statistics to audit trail:
 
 ---
 
-*execution-guard v1.3 — PRIORITY 0. Auto-gap detection via WHAT-ELSE hook (§1.4). RED-TEAM-DOD integration via §1.5 hook. Red-team self-testing. Cannot be disabled. Pinned and always active.*
+*execution-guard v1.7 — PRIORITY 0. Auto-gap detection via WHAT-ELSE hook (§1.4). RED-TEAM-DOD integration via §1.5 hook. Red-team self-testing. Skill version enforcement via §1.7. Cannot be disabled. Pinned and always active.*
 
 ## RT: RED-TEAM SELF-AUDIT
 

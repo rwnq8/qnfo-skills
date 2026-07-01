@@ -4,7 +4,33 @@ description: AUTOMATICALLY loads relevant QNFO skills based on task detection. U
 pinned: true
 ---
 
-# SKILL AUTO-LOADER — v1.0
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('skill-autoloader')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [Priority 0 — always active, cannot be disabled].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
+
+
+# SKILL AUTO-LOADER -- v2.0
 
 > **PRIORITY 0 — pinned, always active. User NEVER manually loads skills.**
 
@@ -39,11 +65,29 @@ When the user's message or the LLM's planned task matches a pattern, auto-load t
 | migrate, local to R2, cleanup, thin client | `local-to-r2-migration` |
 | prompt audit, self-audit, skill audit | `prompt-audit` |
 | user story, "as a researcher", "I need to" | `user-story-separation` |
+| code review, security audit, best practices, code quality assessment | `code-review` |
+| commit, conventional commit, git commit | `git-commit` |
+| art, generative art, algorithmic art, p5.js, flow field, particle | `algorithmic-art` |
+| docx, Word document, .docx, tracked changes, comments | `docx` |
+| pptx, PowerPoint, presentation, slides, .pptx | `pptx` |
+| xlsx, Excel, spreadsheet, CSV, .xlsx, data analysis | `xlsx` |
+| PDF form, fill PDF, merge PDF, split PDF | `pdf` |
+| documentation, proposal, spec, technical writing, co-author | `doc-coauthoring` |
+| infographic, AntV, chart visualization | `infographic-syntax-creator` |
+| MCP, Model Context Protocol, FastMCP, API integration | `mcp-builder` |
+| settings, preferences, theme, language, font size, DeepChat settings | `deepchat-settings` |
+| remember, recall, memory, durable learning, tape | `memory-management` |
+| create skill, new skill, skill creator, update skill | `skill-creator` |
+| artifact, React component, Tailwind, shadcn, web app | `web-artifacts-builder` |
+| red team, DoD, definition of done, quality check, verify | `red-team-dod` |
+| test, verify, test suite, enforce | `test-enforcement` |
+| pdf builder, convert markdown, LaTeX compile | `pdf-builder` |
+
 
 ### Rule 2: Fallback When skill_view() Fails
 
 If `skill_view('name')` returns an error, try these fallbacks in order:
-1. `read('%APPDATA%\.deepchat\skills\<name>\SKILL.md')`
+1. `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
 2. `npx wrangler r2 object get qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md` then read
 3. Report `[SKILL-UNAVAILABLE: <name>]` and continue with best-effort knowledge
 
@@ -69,7 +113,7 @@ Before executing any task, check:
 
 Once a skill is loaded, cache its content for the session. Don't re-load the same skill multiple times.
 
-## Skill Inventory (34 skills)
+## Skill Inventory (41 skills)
 
 | Skill | Trigger Pattern | Related Skills |
 |-------|----------------|---------------|
@@ -96,6 +140,24 @@ Once a skill is loaded, cache its content for the session. Don't re-load the sam
 | `local-to-r2-migration` | migrate, cleanup, thin client | cloudflare-deployer |
 | `handoff-protocol` | handoff, QACP | closeout-manager |
 | `ultrametric-engine` | ultrametric, p-adic, tree | knowledge-graph |
+| `test-enforcement` | (always active — Priority 1) | execution-guard, closeout-manager |
+| `red-team-dod` | (always active — Priority 0) | execution-guard, closeout-manager |
+| `code-review` | code review, security audit, best practices, code quality | test-enforcement |
+| `git-commit` | commit, conventional commit, commit message | git-hygiene |
+| `frontend-design` | UI, design, web component, React, HTML, CSS, dashboard, landing page | bling-usability-audit |
+| `algorithmic-art` | art, generative, p5.js, flow field, particle system | frontend-design |
+| `web-artifacts-builder` | artifact, React component, Tailwind, shadcn | frontend-design |
+| `docx` | docx, Word, document, tracked changes | — |
+| `pptx` | pptx, PowerPoint, presentation, slides | — |
+| `xlsx` | xlsx, Excel, spreadsheet, CSV, data analysis | — |
+| `pdf` | PDF, form, merge, split, extract | pdf-builder |
+| `pdf-builder` | PDF build, convert markdown, LaTeX compile, publication PDF | publication-publisher |
+| `doc-coauthoring` | documentation, proposal, spec, co-author, technical writing | — |
+| `infographic-syntax-creator` | infographic, AntV, chart, visualization | frontend-design |
+| `mcp-builder` | MCP server, Model Context Protocol, FastMCP, API integration | — |
+| `deepchat-settings` | settings, preferences, theme, language, font | — |
+| `memory-management` | remember, recall, memory, learning, tape | qnfo-agent |
+| `skill-creator` | create skill, new skill, update skill | skill-sync |
 
 ## Anti-Patterns
 
@@ -109,4 +171,4 @@ Once a skill is loaded, cache its content for the session. Don't re-load the sam
 
 ---
 
-*skill-autoloader v1.0 — Priority 0. Auto-detects task patterns and loads skills. User never manually manages skills. Fallback recovery for load failures.*
+*skill-autoloader v2.0 — Priority 0. Auto-detects task patterns and loads skills. User never manually manages skills. Fallback recovery for load failures.*
