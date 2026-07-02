@@ -208,7 +208,39 @@ def build_html(title, author, date_str, abstract, license_str, body_html, css_in
 
 
 def convert_md_to_html(text):
-    """Convert markdown text to HTML body using Python-Markdown with extensions."""
+    """Convert markdown text to HTML body using Python-Markdown with extensions.
+    
+    Math blocks ($...$ and $$...$$) are protected from markdown processing
+    to prevent underscores and asterisks from being interpreted as emphasis.
+    This is critical for LaTeX math like $\\mathbb{Z}_p$ where _p would
+    otherwise be corrupted to <em>p</em>.
+    """
+    
+    # Step 1: Protect math blocks with unique placeholders
+    placeholder_map = {}
+    counter = [0]
+    
+    def make_placeholder():
+        counter[0] += 1
+        return "\u27e8\u27e8\u27e8MATHBLOCK" + str(counter[0]) + "\u27e9\u27e9\u27e9"
+    
+    # Protect display math first ($$...$$) to avoid greedy matching issues
+    def protect_display(match):
+        key = make_placeholder()
+        placeholder_map[key] = match.group(0)
+        return key
+    
+    text = re.sub(r'\$\$(.+?)\$\$', protect_display, text, flags=re.DOTALL)
+    
+    # Protect inline math ($...$) - single $, not part of $$
+    def protect_inline(match):
+        key = make_placeholder()
+        placeholder_map[key] = match.group(0)
+        return key
+    
+    text = re.sub(r'(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)', protect_inline, text)
+    
+    # Step 2: Convert markdown to HTML (math is now protected by placeholders)
     extensions = [
         'markdown.extensions.tables',
         'markdown.extensions.fenced_code',
@@ -224,12 +256,13 @@ def convert_md_to_html(text):
     md = markdown.Markdown(extensions=extensions, output_format='html5')
     body = md.convert(text)
 
-    # Post-process: wrap display math in centered paragraphs for better layout
-    def math_block_replacer(m):
-        expr = m.group(1)
-        return f'\n<p style="text-align:center">$${expr}$$</p>\n'
-
-    body = re.sub(r'\$\$([^$]+?)\$\$', math_block_replacer, body)
+    # Step 3: Restore math placeholders with proper HTML wrapping
+    for key, math_expr in placeholder_map.items():
+        if math_expr.startswith('$$'):
+            replacement = '\n<p style="text-align:center">' + math_expr + '</p>\n'
+        else:
+            replacement = math_expr
+        body = body.replace(key, replacement)
 
     return body
 
