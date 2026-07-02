@@ -208,10 +208,10 @@ Based on audit findings, report orphaned resources, stale entries, archival mism
 | D1 Databases | 5 | qnfo-cms (page content), **living-paper (CANONICAL PUBLICATIONS DATABASE — 170 papers)**, qnfo-audit, qnfo-graph, portfolio-state |
 | KV Namespaces | 1 | equation-cache |
 | Vectorize Indexes | 3 | qwav-research-v2 (1024-dim, active), qnfo-handoffs, qnfo-tasks |
-| Pages Projects | 5 (all active) | qnfo-hub (qnfo.org), qnfo-publications (papers.qnfo.org), qnfo-legal (legal.qnfo.org), qwav (deep.qwav.tech), qnfo-design-system (design.qnfo.org) |
+| Pages Projects | 10 (all active) | qnfo-hub (qnfo.org), qnfo-publications (papers.qnfo.org), qnfo-legal (legal.qnfo.org), qwav (deep.qwav.tech), qnfo-design-system (design.qnfo.org), hensel-code (hensel.qnfo.org), discovery-momentum (momentum.qnfo.org), different-physics (different.qnfo.org), cocyle (cocyle.qnfo.org), ask-qwav (ask.qwav.tech) |
 | Workers | 30 | papers-server (D1+R2 dynamic renderer), ask-qwav, graph-api, qnfo-data-api, seo-metadata-injector, +25 more |
 | Queues | 2 | qnfo-lifecycle-queue (essential), git-on-cloudflare-repo-maint (deprecated) |
-| Knowledge Graph | 825 nodes, 1727 edges | SEVERELY OUT OF SYNC — 70+ nodes for ~16 live resources. Needs bulk cleanup. |
+| Knowledge Graph | 882 nodes, 1854 edges | EXPANDED — Papers, Zenodo records, and Cloudflare assets now seeded |
 | R2 Bucket | 1 (qnfo) | papers, publications, discovery, archive, projects, releases, tools |
 | Live Domains | 30 (verified 2026-07-01) | 12 zones, 56 DNS records, all resolving HTTP 200 |
 
@@ -267,7 +267,7 @@ No action needed.
 
 > **CRITICAL:** The 2026-07-01 session audit found 18 worker routes, 30 Workers, 10 Pages projects, 42 DNS records, 7 zones, and 4 redirect chains — all grown unconstrained. Root cause: no cross-reference between resources, no baseline counts, no automated enforcement. The session session deleted 24 DNS records, 13 routes, 5 Workers, 5 Pages projects, and 2 redirect rulesets. **These rules prevent recurrence.**
 
-**Resource Baselines (alert if exceeded):** Worker routes ≤ 6, Workers ≤ 24, Pages ≤ 5, DNS ≤ 16, Zones ≤ 5, Redirects = 0. **Cross-Reference Enforcement:** every route must target a live Worker; every DNS CNAME to `.pages.dev` must have domain registered on that Pages project; every domain must resolve to HTTP 200. **Growth Detection:** before creating any resource, count current resources; if over baseline, audit and clean up first. **Anti-Proliferation:** create DNS CNAME → add domain to Pages FIRST; create Worker route → verify Worker deployed FIRST; delete Worker → delete all routes FIRST; delete Pages → remove all domains FIRST.
+**Resource Baselines (alert if exceeded):** Worker routes ≤ 6, Workers ≤ 26, Pages ≤ 10, DNS ≤ 56, Zones ≤ 12, Redirects = 0. **Cross-Reference Enforcement:** every route must target a live Worker; every DNS CNAME to `.pages.dev` must have domain registered on that Pages project; every domain must resolve to HTTP 200. **Growth Detection:** before creating any resource, count current resources; if over baseline, audit and clean up first. **Anti-Proliferation:** create DNS CNAME → add domain to Pages FIRST; create Worker route → verify Worker deployed FIRST; delete Worker → delete all routes FIRST; delete Pages → remove all domains FIRST.
 
 **GATE:** Resource counts MUST be within baseline at session start.
 

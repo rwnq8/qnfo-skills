@@ -7,7 +7,7 @@ version: "2.1"
 
 ---
 
-# CLOUDFLARE DEPLOYER SKILL — v2.1
+# CLOUDFLARE DEPLOYER SKILL — v2.2
 
 > **On-demand skill.** Load via `skill_view('cloudflare-deployer')` for all Cloudflare operations.
 > Source: `templates/CLOUDFLARE-DEPLOYMENT.md` v2.1 + QWAV-DEFAULT.md §0.6.5-0.6.7
@@ -53,7 +53,7 @@ All Cloudflare policies verified via both wrangler CLI and REST API direct calls
 | Service | Access | Count | API Endpoint | Wrangler Command |
 |:--------|:------:|:------|:-------------|:-----------------|
 | **R2** | ✅ Read+Write+Delete | 1 bucket (qnfo) | `/accounts/:id/r2/buckets` | `wrangler r2 object {get,put,delete}` |
-| **Pages** | ✅ Full | 10 projects (5 active, 5 dormant/support) | `/accounts/:id/pages/projects` | `wrangler pages project list` |
+| **Pages** | ✅ Full | 10 projects (all active) | `/accounts/:id/pages/projects` | `wrangler pages project list` |
 | **Workers** | ✅ Full | 30 scripts | `/accounts/:id/workers/scripts` | `wrangler deploy` |
 | **D1** | ✅ Full | 5 databases | `/accounts/:id/d1/database` | `wrangler d1 list` |
 | **KV** | ✅ Full | 2 namespaces | `/accounts/:id/storage/kv/namespaces` | `wrangler kv namespace list` |
@@ -103,7 +103,7 @@ All Cloudflare policies verified via both wrangler CLI and REST API direct calls
 - `qnfo-lifecycle-queue` — Lifecycle pipeline (archival jobs, auto-transitions)
 - `git-on-cloudflare-repo-maint` (296cceec) — Git repository maintenance (DEPRECATED — GitHub deprecated per ADR-001)
 
-**Pages Projects (5):** qnfo-hub (qnfo.org, www.qnfo.org), qnfo-publications (papers.qnfo.org), qnfo-legal (legal.qnfo.org), qwav (deep.qwav.tech), qnfo-design-system (design.qnfo.org)
+**Pages Projects (10, all active):** qnfo-hub (qnfo.org, www.qnfo.org), qnfo-publications (papers.qnfo.org, archive.qnfo.org), qnfo-legal (legal.qnfo.org), qwav (deep.qwav.tech, primer.qwav.tech, qwav.net, qwav.org, qwav.tech, qwav.uk, qwave.tech, score.qwav.tech, www.qwav.tech), qnfo-design-system (design.qnfo.org), hensel-code (hensel.qnfo.org), discovery-momentum (momentum.qnfo.org), different-physics (different.qnfo.org), cocyle (cocyle.qnfo.org), ask-qwav (ask.qwav.tech)
 
 **Workers (26 scripts):** Deployed — key workers include `graph-api` (Knowledge Graph), `qnfo-lifecycle` (automated project lifecycle, cron: daily 06:00 UTC), `living-papers-api` (Living Papers with D1 + IPFS), `qnfo-archive-worker` (queue consumer for R2 archival migration), `qnfo-archive-verify` (archive verification), `umbrella-router` (traffic routing). Query via `wrangler deployments` with specific worker names.
 
@@ -145,8 +145,7 @@ npx wrangler pages deployment list --project-name <name>
 npx wrangler pages deployment rollback --project-name <name>
 ```
 
-**Active Projects:** qwav (deep.qwav.tech), prompts-wiki, qnfo-archive (archive.qnfo.org),
-quantum-laws-of-form (laws.qnfo.org), qlof-primer (primer.qwav.tech), +11 more.
+**Active Projects:** qnfo-hub (qnfo.org), qnfo-publications (papers.qnfo.org), qnfo-legal (legal.qnfo.org), qwav (deep.qwav.tech), qnfo-design-system (design.qnfo.org), hensel-code (hensel.qnfo.org), discovery-momentum (momentum.qnfo.org), different-physics (different.qnfo.org), cocyle (cocyle.qnfo.org), ask-qwav (ask.qwav.tech).
 
 ### Post-Deploy Verification (MANDATORY for ALL deploys — v1.7)
 

@@ -379,25 +379,19 @@ python _generate-seo.py --url https://papers.qnfo.org/<paper-slug>/ --title "<pa
 # Discard: Remove-Item _generate-seo.py
 ```
 
-### Stage 7: Discovery Index Update
+### Stage 7: Discovery Index Update (D1-Canonical)
 
-Register the new publication in the Discovery Index:
+Register the new publication in D1 (canonical) and R2 (file backup):
 
 ```bash
-# Pull current index
-npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json
+# D1-FIRST: Update D1 portfolio-state.resources with new publication
+npx wrangler d1 execute portfolio-state --remote --command "INSERT INTO resources (type, name, title, doi, r2_path, pages_url, status, created_at) VALUES ('publication', '<paper-slug>', '<title>', '<doi>', 'qnfo/releases/YYYY/MM/<paper-slug>/', 'https://papers.qnfo.org/<paper-slug>/', 'active', datetime('now'));"
 
-# Update Discovery Index with new publication entry
-# Write update script to file, execute, discard
-echo "import json; idx = json.load(open('_discovery_index.json','r',encoding='utf-8')); idx.setdefault('publications',{})['<paper-slug>'] = {'title':'<title>','doi':'<doi>','date':'<date>','r2_path':'qnfo/releases/YYYY/MM/<paper-slug>/','pages_url':'https://papers.qnfo.org/<paper-slug>/','zenodo_url':'https://zenodo.org/records/<id>'}; json.dump(idx, open('_discovery_index.json','w',encoding='utf-8'), indent=2)" > _update_di.py
-python _update_di.py
+# Update Knowledge Graph via graph-api
+# POST https://graph-api.q08.workers.dev/sync with action: "bulk" to add Paper node + PUBLISHED edge
 
-# Upload updated index
-npx wrangler r2 object put qnfo/discovery/index.json --file=_discovery_index.json --remote
-
-# Clean up
-Remove-Item _discovery_index.json
-Remove-Item _update_di.py
+# R2 discovery index is DEPRECATED — D1 is canonical for all structured records.
+# R2 backup only for file artifacts (PDF, markdown).
 ```
 
 ---

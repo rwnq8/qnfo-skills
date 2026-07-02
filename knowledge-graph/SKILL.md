@@ -1,13 +1,38 @@
 ---
 name: knowledge-graph
 description: QNFO Knowledge Graph querying for due diligence, impact analysis, ultrametric clustering, and cross-system discovery. Supports ball queries, hierarchical taxonomy, and lifecycle-aware project queries.
-version: "2.2"
+version: "2.3"
+---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
+
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('knowledge-graph')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
 ---
 
-
----
-
-# QNFO Knowledge Graph — Agent Skill v2.2
+# QNFO Knowledge Graph — Agent Skill v2.3
 
 > **ULTRAMETRIC-AWARE.** This release adds ultrametric taxonomy support, ball queries, and lifecycle-aware project filtering.
 > All queries go through the deployed Cloudflare Worker API. No local installation required.
@@ -17,7 +42,7 @@ version: "2.2"
 The QNFO Knowledge Graph is a D1-backed graph database (Cloudflare-native, zero external services) connecting every entity in the QNFO ecosystem. It now includes an **ultrametric hierarchical taxonomy** where projects are organized into 4 domains, 12 programs, forming a 2-adic tree with distances that satisfy the strong triangle inequality: $d(x,z) \leq \max(d(x,y), d(y,z))$.
 
 **Deployed API:** `https://graph-api.q08.workers.dev` (Cloudflare Worker, D1 qnfo-graph)
-**Current State:** 261 nodes, 401 edges, 8 API endpoints (verified live 2026-06-28)
+**Current State:** 882 nodes, 1854 edges, 8 API endpoints (verified live 2026-07-02)
 
 ## Ultrametric Taxonomy Structure
 
@@ -74,7 +99,7 @@ r = urllib.request.Request("https://graph-api.q08.workers.dev/stats",
     headers={"User-Agent": "Mozilla/5.0"})
 data = json.loads(urllib.request.urlopen(r, timeout=10).read())
 # Returns: {totalNodes, totalEdges, nodeLabels: [...], relationshipTypes: [...]}
-# Current: 261 nodes, 401 edges
+# Current: 882 nodes, 1854 edges
 ```
 
 ### GET /nodes?label=Project&search=pdf
@@ -293,11 +318,20 @@ GET /neighbors/PAPER_SLUG
 
 | Type | Count | Purpose |
 |------|:-----:|---------|
-| BELONGS_TO | ~57 | Ultrametric taxonomy edges |
-| OWNS | ~205 | Organizational hierarchy |
-| OWNED_BY | ~88 | Reverse organizational |
-| ULTRA_CONTAINS | ~57 | New 2-adic hierarchical containment |
-| DEPENDS_ON | ~36 | Infrastructure dependency |
+| RELATES_TO | 522 | General-purpose relationship |
+| OWNS | 274 | Organizational hierarchy |
+| BELONGS_TO | 154 | Ultrametric taxonomy edges |
+| PUBLISHED_AS | 124 | Publication DOI mapping |
+| AUTHORED_BY | 109 | Paper authorship |
+| HOSTED_AT | 108 | Pages deployment hosting |
+| LICENSED_UNDER | 108 | License attribution |
+| STORED_AT | 103 | R2 storage location |
+| PUBLISHED_IN | 63 | Zenodo venue records |
+| ULTRA_CONTAINS | 59 | 2-adic hierarchical containment |
+| REFERENCES | 38 | Paper-to-paper citations |
+| AFFECTS | 35 | Cross-entity impact |
+| DEPENDS_ON | 34 | Infrastructure dependency |
+| OWNED_BY | 24 | Reverse organizational |
 
 ## Lifecycle Integration
 
@@ -324,6 +358,7 @@ The Knowledge Graph is the central registry for project lifecycle. Key propertie
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| v2.3 | 2026-07-02 | **Count refresh:** 882 nodes (24 labels), 1854 edges (45 types). Added Paper (178), CloudflareAsset (148), ZenodoRecord (124), R2Object (115) labels. Edge type table expanded to 14 types. RELATES_TO now dominant (522). Verified live via KG API. |
 | v2.2 | 2026-06-28 | **Count refresh:** Verified live — 261 nodes, 401 edges. OWNS now dominant edge (205 vs 99). Needs paper REFERENCES edges (currently 0 paper connections). |
 | v2.0 | 2026-06-21 | **Ultrametric Taxonomy:** Added 4-domain/12-program ultrametric tree with BELONGS_TO and ULTRA_CONTAINS edges. Added ball query recipe. Updated graph stats (238/382). Added lifecycle property documentation. Verified 0 violations on 500 triples (strong triangle inequality). |
 | v1.1 | 2026-06-03 | Phase 2/3 Integration: POST /sync documentation, reseed protocol. |
@@ -331,4 +366,18 @@ The Knowledge Graph is the central registry for project lifecycle. Key propertie
 
 ---
 
-*knowledge-graph skill v2.1 — Ultrametric-aware. Ball queries, hierarchical taxonomy, lifecycle integration.*
+*knowledge-graph skill v2.3 — Ultrametric-aware. Ball queries, hierarchical taxonomy, lifecycle integration.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

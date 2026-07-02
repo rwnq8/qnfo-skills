@@ -1,7 +1,7 @@
 ---
 name: test-enforcement
 description: MANDATORY test enforcement for ALL code changes, deployments, and infrastructure modifications. Runs canonical test suite before claiming any action as EXECUTED. Priority 1 — pinned and always active.
-version: "1.1"
+version: "1.2"
 ---
 ### Programmatic Loading & Execution
 This skill is loaded and executed **programmatically by the LLM system** 
@@ -30,8 +30,8 @@ documented below.
 |:------|:--------:|
 | Page NOT stub (no "stub", "page stub", "auto-generated") | **YES** |
 | Page has `<title>`, `<h1>`, body > 500B | **YES** |
-| CMS publication has body (> 100 chars) | **YES** |
-| CMS publication has DOI | WARNING |
+| qnfo-cms publication has body (> 100 chars) | **YES** |
+| qnfo-cms publication has DOI | WARNING |
 
 ## 2.5 GAP AUDIT BRIDGE (v1.1)
 
@@ -56,7 +56,7 @@ python _test_suite.py --quick           # Smoke test
 
 ## 4. DOMAINS COVERED (80+ tests across 9 domains)
 
-CMS (8) | Pages (55) | KG (6) | D1 (8) | Vectorize (3) | R2 (4) | Skills (8) | Content (8+) | Health (3)
+qnfo-cms (8) | Pages (55) | KG (6) | D1 (8) | Vectorize (3) | R2 (4) | Skills (8) | Content (8+) | Health (3)
 
 ## 5. FAILURE HANDLING
 
