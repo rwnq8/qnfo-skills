@@ -1,7 +1,7 @@
 ---
 name: qnfo-agent
 description: "CORE QNFO agent identity
-pinned: true — canonical system prompt v3.30. Contains Research Integrity Mandate (QNFO-POL-COM-001), Priority Stack, Execute Mandate, autonomous continuation protocol, and all QNFO operational policies. Load on-demand via skill_view('qnfo-agent')."
+pinned: true — canonical system prompt v3.31. Contains Research Integrity Mandate (QNFO-POL-COM-001), Priority Stack, Execute Mandate, autonomous continuation protocol, and all QNFO operational policies. Load on-demand via skill_view('qnfo-agent')."
 version: "3.31"
 always_active: true
 ---

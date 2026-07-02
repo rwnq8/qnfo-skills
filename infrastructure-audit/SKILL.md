@@ -7,7 +7,7 @@ version: "1.9"
 
 ---
 
-# INFRASTRUCTURE AUDIT SKILL -- v1.9
+# INFRASTRUCTURE AUDIT SKILL -- v2.0
 
 > **LIFECYCLE-AWARE. GAP-AUDIT INTEGRATION. RED-TEAM-DOD INTEGRATION. RESOURCE GOVERNANCE. 522-PREVENTION. UPDATED 2026-07-01.** v1.9 adds §0.8 522 Root Cause Detection (CNAME × Pages cross-reference), §0.9 CNAME Chain Detection, §0.10 Dead Worker CNAME Detection, and §0.11 Empty Zone Detection — all learned from the 2026-07-01 qwav.tech 522 outage. Prevents the #1 failure mode: CNAME to `.pages.dev` without domain registration.
 
@@ -55,7 +55,7 @@ queues = cf('queues')
 
 print(f'D1: {len(d1.get("result",[]))} | KV: {len(kv.get("result",[]))} | Vectorize: {len(vec.get("result",[]))}')
 print(f'Pages: {len(pages.get("result",[]))} | Workers: {len(workers.get("result",[]))} | Queues: {len(queues.get("result",[]))}')
-# Expected: D1: 5 | KV: 1 | Vectorize: 3 | Pages: 10 (3 essential, 4 redirecting) | Workers: 30 | Queues: 2
+# Expected: D1: 5 | KV: 1 | Vectorize: 3 | Pages: 10 (all active) | Workers: 30 | Queues: 2
 ```
 
 ### Phase 1.5: Lifecycle Pipeline Health (NEW)
@@ -483,6 +483,6 @@ for a, b in itertools.combinations(all_routes, 2):
 
 ---
 
-*infrastructure-audit v1.9 — Resource Governance (§0.7) + 522 Prevention (§0.8-§0.11). Automated CNAME×Pages cross-reference, chain detection, dead worker detection, empty zone detection. 25-check audit with automated fix capability.*
+*infrastructure-audit v2.0 — Resource Governance (§0.7) + 522 Prevention (§0.8-§0.11). Automated CNAME×Pages cross-reference, chain detection, dead worker detection, empty zone detection. 25-check audit with automated fix capability.*
 
 *v1.8 and earlier deprecated 2026-07-01. Replaced by v1.9 with automated 522 root cause detection, CNAME chain detection, dead worker detection, and empty zone detection.*

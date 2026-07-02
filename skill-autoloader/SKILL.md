@@ -63,6 +63,7 @@ When the user's message or the LLM's planned task matches a pattern, auto-load t
 | email, send, Outlook, compose | `email-composer` |
 | knowledge graph, KG, graph-api, dependencies, impact, neighbors, nodes, edges | `knowledge-graph` |
 | audit, infrastructure, health check, orphan, stale, lifecycle, worker route, route conflict | `infrastructure-audit` |
+| ipfs, pinata, cid, pinning, paper hash, content-addressing | `ipfs-pinning` |
 | UI, design, frontend, page, styling, BLING, visual | `bling-usability-audit` |
 | research, paper search, literature, preprint, Semantic Scholar | `literature-search` |
 | SEO, sitemap, robots.txt, discoverability, llms.txt | `seo-discoverability` |
