@@ -2,32 +2,7 @@
 name: ultrametric-engine
 description: Deploy 20 mathematical principles (ultrametric distance, p-adic valuation, Ostrowski's theorem, Hensel's lemma, Mahler compression, Berkovich spaces, Tate/Amice spectral analysis, Hasse local-global, Witt vectors, Bruhat-Tits buildings, p-adic caching, intrinsic Amice transform) as a production Cloudflare discovery engine. Use when building ultrametric tree-based search, p-adic ranked paper corpora, hierarchical dendrogram visualizations, or multi-endpoint Workers with R2/D1/Pages/Vectorize bindings.
 ---
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
-
-
-### Programmatic Loading & Execution
-This skill is loaded and executed **programmatically by the LLM system** 
-during response generation. Loading is triggered automatically via 
-`skill_view('ultrametric-engine')` or `read()` with filesystem path.
-**The user NEVER manually loads this skill.** The `skill-autoloader` 
-detects task patterns and handles all skill loading. If this skill fails 
-to load, the LLM system automatically retries via the fallback chain 
-documented below.
-**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
-
-### Skill Loading Retry Protocol
-If `skill_view('name')` fails during programmatic loading, the LLM system 
-MUST execute this fallback chain:
-1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
-2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
-   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
-3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
-4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
-   and best-effort knowledge
-**NEVER silently proceed without a skill's critical instructions.** If a skill 
-is required for the task and cannot be loaded after 3 retries, escalate to 
-the user with the specific failure reason.
 
 ---
 
@@ -41,33 +16,6 @@ Deploy a complete ultrametric discovery engine on Cloudflare Workers. This skill
 
 | Trigger | Action |
 |:---
-
-## execute_plan (MANDATORY — Before Any Execution)
-
-**This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.
-
-### Execution Protocol
-
-1. **Populate update_plan** with workflow phases as concrete checklist items
-2. **Execute one item at a time** — at most ONE in_progress
-3. **Mark items completed ONLY with tool evidence** (Test-Path, exec output, git log)
-4. **Never claim completion without execution evidence** — Rule 14 enforcement
-5. **If blocked:** Flag as [BLOCKED: reason] and move to the next item
-
-### Example Plan
-
-update_plan([
-  {"step": "Clone reference implementation (ask-qwav)", "status": "pending"},
-  {"step": "Verify wrangler auth and bindings", "status": "pending"},
-  {"step": "Deploy Worker with D1/R2/Vectorize bindings", "status": "pending"},
-  {"step": "Verify /health endpoint", "status": "pending"},
-  {"step": "Verify /did-you-mean endpoint", "status": "pending"},
-  {"step": "Verify /ultrametric-tree endpoint", "status": "pending"},
-  {"step": "Verify /spectral-analysis endpoint", "status": "pending"},
-  {"step": "Verify tree persists across cold starts (R2)", "status": "pending"},
-  {"step": "Deploy Pages dendrogram visualization", "status": "pending"},
-])
-
 ---
 
 -----|:-------|
@@ -169,37 +117,3 @@ function getPAdicCacheTTL(query) {
 - [ ] `/buffer-schedule` returns "token not configured" until secret is set
 - [ ] Tree persists across cold starts via R2
 - [ ] Frontend renders D3 dendrogram
-
-## RT: RED-TEAM SELF-AUDIT
-
-Before claiming this skill complete, autonomously run:
-
-1. Output Verification (negative verification)
-2. Assumption Challenge (state and test every assumption)
-3. Edge Case Check (empty/null/max/boundary/desync)
-4. DoD Integration (run _dod_enforce.py if exists)
-5. Iteration (retry on failure, max 3)
-
-ANTI-PATTERN: User should NEVER ask about quality.
-Refer to RED-TEAM-PROTOCOL.md for full protocol.
-
-
-
----
-
-## QNFO Design System Compliance (v2.0 - 2026-06-30)
-
-**ALL QNFO/QWAV publications, pages, PDFs, and web artifacts MUST use the Silent Radix Light Theme.**
-
-| Resource | Location |
-|:---------|:---------|
-| Canonical CSS | `https://qnfo.org/design-system/qnfo-light.css` |
-| PDF builder (v2.0) | `qnfo/design-system/build_pdf.py` |
-| HTML template | `qnfo/design-system/publication-template.html` |
-| Design doc | `qnfo/design-system/QNFO-DESIGN-SYSTEM.md` |
-
-**DARK THEMES FORBIDDEN.** All output must use:
-- White background (#FFFFFF), dark text (#363636)
-- System font stack, max-width 800px centered layout
-- Clean tables with border-collapse: collapse
-- MathJax CHTML with left-aligned display equations

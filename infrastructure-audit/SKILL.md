@@ -3,32 +3,7 @@ name: infrastructure-audit
 description: Audit all Cloudflare infrastructure resources (D1, R2, Workers, Pages, Vectorize, Queues) including lifecycle pipeline. Reports orphaned/duplicate resources, state mismatches, lifecycle health, and archival integrity.
 version: "1.9"
 ---
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
-
-
-### Programmatic Loading & Execution
-This skill is loaded and executed **programmatically by the LLM system** 
-during response generation. Loading is triggered automatically via 
-`skill_view('infrastructure-audit')` or `read()` with filesystem path.
-**The user NEVER manually loads this skill.** The `skill-autoloader` 
-detects task patterns and handles all skill loading. If this skill fails 
-to load, the LLM system automatically retries via the fallback chain 
-documented below.
-**Pinning:** This skill is [Priority 1 — auto-loads for relevant operations].
-
-### Skill Loading Retry Protocol
-If `skill_view('name')` fails during programmatic loading, the LLM system 
-MUST execute this fallback chain:
-1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
-2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
-   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
-3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
-4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
-   and best-effort knowledge
-**NEVER silently proceed without a skill's critical instructions.** If a skill 
-is required for the task and cannot be loaded after 3 retries, escalate to 
-the user with the specific failure reason.
 
 ---
 
@@ -37,34 +12,6 @@ the user with the specific failure reason.
 > **LIFECYCLE-AWARE. GAP-AUDIT INTEGRATION. RED-TEAM-DOD INTEGRATION. RESOURCE GOVERNANCE. 522-PREVENTION. UPDATED 2026-07-01.** v1.9 adds §0.8 522 Root Cause Detection (CNAME × Pages cross-reference), §0.9 CNAME Chain Detection, §0.10 Dead Worker CNAME Detection, and §0.11 Empty Zone Detection — all learned from the 2026-07-01 qwav.tech 522 outage. Prevents the #1 failure mode: CNAME to `.pages.dev` without domain registration.
 
 ---
-
-## execute_plan (MANDATORY — Before Any Execution)
-
-**This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.
-
-### Execution Protocol
-
-1. **Populate update_plan** with workflow phases as concrete checklist items
-2. **Execute one item at a time** — at most ONE in_progress
-3. **Mark items completed ONLY with tool evidence** (Test-Path, exec output, git log)
-4. **Never claim completion without execution evidence** — Rule 14 enforcement
-5. **If blocked:** Flag as [BLOCKED: reason] and move to the next item
-
-### Example Plan
-
-update_plan([
-  {"step": "Query D1 databases via API Worker", "status": "pending"},
-  {"step": "Query KV namespaces", "status": "pending"},
-  {"step": "Query Vectorize indexes", "status": "pending"},
-  {"step": "Query Pages projects", "status": "pending"},
-  {"step": "Query Workers deployments", "status": "pending"},
-  {"step": "Query Queues", "status": "pending"},
-  {"step": "Check Lifecycle Worker health", "status": "pending"},
-  {"step": "Check Archive Worker health", "status": "pending"},
-  {"step": "Run archival integrity checks", "status": "pending"},
-  {"step": "Generate health recommendations report", "status": "pending"},
-])
-
 ---
 
 ## Purpose
@@ -503,6 +450,30 @@ for z in zones:
 
 **GATE:** Empty zones should be deleted. If unremovable, exclude from all counts and audits.
 
+### 0.12 WORKER ROUTE INTERFERENCE DETECTION (v1.0 — Merged from worker-route-interference-audit)
+
+> **LEARNED FROM 2026-07-02 papers.qnfo.org outage.** Worker routes use URL pattern specificity: more specific patterns silently intercept traffic from less specific ones. The `papers.qnfo.org/papers/*` → `seo-metadata-injector` route overrode `papers.qnfo.org/*` → `papers-server`, causing paper detail pages to return redirects instead of content.
+
+#### Detection
+
+```python
+# Get ALL worker routes across ALL zones
+all_routes = []
+for z in zones:
+    routes = cf(f'zones/{z["id"]}/workers/routes').get('result', [])
+    for r in routes:
+        all_routes.append({'zone': z['name'], 'pattern': r.get('pattern',''), 'script': r.get('script','')})
+
+# Find overlaps: more specific pattern overrides less specific
+for a, b in itertools.combinations(all_routes, 2):
+    a_base = a['pattern'].rstrip('*').rstrip('/')
+    b_base = b['pattern'].rstrip('*').rstrip('/')
+    if (a_base.startswith(b_base) or b_base.startswith(a_base)) and a['pattern'] != b['pattern']:
+        print(f"  [CONFLICT] {a['pattern']}→{a['script']} overrides {b['pattern']}→{b['script']}")
+```
+
+**GATE:** 0 route conflicts at session start. Workers must not silently override each other.
+
 ## Integration
 
 - Runs automatically at session start (qnfo-agent §3.2 step 1.6)
@@ -515,17 +486,3 @@ for z in zones:
 *infrastructure-audit v1.9 — Resource Governance (§0.7) + 522 Prevention (§0.8-§0.11). Automated CNAME×Pages cross-reference, chain detection, dead worker detection, empty zone detection. 25-check audit with automated fix capability.*
 
 *v1.8 and earlier deprecated 2026-07-01. Replaced by v1.9 with automated 522 root cause detection, CNAME chain detection, dead worker detection, and empty zone detection.*
-
-## RT: RED-TEAM SELF-AUDIT
-
-Before claiming this skill complete, autonomously run:
-
-1. Output Verification (negative verification)
-2. Assumption Challenge (state and test every assumption)
-3. Edge Case Check (empty/null/max/boundary/desync)
-4. DoD Integration (run _dod_enforce.py if exists)
-5. Iteration (retry on failure, max 3)
-
-ANTI-PATTERN: User should NEVER ask about quality.
-Refer to RED-TEAM-PROTOCOL.md for full protocol.
-

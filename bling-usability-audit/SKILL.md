@@ -3,32 +3,7 @@ name: bling-usability-audit
 description: Executable BLING usability audit — drives YoBrowser to navigate UI as a real user, tests all interactions, captures screenshots, evaluates visual polish, and fills out the BLING-USABILITY-AUDIT template. Combines BLIND functional testing with BLING visual polish review.
 version: 1.0
 ---
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
-
-
-### Programmatic Loading & Execution
-This skill is loaded and executed **programmatically by the LLM system** 
-during response generation. Loading is triggered automatically via 
-`skill_view('bling-usability-audit')` or `read()` with filesystem path.
-**The user NEVER manually loads this skill.** The `skill-autoloader` 
-detects task patterns and handles all skill loading. If this skill fails 
-to load, the LLM system automatically retries via the fallback chain 
-documented below.
-**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
-
-### Skill Loading Retry Protocol
-If `skill_view('name')` fails during programmatic loading, the LLM system 
-MUST execute this fallback chain:
-1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
-2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
-   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
-3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
-4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
-   and best-effort knowledge
-**NEVER silently proceed without a skill's critical instructions.** If a skill 
-is required for the task and cannot be loaded after 3 retries, escalate to 
-the user with the specific failure reason.
 
 ---
 
@@ -39,30 +14,6 @@ the user with the specific failure reason.
 > Persistent Preference: DEFAULT.md §3 Pref #9
 
 ---
-
-## execute_plan (MANDATORY — Before Any Execution)
-
-**This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.
-
-### Execution Protocol
-
-1. **Populate update_plan** with workflow phases as concrete checklist items
-2. **Execute one item at a time** — at most ONE in_progress
-3. **Mark items completed ONLY with tool evidence** (Test-Path, exec output, git log)
-4. **Never claim completion without execution evidence** — Rule 14 enforcement
-5. **If blocked:** Flag as [BLOCKED: reason] and move to the next item
-
-### Example Plan
-
-update_plan([
-  {"step": "Phase 1: Verify YoBrowser available + load audit template", "status": "pending"},
-  {"step": "Phase 2: Navigate all target pages/flows", "status": "pending"},
-  {"step": "Phase 3: Test all interactive elements (buttons, forms)", "status": "pending"},
-  {"step": "Phase 4: Capture screenshots at each page/state", "status": "pending"},
-  {"step": "Phase 5: Test responsive breakpoints", "status": "pending"},
-  {"step": "Phase 6: Auto-populate BLING-USABILITY-AUDIT template with evidence", "status": "pending"},
-])
-
 ---
 
 ## WHAT THIS SKILL DOES
@@ -481,61 +432,3 @@ The final output is the filled `BLING-USABILITY-AUDIT` template with:
 ---
 
 *bling-usability-audit v1.0 — QNFO custom skill. Load via read('R2 `qnfo/prompts/skills/bling-usability-audit\\SKILL.md'). Not accessible via skill_view().*
-
-
-
----
-
-## QNFO Design System Compliance (v3.0 — LOCKED 2026-07-01 — 2026-06-30)
-
-### Dark Theme Detection — BLING Audit Enhancement
-
-When auditing QNFO/QWAV pages, **dark theme detection is now a FAIL criterion**:
-
-```python
-# Add to Phase 3 (Visual Polish Audit):
-cdp_send(method="Runtime.evaluate", params={
-    "expression":"""
-    JSON.stringify({
-        isDarkTheme: (function() {
-            var bg = getComputedStyle(document.body).backgroundColor;
-            var match = bg.match(/(\d+)/g);
-            if (!match) return false;
-            var r = parseInt(match[0]), g = parseInt(match[1]), b = parseInt(match[2]);
-            // If background is very dark (avg channel < 40), it is a dark theme
-            return (r + g + b) / 3 < 40;
-        })(),
-        hasDarkHex: (function() {
-            var html = document.documentElement.innerHTML;
-            return !!(html.match(/#0a0a0f|#0d1117|#12121a|#1a1a2e|#1e1e1e/));
-        })()
-    })
-    """
-})
-
-# If isDarkTheme or hasDarkHex → FAIL
-# All QNFO pages must use papers.qnfo.org canonical design (LOCKED v3.0):
-# - Canonical CSS: https://qnfo.org/design-system/papers.qnfo.org canonical design (LOCKED v3.0)
-# - Inter + Source Serif 4 fonts, #1a1a2e text, #1a56db blue palette, 960px max-width
-```
-
-### Visual Polish Checklist Addition
-
-| Check | Method | Gate |
-|:------|:-------|:-----|
-| Dark theme detection | Evaluate body background + scan HTML for dark hex | FAIL if detected |
-| Design system CSS present | Check for `.ai-query` and `.related-section` classes in HTML | WARN if missing |
-| MathJax config before script | Verify config position < script position | FAIL if reversed |
- SELF-AUDIT
-
-Before claiming this skill complete, autonomously run:
-
-1. Output Verification (negative verification)
-2. Assumption Challenge (state and test every assumption)
-3. Edge Case Check (empty/null/max/boundary/desync)
-4. DoD Integration (run _dod_enforce.py if exists)
-5. Iteration (retry on failure, max 3)
-
-ANTI-PATTERN: User should NEVER ask about quality.\n**Skill-Specific Checks:**\n6. Screenshots Captured: Verify screenshots for all viewports exist\n7. Console Errors: Verify zero console errors on all pages\n8. Keyboard Navigation: Verify Tab/Enter/Escape works on all interactive elements\n9. Viewport Coverage: Verify all 5 viewports (desktop to mobile) tested
-Refer to RED-TEAM-PROTOCOL.md for full protocol.
-

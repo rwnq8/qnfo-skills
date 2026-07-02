@@ -2,32 +2,7 @@
 name: literature-search
 description: Automated multi-source academic literature search and paper triage for LLM Research Automation Pipeline (LRAP). Queries preprint servers, Semantic Scholar, QNFO Vectorize, and web search; deduplicates results; classifies papers as core/supporting/background/reject. Use when user asks "search for papers on X," "find literature about Y," "what's published on Z," or when executing Phase 1 of any research project.
 ---
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
-
-
-### Programmatic Loading & Execution
-This skill is loaded and executed **programmatically by the LLM system** 
-during response generation. Loading is triggered automatically via 
-`skill_view('literature-search')` or `read()` with filesystem path.
-**The user NEVER manually loads this skill.** The `skill-autoloader` 
-detects task patterns and handles all skill loading. If this skill fails 
-to load, the LLM system automatically retries via the fallback chain 
-documented below.
-**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
-
-### Skill Loading Retry Protocol
-If `skill_view('name')` fails during programmatic loading, the LLM system 
-MUST execute this fallback chain:
-1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
-2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
-   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
-3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
-4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
-   and best-effort knowledge
-**NEVER silently proceed without a skill's critical instructions.** If a skill 
-is required for the task and cannot be loaded after 3 retries, escalate to 
-the user with the specific failure reason.
 
 ---
 
@@ -36,32 +11,6 @@ the user with the specific failure reason.
 > **Phase 1 of LRAP.** Automates multi-source academic literature discovery, deduplication, and triage.
 
 ---
-
-## execute_plan (MANDATORY — Before Any Execution)
-
-**This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.
-
-### Execution Protocol
-
-1. **Populate update_plan** with workflow phases as concrete checklist items
-2. **Execute one item at a time** — at most ONE in_progress
-3. **Mark items completed ONLY with tool evidence** (Test-Path, exec output, git log)
-4. **Never claim completion without execution evidence** — Rule 14 enforcement
-5. **If blocked:** Flag as [BLOCKED: reason] and move to the next item
-
-### Example Plan
-
-update_plan([
-  {"step": "Generate optimized search queries per source", "status": "pending"},
-  {"step": "Execute preprint API search", "status": "pending"},
-  {"step": "Execute Semantic Scholar search", "status": "pending"},
-  {"step": "Execute QNFO Vectorize search", "status": "pending"},
-  {"step": "Execute web search", "status": "pending"},
-  {"step": "Deduplicate merged results", "status": "pending"},
-  {"step": "Classify papers into core/supporting/background", "status": "pending"},
-  {"step": "Generate literature brief (Markdown)", "status": "pending"},
-])
-
 ---
 
 ## Purpose
@@ -586,51 +535,3 @@ python literature_search.py --query "topological quantum computing surface codes
 | `research-orchestrator` | Calls this skill as Phase 1, passes brief to Phase 2 |
 | `knowledge-graph` | Seeds new paper nodes with metadata |
 | `fabrication-audit` | Cross-references claims against identified papers |
-
-
-
----
-
-## QNFO Design System Compliance (v2.0 - 2026-06-30)
-
-**ALL QNFO/QWAV publications, pages, PDFs, and web artifacts MUST use the Silent Radix Light Theme.**
-
-| Resource | Location |
-|:---------|:---------|
-| Canonical CSS | `https://qnfo.org/design-system/qnfo-light.css` |
-| PDF builder (v2.0) | `qnfo/design-system/build_pdf.py` |
-| HTML template | `qnfo/design-system/publication-template.html` |
-| Design doc | `qnfo/design-system/QNFO-DESIGN-SYSTEM.md` |
-
-**DARK THEMES FORBIDDEN.** All output must use:
-- White background (#FFFFFF), dark text (#363636)
-- System font stack, max-width 800px centered layout
-- Clean tables with border-collapse: collapse
-- MathJax CHTML with left-aligned display equations
-
-## Failure Handling
-
-| Scenario | Response |
-|:---------|:---------|
-| Preprint API timeout (>30s) | Retry once with half `max_results`. If still fails: `[PREPRINT-UNAVAILABLE]`, continue with other sources |
-| Semantic Scholar rate limit | Wait 60s, retry. If still limited: `[SEMANTIC-SCHOLAR-RATE-LIMITED]` |
-| Zero results from all sources | `[NO-RESULTS]` — broaden query terms, try alternate spellings |
-| Network error | `[NETWORK-ERROR: <details>]` — retry with exponential backoff (max 3 attempts) |
-
----
-
-*literature-search v1.0 — Phase 1 of LRAP. Multi-source academic paper discovery with deduplication and tiered classification.*
-
-## RT: RED-TEAM SELF-AUDIT
-
-Before claiming this skill complete, autonomously run:
-
-1. Output Verification (negative verification)
-2. Assumption Challenge (state and test every assumption)
-3. Edge Case Check (empty/null/max/boundary/desync)
-4. DoD Integration (run _dod_enforce.py if exists)
-5. Iteration (retry on failure, max 3)
-
-ANTI-PATTERN: User should NEVER ask about quality.
-Refer to RED-TEAM-PROTOCOL.md for full protocol.
-

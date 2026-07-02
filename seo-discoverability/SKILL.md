@@ -3,32 +3,7 @@ name: seo-discoverability
 description: Automated SEO and AI crawler discoverability optimization for Cloudflare Pages sites. Audits robots.txt, sitemaps, meta tags, structured data, llms.txt, and topic taxonomies. Use when deploying new publications, auditing discoverability, or improving organic + AI traffic.
 version: 1.0
 ---
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
-
-
-### Programmatic Loading & Execution
-This skill is loaded and executed **programmatically by the LLM system** 
-during response generation. Loading is triggered automatically via 
-`skill_view('seo-discoverability')` or `read()` with filesystem path.
-**The user NEVER manually loads this skill.** The `skill-autoloader` 
-detects task patterns and handles all skill loading. If this skill fails 
-to load, the LLM system automatically retries via the fallback chain 
-documented below.
-**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
-
-### Skill Loading Retry Protocol
-If `skill_view('name')` fails during programmatic loading, the LLM system 
-MUST execute this fallback chain:
-1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
-2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
-   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
-3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
-4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
-   and best-effort knowledge
-**NEVER silently proceed without a skill's critical instructions.** If a skill 
-is required for the task and cannot be loaded after 3 retries, escalate to 
-the user with the specific failure reason.
 
 ---
 
@@ -37,31 +12,6 @@ the user with the specific failure reason.
 > **On-demand skill.** Load via `skill_view('seo-discoverability')` for automated SEO and AI crawler optimization of QNFO/QWAV Cloudflare Pages sites.
 
 ---
-
-## execute_plan (MANDATORY — Before Any Execution)
-
-**This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.
-
-### Execution Protocol
-
-1. **Populate update_plan** with workflow phases as concrete checklist items
-2. **Execute one item at a time** — at most ONE in_progress
-3. **Mark items completed ONLY with tool evidence** (Test-Path, exec output, git log)
-4. **Never claim completion without execution evidence** — Rule 14 enforcement
-5. **If blocked:** Flag as [BLOCKED: reason] and move to the next item
-
-### Example Plan
-
-update_plan([
-  {"step": "Audit current SEO state for target site", "status": "pending"},
-  {"step": "Phase 1: Build robots.txt, sitemap.xml, meta tags", "status": "pending"},
-  {"step": "Phase 1: Generate OG/Twitter cards and JSON-LD", "status": "pending"},
-  {"step": "Phase 2: Build llms.txt, llms-full.txt, ai.txt", "status": "pending"},
-  {"step": "Phase 2: Generate topic taxonomy", "status": "pending"},
-  {"step": "Deploy SEO artifacts to Cloudflare Pages", "status": "pending"},
-  {"step": "Verify deployed SEO artifacts are accessible", "status": "pending"},
-])
-
 ---
 
 ## Purpose
@@ -185,56 +135,3 @@ All build artifacts are stored at: `%TEMP%\qnfo-seo-build\<project-name>\`
 ---
 
 *seo-discoverability v1.1 — Automated SEO + AI crawler optimization for QNFO/QWAV*
-
-
-
----
-
-## QNFO Design System Compliance (v3.0 — LOCKED 2026-07-01 — 2026-06-30)
-
-**ALL QNFO/QWAV publications, pages, PDFs, and web artifacts MUST use the papers.qnfo.org canonical design (LOCKED v3.0).**
-
-| Resource | Location |
-|:---------|:---------|
-| Design doc (full spec) | `qnfo/design-system/QNFO-DESIGN-SYSTEM.md` |
-| PDF builder (v3.0) | `qnfo/design-system/build_pdf.py` |
-
-### Mandatory Rules
-
-🚫 **DARK THEMES FORBIDDEN.** All output must use:
-- Inter + Source Serif 4 fonts, #1a1a2e text, #1a56db blue palette
-- Max-width 960px centered layout
-- Clean tables with border-collapse: collapse
-- MathJax CHTML with left-aligned display equations
-- AI Query box + Related Papers mandatory on all paper pages
-
-### SEO Compliance Audit (2026-07-01)
-
-| Site | robots.txt | sitemap | llms.txt | llms-full | ai.txt |
-|:-----|:-----------|:--------|:---------|:----------|:-------|
-| qnfo.org | ✅ | ✅ | ✅ | ✅ | ✅ |
-| papers.qnfo.org | ❌ | ❌ | ❌ | ❌ | ❌ |
-| deep.qwav.tech | ✅ | ❌ | ❌ | ✅ | ❌ |
-
-**BLOCKING: papers.qnfo.org — the canonical publications site — has ZERO SEO artifacts.** This is the highest-priority SEO fix. The site is invisible to both search engines and AI crawlers (ChatGPT, Claude, Perplexity, Google AI).
-
-**Action:** Run `python seo_toolkit.py --site=qnfo-publications --deploy` immediately.
-
-### Verification
-```bash
-# Check any page for dark theme violations
-python -c "import urllib.request;h=urllib.request.urlopen('URL').read().decode();print('DARK' if '#0a0a0f' in h or '#0d1117' in h else 'LIGHT')"
-```
- SELF-AUDIT
-
-Before claiming this skill complete, autonomously run:
-
-1. Output Verification (negative verification)
-2. Assumption Challenge (state and test every assumption)
-3. Edge Case Check (empty/null/max/boundary/desync)
-4. DoD Integration (run _dod_enforce.py if exists)
-5. Iteration (retry on failure, max 3)
-
-ANTI-PATTERN: User should NEVER ask about quality.
-Refer to RED-TEAM-PROTOCOL.md for full protocol.
-

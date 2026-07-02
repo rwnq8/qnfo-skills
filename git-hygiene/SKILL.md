@@ -3,32 +3,7 @@ name: git-hygiene
 description: Git recovery and hygiene procedures — branch recovery, detached HEAD, merge conflicts, and Iron Rule enforcement. Use when git operations fail or the workspace is in an unexpected state.
 version: "1.0"
 ---
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
-
-
-### Programmatic Loading & Execution
-This skill is loaded and executed **programmatically by the LLM system** 
-during response generation. Loading is triggered automatically via 
-`skill_view('git-hygiene')` or `read()` with filesystem path.
-**The user NEVER manually loads this skill.** The `skill-autoloader` 
-detects task patterns and handles all skill loading. If this skill fails 
-to load, the LLM system automatically retries via the fallback chain 
-documented below.
-**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
-
-### Skill Loading Retry Protocol
-If `skill_view('name')` fails during programmatic loading, the LLM system 
-MUST execute this fallback chain:
-1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
-2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
-   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
-3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
-4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
-   and best-effort knowledge
-**NEVER silently proceed without a skill's critical instructions.** If a skill 
-is required for the task and cannot be loaded after 3 retries, escalate to 
-the user with the specific failure reason.
 
 ---
 
@@ -135,15 +110,40 @@ git branch --show-current
 
 ---
 
-## Commit Format
+## Commit Message Format (Merged from git-commit skill)
+
+Follow the **Conventional Commits** specification:
 
 ```
-ACTION:[CREATE|EDIT|DELETE] FILE: <path> RATIONALE:<reason>
+<type>(<scope>): <subject>
+
+[optional body]
+
+[optional footer(s)]
 ```
 
-Examples:
-- `ACTION:CREATE FILE: papers/quantum-error-v1.md RATIONALE:Initial draft`
-- `ACTION:EDIT FILE: README.md RATIONALE:Update project state`
+### Types
+
+| Type | Use For |
+|:-----|:--------|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `docs` | Documentation changes |
+| `style` | Formatting, whitespace (no code change) |
+| `refactor` | Code restructuring (no feature/fix) |
+| `perf` | Performance improvement |
+| `test` | Adding or fixing tests |
+| `build` | Build system, dependencies |
+| `ci` | CI configuration |
+| `chore` | Miscellaneous maintenance |
+
+### Subject Rules
+- Imperative mood: "add" not "added" / "fix" not "fixed"
+- Lowercase first letter, no trailing period, max 50 characters
+
+### Examples
+- `fix(auth): handle null token in session refresh`
+- `feat(api): add pagination to search endpoint`
 
 ---
 
@@ -175,17 +175,3 @@ Examples:
 ---
 
 *git-hygiene v1.0 — QNFO custom skill. Load via read('R2 `qnfo/prompts/skills/git-hygiene\\SKILL.md'). Not accessible via skill_view().*
-
-## RT: RED-TEAM SELF-AUDIT
-
-Before claiming this skill complete, autonomously run:
-
-1. Output Verification (negative verification)
-2. Assumption Challenge (state and test every assumption)
-3. Edge Case Check (empty/null/max/boundary/desync)
-4. DoD Integration (run _dod_enforce.py if exists)
-5. Iteration (retry on failure, max 3)
-
-ANTI-PATTERN: User should NEVER ask about quality.
-Refer to RED-TEAM-PROTOCOL.md for full protocol.
-

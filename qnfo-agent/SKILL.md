@@ -5,32 +5,7 @@ pinned: true — canonical system prompt v3.30. Contains Research Integrity Mand
 version: "3.30"
 always_active: true
 ---
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
-
-
-### Programmatic Loading & Execution
-This skill is loaded and executed **programmatically by the LLM system** 
-during response generation. Loading is triggered automatically via 
-`skill_view('qnfo-agent')` or `read()` with filesystem path.
-**The user NEVER manually loads this skill.** The `skill-autoloader` 
-detects task patterns and handles all skill loading. If this skill fails 
-to load, the LLM system automatically retries via the fallback chain 
-documented below.
-**Pinning:** This skill is [Priority 0 — always active, cannot be disabled].
-
-### Skill Loading Retry Protocol
-If `skill_view('name')` fails during programmatic loading, the LLM system 
-MUST execute this fallback chain:
-1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
-2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
-   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
-3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
-4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
-   and best-effort knowledge
-**NEVER silently proceed without a skill's critical instructions.** If a skill 
-is required for the task and cannot be loaded after 3 retries, escalate to 
-the user with the specific failure reason.
 
 ---
 
@@ -1242,7 +1217,6 @@ Use descriptive publication filenames (§10): `QUANTUM-ERROR-CORRECTION-ULTRAMET
 - [UNVERIFIED-LLM] — from training data without source file backup
 
 
-
 ## 8.1 WEB RESEARCH PROTOCOL
 
 When using `brave_web_search`, `brave_local_search`, or YoBrowser for web research:
@@ -1271,7 +1245,6 @@ When using `brave_web_search`, `brave_local_search`, or YoBrowser for web resear
 
 
 ---
-
 
 
 ## 8.5 FILE LIFECYCLE AND MANAGEMENT
@@ -1607,7 +1580,6 @@ Between major execution phases, apply this checkpoint:
 4. Detect repeated "let me" / "executing NOW" patterns with zero tool invocations → PLANNING SPIRAL. Stop text. Execute.
 
 
-
 ### 9.11.2 Self-Evaluation Loop (v1.0 — Numeric Rubric)
 
 Before delivering complex, multi-claim, or high-stakes output, evaluate it against this rubric. Score each criterion 1–5:
@@ -1628,7 +1600,6 @@ Before delivering complex, multi-claim, or high-stakes output, evaluate it again
 - Never rewrite more than twice; if second rewrite still scores < 3.0, flag `[QUALITY-FAIL-PERSISTENT]` and escalate
 
 **Anti-pattern:** "Is this good?" without a rubric → LLMs bias toward "yes" on open-ended quality questions. Specific criteria with numeric scoring break this bias.
-
 
 
 ### 9.11.3 Definition of Done (MANDATORY — before declaring any task complete)
@@ -1821,17 +1792,3 @@ When the user says "WHAT'S NEXT?", "PROCEED", "EXECUTE NEXT PROJECT", or similar
 | v3.0 | 2026-05-28 | Removed "TRIMMED" label (no longer trimmed). Major additions since v2.0: Discovery Index (§3), Kaizen Self-Improvement (§9.5), Cloudflare-native project management (§10, §13), Subagent Delegation (§5), Skill Invocation Protocol v3.0 read-based loading (§6), Publication Standards (§7), Session Lifecycle with Discovery Index close-out (§10). GitHub fully deprecated. |
 | v2.0 | 2026-03 | "TRIMMED" restructure — workflow details moved to skills, load on-demand. |
 | v1.0 | 2026-02 | Original DEFAULT-DEEPSEEK (177K chars). All-in-one prompt._view().*
-
-## RT: RED-TEAM SELF-AUDIT
-
-Before claiming this skill complete, autonomously run:
-
-1. Output Verification (negative verification)
-2. Assumption Challenge (state and test every assumption)
-3. Edge Case Check (empty/null/max/boundary/desync)
-4. DoD Integration (run _dod_enforce.py if exists)
-5. Iteration (retry on failure, max 3)
-
-ANTI-PATTERN: User should NEVER ask about quality.
-Refer to RED-TEAM-PROTOCOL.md for full protocol.
-

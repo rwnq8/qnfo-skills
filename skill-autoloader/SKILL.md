@@ -38,6 +38,16 @@ the user with the specific failure reason.
 
 The LLM system automatically detects what skills are needed for any task and loads them without user prompting. The user should NEVER say "load the cloudflare-deployer skill" — the LLM detects the task and loads it.
 
+### Rule 0: Load Shared Protocols at Session Start (v3.0)
+
+Before any task detection, load the three shared reference files once. These replace the ~1,700 bytes of boilerplate that was duplicated across every QNFO skill:
+
+1. `skill_view('skill-autoloader', 'references/loading-protocol.md')` — Programmatic Loading, Retry Protocol, execute_plan
+2. `skill_view('skill-autoloader', 'references/red-team-self-audit.md')` — Autonomous quality verification
+3. `skill_view('skill-autoloader', 'references/qnfo-design-system.md')` — QNFO Design System v3.0 compliance
+
+These are cached for the session. No skill needs to include them in its own SKILL.md. Each skill references them with a one-line header.
+
 ## Core Rules
 
 ### Rule 1: Auto-Detect by Task Pattern
@@ -46,14 +56,13 @@ When the user's message or the LLM's planned task matches a pattern, auto-load t
 
 | Task Pattern | Auto-Load |
 |-------------|-----------|
-| deploy, upload, wrangler, Pages, Workers, R2, D1, DNS, KV, Vectorize, Queues, Cloudflare | `cloudflare-deployer` |
-| publish, Zenodo, DOI, PDF, paper, manuscript, LaTeX | `publication-publisher` |
-| close out, terminate, done, session end, HANDOFF, handoff | `closeout-manager` |
-| git error, detached HEAD, merge conflict, rebase | `git-hygiene` |
+| deploy, upload, wrangler, Pages, Workers, R2, D1, DNS, KV, Vectorize, Queues, Cloudflare, migrate, thin client | `cloudflare-deployer` |
+| publish, Zenodo, DOI, PDF, paper, manuscript, LaTeX, build PDF | `publication-publisher` |
+| close out, terminate, done, session end, HANDOFF, handoff, QACP | `closeout-manager` |
+| git error, detached HEAD, merge conflict, rebase, commit, conventional commit | `git-hygiene` |
 | email, send, Outlook, compose | `email-composer` |
-| PDF build, convert markdown, LaTeX compile | `pdf-builder` (via cloudflare-deployer) |
 | knowledge graph, KG, graph-api, dependencies, impact, neighbors, nodes, edges | `knowledge-graph` |
-| audit, infrastructure, health check, orphan, stale, lifecycle | `infrastructure-audit` |
+| audit, infrastructure, health check, orphan, stale, lifecycle, worker route, route conflict | `infrastructure-audit` |
 | UI, design, frontend, page, styling, BLING, visual | `bling-usability-audit` |
 | research, paper search, literature, preprint, Semantic Scholar | `literature-search` |
 | SEO, sitemap, robots.txt, discoverability, llms.txt | `seo-discoverability` |
@@ -61,27 +70,21 @@ When the user's message or the LLM's planned task matches a pattern, auto-load t
 | skill sync, backup skills, restore skills | `skill-sync` |
 | cite, citation, BibTeX, bibliography | `citation-manager` |
 | social media, tweet, post, Buffer, LinkedIn, Bluesky | `buffer-integration` |
-| template, fill_prompt_template | `template-catalog` |
-| migrate, local to R2, cleanup, thin client | `local-to-r2-migration` |
-| prompt audit, self-audit, skill audit | `prompt-audit` |
-| user story, "as a researcher", "I need to" | `user-story-separation` |
+| user story, "as a researcher", "I need to", remember, recall, memory, durable learning, tape | `qnfo-agent` |
 | code review, security audit, best practices, code quality assessment | `code-review` |
-| commit, conventional commit, git commit | `git-commit` |
 | art, generative art, algorithmic art, p5.js, flow field, particle | `algorithmic-art` |
 | docx, Word document, .docx, tracked changes, comments | `docx` |
 | pptx, PowerPoint, presentation, slides, .pptx | `pptx` |
 | xlsx, Excel, spreadsheet, CSV, .xlsx, data analysis | `xlsx` |
 | PDF form, fill PDF, merge PDF, split PDF | `pdf` |
 | documentation, proposal, spec, technical writing, co-author | `doc-coauthoring` |
-| infographic, AntV, chart visualization | `infographic-syntax-creator` |
 | MCP, Model Context Protocol, FastMCP, API integration | `mcp-builder` |
 | settings, preferences, theme, language, font size, DeepChat settings | `deepchat-settings` |
-| remember, recall, memory, durable learning, tape | `memory-management` |
-| create skill, new skill, skill creator, update skill | `skill-creator` |
-| artifact, React component, Tailwind, shadcn, web app | `web-artifacts-builder` |
+| artifact, React component, Tailwind, shadcn, web app, dashboard, landing page | `frontend-design` |
+| create skill, new skill, skill creator, update skill, prompt audit | `skill-creator` |
 | red team, DoD, definition of done, quality check, verify | `red-team-dod` |
 | test, verify, test suite, enforce | `test-enforcement` |
-| pdf builder, convert markdown, LaTeX compile | `pdf-builder` |
+| ultrametric, p-adic, tree | `ultrametric-engine` |
 
 
 ### Rule 2: Fallback When skill_view() Fails
@@ -113,51 +116,41 @@ Before executing any task, check:
 
 Once a skill is loaded, cache its content for the session. Don't re-load the same skill multiple times.
 
-## Skill Inventory (41 skills)
+## Skill Inventory (27 skills)
 
 | Skill | Trigger Pattern | Related Skills |
 |-------|----------------|---------------|
 | `skill-autoloader` | (always active) | all |
 | `execution-guard` | (always active) | closeout-manager, qnfo-agent |
-| `user-story-separation` | user stories | qnfo-agent, execution-guard |
 | `qnfo-agent` | (always active) | all |
-| `cloudflare-deployer` | deploy, upload, wrangler, Pages, Workers, R2, D1, DNS, KV | infrastructure-audit, closeout-manager |
-| `closeout-manager` | close, terminate, handoff, done | execution-guard, cloudflare-deployer, knowledge-graph |
-| `publication-publisher` | publish, Zenodo, DOI, PDF, paper | cloudflare-deployer, citation-manager |
+| `cloudflare-deployer` | deploy, upload, wrangler, Pages, Workers, R2, D1, DNS, KV, migrate, thin client | infrastructure-audit, closeout-manager |
+| `closeout-manager` | close, terminate, handoff, done, QACP | execution-guard, cloudflare-deployer, knowledge-graph |
+| `publication-publisher` | publish, Zenodo, DOI, PDF, paper, manuscript, LaTeX, build PDF | cloudflare-deployer, citation-manager, seo-discoverability |
 | `knowledge-graph` | KG, graph-api, dependencies, neighbors | qnfo-agent, infrastructure-audit |
-| `infrastructure-audit` | audit, health check, orphan, stale | cloudflare-deployer, knowledge-graph |
+| `infrastructure-audit` | audit, health check, orphan, stale, worker route, route conflict | cloudflare-deployer, knowledge-graph |
 | `literature-search` | research, preprint, Semantic Scholar | publication-publisher, citation-manager |
-| `git-hygiene` | git error, detached HEAD, merge | closeout-manager |
+| `git-hygiene` | git error, detached HEAD, merge, commit, conventional commit | closeout-manager |
 | `email-composer` | email, send, Outlook | — |
-| `template-catalog` | template, fill_prompt_template | all |
 | `citation-manager` | cite, BibTeX, bibliography | publication-publisher, literature-search |
-| `bling-usability-audit` | UI, design, frontend, styling | cloudflare-deployer |
-| `seo-discoverability` | SEO, sitemap, robots.txt | cloudflare-deployer |
+| `bling-usability-audit` | UI, design, frontend, styling | cloudflare-deployer, frontend-design |
+| `seo-discoverability` | SEO, sitemap, robots.txt, llms.txt | cloudflare-deployer |
 | `buffer-integration` | social media, tweet, post | publication-publisher |
 | `kaizen-autonomous-update` | Kaizen, improve, update | closeout-manager, skill-sync |
 | `skill-sync` | sync skills, backup | kaizen-autonomous-update |
-| `prompt-audit` | prompt audit, self-audit | skill-sync |
-| `local-to-r2-migration` | migrate, cleanup, thin client | cloudflare-deployer |
-| `handoff-protocol` | handoff, QACP | closeout-manager |
 | `ultrametric-engine` | ultrametric, p-adic, tree | knowledge-graph |
 | `test-enforcement` | (always active — Priority 1) | execution-guard, closeout-manager |
 | `red-team-dod` | (always active — Priority 0) | execution-guard, closeout-manager |
 | `code-review` | code review, security audit, best practices, code quality | test-enforcement |
-| `git-commit` | commit, conventional commit, commit message | git-hygiene |
-| `frontend-design` | UI, design, web component, React, HTML, CSS, dashboard, landing page | bling-usability-audit |
+| `frontend-design` | UI, design, web component, React, HTML, CSS, dashboard, artifact, Tailwind, shadcn | bling-usability-audit |
 | `algorithmic-art` | art, generative, p5.js, flow field, particle system | frontend-design |
-| `web-artifacts-builder` | artifact, React component, Tailwind, shadcn | frontend-design |
 | `docx` | docx, Word, document, tracked changes | — |
 | `pptx` | pptx, PowerPoint, presentation, slides | — |
 | `xlsx` | xlsx, Excel, spreadsheet, CSV, data analysis | — |
-| `pdf` | PDF, form, merge, split, extract | pdf-builder |
-| `pdf-builder` | PDF build, convert markdown, LaTeX compile, publication PDF | publication-publisher |
+| `pdf` | PDF, form, merge, split, extract | publication-publisher |
 | `doc-coauthoring` | documentation, proposal, spec, co-author, technical writing | — |
-| `infographic-syntax-creator` | infographic, AntV, chart, visualization | frontend-design |
 | `mcp-builder` | MCP server, Model Context Protocol, FastMCP, API integration | — |
 | `deepchat-settings` | settings, preferences, theme, language, font | — |
-| `memory-management` | remember, recall, memory, learning, tape | qnfo-agent |
-| `skill-creator` | create skill, new skill, update skill | skill-sync |
+| `skill-creator` | create skill, new skill, update skill, prompt audit | skill-sync |
 
 ## Anti-Patterns
 

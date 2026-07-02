@@ -2,32 +2,7 @@
 name: citation-manager
 description: Academic citation management for QNFO research pipeline. Extract citations from Markdown, verify against BibTeX bibliographies, auto-generate BibTeX entries from DOIs, flag missing/unused citations, and produce citation verification reports. Use when user says "check my citations," "verify bibliography," "generate BibTeX entries," "are all citations accounted for," or when Phase 2 of LRAP requires citation validation before publication.
 ---
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
-
-
-### Programmatic Loading & Execution
-This skill is loaded and executed **programmatically by the LLM system** 
-during response generation. Loading is triggered automatically via 
-`skill_view('citation-manager')` or `read()` with filesystem path.
-**The user NEVER manually loads this skill.** The `skill-autoloader` 
-detects task patterns and handles all skill loading. If this skill fails 
-to load, the LLM system automatically retries via the fallback chain 
-documented below.
-**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
-
-### Skill Loading Retry Protocol
-If `skill_view('name')` fails during programmatic loading, the LLM system 
-MUST execute this fallback chain:
-1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
-2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
-   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
-3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
-4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
-   and best-effort knowledge
-**NEVER silently proceed without a skill's critical instructions.** If a skill 
-is required for the task and cannot be loaded after 3 retries, escalate to 
-the user with the specific failure reason.
 
 ---
 
@@ -486,51 +461,3 @@ python citation_manager.py --paper paper.md --fix
 |:-----------------|:-------------------------------|
 | `fabrication-audit` | Verified citations → cross-reference claims against sources |
 | `publication-publisher` | Clean bibliography → artifact-ready paper |
-
-
-
----
-
-## QNFO Design System Compliance (v2.0 - 2026-06-30)
-
-**ALL QNFO/QWAV publications, pages, PDFs, and web artifacts MUST use the Silent Radix Light Theme.**
-
-| Resource | Location |
-|:---------|:---------|
-| Canonical CSS | `https://qnfo.org/design-system/qnfo-light.css` |
-| PDF builder (v2.0) | `qnfo/design-system/build_pdf.py` |
-| HTML template | `qnfo/design-system/publication-template.html` |
-| Design doc | `qnfo/design-system/QNFO-DESIGN-SYSTEM.md` |
-
-**DARK THEMES FORBIDDEN.** All output must use:
-- White background (#FFFFFF), dark text (#363636)
-- System font stack, max-width 800px centered layout
-- Clean tables with border-collapse: collapse
-- MathJax CHTML with left-aligned display equations
-
-## Failure Handling
-
-| Scenario | Response |
-|:---------|:---------|
-| No bibliography section found | `[NO-BIBLIOGRAPHY]` — suggest adding `## References` section with BibTeX blocks |
-| DOI API timeout | Skip DOI repair for that entry, flag as `[DOI-UNAVAILABLE]` |
-| Malformed BibTeX entry | `[MALFORMED-BIBTEX: @key]` — skip entry, flag for manual fix |
-| Zero citations in text | `[NO-CITATIONS]` — warn, suggest adding citations for claims |
-
----
-
-*citation-manager v1.0 — Phase 2 gateway of LRAP. Verifies citation integrity and auto-generates BibTeX from DOIs.*
-
-## RT: RED-TEAM SELF-AUDIT
-
-Before claiming this skill complete, autonomously run:
-
-1. Output Verification (negative verification)
-2. Assumption Challenge (state and test every assumption)
-3. Edge Case Check (empty/null/max/boundary/desync)
-4. DoD Integration (run _dod_enforce.py if exists)
-5. Iteration (retry on failure, max 3)
-
-ANTI-PATTERN: User should NEVER ask about quality.
-Refer to RED-TEAM-PROTOCOL.md for full protocol.
-

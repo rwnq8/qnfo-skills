@@ -4,66 +4,12 @@ description: End-to-end publication workflow — formatting, PDF building, compl
 version: "2.0"
 ---
 
-### Programmatic Loading & Execution
-This skill is loaded and executed **programmatically by the LLM system** 
-during response generation. Loading is triggered automatically via 
-`skill_view('publication-publisher')` or `read()` with filesystem path.
-**The user NEVER manually loads this skill.** The `skill-autoloader` 
-detects task patterns and handles all skill loading. If this skill fails 
-to load, the LLM system automatically retries via the fallback chain 
-documented below.
-**Pinning:** This skill is [Priority 1 — auto-loads for relevant operations].
-
-### Skill Loading Retry Protocol
-If `skill_view('name')` fails during programmatic loading, the LLM system 
-MUST execute this fallback chain:
-1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
-2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
-   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
-3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
-4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
-   and best-effort knowledge
-**NEVER silently proceed without a skill's critical instructions.** If a skill 
-is required for the task and cannot be loaded after 3 retries, escalate to 
-the user with the specific failure reason.
-
 ---
 # PUBLICATION PUBLISHER SKILL — v2.0
-
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
 > **Phase 4–5 of LRAP.** Handles Zenodo deposition, Cloudflare Pages deployment, PDF generation, and artifact archival for QNFO/QWAV research publications.
 
 ---
-
-## execute_plan (MANDATORY — Before Any Execution)
-
-**This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.
-
-### Execution Protocol
-
-1. **Populate update_plan** with workflow phases as concrete checklist items
-2. **Execute one item at a time** — at most ONE in_progress
-3. **Mark items completed ONLY with tool evidence** (Test-Path, exec output, git log)
-4. **Never claim completion without execution evidence** — Rule 14 enforcement
-5. **If blocked:** Flag as [BLOCKED: reason] and move to the next item
-
-### Example Plan
-
-update_plan([
-  {"step": "Validate publication readiness (Language Gate, citations)", "status": "pending"},
-  {"step": "Build PDF from canonical Markdown", "status": "pending"},
-  {"step": "Generate HTML publication page with MathJax", "status": "pending"},
-  {"step": "Create Zenodo deposition with metadata", "status": "pending"},
-  {"step": "Upload all artifacts to Zenodo", "status": "pending"},
-  {"step": "Publish deposition and obtain DOI", "status": "pending"},
-  {"step": "Deploy HTML page to Cloudflare Pages", "status": "pending"},
-  {"step": "Verify MathJax on deployed page", "status": "pending"},
-  {"step": "Upload artifacts to R2 canonical storage", "status": "pending"},
-  {"step": "Generate SEO metadata for discoverability", "status": "pending"},
-  {"step": "Update Discovery Index with new publication", "status": "pending"},
-])
-
 ---
 
 ## Purpose
@@ -142,11 +88,9 @@ def validate_publication(md_path: str) -> dict:
 
 **GATE:** All validation gates must PASS before proceeding. If any gate FAILS → `[BLOCKED: publication not ready]`.
 
-### Stage 2: PDF Generation
+### Stage 2: PDF Generation (Merged from pdf-builder skill v2.0)
 
-> **Design System v2.0:** PDF builder now at `qnfo/design-system/build_pdf.py` (v2.0).
-> Uses Silent Radix Light Theme — white background, system fonts, clean tables.
-> See [QNFO-DESIGN-SYSTEM.md](https://qnfo.org/design-system/QNFO-DESIGN-SYSTEM.md).
+> **Primary pipeline: MD → HTML+CSS+MathJax → playwright PDF.** Obsidian-quality output with full LaTeX math support.
 
 Build PDF from canonical Markdown via `build_pdf.py` (shared with cloudflare-deployer):
 
@@ -492,66 +436,3 @@ Test-Path _<script>.py
 ```
 
 ---
-
-
-
----
-
-## QNFO Design System Compliance (v2.0 — 2026-06-30)
-
-All QNFO/QWAV publications use the **Silent Radix Light Theme** design system:
-
-| Element | Location |
-|:--------|:---------|
-| Canonical CSS | `https://qnfo.org/design-system/qnfo-light.css` |
-| R2 CSS | `qnfo/design-system/qnfo-light.css` |
-| HTML template | `qnfo/design-system/publication-template.html` |
-| PDF builder (v2.0) | `qnfo/design-system/build_pdf.py` |
-| Design documentation | `qnfo/design-system/QNFO-DESIGN-SYSTEM.md` |
-| Page rebuild tool | `qnfo/design-system/rebuild_page.py` |
-
-### Design System Rules
-
-**🚫 DARK THEMES FORBIDDEN.** All pages must use:
-- White background (`#FFFFFF` / `var(--bg-primary)`)
-- Dark text (`#363636` / `var(--text-primary)`)
-- System font stack
-- Max-width 800px centered layout
-- MathJax CHTML with left-aligned display equations
-- Clean tables with bottom-borders only
-
-### Extended MathJax Macros
-```
-\bT, \bP, \bK, \bB, \bM  (mathbb)
-\GL, \Gal, \Aut, \End, \Hom  (mathrm)
-\Spec, \Proj, \id, \im, \ker, \Tr, \vol
-```
-
-## Failure Handling
-
-| Scenario | Response |
-|:---------|:---------|
-| Publication fails Language Gate | `[BLOCKED: Language Gate]` — list violations, require fix |
-| Zenodo API returns 401 | Token expired — regenerate at zenodo.org/account/settings/applications/ |
-| PDF rendering has `\ufffd` | Font encoding issue — use `--pdf-engine=xelatex` for Unicode support |
-| MathJax config AFTER script | `[BLOCKED: MathJax order]` — fix HTML template before deploying |
-| Cloudflare Pages deploy fails | Check wrangler auth with `npx wrangler whoami` |
-| R2 upload fails | Verify CLOUDFLARE_API_TOKEN is set and has write permissions |
-| Discovery Index corrupted | Rebuild from R2 enumeration + local state and upload fresh |
-
----
-
-*publication-publisher v1.0 — Phase 4–5 of LRAP. Zenodo deposition, Cloudflare Pages deployment, PDF generation, and archival for QNFO/QWAV publications.*
-
-## RT: RED-TEAM SELF-AUDIT
-
-Before claiming this skill complete, autonomously run:
-
-1. Output Verification (negative verification)
-2. Assumption Challenge (state and test every assumption)
-3. Edge Case Check (empty/null/max/boundary/desync)
-4. DoD Integration (run _dod_enforce.py if exists)
-5. Iteration (retry on failure, max 3)
-
-ANTI-PATTERN: User should NEVER ask about quality.
-Refer to RED-TEAM-PROTOCOL.md for full protocol.

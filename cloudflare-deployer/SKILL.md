@@ -3,32 +3,7 @@ name: cloudflare-deployer
 description: Cloudflare platform deployment operations — Pages, R2, Workers, Vectorize, DNS, redirects, and Containers. Use when the agent needs to deploy, manage, or troubleshoot Cloudflare infrastructure.
 version: "2.1"
 ---
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
-
-
-### Programmatic Loading & Execution
-This skill is loaded and executed **programmatically by the LLM system** 
-during response generation. Loading is triggered automatically via 
-`skill_view('cloudflare-deployer')` or `read()` with filesystem path.
-**The user NEVER manually loads this skill.** The `skill-autoloader` 
-detects task patterns and handles all skill loading. If this skill fails 
-to load, the LLM system automatically retries via the fallback chain 
-documented below.
-**Pinning:** This skill is [Priority 1 — auto-loads for relevant operations].
-
-### Skill Loading Retry Protocol
-If `skill_view('name')` fails during programmatic loading, the LLM system 
-MUST execute this fallback chain:
-1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
-2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
-   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
-3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
-4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
-   and best-effort knowledge
-**NEVER silently proceed without a skill's critical instructions.** If a skill 
-is required for the task and cannot be loaded after 3 retries, escalate to 
-the user with the specific failure reason.
 
 ---
 
@@ -38,33 +13,6 @@ the user with the specific failure reason.
 > Source: `templates/CLOUDFLARE-DEPLOYMENT.md` v2.1 + QWAV-DEFAULT.md §0.6.5-0.6.7
 
 ---
-
-## execute_plan (MANDATORY — Before Any Execution)
-
-**This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.
-
-### Execution Protocol
-
-1. **Populate update_plan** with workflow phases as concrete checklist items
-2. **Execute one item at a time** — at most ONE in_progress
-3. **Mark items completed ONLY with tool evidence** (Test-Path, exec output, git log)
-4. **Never claim completion without execution evidence** — Rule 14 enforcement
-5. **If blocked:** Flag as [BLOCKED: reason] and move to the next item
-
-### Example Plan
-
-update_plan([
-  {"step": "Verify wrangler auth", "status": "pending"},
-  {"step": "Pull test suite from R2", "status": "pending"},
-  {"step": "Pull build script from R2", "status": "pending"},
-  {"step": "Build publication artifacts", "status": "pending"},
-  {"step": "Deploy to Cloudflare Pages", "status": "pending"},
-  {"step": "Run post-deploy red-team verification", "status": "pending"},
-  {"step": "Verify MathJax config on deployed page", "status": "pending"},
-  {"step": "Upload artifacts to R2", "status": "pending"},
-  {"step": "Clean up ephemeral files", "status": "pending"},
-])
-
 ---
 
 ## ⚠️ WRANGLER v4.95+ COMPATIBILITY
@@ -356,7 +304,30 @@ python _vectorize-papers.py
 | `living-paper-proxy` Worker | Proxy for paper access |
 | `archive.qnfo.org` | Archive page — title changed from "QNFO Living Papers" to "QNFO Research Archive" (2026-07-01) |
 
-## Skills Backup & Recovery (v1.3)
+## R2 Migration & Thin-Client Enforcement (Merged from local-to-r2-migration skill)
+
+> **Thin-Client Mandate:** The ONLY files that persist locally are the DeepChat runtime (`qnfo/prompts/`). Everything else lives on R2.
+
+### File Classification
+
+| Classification | Pattern | Action |
+|:---------------|:--------|:-------|
+| **ORPHANED-EPHEMERAL** | `_*` prefix | DELETE immediately |
+| **PYTHON-CACHE** | `__pycache__/`, `*.pyc` | DELETE |
+| **BUILD-ARTIFACT** | `*.o`, `*.rmeta`, `*.d` | DELETE |
+| **R2-MIGRATION-CANDIDATE** | `.md`, `.py`, `.json`, `.html`, etc. | UPLOAD to R2 → verify → delete local |
+| **IMPORT-SURFACE** | Inside `qnfo/prompts/` | SKIP |
+| **UNKNOWN** | Everything else | ASK USER |
+
+### Usage
+
+```bash
+# Full migration: scan → purge → upload → index → cleanup
+npx wrangler r2 object get qnfo/tools/migration_scanner.py --remote --file=_migration_scanner.py
+python _migration_scanner.py --scan "qnfo/projects" --output _migration_report.json
+```
+
+**R2 path convention:** `qnfo/projects/<project>/<file>` → `qnfo/projects/<project>/<file>`
 
 All 28 QNFO DeepChat skills are redundantly backed up. This skill itself is recoverable from:
 
@@ -552,144 +523,3 @@ python -c "import urllib.request;h=urllib.request.urlopen('https://papers.qnfo.o
 ```
 
 ---
-
-
----
-
-## QNFO Design System Compliance (v3.0 — LOCKED 2026-07-01)
-
-> **The papers.qnfo.org design is LOCKED as THE canonical QNFO look and feel. Do not change.**
-
-### Design Tokens (ABSOLUTE)
-
-```css
---blue: #1a56db; --blue-dark: #1040a8; --blue-light: #dbeafe;
---blue-subtle: #eff6ff; --blue-mid: #6094e8;
---text: #1a1a2e; --text-muted: #6b7280; --bg: #ffffff;
---border: #e5e7eb; --card-bg: #f9fafb; --max-w: 960px; --radius: 8px;
-```
-
-### Locked Fonts
-| Role | Font |
-|:-----|:-----|
-| Headings, nav, meta | **Inter** |
-| Body text | **Source Serif 4** |
-
-### Locked Components (MANDATORY)
-1. Sticky topbar with backdrop-blur
-2. AI Query box on all paper pages
-3. Related Papers section on all paper pages
-4. Paper cards with hover shadow
-5. Badges (DOI blue, Type purple, Category green, Tag gray, License orange)
-
-### Hard Rules
-🚫 **DARK THEMES FORBIDDEN.** Light theme only.
-🚫 **DO NOT change fonts, colors, or max-width.** Locked.
-🚫 **DO NOT remove components.** AI Query + Related Papers mandatory.
-
-### Design Doc
-Full spec: `qnfo/design-system/QNFO-DESIGN-SYSTEM.md` (R2)
-
-### Design Compliance Matrix (2026-07-01 Audit)
-
-| Site | HTTP | Design v3.0 | AI Query | Related | SEO | Notes |
-|:-----|:-----|:------------|:---------|:--------|:----|:------|
-| papers.qnfo.org | ✅ 200 | ✅ FULL | ✅ | ✅ | ❌ | **CANONICAL** - missing robots/sitemap/llms |
-| legal.qnfo.org | ✅ 200 | ✅ FULL | ❌ | ✅ | — | License page |
-| deep.qwav.tech | ✅ 200 | ✅ FULL | ✅ | ❌ | ⚠ PARTIAL | Missing sitemap.xml, llms.txt, ai.txt |
-| primer.qwav.tech | ✅ 200 | ✅ FULL | ✅ | ❌ | — | Mirrors deep.qwav.tech |
-| qnfo.org | ✅ 200 | ⚠ PARTIAL | ❌ | ❌ | ✅ | Missing Serif, #1a56db, max-w=1100px |
-| design.qnfo.org | ✅ 200 | ⚠ PARTIAL | ❌ | ❌ | — | Serves same as qnfo.org |
-| ask.qwav.tech | ✅ 200 | ⚠ PARTIAL | ❌ | ❌ | — | Missing Serif, #1a56db |
-| hensel.qnfo.org | ✅ 200 | ⚠ PARTIAL | ❌ | ❌ | — | **Redirects to qnfo.org** |
-| momentum.qnfo.org | ✅ 200 | ⚠ PARTIAL | ❌ | ❌ | — | **Redirects to qnfo.org** |
-
-**12 DEAD DOMAINS (54% failure rate):** archive.qnfo.org (404), solo.qnfo.org, paradigm.qnfo.org, quantum.qnfo.org, unity.qnfo.org, different.qnfo.org, measure.qnfo.org, cocyle.qnfo.org, lexicon.qnfo.org, ai-poc.qnfo.org, adelic.qnfo.org, knowing.qnfo.org — all DNS records exist but do not resolve. Per DNS Hygiene Rules: **delete immediately.**
-
-**Highest-Priority Fix:** papers.qnfo.org missing all SEO artifacts (robots.txt, sitemap.xml, llms.txt, llms-full.txt, ai.txt). The canonical publications site is invisible to search engines and AI crawlers.
-
-**Reference:** Full audit in `qnfo/MASTER-PLAN.md` (R2).
-
-## Failure Handling
-
-| Scenario | Response |
-|:---------|:---------|
-| `wrangler whoami` fails or shows wrong account | Token expired or wrong — run `npx wrangler login` or verify `$env:CLOUDFLARE_API_TOKEN` |
-| R2 upload returns HTTP 401 | Token has insufficient permissions — token must have R2 read+write+delete |
-| Pages deploy returns build error | Check build output directory exists and contains `index.html` |
-| Worker deploy returns "duplicate script" | Use `--force` flag or delete old version first |
-| `r2 object list` returns "command not found" | Feature removed in v4.95+ — use per-object `get` operations or REST API `_r2_list.py` |
-| DNS/redirect changes not propagating | Cloudflare DNS TTL is 300s minimum — wait and retry |
-| `skill_view('cloudflare-deployer')` returns error | Skill not indexed — run `bootstrap_skills.py --sync` and restart DeepChat |
-| MathJax not rendering after deploy | Config is AFTER script tag — fix ordering before redeploying |
-| Token not found in environment | Persist token: `[Environment]::SetEnvironmentVariable('CLOUDFLARE_API_TOKEN', '<token>', 'User')` |
-| **522 Connection timed out after DNS/CNAME change** | **ROOT CAUSE: CNAME→`.pages.dev` exists but domain NOT registered on Pages project.** Fix: Register domain on target Pages project (`POST /accounts/:id/pages/projects/:name/domains`). Then verify HTTP 200. See infrastructure-audit §0.8 for automated detection & fix. |
-
-**Recovery tools on R2:**
-- `qnfo/tools/fast_r2_upload.py` — batch R2 upload (250x faster than wrangler)
-- `qnfo/tools/r2_list.py` — R2 object listing
-- `qnfo/tools/ps_run.py` — Safe Python execution bridge
-- `qnfo/design-system/build_pdf.py` — Markdown to PDF
-- `qnfo/tools/generate-seo.py` — SEO metadata generation
-- `qnfo/tools/bootstrap_skills.py` — Skill sync and recovery
-
-
-
-## Reference Files
-
-- Full deployment template: `templates/CLOUDFLARE-DEPLOYMENT.md`
-- Cloudflare audit: `qnfo/SESSION-HANDOFF-2026-05-28.md`
-- SEO generator: `_generate-seo.py` (R2: `qnfo/tools/generate-seo.py`)
-- Vectorize: `_vectorize-papers.py` (R2: `qnfo/tools/vectorize-papers.py`)
-
----
-
-
-## Embedded Scripts
-
-> **SELF-CONTAINED:** This skill depends on the scripts listed below. Before executing any script, verify it exists at its canonical path.
-
-| Script | R2 Canonical | Execution Cache | Purpose |
-|:-------|:-------------|:----------------|:--------|
-| `vectorize-papers.py` | `qnfo/tools/\vectorize-papers.py` | Index papers in Cloudflare Vectorize for semantic search |
-| `build_pdf.py` | `qnfo/tools/\build_pdf.py` | Markdown/HTML -> PDF (shared with publication-publisher) |
-
-### Bootstrap Protocol
-
-Before using any script, verify it exists:
-```bash
-# Pull from R2: npx wrangler r2 object get qnfo/tools/<script>.py --remote --file=_<script>.py
-# Verify: Test-Path _<script>.py
-```
-
-**If script is MISSING:** Scripts are version-controlled in the prompts repo.
-1. `git log --oneline -- qnfo/tools/<script>.py`
-2. The canonical source for all tools is R2 (`qnfo/tools/`). Pull from R2: `npx wrangler r2 object get qnfo/tools/<script>.py --remote --file=_<script>.py`.
-
-**Shared scripts:** `build_pdf.py` is primarily maintained in the `publication-publisher` skill.
-If missing, check that skill's Embedded Scripts section for recovery guidance.
-
-### Dependencies
-- `vectorize-papers.py`: requires Cloudflare API token (auto-available via `$env:CLOUDFLARE_API_TOKEN`) and Workers AI access
-- `build_pdf.py`: requires `reportlab` and optionally `markdown` packages
-
-
-*cloudflare-deployer skill v2.1 — DNS Hygiene + 522 Prevention + Domain Classification + Post-DNS Resolution Audit. Compatible with wrangler v4.95+*
-
----
-
-*v2.0 and earlier deprecated 2026-07-01. Replaced by v2.1 with 522 root cause pattern, CNAME chain rule, and automated cross-reference verification.*
-
-## RT: RED-TEAM SELF-AUDIT
-
-Before claiming this skill complete, autonomously run:
-
-1. Output Verification (negative verification)
-2. Assumption Challenge (state and test every assumption)
-3. Edge Case Check (empty/null/max/boundary/desync)
-4. DoD Integration (run _dod_enforce.py if exists)
-5. Iteration (retry on failure, max 3)
-
-ANTI-PATTERN: User should NEVER ask about quality.\n**Skill-Specific Checks:**\n6. Pages Preview URL: Verify deploy accessible at *.pages.dev before custom domain\n7. R2 Sync: Verify qnfo-cms-client.js exists on R2 with correct version\n8. CDN Purge: Verify custom domain serves latest deploy after CDN propagation\n9. MathJax Config: For publication pages, verify MathJax config BEFORE script tag
-Refer to RED-TEAM-PROTOCOL.md for full protocol.
-
