@@ -55,7 +55,7 @@ When the user's message or the LLM's planned task matches a pattern, auto-load t
 | knowledge graph, KG, graph-api, dependencies, impact, neighbors, nodes, edges | `knowledge-graph` |
 | audit, infrastructure, health check, orphan, stale, lifecycle | `infrastructure-audit` |
 | UI, design, frontend, page, styling, BLING, visual | `bling-usability-audit` |
-| research, paper search, literature, arXiv, Semantic Scholar | `literature-search` |
+| research, paper search, literature, preprint, Semantic Scholar | `literature-search` |
 | SEO, sitemap, robots.txt, discoverability, llms.txt | `seo-discoverability` |
 | Kaizen, improve, update system, deploy prompts | `kaizen-autonomous-update` |
 | skill sync, backup skills, restore skills | `skill-sync` |
@@ -126,7 +126,7 @@ Once a skill is loaded, cache its content for the session. Don't re-load the sam
 | `publication-publisher` | publish, Zenodo, DOI, PDF, paper | cloudflare-deployer, citation-manager |
 | `knowledge-graph` | KG, graph-api, dependencies, neighbors | qnfo-agent, infrastructure-audit |
 | `infrastructure-audit` | audit, health check, orphan, stale | cloudflare-deployer, knowledge-graph |
-| `literature-search` | research, arXiv, Semantic Scholar | publication-publisher, citation-manager |
+| `literature-search` | research, preprint, Semantic Scholar | publication-publisher, citation-manager |
 | `git-hygiene` | git error, detached HEAD, merge | closeout-manager |
 | `email-composer` | email, send, Outlook | — |
 | `template-catalog` | template, fill_prompt_template | all |

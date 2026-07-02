@@ -1,6 +1,6 @@
 ---
 name: literature-search
-description: Automated multi-source academic literature search and paper triage for LLM Research Automation Pipeline (LRAP). Queries arXiv, Semantic Scholar, QNFO Vectorize, and web search; deduplicates results; classifies papers as core/supporting/background/reject. Use when user asks "search for papers on X," "find literature about Y," "what's published on Z," or when executing Phase 1 of any research project.
+description: Automated multi-source academic literature search and paper triage for LLM Research Automation Pipeline (LRAP). Queries preprint servers, Semantic Scholar, QNFO Vectorize, and web search; deduplicates results; classifies papers as core/supporting/background/reject. Use when user asks "search for papers on X," "find literature about Y," "what's published on Z," or when executing Phase 1 of any research project.
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
@@ -53,7 +53,7 @@ the user with the specific failure reason.
 
 update_plan([
   {"step": "Generate optimized search queries per source", "status": "pending"},
-  {"step": "Execute arXiv API search", "status": "pending"},
+  {"step": "Execute preprint API search", "status": "pending"},
   {"step": "Execute Semantic Scholar search", "status": "pending"},
   {"step": "Execute QNFO Vectorize search", "status": "pending"},
   {"step": "Execute web search", "status": "pending"},
@@ -66,14 +66,14 @@ update_plan([
 
 ## Purpose
 
-Execute comprehensive literature search across 4+ academic sources, deduplicate results, classify papers by relevance tier, and produce a structured literature brief ready for deep reading. Eliminates the manual cycle of re-writing arXiv API queries, Semantic Scholar calls, and web searches for every research project.
+Execute comprehensive literature search across 4+ academic sources, deduplicate results, classify papers by relevance tier, and produce a structured literature brief ready for deep reading. Eliminates the manual cycle of re-writing preprint API queries, Semantic Scholar calls, and web searches for every research project.
 
 ## When to Use
 
 | Trigger | Action |
 |:--------|:-------|
 | "Search for papers on ultrametric quantum cognition" | Full 4-source search |
-| "Find recent arXiv papers about p-adic QEC" | arXiv-only search |
+| "Find recent preprint papers about p-adic QEC" | preprint-only search |
 | "What literature exists on hierarchical emergence?" | Multi-source + QNFO Vectorize |
 | "Analyze the citation network for these 20 papers" | Semantic Scholar citation analysis |
 | Research Phase 1 in any pipeline | Automatic trigger via `research-orchestrator` |
@@ -86,10 +86,10 @@ Accept a research seed (natural language or structured brief) → generate 3-5 o
 
 | Source | Query Format | Example |
 |:-------|:-------------|:--------|
-| **arXiv API** | `search_query=all:p-adic+AND+all:quantum+AND+all:cognition` | Field-specific boolean |
+| **Preprint API** | `search_query=all:p-adic+AND+all:quantum+AND+all:cognition` | Field-specific boolean |
 | **Semantic Scholar** | Title/abstract search with filters | `?query=p-adic+quantum+cognition&year=2020-2026` |
 | **QNFO Vectorize** | Natural language embedding query | `"ultrametric quantum cognition p-adic hierarchy"` |
-| **Web Search** | Site-constrained broad search | `site:arxiv.org "ultrametric" "quantum decision"` |
+| **Web Search** | Site-constrained broad search | `site:preprint.example.org "ultrametric" "quantum decision"` |
 
 ### Stage 2: Multi-Source Execution
 
@@ -98,7 +98,7 @@ Execute queries in parallel (where possible). Capture provenance for every resul
 ```python
 # Conceptual execution pattern (actual script below)
 results = {
-    "arxiv": arxiv_search(queries["arxiv"], max_results=50),
+    "preprints": preprint_search(queries["preprints"], max_results=50),
     "semantic_scholar": sem_scholar_search(queries["semantic_scholar"], limit=50),
     "qnfo_vectorize": qnfo_vectorize_search(queries["qnfo"], top_k=20),
     "web_search": brave_search(queries["web"], count=20),
@@ -106,41 +106,41 @@ results = {
 
 # Each result entry:
 {
-    "source": "arxiv",
+    "source": "preprints",
     "query": "all:p-adic+AND+all:quantum+cognition",
     "retrieved_at": "2026-06-24T14:30:00Z",
     "title": "...",
     "authors": ["...", "..."],
     "year": 2024,
     "doi": "10.xxxx/xxxxx",
-    "arxiv_id": "2401.xxxxx",
+    "preprint_id": "2401.xxxxx",
     "abstract": "...",
     "citation_count": 42,      # from Semantic Scholar
-    "url": "https://arxiv.org/abs/2401.xxxxx"
+    "url": "https://preprint.example.org/abs/2401.xxxxx"
 }
 ```
 
 ### Stage 3: Deduplication & Merging
 
-Merge results from all sources, deduplicating by DOI > arXiv ID > title fuzzy match:
+Merge results from all sources, deduplicating by DOI > preprint ID > title fuzzy match:
 
 ```python
 def deduplicate(results_list):
-    """Merge multi-source results, deduplicate by DOI > arXiv ID > title similarity."""
+    """Merge multi-source results, deduplicate by DOI > preprint ID > title similarity."""
     seen_dois = set()
-    seen_arxiv_ids = set()
+    seen_preprint_ids = set()
     merged = []
 
     for paper in sorted(results_list, key=lambda p: p.get("citation_count", 0), reverse=True):
         doi = paper.get("doi", "")
-        arxiv_id = paper.get("arxiv_id", "")
+        preprint_id = paper.get("preprint_id", "")
 
         if doi and doi in seen_dois:
             # Merge sources (add QNFO Vectorize score, combine metadata)
             _merge_into_existing(merged, paper, doi)
             continue
-        if arxiv_id and arxiv_id in seen_arxiv_ids:
-            _merge_into_existing(merged, paper, arxiv_id)
+        if preprint_id and preprint_id in seen_preprint_ids:
+            _merge_into_existing(merged, paper, preprint_id)
             continue
 
         # Fuzzy title check
@@ -149,8 +149,8 @@ def deduplicate(results_list):
 
         if doi:
             seen_dois.add(doi)
-        if arxiv_id:
-            seen_arxiv_ids.add(arxiv_id)
+        if preprint_id:
+            seen_preprint_ids.add(preprint_id)
         merged.append(paper)
 
     return merged
@@ -179,11 +179,11 @@ Produce a structured literature brief in Markdown:
 
 ```markdown
 # LITERATURE BRIEF: [Research Topic]
-**Generated:** YYYY-MM-DD | **Sources:** arXiv, Semantic Scholar, QNFO Vectorize, Web Search
+**Generated:** YYYY-MM-DD | **Sources:** Preprint servers, Semantic Scholar, QNFO Vectorize, Web Search
 **Papers Found:** [total] | **Core:** [N] | **Supporting:** [M] | **Background:** [K]
 
 ## Search Strategy
-- arXiv query: `[query]` → [N] results
+- Preprint query: `[query]` → [N] results
 - Semantic Scholar: `[query]` → [M] results
 - QNFO Vectorize: `[query]` → [K] results
 - Web search: `[query]` → [J] results
@@ -209,7 +209,7 @@ Produce a structured literature brief in Markdown:
 - **No papers found on:** [missing topics]
 
 ## Search Provenance
-- arXiv API queried at: [timestamp]
+- Preprint API queried at: [timestamp]
 - Semantic Scholar queried at: [timestamp]
 - All URLs and DOIs captured for verification
 ```
@@ -238,11 +238,11 @@ import urllib.parse
 from datetime import datetime, timezone
 from typing import Optional
 
-# ─── arXiv API ───────────────────────────────────────────────────
+# ─── Preprint API ───────────────────────────────────────────────────
 
-def search_arxiv(query: str, max_results: int = 50) -> list[dict]:
-    """Search arXiv API for papers matching query."""
-    base_url = "http://export.arxiv.org/api/query"
+def search_preprints(query: str, max_results: int = 50) -> list[dict]:
+    """Search preprint servers for papers matching query."""
+    base_url = "http://export.arxiv.org/api/query"  # preprint API query endpoint
     params = {
         "search_query": query,
         "start": 0,
@@ -259,10 +259,10 @@ def search_arxiv(query: str, max_results: int = 50) -> list[dict]:
         response = urllib.request.urlopen(req, timeout=30)
         xml_data = response.read().decode("utf-8")
     except Exception as e:
-        print(f"[WARN] arXiv API error: {e}", file=sys.stderr)
+        print(f"[WARN] Preprint API error: {e}", file=sys.stderr)
         return []
 
-    # Parse arXiv Atom XML response
+    # Parse preprint Atom XML response
     papers = []
     entries = xml_data.split("<entry>")
     
@@ -271,9 +271,9 @@ def search_arxiv(query: str, max_results: int = 50) -> list[dict]:
             title = _extract_xml(entry, "title")
             authors = re.findall(r"<name>(.*?)</name>", entry)
             summary = _extract_xml(entry, "summary").strip()
-            arxiv_id = _extract_xml(entry, "id")
-            # Extract arXiv ID from URL
-            arxiv_id_short = arxiv_id.split("/abs/")[-1] if "/abs/" in arxiv_id else arxiv_id
+            paper_id = _extract_xml(entry, "id")
+            # Extract preprint ID from URL
+            preprint_id = paper_id.split("/abs/")[-1] if "/abs/" in paper_id else paper_id
             
             published = _extract_xml(entry, "published")
             year = int(published[:4]) if published else 0
@@ -290,10 +290,10 @@ def search_arxiv(query: str, max_results: int = 50) -> list[dict]:
                 "authors": authors,
                 "year": year,
                 "abstract": summary,
-                "arxiv_id": arxiv_id_short,
+                "preprint_id": preprint_id,
                 "doi": doi,
-                "url": arxiv_id,
-                "source": "arxiv",
+                "url": paper_id,
+                "source": "preprints",
                 "published": published,
             })
         except Exception:
@@ -342,7 +342,7 @@ def search_semantic_scholar(query: str, limit: int = 50) -> list[dict]:
             "year": paper.get("year", 0),
             "abstract": paper.get("abstract", ""),
             "doi": external_ids.get("DOI", ""),
-            "arxiv_id": external_ids.get("ArXiv", ""),
+            "preprint_id": external_ids.get("ArXiv", ""),
             "citation_count": paper.get("citationCount", 0),
             "url": paper.get("url", ""),
             "source": "semantic_scholar",
@@ -373,28 +373,28 @@ def search_qnfo_vectorize(query: str, top_k: int = 20, token: Optional[str] = No
 # ─── Deduplication ──────────────────────────────────────────────
 
 def deduplicate(papers: list[dict]) -> list[dict]:
-    """Deduplicate papers by DOI > arXiv ID > title similarity."""
+    """Deduplicate papers by DOI > preprint ID > title similarity."""
     seen_dois = set()
-    seen_arxiv_ids = set()
+    seen_preprint_ids = set()
     seen_titles_lower = set()
     merged = []
 
     for paper in sorted(papers, key=lambda p: p.get("citation_count", 0) or 0, reverse=True):
         doi = paper.get("doi", "").lower().strip()
-        arxiv_id = paper.get("arxiv_id", "").lower().strip()
+        preprint_id = paper.get("preprint_id", "").lower().strip()
         title = paper.get("title", "").lower().strip()[:80]  # First 80 chars
 
         if doi and doi in seen_dois:
             continue
-        if arxiv_id and arxiv_id in seen_arxiv_ids:
+        if preprint_id and preprint_id in seen_preprint_ids:
             continue
         if title and title in seen_titles_lower:
             continue
 
         if doi:
             seen_dois.add(doi)
-        if arxiv_id:
-            seen_arxiv_ids.add(arxiv_id)
+        if preprint_id:
+            seen_preprint_ids.add(preprint_id)
         if title:
             seen_titles_lower.add(title)
         
@@ -445,7 +445,7 @@ def generate_brief(papers: list[dict], research_topic: str, queries: dict) -> st
 
     lines = [
         f"# LITERATURE BRIEF: {research_topic}",
-        f"**Generated:** {now} | **Sources:** arXiv, Semantic Scholar",
+        f"**Generated:** {now} | **Sources:** Preprints, Semantic Scholar",
         f"**Papers Found:** {len(papers)} | **Core:** {len(core)} | **Supporting:** {len(supporting)} | **Background:** {len(background)}",
         "",
         "## Search Strategy",
@@ -491,13 +491,13 @@ def main():
     parser.add_argument("--query", "-q", required=True, help="Research topic or search query")
     parser.add_argument("--max", type=int, default=50, help="Max results per source")
     parser.add_argument("--output", "-o", default="literature-brief.md", help="Output file path")
-    parser.add_argument("--sources", default="arxiv,semantic_scholar", 
-                        help="Comma-separated sources: arxiv,semantic_scholar,qnfo_vectorize,web")
+    parser.add_argument("--sources", default="preprints,semantic_scholar", 
+                        help="Comma-separated sources: preprints,semantic_scholar,qnfo_vectorize,web")
     parser.add_argument("--json", action="store_true", help="Output raw JSON instead of brief")
     args = parser.parse_args()
 
     queries = {
-        "arxiv": f"all:{args.query.replace(' ', '+AND+all:')}",
+        "preprints": f"all:{args.query.replace(' ', '+AND+all:')}",
         "semantic_scholar": args.query,
         "qnfo_vectorize": args.query,
     }
@@ -505,11 +505,11 @@ def main():
     all_papers = []
     sources = args.sources.split(",")
 
-    if "arxiv" in sources:
-        print(f"[SEARCH] arXiv: {queries['arxiv']}")
-        arxiv_results = search_arxiv(queries["arxiv"], args.max)
-        print(f"  → {len(arxiv_results)} papers")
-        all_papers.extend(arxiv_results)
+    if "preprints" in sources:
+        print(f"[SEARCH] Preprints: {queries['preprints']}")
+        preprint_results = search_preprints(queries["preprints"], args.max)
+        print(f"  → {len(preprint_results)} papers")
+        all_papers.extend(preprint_results)
         time.sleep(1)  # Rate limit courtesy
 
     if "semantic_scholar" in sources:
@@ -557,7 +557,7 @@ if __name__ == "__main__":
 ### Dependencies
 - Python 3.8+ (standard library only — `urllib`, `json`, `re`, `argparse`)
 - No external packages required
-- arXiv API: rate-limited to 1 request per second (enforced)
+- Preprint API: rate-limited to 1 request per second (enforced)
 - Semantic Scholar API: rate-limited to 100 requests per 5 minutes (free tier)
 
 ### Usage
@@ -566,14 +566,14 @@ if __name__ == "__main__":
 # Basic search
 python literature_search.py --query "p-adic quantum error correction" --max 30
 
-# Search only arXiv
-python literature_search.py --query "ultrametric hierarchy cognition" --sources arxiv
+# Search preprints only
+python literature_search.py --query "ultrametric hierarchy cognition" --sources preprints
 
 # Output raw JSON for pipeline consumption
 python literature_search.py --query "quantum decision theory" --json --output papers.json
 
 # Full search across all available sources
-python literature_search.py --query "topological quantum computing surface codes" --sources arxiv,semantic_scholar,qnfo_vectorize --max 50
+python literature_search.py --query "topological quantum computing surface codes" --sources preprints,semantic_scholar,qnfo_vectorize --max 50
 ```
 
 ---
@@ -612,7 +612,7 @@ python literature_search.py --query "topological quantum computing surface codes
 
 | Scenario | Response |
 |:---------|:---------|
-| arXiv API timeout (>30s) | Retry once with half `max_results`. If still fails: `[ARXIV-UNAVAILABLE]`, continue with other sources |
+| Preprint API timeout (>30s) | Retry once with half `max_results`. If still fails: `[PREPRINT-UNAVAILABLE]`, continue with other sources |
 | Semantic Scholar rate limit | Wait 60s, retry. If still limited: `[SEMANTIC-SCHOLAR-RATE-LIMITED]` |
 | Zero results from all sources | `[NO-RESULTS]` — broaden query terms, try alternate spellings |
 | Network error | `[NETWORK-ERROR: <details>]` — retry with exponential backoff (max 3 attempts) |

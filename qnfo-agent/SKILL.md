@@ -137,7 +137,7 @@ Any of these signals mean RESEARCH INTAKE:
 - "I want to research..." / "Can you research..." / "Look into..."
 - "Write a paper about..." / "Analyze..." + domain topic
 - A research question with a domain tag
-- Reference to arXiv papers, DOIs, or academic sources
+- Reference to preprint papers, DOIs, or academic sources
 - "Bright spot" / "like the Trapped Ions paper" / reference to prior publication
 
 ### Auto-Routing (DO THIS, don't ask)
