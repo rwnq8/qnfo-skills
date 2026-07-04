@@ -6,7 +6,7 @@ ORCID: "0009-0002-4317-5604"
 ISNI: "0000000526456062"
 license: "CC-BY-4.0"
 title: "The Resonant Universe: Autaxys, a Formal Treatise"
-version: "2.0"
+version: "2.0.1"
 date: "2026-07-04"
 doi_v1: "10.5281/zenodo.16637336"
 aliases:
@@ -16,9 +16,11 @@ aliases:
 
 # The Resonant Universe: Autaxys — A Formal Treatise
 
-**A fundamental, frequency-based process ontology**
+`[PHILOSOPHY]` **A fundamental, frequency-based process ontology**
 
 ## Abstract
+
+**Certainty Calibration:** The Autaxys framework constitutes a `[my conjecture]` by its author. Unless otherwise labeled, all claims in this treatise carry the default label `[my conjecture]` — they represent the author's proposed ontology and have not been experimentally confirmed. Claims labeled `[established]` reference textbook physics consensus; `[speculative]` claims have theoretical motivation but no direct experimental support; `[not yet falsifiable]` claims cannot currently state what would disconfirm them. The core identity $m = \omega$ is `[my conjecture]`.
 
 The Autaxys framework presents a fundamental, frequency-based process ontology that reconceptualizes reality not as a collection of inert substances, but as a dynamically self-generating and self-organizing system. All phenomena—from elementary particles to consciousness—are understood as dynamic relational patterns characterized by intrinsic processing frequencies within a universal dynamic medium. This treatise formalizes the framework across three parts: (I) Foundations, establishing the axioms and epistemological basis; (II) Physical Implications, deriving space-time, forces, quantum phenomena, and cosmic evolution as emergent consequences; and (III) Frontiers, exploring consciousness, Resonant Field Computing, empirical predictions, and the broader implications for scientific inquiry. The core identity $m = \omega$—rest mass numerically identical to intrinsic angular frequency—dissolves the classical substance paradigm and provides the unifying principle from which the entire framework is derived.
 
@@ -27,6 +29,10 @@ The Autaxys framework presents a fundamental, frequency-based process ontology t
 **Version:** 2.0  \
 **Date:** 2026-07-04  \
 **DOI (v1.0):** [10.5281/zenodo.16637336](https://doi.org/10.5281/zenodo.16637336)
+
+
+
+**Map/Territory Distinction:** The Autaxys framework, including the Universal Resonant Grid, the Generative Cycle, and the $m = \omega$ identity, is a theoretical model — a map. Whether the territory (reality itself) corresponds to this map is an open question `[PHILOSOPHY]`. Throughout this treatise, claims about "what is" should be understood as claims about "what the Autaxys model proposes."
 
 
 ---
@@ -59,11 +65,11 @@ Throughout this treatise, key terms carry specific meanings within the Autaxys f
 
 ## 2. Axioms of Autaxys
 
-This chapter formalizes the foundational principles upon which the entire Autaxys framework rests. Each axiom is stated, justified, and its implications traced.
+**[Axioms — `[my conjecture]`]**  This chapter formalizes the foundational principles upon which the entire Autaxys framework rests. Each axiom is stated, justified, and its implications traced.
 
 ### 2.1 The Universal Resonant Grid (URG)
 
-**Axiom 1 (URG Existence):** There exists a fundamental dynamic medium—the Universal Resonant Grid—that constitutes the ontological substratum of all phenomena. The URG is not a substance, field, or space in any conventional sense, but the continuous, self-processing medium within which all frequency patterns arise, interact, and dissolve.
+****[Axiom — `[my conjecture]`]**  Axiom 1 (URG Existence):** There exists a fundamental dynamic medium—the Universal Resonant Grid—that constitutes the ontological substratum of all phenomena. The URG is not a substance, field, or space in any conventional sense, but the continuous, self-processing medium within which all frequency patterns arise, interact, and dissolve.
 
 The URG is the "canvas" upon which reality is painted, but unlike a passive canvas, it is intrinsically active. It processes; it generates; it resolves. Every observable phenomenon—from the smallest quantum fluctuation to the largest cosmic structure—is a pattern of frequencies within this medium. The URG has no independent existence apart from the patterns it sustains; it is defined by the dynamic interplay of those patterns.
 
@@ -74,7 +80,7 @@ The URG is the "canvas" upon which reality is painted, but unlike a passive canv
 
 ### 2.2 The Generative Cycle
 
-**Axiom 2 (Generative Cycle):** All phenomena are produced and sustained through an iterative, self-organizing process—the Generative Cycle—by which the URG continuously generates, evaluates, and refines frequency patterns.
+****[Axiom — `[my conjecture]`]**  Axiom 2 (Generative Cycle):** All phenomena are produced and sustained through an iterative, self-organizing process—the Generative Cycle—by which the URG continuously generates, evaluates, and refines frequency patterns.
 
 The Generative Cycle proceeds through three stages:
 1. **Generation:** The URG produces novel frequency configurations through spontaneous fluctuations and interactions among existing patterns.
@@ -85,7 +91,7 @@ This cycle is not an external process imposed on the URG but is intrinsic to its
 
 ### 2.3 The Autaxic Trilemma
 
-**Axiom 3 (Autaxic Trilemma):** The evolution of all frequency patterns within the URG is governed by the simultaneous resolution of three competing imperatives:
+****[Axiom — `[my conjecture]`]**  Axiom 3 (Autaxic Trilemma):** The evolution of all frequency patterns within the URG is governed by the simultaneous resolution of three competing imperatives:
 
 1. **Novelty ($N$):** The imperative to generate new configurations, explore new states, and avoid stagnation. Novelty drives the expansion of the possible, the generation of diversity, and the prevention of terminal equilibrium.
 2. **Efficiency ($E$):** The imperative to minimize computational and energetic cost. Efficiency favors simple, stable, and economical configurations that persist with minimal resource expenditure.
@@ -101,7 +107,7 @@ where $\alpha$, $\beta$, and $\gamma$ are context-dependent weighting coefficien
 
 ### 2.4 The $m = \omega$ Identity
 
-**Axiom 4 (Mass-Frequency Equivalence):** Rest mass $m$ is numerically identical to intrinsic angular frequency $\omega$ in natural units ($\hbar = c = 1$):
+****[Axiom — `[my conjecture]`]**  Axiom 4 (Mass-Frequency Equivalence):** Rest mass $m$ is numerically identical to intrinsic angular frequency $\omega$ in natural units ($\hbar = c = 1$):
 
 $$m = \omega$$
 
@@ -116,7 +122,7 @@ This identity is the ontological cornerstone of Autaxys. It asserts that what we
 
 ### 2.5 Pattern Solidification and Emergence
 
-**Axiom 5 (Solidification):** Frequency patterns that successfully resolve the Autaxic Trilemma over multiple Generative Cycles undergo Solidification—the progressive stabilization of their configuration into increasingly robust, persistent structures.
+****[Axiom — `[my conjecture]`]**  Axiom 5 (Solidification):** Frequency patterns that successfully resolve the Autaxic Trilemma over multiple Generative Cycles undergo Solidification—the progressive stabilization of their configuration into increasingly robust, persistent structures.
 
 Solidification is a spectrum, not a binary state. At one extreme, highly Solidified patterns manifest as what we call "matter"—stable, persistent, resistant to change. At the other extreme, weakly Solidified patterns manifest as field fluctuations, virtual particles, or quantum indeterminacy.
 
@@ -128,7 +134,7 @@ With the axiomatic foundations established, this chapter addresses the epistemol
 
 ### 3.1 Biological Perception as Frequency Integration
 
-Biological senses are exquisitely evolved systems designed to transduce external frequency patterns into internal neural frequency patterns. When light, itself a manifestation of specific frequency patterns, interacts with objects (which are complex, stable resonance patterns), the retina transduces these incoming light frequencies into corresponding neural frequency patterns. Similarly, auditory receptors transduce sound wave frequencies, and touch receptors transduce pressure and thermal frequencies. The brain is not passively receiving a signal but actively engaging in a process of frequency resonance with the external world's frequency-based structures.
+**[Epistemology — `[speculative]`]**  Biological senses are exquisitely evolved systems designed to transduce external frequency patterns into internal neural frequency patterns. When light, itself a manifestation of specific frequency patterns, interacts with objects (which are complex, stable resonance patterns), the retina transduces these incoming light frequencies into corresponding neural frequency patterns. Similarly, auditory receptors transduce sound wave frequencies, and touch receptors transduce pressure and thermal frequencies. The brain is not passively receiving a signal but actively engaging in a process of frequency resonance with the external world's frequency-based structures.
 
 The brain's complex neural networks act as a sophisticated frequency interpreter and integrator. The construction of a stable, three-dimensional world is the brain's unique ability to synthesize diverse incoming frequency patterns into a coherent, highly stable conscious experience. The perceived solidity of an object is the brain's interpretation of a highly stable and coherent pattern of underlying frequencies that resist change. This stability arises from the resolution of the Autaxic Trilemma within the Generative Cycle, leading to the Solidification of patterns.
 
@@ -136,7 +142,7 @@ The holographic nature of perception emerges because the perception of a local p
 
 ### 3.2 Scientific Instruments as Frequency Transformers
 
-Scientific instruments extend biological perception by detecting and transforming frequency patterns that lie outside the narrow band of human sensory transduction. Every instrument functions as a specialized frequency transformer:
+**[Epistemology — `[speculative]`]**  Scientific instruments extend biological perception by detecting and transforming frequency patterns that lie outside the narrow band of human sensory transduction. Every instrument functions as a specialized frequency transformer:
 - **Microscopes** map high-spatial-frequency patterns into the visible spectrum
 - **Telescopes** detect specific bands of electromagnetic frequencies and process them into visual representations, often using false colors to map non-visible ranges
 - **Particle accelerators** act as sophisticated frequency generators and detectors, where the discovery of a new particle is the identification of a statistically significant, recurring pattern of resonant interactions matching a theoretically predicted frequency pattern
@@ -145,7 +151,7 @@ The Particle Paradox—how a rock, a photon, and a neutrino can all be "particle
 
 ### 3.3 Cognitive Frameworks and Theory-Ladenness
 
-The Imprint of Mind emphasizes that theories, expectations, and cognitive frameworks profoundly shape what we see scientifically. In Autaxys, this is understood as the mind's internal resonant patterns interacting with and organizing incoming fundamental frequencies.
+**[Epistemology — `[speculative]`]**  The Imprint of Mind emphasizes that theories, expectations, and cognitive frameworks profoundly shape what we see scientifically. In Autaxys, this is understood as the mind's internal resonant patterns interacting with and organizing incoming fundamental frequencies.
 
 Scientific theories are coherent, stable patterns of thought—mental frequencies—that resonate with and organize observed frequency patterns in the universe. They are highly refined models that attempt to describe the underlying grammar of the fundamental frequency patterns constituting reality. Theory-ladenness of observation is not a defect but an inevitable consequence of perception as resonant coupling: the observer's cognitive frequency patterns necessarily participate in the construction of what is observed.
 
@@ -163,23 +169,23 @@ This epistemological framework does not lead to radical relativism. The Autaxic 
 
 ## 4. Space, Time, and Emergent Gravity
 
-Autaxys redefines space and time, interpreting them not as static containers or independent dimensions, but as dynamic consequences of the universe’s ceaseless generative process.
+**[Derived — `[speculative]`]**  Autaxys redefines space and time, interpreting them not as static containers or independent dimensions, but as dynamic consequences of the universe’s ceaseless generative process.
 
 ### 4.1 Space as the Dynamic Medium
 
-Within the Autaxys framework, space is not an inert, empty container but is intrinsically identified with the fundamental dynamic medium. This medium is the substratum of all frequencies, a plenum where all phenomena—including matter, energy, and consciousness—are understood as dynamic relational patterns characterized by intrinsic processing frequencies. The geometry of this space is thus an emergent structure, a macroscopic manifestation of the ongoing, continuous interplay and organization of these fundamental frequency patterns. The universe is perceived as a continuous, dynamic interplay of frequency fields.
+**[Derived — `[my conjecture]`]** Space, in Autaxys, is  Within the Autaxys framework, space is not an inert, empty container but is intrinsically identified with the fundamental dynamic medium. This medium is `[speculative]` the substratum of all frequencies, a plenum where all phenomena—including matter, energy, and consciousness—are understood as dynamic relational patterns characterized by intrinsic processing frequencies. The geometry of this space is thus an emergent structure, a macroscopic manifestation of the ongoing, continuous interplay and organization of these fundamental frequency patterns. The universe is perceived as a continuous, dynamic interplay of frequency fields.
 
 ### 4.2 Time as Continuous Process
 
-Time, in the Autaxys framework, is not an independent dimension but rather an emergent property arising from the continuous processing and transformation of frequency patterns within the fundamental dynamic medium. It is the measure of the iterative computation inherent in the Generative Cycle, which drives pattern formation and stability. The Autaxic Trilemma (Novelty, Efficiency, Persistence) constantly drives this processing, and the Solidification of patterns, occurring through the resolution of this Trilemma, introduces an inherent directionality, thereby linking the arrow of time to this irreversible process of pattern actualization and stability.
+**[Derived — `[my conjecture]`]** Time, in the Autaxys framework, is  Time, in the Autaxys framework, is `[speculative]` not an independent dimension but rather an emergent property arising from the continuous processing and transformation of frequency patterns within the fundamental dynamic medium. It is the measure of the iterative computation inherent in the Generative Cycle, which drives pattern formation and stability. The Autaxic Trilemma (Novelty, Efficiency, Persistence) constantly drives this processing, and the Solidification of patterns, occurring through the resolution of this Trilemma, introduces an inherent directionality, thereby linking the arrow of time to this irreversible process of pattern actualization and stability.
 
 ### 4.3 Spacetime Curvature as Frequency Modulation
 
-Building upon the m = ω identity, which posits rest mass as numerically identical to intrinsic angular frequency, Autaxys reinterprets spacetime curvature as the local modulation of the fundamental dynamic medium’s frequency patterns. Mass-energy, understood as stable, resonant states or self-sustaining standing wave patterns, inherently interacts with and influences the surrounding frequency field. Consequently, phenomena like time dilation and length contraction are seen not as distortions of an abstract spacetime, but as direct consequences of how these fundamental frequency patterns, and their processing tempos, behave under varying conditions of gravitational potential or relative velocity. For instance, the weight of an object is a direct consequence of its integrated mass-frequencies (m=ω) interacting with the Earth’s frequency field.
+**[Derived — `[speculative]`]**  Building upon the m = ω identity, which posits rest mass as numerically identical to intrinsic angular frequency, Autaxys reinterprets spacetime curvature as the local modulation of the fundamental dynamic medium’s frequency patterns. Mass-energy, understood as stable, resonant states or self-sustaining standing wave patterns, inherently interacts with and influences the surrounding frequency field. Consequently, phenomena like time dilation and length contraction are seen not as distortions of an abstract spacetime, but as direct consequences of how these fundamental frequency patterns, and their processing tempos, behave under varying conditions of gravitational potential or relative velocity. For instance, the weight of an object is a direct consequence of its integrated mass-frequencies (m=ω) interacting with the Earth’s frequency field.
 
 ### 4.4 Gravity as Emergent Coherence
 
-In Autaxys, gravity is not a fundamental force in the traditional sense, but an emergent phenomenon arising from the dynamic reconfiguration of the fundamental dynamic medium itself. It represents a collective tendency for the medium to organize towards states of higher coherence, driven by the principles of the Autaxic Trilemma. Patterns with high mass-energy, which are themselves highly stable and coherent resonant states, create wells or gradients in this coherence landscape. This effectively guides the reconfiguration of surrounding frequency patterns, manifesting macroscopically as the gravitational attraction we observe. Fundamental forces, including gravity, are thus reinterpreted as different modes of resonant coupling or frequency interaction between patterns.
+**[Derived — `[speculative]`]**  In Autaxys, gravity is not a fundamental force in the traditional sense, but an emergent phenomenon arising from the dynamic reconfiguration of the fundamental dynamic medium itself. It represents a collective tendency for the medium to organize towards states of higher coherence, driven by the principles of the Autaxic Trilemma. Patterns with high mass-energy, which are themselves highly stable and coherent resonant states, create wells or gradients in this coherence landscape. This effectively guides the reconfiguration of surrounding frequency patterns, manifesting macroscopically as the gravitational attraction we observe. Fundamental forces, including gravity, are thus reinterpreted as different modes of resonant coupling or frequency interaction between patterns.
 
 ### 4.5 The Vacuum as Generative Flux
 
@@ -187,7 +193,7 @@ The vacuum, traditionally viewed as empty space, is understood within Autaxys as
 
 ## 5. Forces, Fields, and Quantum Phenomena
 
-Autaxys provides a unified lens through which to understand fundamental forces, quantum fields, and the enigmatic behaviors of the quantum realm, revealing them as direct consequences of the universe’s underlying frequency dynamics and the Generative Cycle.
+**[Derived — `[speculative]`]**  Autaxys provides a unified lens through which to understand fundamental forces, quantum fields, and the enigmatic behaviors of the quantum realm, revealing them as direct consequences of the universe’s underlying frequency dynamics and the Generative Cycle.
 
 ### 5.1 Fundamental Forces as Resonant Mechanisms
 
@@ -219,7 +225,7 @@ The classical limit, where quantum behaviors give way to deterministic classical
 
 ## 6. Cosmic and Biological Evolution
 
-Autaxys provides a unified explanation for evolution across all scales, from the cosmos to biological life, as a continuous unfolding of patterns driven by the Autaxic Generative Cycle. It also offers novel interpretations for phenomena like dark energy and dark matter within this frequency-centric ontology.
+**[Derived — `[speculative]`]**  Autaxys provides a unified explanation for evolution across all scales, from the cosmos to biological life, as a continuous unfolding of patterns driven by the Autaxic Generative Cycle. It also offers novel interpretations for phenomena like dark energy and dark matter within this frequency-centric ontology.
 
 ### 6.1 Cosmic Evolution as Generative Unfolding
 
@@ -235,11 +241,11 @@ Within Autaxys, complexity emerges naturally as simple frequency patterns combin
 
 ### 6.4 Dark Energy as Novelty Imperative
 
-Dark energy, the mysterious force driving the accelerated expansion of the universe, is interpreted within Autaxys as the observable, cosmic-scale manifestation of the Novelty imperative inherent in the Autaxic Trilemma. It represents the baseline pressure exerted during the Proliferation stage of the Generative Cycle, where the system continuously explores new pattern configurations. This inherent drive for Novelty, constantly proposing and exploring new relational possibilities within the fundamental dynamic medium, expresses itself as a pervasive outward push that drives the metric expansion of emergent space.
+**[Derived — `[my conjecture]`]**  Dark energy, the mysterious force driving the accelerated expansion of the universe, is interpreted within Autaxys as the observable, cosmic-scale manifestation of the Novelty imperative inherent in the Autaxic Trilemma. It represents the baseline pressure exerted during the Proliferation stage of the Generative Cycle, where the system continuously explores new pattern configurations. This inherent drive for Novelty, constantly proposing and exploring new relational possibilities within the fundamental dynamic medium, expresses itself as a pervasive outward push that drives the metric expansion of emergent space.
 
 ### 6.5 Dark Matter as Computationally Shy Patterns
 
-Dark matter is explained as stable, high-Persistence patterns within the fundamental dynamic medium. These patterns possess mass-like frequencies (m=ω) and are thus gravitationally active, influencing the large-scale structure of the universe. However, they are computationally shy, meaning they exhibit minimal or extremely weak interaction with Efficiency-driven forces such as electromagnetism. This explains their elusive nature, as they do not significantly interact with light or other electromagnetic probes, yet their gravitational influence on visible matter is profound due to their stable, self-sustaining resonant characteristics within the cosmic frequency symphony.
+**[Derived — `[my conjecture]`]**  Dark matter is explained as stable, high-Persistence patterns within the fundamental dynamic medium. These patterns possess mass-like frequencies (m=ω) and are thus gravitationally active, influencing the large-scale structure of the universe. However, they are computationally shy, meaning they exhibit minimal or extremely weak interaction with Efficiency-driven forces such as electromagnetism. This explains their elusive nature, as they do not significantly interact with light or other electromagnetic probes, yet their gravitational influence on visible matter is profound due to their stable, self-sustaining resonant characteristics within the cosmic frequency symphony.
 
 ### 6.6 Cosmic Phase Transitions
 
@@ -288,6 +294,10 @@ The Problem of Outside is addressed by asserting that Autaxys is ontologically u
 
 The Autaxys framework, despite its philosophical depth, offers concrete empirical touchpoints and testable predictions:
 
+
+
+**Falsifiability Statements:** Each prediction below includes what would disconfirm it. Predictions without a clear disconfirmation pathway are labeled `[not yet falsifiable]`.
+
 -   **Signatures of Discrete Generative Cycle Processing:** The URG’s underlying discrete processing tempo is predicted to manifest as subtle deviations from continuous behavior at fundamental scales. This could appear as specific non-random noise spectra, non-linearities, or deviations in coherence/decoherence rates in ultra-high precision measurements.
 -   **Precision Measurements of Zitterbewegung Effects:** Autaxys predicts specific, measurable signatures or deviations in Zitterbewegung—the theoretical jittery motion of elementary particles—consistent with its interpretation as a pattern self-maintenance process driven by Generative Cycle Solidification.
 -   **URG Resonant Harmonics and Background Signatures:** Advanced atomic clocks and high-resolution spectroscopy, or analysis of primordial gravitational wave backgrounds, might detect specific background frequency signatures or relational harmonics corresponding to the URG’s intrinsic operational harmonics.
@@ -296,6 +306,18 @@ The Autaxys framework, despite its philosophical depth, offers concrete empirica
 -   **Theoretical Derivation of Particle Properties from Relational Patterns:** A crucial theoretical goal is the development of a rigorous mathematical framework to derive fundamental particle properties (mass, charge, spin, interaction strengths) directly from the geometry, topology, and dynamic characteristics of stable resonant frequency patterns within the URG, as sculpted by the Generative Cycle’s resolution of the Autaxic Trilemma. Success here would enable highly specific quantitative empirical predictions.
 -   **Algorithmic Archaeology:** Autaxys suggests interpreting cosmic phenomena, such as the Cosmic Microwave Background (CMB), as logs or residual data from early algorithmic states of the universe, providing direct insights into the Generative Cycle’s initial conditions and primordial evolution.
 -   **Prediction of Emergent Algorithms:** The framework may eventually allow for predictions of new forms of matter, novel emergent laws, or even unforeseen forms of consciousness as the cosmic algorithm continues its ongoing evolution.
+
+This would be disconfirmed if no mathematical framework mapping frequency pattern topology to particle properties can be constructed that yields values matching known measurements `[not yet falsifiable]`.
+
+This would be disconfirmed if mass measurements in extreme regimes (high energy density, strong gravitational fields) continue to conform exactly to GR + Standard Model predictions `[not yet falsifiable]`.
+
+This would be disconfirmed if long-baseline measurements of $\alpha$, $c$, $G$, and $\hbar$ show temporal and spatial invariance to the highest precision achievable `[not yet falsifiable]`.
+
+This would be disconfirmed if spectroscopic surveys and gravitational wave background analyses reveal no unexplained harmonic signals consistent across independent instruments `[not yet falsifiable]`.
+
+This would be disconfirmed if precision measurements of Zitterbewegung match standard QFT predictions with no deviation beyond statistical error `[not yet falsifiable]`.
+
+This would be disconfirmed if ultra-high-precision measurements at fundamental scales reveal perfectly continuous behavior with no detectable non-random noise spectra `[not yet falsifiable]`.
 
 ## 11. Concluding Synthesis: Living in a Resonant Reality
 
@@ -316,6 +338,40 @@ Quni, R.B. (2025) *A New Way of Seeing: Autaxys as a Framework for Pattern-Based
 ---
 
 # PART IV — Appendices
+
+
+
+---
+
+## 12. Limitations and Open Questions
+
+`[PHILOSOPHY]` The Autaxys framework, as presented in this treatise, is a `[my conjecture]` — a proposed ontology that has not been experimentally confirmed. The following limitations are stated explicitly, per the Research Integrity Mandate (QNFO-POL-COM-001):
+
+### 12.1 Known Limitations
+
+1. **Non-Quantitative:** The framework provides a qualitative, conceptual reinterpretation of known physics. It does not yet produce novel quantitative predictions that differ from the Standard Model or General Relativity at currently accessible energy scales. All empirical predictions in Chapter 10 are `[not yet falsifiable]` with present technology.
+
+2. **No Rigorous Derivation:** The claim that spacetime curvature, quantum phenomena, and fundamental forces "emerge" from the URG and Generative Cycle has not been demonstrated through a rigorous mathematical derivation from first principles. The mapping from Autaxys axioms to known physics is analogical and interpretive, not deductive.
+
+3. **Dark Sector Speculation:** The interpretations of dark energy as the Novelty Imperative and dark matter as computationally shy patterns are `[my conjecture]` with no quantitative model linking these interpretations to cosmological observations (CMB power spectrum, BAO, large-scale structure).
+
+4. **Consciousness Gap:** The claim that consciousness is a recursive Generative Cycle does not address the Hard Problem of consciousness (Chalmers 1995) — why and how frequency processing gives rise to subjective experience.
+
+5. **Lack of Independent Evidence:** No experiment has been designed or conducted specifically to test Autaxys predictions. The framework currently relies entirely on retrospective reinterpretation of known phenomena.
+
+### 12.2 Open Questions
+
+1. **Quantization:** How does discrete Generative Cycle processing produce the specific quantization rules observed in quantum mechanics? What determines the energy spectrum?
+
+2. **Coupling Constants:** Why do the fundamental coupling constants ($\alpha \approx 1/137$, etc.) take the values they do? Can these be derived from URG topology?
+
+3. **Three Generations:** Why are there three generations of fermions? Is this a consequence of URG dimensionality or an accident of Trilemma resolution?
+
+4. **Measurement Problem:** If wave function collapse is a Generative Cycle protocol, what triggers it? What role does the observer play?
+
+5. **Initial Conditions:** What determined the initial state of the URG? Was there a "first" Generative Cycle?
+
+###
 
 ## Appendix A: Mathematical Formalism
 
