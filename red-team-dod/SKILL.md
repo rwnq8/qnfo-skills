@@ -29,7 +29,7 @@ the user with the specific failure reason.
 
 ---
 
-# RED-TEAM-DOD SKILL — v1.1
+# RED-TEAM-DOD SKILL — v1.1 — v1.1
 
 > **AUTONOMOUS.** The user should NEVER have to prompt for red-teaming, DoD verification, iteration, or refinement. This skill mandates these behaviors natively in EVERY QNFO agent session.
 > **PRIORITY 0 INTEGRATION.** This skill hooks into execution-guard (§1.5) and is auto-loaded at session start. All other skills inherit red-team/DoD/iterate/refine behavior through this framework.

@@ -1,0 +1,10 @@
+{
+  "title": "Content-Addressed Research: IPFS as a Permanent Layer for Scientific Publication",
+  "authors": ["QNFO Research", "Web3 Working Group"],
+  "doi": "10.5281/zenodo.test-ipfs-poc",
+  "abstract": "This paper explores the use of IPFS and content-addressed storage as a permanent, verifiable layer for scientific research publications. We demonstrate a pure Node.js pipeline for computing CIDs, building DAG archives, creating CAR files, and verifying content across multiple IPFS gateways. The approach leverages cryptographic content addressing to ensure immutability, reproducibility, and censorship resistance for research outputs. We propose a tiered persistence model combining IPFS pinning services, Filecoin storage deals, and Arweave permanence as a practical path to decentralized scholarly communication.",
+  "date": "2026-07-03",
+  "license": "CC-BY-4.0",
+  "keywords": ["ipfs", "content-addressing", "decentralized-science", "research-publication", "web3", "permanent-storage"],
+  "version": "1.0.0-pre"
+}

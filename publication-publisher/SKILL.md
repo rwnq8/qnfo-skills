@@ -410,6 +410,16 @@ Remove-Item _setup_zenodo_token.py
 
 ### Stage 5: Cloudflare Pages Deployment
 
+> ⚠️ **SCALING LIMIT (v2.5):** Cloudflare Pages has a 100-project limit per account. Static per-paper Pages deployments do NOT scale to hundreds of papers. For production scale (100+ papers), use one of the dynamic rendering approaches below. This stage is suitable for small-scale or individual publication deployments only.
+
+**Dynamic Rendering Alternatives (for 100+ papers):**
+
+| Approach | Complexity | Cost | Best For |
+|:---------|:-----------|:-----|:---------|
+| **Single Pages project + Worker** | Medium | $5/mo + usage | Dynamic routes: `/papers/<slug>` → Worker renders from D1 |
+| **JS-side Markdown rendering** | Low | $0 | Single HTML page fetches `.md` from R2 via presigned URL, renders client-side |
+| **API Worker** | Low | $0.15/M req | `GET /v2/papers/<slug>/html` → rendered HTML from D1 |
+
 Deploy the HTML publication page to Cloudflare Pages:
 
 ```bash

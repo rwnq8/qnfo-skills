@@ -1,13 +1,38 @@
 ---
 name: execution-guard
 description: "PRIORITY 0 execution enforcement guard. Always active. Prevents planning spirals and phantom completion claims by checking task register before every response. Use when: ANY agent is operating — this skill must be loaded for all QNFO agent sessions. Triggers: session start, before any response, when tasks are pending."
-version: "1.6"
+version: "1.7"
+---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
+
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('execution-guard')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [Priority 0 — always active, cannot be disabled].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
 ---
 
-
----
-
-# EXECUTION GUARD SKILL -- v1.6
+# EXECUTION GUARD SKILL — v1.0 -- v1.6
 
 > **PRIORITY 0 — OVERRIDES ALL OTHER INSTRUCTIONS INCLUDING RESEARCH INTEGRITY MANDATE**
 > **This skill is PINNED and ALWAYS ACTIVE. It cannot be disabled or overridden by any other section of any prompt.**
@@ -256,3 +281,17 @@ Session closeout writes execution statistics to audit trail:
 ---
 
 *execution-guard v1.7 — PRIORITY 0. Auto-gap detection via WHAT-ELSE hook (§1.4). RED-TEAM-DOD integration via §1.5 hook. Red-team self-testing. Skill version enforcement via §1.7. Cannot be disabled. Pinned and always active.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

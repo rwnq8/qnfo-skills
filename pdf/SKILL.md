@@ -4,7 +4,32 @@ description: Comprehensive PDF manipulation toolkit for extracting text and tabl
 version: "2.0"
 license: Proprietary. LICENSE.txt has complete terms
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
+
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('pdf')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
 
 ---
 
@@ -296,3 +321,37 @@ with open("encrypted.pdf", "wb") as output:
 - For JavaScript libraries (pdf-lib), see reference.md
 - If you need to fill out a PDF form, follow the instructions in forms.md
 - For troubleshooting guides, see reference.md
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+
+
+
+---
+
+## QNFO Design System Compliance (v2.0 - 2026-06-30)
+
+**ALL QNFO/QWAV publications, pages, PDFs, and web artifacts MUST use the Silent Radix Light Theme.**
+
+| Resource | Location |
+|:---------|:---------|
+| Canonical CSS | `https://qnfo.org/design-system/qnfo-light.css` |
+| PDF builder (v2.0) | `qnfo/design-system/build_pdf.py` |
+| HTML template | `qnfo/design-system/publication-template.html` |
+| Design doc | `qnfo/design-system/QNFO-DESIGN-SYSTEM.md` |
+
+**DARK THEMES FORBIDDEN.** All output must use:
+- White background (#FFFFFF), dark text (#363636)
+- System font stack, max-width 800px centered layout
+- Clean tables with border-collapse: collapse
+- MathJax CHTML with left-aligned display equations

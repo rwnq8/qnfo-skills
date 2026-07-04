@@ -128,27 +128,87 @@ def delete_r2_skill(name):
         return True, 'already gone'
     return False, err_msg
 
+def get_r2_etag(name):
+    """Get the current ETag of a skill on R2. Returns etag string or None if not found."""
+    token = _token()
+    ctx = ssl._create_unverified_context()
+    r2_key = f'{R2_SKILLS_PREFIX}{name}/SKILL.md'
+    encoded = urllib.request.quote(r2_key, safe='')
+    url = f'https://api.cloudflare.com/client/v4/accounts/{ACCOUNT}/r2/buckets/{BUCKET}/objects/{encoded}'
+    req = urllib.request.Request(url, method='HEAD')
+    req.add_header('Authorization', f'Bearer {token}')
+    try:
+        resp = urllib.request.urlopen(req, timeout=15, context=ctx)
+        etag = resp.headers.get('ETag', resp.headers.get('etag', ''))
+        return etag.strip('"') if etag else None
+    except urllib.request.HTTPError as e:
+        if e.code == 404:
+            return None  # New file, no existing version
+        return None
+    except Exception:
+        return None
+
+def put_with_etag(name, content):
+    """PUT a skill to R2 with ETag-based concurrent-write protection.
+    
+    Returns (ok: bool, status: str, message: str).
+    On 412 Precondition Failed, returns (False, 'conflict', details).
+    """
+    token = _token()
+    ctx = ssl._create_unverified_context()
+    r2_key = f'{R2_SKILLS_PREFIX}{name}/SKILL.md'
+    encoded = urllib.request.quote(r2_key, safe='')
+    url = f'https://api.cloudflare.com/client/v4/accounts/{ACCOUNT}/r2/buckets/{BUCKET}/objects/{encoded}'
+
+    # Get current ETag for optimistic concurrency
+    current_etag = get_r2_etag(name)
+
+    data = content.encode('utf-8') if isinstance(content, str) else content
+    req = urllib.request.Request(url, data=data, method='PUT')
+    req.add_header('Authorization', f'Bearer {token}')
+    req.add_header('Content-Type', 'application/octet-stream')
+
+    if current_etag:
+        req.add_header('If-Match', f'"{current_etag}"')
+
+    try:
+        resp = urllib.request.urlopen(req, timeout=30, context=ctx)
+        result = json.loads(resp.read().decode())
+        if result.get('success'):
+            return True, 'uploaded', 'OK'
+        errors = result.get('errors', [])
+        return False, 'api_error', errors[0].get('message', str(result)) if errors else str(result)
+    except urllib.request.HTTPError as e:
+        if e.code == 412:
+            return False, 'conflict', f'CONFLICT: {name} was modified on R2 since last read. Pull latest before re-syncing.'
+        return False, f'http_{e.code}', f'HTTP {e.code}: {e.reason}'
+    except Exception as e:
+        return False, 'exception', str(e)
+
 def sync_skills():
-    """Upload all local skills to R2."""
+    """Upload all local skills to R2 with ETag-based concurrent-write protection."""
     skills = sorted(get_local_skills())
     synced = 0
     failed = 0
+    conflicts = 0
     for name in skills:
         local_path = os.path.join(SKILLS_DIR, name, 'SKILL.md')
         local_size = os.path.getsize(local_path)
         with open(local_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        r2_path = f'r2/buckets/{BUCKET}/objects/{R2_SKILLS_PREFIX}{name}/SKILL.md'
-        result = cf(r2_path, 'PUT', content)
-        if 'result' in result:
+        ok, status, msg = put_with_etag(name, content)
+        if ok:
             synced += 1
             print(f'  OK  {name} ({local_size} B)')
+        elif status == 'conflict':
+            conflicts += 1
+            print(f'  CONFLICT {name}: {msg}')
         else:
             failed += 1
-            print(f'  FAIL {name}: {result.get("error", result)}')
+            print(f'  FAIL {name}: {msg}')
 
-    print(f'\nSynced: {synced}/{len(skills)} | Failed: {failed}')
+    print(f'\nSynced: {synced}/{len(skills)} | Conflicts: {conflicts} | Failed: {failed}')
     return synced, failed
 
 def clean_r2(dry_run=True):

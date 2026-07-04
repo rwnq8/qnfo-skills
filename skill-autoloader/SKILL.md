@@ -30,7 +30,7 @@ the user with the specific failure reason.
 ---
 
 
-# SKILL AUTO-LOADER -- v2.0
+# SKILL — v1.0 AUTO-LOADER -- v2.0
 
 > **PRIORITY 0 — pinned, always active. User NEVER manually loads skills.**
 
@@ -129,6 +129,7 @@ Once a skill is loaded, cache its content for the session. Don't re-load the sam
 | `publication-publisher` | publish, Zenodo, DOI, PDF, paper, manuscript, LaTeX, build PDF | cloudflare-deployer, citation-manager, seo-discoverability |
 | `knowledge-graph` | KG, graph-api, dependencies, neighbors | qnfo-agent, infrastructure-audit |
 | `infrastructure-audit` | audit, health check, orphan, stale, worker route, route conflict | cloudflare-deployer, knowledge-graph |
+| `ipfs-pinning` | ipfs, pinata, cid, pinning, paper hash, content-addressing | cloudflare-deployer, publication-publisher |
 | `literature-search` | research, preprint, Semantic Scholar | publication-publisher, citation-manager |
 | `git-hygiene` | git error, detached HEAD, merge, commit, conventional commit | closeout-manager |
 | `email-composer` | email, send, Outlook | — |

@@ -3,15 +3,68 @@ name: infrastructure-audit
 description: Audit all Cloudflare infrastructure resources (D1, R2, Workers, Pages, Vectorize, Queues) including lifecycle pipeline. Reports orphaned/duplicate resources, state mismatches, lifecycle health, and archival integrity.
 version: "1.9"
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
 
+
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('infrastructure-audit')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [Priority 1 — auto-loads for relevant operations].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
 
 ---
 
-# INFRASTRUCTURE AUDIT SKILL -- v2.0
+# INFRASTRUCTURE AUDIT SKILL — v1.0 -- v1.9
 
 > **LIFECYCLE-AWARE. GAP-AUDIT INTEGRATION. RED-TEAM-DOD INTEGRATION. RESOURCE GOVERNANCE. 522-PREVENTION. UPDATED 2026-07-01.** v1.9 adds §0.8 522 Root Cause Detection (CNAME × Pages cross-reference), §0.9 CNAME Chain Detection, §0.10 Dead Worker CNAME Detection, and §0.11 Empty Zone Detection — all learned from the 2026-07-01 qwav.tech 522 outage. Prevents the #1 failure mode: CNAME to `.pages.dev` without domain registration.
 
 ---
+
+## execute_plan (MANDATORY — Before Any Execution)
+
+**This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.
+
+### Execution Protocol
+
+1. **Populate update_plan** with workflow phases as concrete checklist items
+2. **Execute one item at a time** — at most ONE in_progress
+3. **Mark items completed ONLY with tool evidence** (Test-Path, exec output, git log)
+4. **Never claim completion without execution evidence** — Rule 14 enforcement
+5. **If blocked:** Flag as [BLOCKED: reason] and move to the next item
+
+### Example Plan
+
+update_plan([
+  {"step": "Query D1 databases via API Worker", "status": "pending"},
+  {"step": "Query KV namespaces", "status": "pending"},
+  {"step": "Query Vectorize indexes", "status": "pending"},
+  {"step": "Query Pages projects", "status": "pending"},
+  {"step": "Query Workers deployments", "status": "pending"},
+  {"step": "Query Queues", "status": "pending"},
+  {"step": "Check Lifecycle Worker health", "status": "pending"},
+  {"step": "Check Archive Worker health", "status": "pending"},
+  {"step": "Run archival integrity checks", "status": "pending"},
+  {"step": "Generate health recommendations report", "status": "pending"},
+])
+
 ---
 
 ## Purpose
@@ -55,7 +108,7 @@ queues = cf('queues')
 
 print(f'D1: {len(d1.get("result",[]))} | KV: {len(kv.get("result",[]))} | Vectorize: {len(vec.get("result",[]))}')
 print(f'Pages: {len(pages.get("result",[]))} | Workers: {len(workers.get("result",[]))} | Queues: {len(queues.get("result",[]))}')
-# Expected: D1: 5 | KV: 1 | Vectorize: 3 | Pages: 10 (all active) | Workers: 30 | Queues: 2
+# Expected: D1: 5 | KV: 1 | Vectorize: 3 | Pages: 10 (3 essential, 4 redirecting) | Workers: 30 | Queues: 2
 ```
 
 ### Phase 1.5: Lifecycle Pipeline Health (NEW)
@@ -208,10 +261,10 @@ Based on audit findings, report orphaned resources, stale entries, archival mism
 | D1 Databases | 5 | qnfo-cms (page content), **living-paper (CANONICAL PUBLICATIONS DATABASE — 170 papers)**, qnfo-audit, qnfo-graph, portfolio-state |
 | KV Namespaces | 1 | equation-cache |
 | Vectorize Indexes | 3 | qwav-research-v2 (1024-dim, active), qnfo-handoffs, qnfo-tasks |
-| Pages Projects | 10 (all active) | qnfo-hub (qnfo.org), qnfo-publications (papers.qnfo.org), qnfo-legal (legal.qnfo.org), qwav (deep.qwav.tech), qnfo-design-system (design.qnfo.org), hensel-code (hensel.qnfo.org), discovery-momentum (momentum.qnfo.org), different-physics (different.qnfo.org), cocyle (cocyle.qnfo.org), ask-qwav (ask.qwav.tech) |
+| Pages Projects | 5 (all active) | qnfo-hub (qnfo.org), qnfo-publications (papers.qnfo.org), qnfo-legal (legal.qnfo.org), qwav (deep.qwav.tech), qnfo-design-system (design.qnfo.org) |
 | Workers | 30 | papers-server (D1+R2 dynamic renderer), ask-qwav, graph-api, qnfo-data-api, seo-metadata-injector, +25 more |
 | Queues | 2 | qnfo-lifecycle-queue (essential), git-on-cloudflare-repo-maint (deprecated) |
-| Knowledge Graph | 882 nodes, 1854 edges | EXPANDED — Papers, Zenodo records, and Cloudflare assets now seeded |
+| Knowledge Graph | 825 nodes, 1727 edges | SEVERELY OUT OF SYNC — 70+ nodes for ~16 live resources. Needs bulk cleanup. |
 | R2 Bucket | 1 (qnfo) | papers, publications, discovery, archive, projects, releases, tools |
 | Live Domains | 30 (verified 2026-07-01) | 12 zones, 56 DNS records, all resolving HTTP 200 |
 
@@ -267,7 +320,7 @@ No action needed.
 
 > **CRITICAL:** The 2026-07-01 session audit found 18 worker routes, 30 Workers, 10 Pages projects, 42 DNS records, 7 zones, and 4 redirect chains — all grown unconstrained. Root cause: no cross-reference between resources, no baseline counts, no automated enforcement. The session session deleted 24 DNS records, 13 routes, 5 Workers, 5 Pages projects, and 2 redirect rulesets. **These rules prevent recurrence.**
 
-**Resource Baselines (alert if exceeded):** Worker routes ≤ 6, Workers ≤ 26, Pages ≤ 10, DNS ≤ 56, Zones ≤ 12, Redirects = 0. **Cross-Reference Enforcement:** every route must target a live Worker; every DNS CNAME to `.pages.dev` must have domain registered on that Pages project; every domain must resolve to HTTP 200. **Growth Detection:** before creating any resource, count current resources; if over baseline, audit and clean up first. **Anti-Proliferation:** create DNS CNAME → add domain to Pages FIRST; create Worker route → verify Worker deployed FIRST; delete Worker → delete all routes FIRST; delete Pages → remove all domains FIRST.
+**Resource Baselines (alert if exceeded):** Worker routes ≤ 6, Workers ≤ 24, Pages ≤ 5, DNS ≤ 16, Zones ≤ 5, Redirects = 0. **Cross-Reference Enforcement:** every route must target a live Worker; every DNS CNAME to `.pages.dev` must have domain registered on that Pages project; every domain must resolve to HTTP 200. **Growth Detection:** before creating any resource, count current resources; if over baseline, audit and clean up first. **Anti-Proliferation:** create DNS CNAME → add domain to Pages FIRST; create Worker route → verify Worker deployed FIRST; delete Worker → delete all routes FIRST; delete Pages → remove all domains FIRST.
 
 **GATE:** Resource counts MUST be within baseline at session start.
 
@@ -450,30 +503,6 @@ for z in zones:
 
 **GATE:** Empty zones should be deleted. If unremovable, exclude from all counts and audits.
 
-### 0.12 WORKER ROUTE INTERFERENCE DETECTION (v1.0 — Merged from worker-route-interference-audit)
-
-> **LEARNED FROM 2026-07-02 papers.qnfo.org outage.** Worker routes use URL pattern specificity: more specific patterns silently intercept traffic from less specific ones. The `papers.qnfo.org/papers/*` → `seo-metadata-injector` route overrode `papers.qnfo.org/*` → `papers-server`, causing paper detail pages to return redirects instead of content.
-
-#### Detection
-
-```python
-# Get ALL worker routes across ALL zones
-all_routes = []
-for z in zones:
-    routes = cf(f'zones/{z["id"]}/workers/routes').get('result', [])
-    for r in routes:
-        all_routes.append({'zone': z['name'], 'pattern': r.get('pattern',''), 'script': r.get('script','')})
-
-# Find overlaps: more specific pattern overrides less specific
-for a, b in itertools.combinations(all_routes, 2):
-    a_base = a['pattern'].rstrip('*').rstrip('/')
-    b_base = b['pattern'].rstrip('*').rstrip('/')
-    if (a_base.startswith(b_base) or b_base.startswith(a_base)) and a['pattern'] != b['pattern']:
-        print(f"  [CONFLICT] {a['pattern']}→{a['script']} overrides {b['pattern']}→{b['script']}")
-```
-
-**GATE:** 0 route conflicts at session start. Workers must not silently override each other.
-
 ## Integration
 
 - Runs automatically at session start (qnfo-agent §3.2 step 1.6)
@@ -483,6 +512,20 @@ for a, b in itertools.combinations(all_routes, 2):
 
 ---
 
-*infrastructure-audit v2.0 — Resource Governance (§0.7) + 522 Prevention (§0.8-§0.11). Automated CNAME×Pages cross-reference, chain detection, dead worker detection, empty zone detection. 25-check audit with automated fix capability.*
+*infrastructure-audit v1.9 — Resource Governance (§0.7) + 522 Prevention (§0.8-§0.11). Automated CNAME×Pages cross-reference, chain detection, dead worker detection, empty zone detection. 25-check audit with automated fix capability.*
 
 *v1.8 and earlier deprecated 2026-07-01. Replaced by v1.9 with automated 522 root cause detection, CNAME chain detection, dead worker detection, and empty zone detection.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

@@ -3,12 +3,37 @@ name: kaizen-autonomous-update
 description: Autonomous system-wide Kaizen improvement protocol — triggers when user says "UPDATE ALL FROM KAIZEN" or when Kaizen engine detects 5+ unapplied improvements. Updates all prompts, templates, skills, agents/subagents, deploys, and commits.
 version: "1.1"
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 
 > **QNFO Custom Skill** — Load via `read('R2 `qnfo/prompts/skills/kaizen-autonomous-update\\SKILL.md')`
 > **Template:** `fill_prompt_template("KAIZEN-AUTONOMOUS-UPDATE", {...})`
 
 ---
 
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('kaizen-autonomous-update')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
 
 ---
 ## execute_plan (MANDATORY — Before Any Execution)
@@ -88,7 +113,7 @@ The Phase 0 comprehensive audit (`_kaizen_system_audit.py`) checks:
 |:------|:-----------|
 | `git-hygiene` | If git operations fail during update |
 | `closeout-manager` | After update completes, for session close-out |
-| `fill_prompt_template` | To verify template entries after cleanup (template-catalog demoted to skill-autoloader/references/) |
+| `template-catalog` | To verify template entries after cleanup |
 | `cloudflare-deployer` | If R2/wrangler operations fail |
 | `publication-publisher` | If the update report needs formal publication |
 
@@ -129,3 +154,17 @@ Tools execute locally (Python requires filesystem access) but do NOT persist:
 2. **Execute:** `python _<name>.py`
 3. **Discard:** `Remove-Item _<name>.py`
 4. If R2 copy missing: flag `[SKILL-GAP: script <name>.py missing from R2, cannot bootstrap]`
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

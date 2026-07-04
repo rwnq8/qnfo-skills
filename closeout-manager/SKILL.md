@@ -1,20 +1,73 @@
 ---
 name: closeout-manager
 description: Session close-out procedures — autonomous trigger detection, task execution verification, project handoff initialization, audit trail export, R2 state upload, lifecycle timestamp update, archive operations, draft artifact cleanup, and handoff documentation. Auto-executes at session end without user prompting.
-version: "3.3"
+version: "3.4"
+---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
+
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('closeout-manager')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [Priority 0 — always active, cannot be disabled].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
 ---
 
-
----
-
-# CLOSEOUT MANAGER SKILL — v3.3
+# CLOSEOUT MANAGER SKILL — v1.0 — v3.3
 
 > **D1-FIRST. R2 DEPRECATED FOR STRUCTURED DATA (§2.6).** Handoffs, audits, decisions, state files, and the discovery index now live EXCLUSIVELY in D1. R2 is for file artifacts ONLY (PDFs, scripts, templates). R2 flat files (index.json, handoff .md, state .json) are DEPRECATED — never read from R2, never write to R2 for structured records. See `qnfo-agent` §10 for D1 lifecycle integration.
 > **LIFECYCLE-AWARE.** This release integrates with the automated lifecycle pipeline — `last_active` timestamps are reset on closeout to prevent premature staleness. Archive paths follow the ultrametric `qnfo/archive/projects/<name>/` convention.
 > **AUTONOMOUS skill.** Do NOT wait for user to say "TERMINATE." Detect completion and auto-initiate closeout. Includes POST-PHASE GAP AUDIT — user should NEVER have to ask "WHAT ELSE?"
-> Source: `CLOSEOUT-CHECKLIST` template + execution-guard skill (handoff-protocol absorbed §3.6)
+> Source: `CLOSEOUT-CHECKLIST` template + execution-guard skill + handoff-protocol skill
 
 ---
+
+## execute_plan (MANDATORY — Before Any Execution)
+
+**This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.
+
+### Execution Protocol
+
+1. **Populate update_plan** with workflow phases as concrete checklist items
+2. **Execute one item at a time** — at most ONE in_progress
+3. **Mark items completed ONLY with tool evidence** (Test-Path, exec output, git log)
+4. **Never claim completion without execution evidence** — Rule 14 enforcement
+5. **If blocked:** Flag as [BLOCKED: reason] and move to the next item
+
+### Example Plan
+
+update_plan([
+  {"step": "Step 0: Verify autonomous trigger (all tasks complete)", "status": "pending"},
+  {"step": "Step 1: Verify all git commits", "status": "pending"},
+  {"step": "Step 2: Task Execution Verification audit", "status": "pending"},
+  {"step": "Step 2.6: POST-PHASE GAP AUDIT (all categories A-F)", "status": "pending"},
+  {"step": "Step 3: Project Handoff Initialization", "status": "pending"},
+  {"step": "Step 3.1: D1 Handoff Insertion (EXECUTE FIRST)\", \"status\": \"pending\"},
+  {"step": "Step 4: Audit Trail Export to D1 + R2", "status": "pending"},
+  {"step": "Step 5: Update D1 tables + lifecycle timestamps", "status": "pending"},
+  {"step": "Step 9: Clean up temporary files (JIT enforcement)", "status": "pending"},
+  {"step": "Step 10: Final CLOSEOUT-CHECKLIST verification", "status": "pending"},
+])
+
 ---
 
 ## Step 0: AUTONOMOUS TRIGGER DETECTION (MANDATORY — Run First)
@@ -191,7 +244,7 @@ Before claiming any work complete, actively try to BREAK your own work:
 #### 2.6.6 Integration with Other Skills
 
 - **execution-guard**: The WHAT-ELSE hook (§1.4) fires this gap audit before allowing any [ALL TASKS EXECUTED] claim
-- **handoff-protocol (absorbed into this skill §3.6)**: The gaps section pulls from this audit's output
+- **handoff-protocol**: The gaps section pulls from this audit's output
 - **kaizen-autonomous-update**: Phase 0 audit includes this gap audit as a checklist item
 - **infrastructure-audit**: Phase 4 Health Recommendations feed into the infrastructure health check
 
@@ -512,46 +565,6 @@ Use `fill_prompt_template("CLOSEOUT-CHECKLIST")` for the full verification check
 
 ---
 
-### 3.6 CONTINUATION PROMPT (REQUIRED — from handoff-protocol v1.3)
-
-**Every handoff MUST include a verbatim copy-paste continuation prompt** that the user can paste directly into a new LLM session. This eliminates the #1 handoff failure mode: the next agent having to re-discover context.
-
-#### Format Requirements
-
-The continuation prompt MUST be:
-1. **In a code block** — triple-backtick fenced, no language tag, easily copyable
-2. **Verbatim-executable** — copy/paste into a new session and the agent should know EXACTLY what to do
-3. **Self-contained** — includes the HANDOFF file path to read, the DoD enforcement command, and the priority queue
-4. **Specific** — names concrete files, commands, and URLs
-5. **Prioritized** — tasks listed in execution order with explicit dependencies
-
-#### Required Elements
-
-```
-REQUIRED:
-  ☐ HANDOFF file path (e.g., "projects/cms/HANDOFF.md")
-  ☐ DoD enforcement command (e.g., "RUN python _dod_enforce.py BEFORE CLOSEOUT")
-  ☐ Priority queue (ranked list of next actions, most urgent first)
-  ☐ Infrastructure verification step (what to check before executing)
-  ☐ Critical blockers (what's currently broken and how to diagnose)
-  ☐ Evidence requirement reminder (every claim needs tool output)
-```
-
-#### Example
-
-```
-LOAD ALL QNFO SKILLS. CONTINUE FROM HANDOFF IN projects/cms/HANDOFF.md. 
-
-RUN python _dod_enforce.py TO VERIFY INFRASTRUCTURE STATE, THEN EXECUTE:
-
-1. VERIFY all Pages sites render correct content
-2. PURGE Cloudflare CDN cache for stale pages
-3. SEED Vectorize paper-similarity index
-4. RUN python _dod_enforce.py before closeout — exit 0 required
-
-CRITICAL: Every action must have verification evidence. No claim without tool output.
-```
-
 ## Handoff Document
 
 When handing off to another agent:
@@ -598,3 +611,17 @@ The automated lifecycle pipeline runs daily at 06:00 UTC (`qnfo-lifecycle` Worke
 ---
 
 *closeout-manager skill v3.4 — D1-FIRST. RED-TEAM-DOD INTEGRATION (§2.6). POST-PHASE GAP AUDIT with red-team self-testing + DNS resolution sweep + DI-KG sync verification. LIFECYCLE-AWARE. R2 archive paths follow ultrametric convention.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

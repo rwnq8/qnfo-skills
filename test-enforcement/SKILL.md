@@ -3,6 +3,8 @@ name: test-enforcement
 description: MANDATORY test enforcement for ALL code changes, deployments, and infrastructure modifications. Runs canonical test suite before claiming any action as EXECUTED. Priority 1 — pinned and always active.
 version: "1.2"
 ---
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** See RED-TEAM-PROTOCOL.md.
+
 ### Programmatic Loading & Execution
 This skill is loaded and executed **programmatically by the LLM system** 
 during response generation. Loading is triggered automatically via 
@@ -12,6 +14,19 @@ detects task patterns and handles all skill loading. If this skill fails
 to load, the LLM system automatically retries via the fallback chain 
 documented below.
 **Pinning:** This skill is [Priority 1 — auto-loads for relevant operations].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
 
 ---
 
@@ -30,8 +45,8 @@ documented below.
 |:------|:--------:|
 | Page NOT stub (no "stub", "page stub", "auto-generated") | **YES** |
 | Page has `<title>`, `<h1>`, body > 500B | **YES** |
-| qnfo-cms publication has body (> 100 chars) | **YES** |
-| qnfo-cms publication has DOI | WARNING |
+| CMS publication has body (> 100 chars) | **YES** |
+| CMS publication has DOI | WARNING |
 
 ## 2.5 GAP AUDIT BRIDGE (v1.1)
 
@@ -56,7 +71,7 @@ python _test_suite.py --quick           # Smoke test
 
 ## 4. DOMAINS COVERED (80+ tests across 9 domains)
 
-qnfo-cms (8) | Pages (55) | KG (6) | D1 (8) | Vectorize (3) | R2 (4) | Skills (8) | Content (8+) | Health (3)
+CMS (8) | Pages (55) | KG (6) | D1 (8) | Vectorize (3) | R2 (4) | Skills (8) | Content (8+) | Health (3)
 
 ## 5. FAILURE HANDLING
 
@@ -80,3 +95,17 @@ qnfo-cms (8) | Pages (55) | KG (6) | D1 (8) | Vectorize (3) | R2 (4) | Skills (8
 ---
 
 *test-enforcement v1.2 — PRIORITY 1. Gap-audit bridge (§2.5). Pinned. Mandatory for ALL actions. v1.2 adds DNS resolution + SEO artifact test domains.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+
