@@ -183,7 +183,7 @@ Structure the review output as follows:
 
 ---
 
-*code-review v2.0 — Comprehensive code quality, security, and best practices analysis. All output labeled [LLM-INFERRED] unless verified against execution evidence.*
+*code-review v2.1 — Comprehensive code quality, security, and best practices analysis. All output labeled [LLM-INFERRED] unless verified against execution evidence.*
 
 ## RT: RED-TEAM SELF-AUDIT
 

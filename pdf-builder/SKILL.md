@@ -32,7 +32,7 @@ the user with the specific failure reason.
 
 ---
 
-# PDF BUILDER SKILL — v1.0 — v2.0
+# PDF BUILDER SKILL — v3.0
 
 > **Bundled skill.** All scripts and references are self-contained in this skill directory.
 > Deployed via `_deploy.py` to `%USERPROFILE%\.deepchat\skills\pdf-builder\` (DeepChat runtime directory).
@@ -336,7 +336,7 @@ Always use PRIMARY pipeline (v2.0) ──→ Obsidian-quality output
 
 ---
 
-*pdf-builder v2.0 — Primary pipeline: MD → HTML+CSS+MathJax → playwright PDF. Obsidian-quality output with full LaTeX math, CSS-styled tables, and professional typography. Legacy reportlab pipeline kept as fallback. Tested 2026-06-28.*
+*pdf-builder v3.0 — Primary pipeline: MD → HTML+CSS+MathJax → playwright PDF. Obsidian-quality output with full LaTeX math, CSS-styled tables, and professional typography. Legacy reportlab pipeline kept as fallback. Tested 2026-06-28.*
 
 
 
