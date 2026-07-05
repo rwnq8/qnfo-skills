@@ -1,4 +1,4 @@
----
+﻿---
 name: skill-autoloader
 description: AUTOMATICALLY loads relevant QNFO skills based on task detection. User NEVER manually loads skills. Cross-references all skills. Handles fallback when skill_view() fails.
 pinned: true
@@ -31,6 +31,11 @@ the user with the specific failure reason.
 
 
 # SKILL — v1.0 AUTO-LOADER -- v2.0
+
+> **Version:** v1.0 (Kaizen-audited 2026-07-05)
+
+> **Version:** v1.0 (Kaizen-audited 2026-07-05)
+
 
 > **PRIORITY 0 — pinned, always active. User NEVER manually loads skills.**
 
@@ -233,3 +238,18 @@ Once a skill is loaded, cache its content for the session. Don't re-load the sam
 ---
 
 *skill-autoloader v3.0 — Priority 0. Auto-detects task patterns and loads skills. Subsidiary Skill Chain Loading (Rule 3) — parses Related: headers, force-loads all subsidiary skills, merges their execute_plan items into primary update_plan with [SUB:] prefix. Chain Integrity Check blocks completion while subsidiary items pending. User never manually manages skills. Fallback recovery for load failures.*
+
+## RT: RED-TEAM SELF-AUDIT
+
+Before claiming this skill complete, autonomously run:
+
+1. Output Verification (negative verification)
+2. Assumption Challenge (state and test every assumption)
+3. Edge Case Check (empty/null/max/boundary/desync)
+4. DoD Integration (run _dod_enforce.py if exists)
+5. Iteration (retry on failure, max 3)
+
+ANTI-PATTERN: User should NEVER ask about quality.
+**Skill-Specific Checks:** Verify all skill_view() calls resolve to existing skills. Verify fallback chain works for all 41 skills. Verify auto-loading triggers fire correctly.
+Refer to RED-TEAM-PROTOCOL.md for full protocol.
+

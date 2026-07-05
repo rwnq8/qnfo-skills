@@ -1,4 +1,4 @@
----
+﻿---
 name: ultrametric-engine
 description: Deploy 20 mathematical principles (ultrametric distance, p-adic valuation, Ostrowski's theorem, Hensel's lemma, Mahler compression, Berkovich spaces, Tate/Amice spectral analysis, Hasse local-global, Witt vectors, Bruhat-Tits buildings, p-adic caching, intrinsic Amice transform) as a production Cloudflare discovery engine. Use when building ultrametric tree-based search, p-adic ranked paper corpora, hierarchical dendrogram visualizations, or multi-endpoint Workers with R2/D1/Pages/Vectorize bindings.
 ---
@@ -33,6 +33,11 @@ update_plan([
 
 
 # ULTRAMETRIC ENGINE SKILL — v1.0
+
+> **Version:** v1.0 (Kaizen-audited 2026-07-05)
+
+> **Version:** v1.0 (Kaizen-audited 2026-07-05)
+
 
 ## Purpose
 

@@ -1,4 +1,4 @@
----
+﻿---
 name: knowledge-graph
 description: QNFO Knowledge Graph querying for due diligence, impact analysis, ultrametric clustering, and cross-system discovery. Supports ball queries, hierarchical taxonomy, and lifecycle-aware project queries.
 version: "2.4"
@@ -124,7 +124,7 @@ r = urllib.request.Request("https://graph-api.q08.workers.dev/stats",
     headers={"User-Agent": "Mozilla/5.0"})
 data = json.loads(urllib.request.urlopen(r, timeout=10).read())
 # Returns: {totalNodes, totalEdges, nodeLabels: [...], relationshipTypes: [...]}
-# Current: 882 nodes, 1854 edges
+# Current: 2721 nodes, 3993 edges
 ```
 
 ### GET /nodes?label=Project&search=pdf

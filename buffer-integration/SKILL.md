@@ -1,4 +1,4 @@
----
+﻿---
 name: buffer-integration
 description: Buffer API integration for social media posting on QNFO/QWAV channels. Create, schedule, and manage social media posts across Twitter/X, LinkedIn, and Bluesky via Buffer. Use when user says "post this to social media," "schedule a tweet," "publish to LinkedIn," or when Phase 5 of LRAP requires social dissemination of a new publication.
 ---
@@ -33,6 +33,11 @@ the user with the specific failure reason.
 ---
 
 # BUFFER INTEGRATION SKILL — v1.0 — v2.2
+
+> **Version:** v1.0 (Kaizen-audited 2026-07-05)
+
+> **Version:** v1.0 (Kaizen-audited 2026-07-05)
+
 
 > **Phase 5 of LRAP.** Enables automated social media dissemination of QNFO/QWAV publications via Buffer **GraphQL API**.
 

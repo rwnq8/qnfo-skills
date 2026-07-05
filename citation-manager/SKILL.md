@@ -1,4 +1,4 @@
----
+﻿---
 name: citation-manager
 description: Academic citation management for QNFO research pipeline. Extract citations from Markdown, verify against BibTeX bibliographies, auto-generate BibTeX entries from DOIs, flag missing/unused citations, and produce citation verification reports. Use when user says "check my citations," "verify bibliography," "generate BibTeX entries," "are all citations accounted for," or when Phase 2 of LRAP requires citation validation before publication.
 ---
@@ -33,6 +33,11 @@ update_plan([
 
 
 # CITATION MANAGER SKILL — v1.0
+
+> **Version:** v1.0 (Kaizen-audited 2026-07-05)
+
+> **Version:** v1.0 (Kaizen-audited 2026-07-05)
+
 
 > **Phase 2 gateway of LRAP.** Verifies that every citation in the paper text resolves to a bibliography entry and vice versa. Enables automated BibTeX generation from DOIs.
 

@@ -1,4 +1,4 @@
----
+﻿---
 name: literature-search
 description: Automated multi-source academic literature search and paper triage for LLM Research Automation Pipeline (LRAP). Queries preprint servers, Semantic Scholar, QNFO Vectorize, and web search; deduplicates results; classifies papers as core/supporting/background/reject. Use when user asks "search for papers on X," "find literature about Y," "what's published on Z," or when executing Phase 1 of any research project.
 ---
@@ -33,6 +33,11 @@ update_plan([
 
 
 # LITERATURE SEARCH SKILL — v1.0
+
+> **Version:** v1.0 (Kaizen-audited 2026-07-05)
+
+> **Version:** v1.0 (Kaizen-audited 2026-07-05)
+
 
 > **Phase 1 of LRAP.** Automates multi-source academic literature discovery, deduplication, and triage.
 
