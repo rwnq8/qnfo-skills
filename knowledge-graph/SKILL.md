@@ -384,7 +384,7 @@ The Knowledge Graph is the central registry for project lifecycle. Key propertie
 | Version | Date | Changes |
 |:--------|:-----|:--------|
 | v2.4 | 2026-07-04 | **DO+SQLite + Workers AI Integration:** Added DO+SQLite Worker (qnfo-agent-session) for KG write coordination via `/kg-mutex/*` endpoints. Added R2 Event Notifications auto-trigger for graph re-indexing. Added Workers AI Worker (qnfo-ai-worker) for paper enrichment (classify, citations). Updated API endpoint table with 4 new DO endpoints. |
-| v2.3 | 2026-07-02 | **Count refresh:** 882 nodes (24 labels), 1854 edges (45 types). Added Paper (178), CloudflareAsset (148), ZenodoRecord (124), R2Object (115) labels. Edge type table expanded to 14 types. RELATES_TO now dominant (522). Verified live via KG API. |
+| v2.3 | 2026-07-02 | **Count refresh:** 2721 nodes (40+ labels), 3993 edges (50+ types). Added Paper (178), CloudflareAsset (148), ZenodoRecord (124), R2Object (115) labels. Edge type table expanded to 14 types. RELATES_TO now dominant (522). Verified live via KG API. |
 | v2.2 | 2026-06-28 | **Count refresh:** Verified live — 261 nodes, 401 edges. OWNS now dominant edge (205 vs 99). Needs paper REFERENCES edges (currently 0 paper connections). |
 | v2.0 | 2026-06-21 | **Ultrametric Taxonomy:** Added 4-domain/12-program ultrametric tree with BELONGS_TO and ULTRA_CONTAINS edges. Added ball query recipe. Updated graph stats (238/382). Added lifecycle property documentation. Verified 0 violations on 500 triples (strong triangle inequality). |
 | v1.1 | 2026-06-03 | Phase 2/3 Integration: POST /sync documentation, reseed protocol. |
