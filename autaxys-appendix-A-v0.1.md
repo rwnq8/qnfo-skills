@@ -125,4 +125,127 @@ Therefore $E_n = \left(n + \frac{1}{2}\right)\hbar\omega$. $\square$
 
 ---
 
-*Autaxys Appendix A — Section 1 of 12. Sections 2–12 stubbed for future development.*
+---
+
+### 2. Schrödinger Equation as Cycle Propagation
+
+#### 2.0 From Eigenvalues to Time Evolution
+
+Section 1 derived the energy spectrum $E_n = (n + 1/2)\hbar\omega$ from the discrete Generative Cycle. The eigenvalue relation:
+
+$$\hat{H} |n\rangle = E_n |n\rangle$$
+
+gives us stationary states. But the Generative Cycle is inherently temporal — each cycle step applies $\hat{G}$. To get dynamics, we need to propagate states through time.
+
+#### 2.1 The Cycle Propagator
+
+The cycle operator $\hat{G}$ acts on a state $|\Psi\rangle$ over one complete cycle of period $\tau = 2\pi/\omega$:
+
+$$\hat{G} |\Psi\rangle = e^{-i\hat{H}\tau/\hbar} |\Psi\rangle$$
+
+This is the **cycle propagator** — the finite-time evolution operator for exactly one cycle. For $t$ cycles, the propagator is $\hat{G}^t$.
+
+The infinitesimal generator is obtained by expanding $\hat{G}$ for small cycle counts. For a fractional cycle $\delta t = t \cdot \tau$ where $t \in [0, 1]$:
+
+$$\hat{G}^{t} = e^{-i\hat{H} t \tau / \hbar} = e^{-i\hat{H} \delta t / \hbar}$$
+
+which is the standard quantum mechanical time evolution operator $\hat{U}(\delta t)$.
+
+#### 2.2 Derivation of the Schrödinger Equation
+
+For an infinitesimal time step $dt \ll \tau$, the state changes by:
+
+$$|\Psi(t + dt)\rangle = \hat{G}^{dt/\tau} |\Psi(t)\rangle = e^{-i\hat{H} dt / \hbar} |\Psi(t)\rangle$$
+
+Expand the exponential to first order in $dt$:
+
+$$|\Psi(t + dt)\rangle = \left(1 - \frac{i}{\hbar}\hat{H} dt + \mathcal{O}(dt^2)\right) |\Psi(t)\rangle$$
+
+Rearrange:
+
+$$\frac{|\Psi(t + dt)\rangle - |\Psi(t)\rangle}{dt} = -\frac{i}{\hbar}\hat{H} |\Psi(t)\rangle + \mathcal{O}(dt)$$
+
+Taking the limit $dt \to 0$:
+
+$$i\hbar \frac{d}{dt} |\Psi(t)\rangle = \hat{H} |\Psi(t)\rangle$$
+
+**This is the time-dependent Schrödinger equation.** It arises because the Generative Cycle's discrete steps, when taken to the infinitesimal limit, generate continuous unitary evolution.
+
+#### 2.3 Physical Interpretation
+
+[established] The Schrödinger equation is not an additional postulate of quantum mechanics — it is the infinitesimal limit of the discrete Generative Cycle. The "quantum" in "quantum mechanics" is the discreteness of the cycle; the "mechanics" (continuous evolution) is the limit where we ignore individual cycles and treat time as continuous.
+
+**Key insight:** The cycle period $\tau$ sets the natural timescale of quantum evolution. When we observe at timescales much larger than $\tau$, the discrete steps blur into the continuous Schrödinger flow — exactly as a movie (24 discrete frames per second) appears continuous to human perception.
+
+#### 2.4 Falsifiability
+
+**Prediction:** At timescales comparable to $\tau$, deviations from continuous Schrödinger evolution should appear — discrete "stuttering" in the wavefunction. For a harmonic oscillator with frequency $\omega$, the cycle period is $\tau = 2\pi/\omega$.
+
+**Test:** Prepare a quantum harmonic oscillator (e.g., trapped ion in a harmonic potential) and measure its state at time intervals $\Delta t \ll \tau$, $\Delta t \approx \tau$, and $\Delta t \gg \tau$. If discrete evolution effects are observed near the cycle period, this confirms the Generative Cycle origin of the Schrödinger equation.
+
+**Current experimental status:** No experiment has tested quantum evolution at the single-cycle timescale for harmonic oscillators at low occupation numbers. This is feasible with current trapped-ion technology.
+
+---
+
+### 3. Energy-Time Uncertainty from Cycle Period
+
+#### 3.0 The Cycle as a Clock
+
+The Generative Cycle has a fundamental period $\tau$. Any measurement that determines the energy of a cycle state requires observing at least one complete cycle. This creates an intrinsic trade-off: you cannot simultaneously determine the energy AND the exact moment within the cycle.
+
+#### 3.1 Derivation
+
+Consider a measurement of the cycle energy $\hat{H}$. The minimum time $\Delta t$ needed to resolve energy difference $\Delta E$ is constrained by the Fourier limit:
+
+$$\Delta E \cdot \Delta t \geq \frac{\hbar}{2}$$
+
+In the Generative Cycle framework, this has a direct physical interpretation:
+
+**$\Delta t$ is the number of cycles observed.** To resolve energy to precision $\Delta E$, you must observe the system for at least $\Delta t \geq \hbar/(2\Delta E)$.
+
+**$\Delta E$ is the cycle energy uncertainty.** If the cycle period is $\tau$, the energy levels are spaced by $\hbar\omega = 2\pi\hbar/\tau$. To distinguish level $n$ from level $n+1$, you need:
+
+$$\Delta t \geq \frac{\hbar}{2\hbar\omega} = \frac{\tau}{4\pi}$$
+
+i.e., you must observe at least a fraction of one full cycle.
+
+#### 3.2 The Half-Quantum Origin
+
+The $1/2$ in $\Delta E \cdot \Delta t \geq \hbar/2$ comes from the zero-point energy of the cycle. The ground state $n=0$ has energy $E_0 = \hbar\omega/2$ — half a quantum. This half-quantum is the minimum energy uncertainty because:
+
+1. You cannot measure "less than zero cycles" — the ground state is the floor
+2. The zero-point energy is $\hbar\omega/2$ — half a cycle's worth of energy
+
+Therefore, any measurement has an irreducible energy spread of at least $\hbar\omega/2$, which, in time units, corresponds to $\hbar/2$.
+
+#### 3.3 Generalization to Other Uncertainty Relations
+
+The same cycle-period argument generalizes to other conjugate pairs:
+
+| Pair | Cycle Interpretation | Uncertainty Relation |
+|:-----|:--------------------|:--------------------|
+| Energy–Time | Number of cycles vs. energy per cycle | $\Delta E \cdot \Delta t \geq \hbar/2$ |
+| Position–Momentum | Location within cycle vs. cycle momentum | $\Delta x \cdot \Delta p \geq \hbar/2$ |
+| Angle–Angular Momentum | Phase within cycle vs. cycle angular momentum | $\Delta\theta \cdot \Delta L \geq \hbar/2$ |
+
+Each pair corresponds to a different aspect of the Generative Cycle. The universality of $\hbar/2$ across all pairs suggests a common origin in the cycle structure itself.
+
+#### 3.4 Connection to the Adelic Framework
+
+[speculative] In the adelic framework (Program D), each p-adic completion has its own cycle structure with its own "Planck constant" $\hbar_p$. The real (Archimedean) completion gives the standard $\hbar$. The product over all completions:
+
+$$\hbar_{\mathbb{A}} = \prod_{p \leq \infty} \hbar_p$$
+
+is the adelic Planck constant. If $\hbar_p \neq \hbar$ for some p, this would mean quantum fluctuations have p-adic components that are invisible in real measurements but contribute to the total uncertainty.
+
+**Testable prediction:** If p-adic uncertainty contributions exist, they should manifest as anomalous noise in precision measurements at specific p-adic scales (e.g., 1/2, 1/3, 1/5, 1/7 of the fundamental frequency). This is currently untested but within reach of atomic clock precision experiments.
+
+#### 3.5 Falsifiability
+
+**Disconfirming test:** If $\Delta E \cdot \Delta t$ can be experimentally pushed below $\hbar/2$, the cycle-period interpretation is wrong and another mechanism (not cyclic discreteness) is responsible for the energy-time uncertainty.
+
+**Confirming test:** If discrete "step" signatures are found in quantum evolution at the cycle timescale (Section 2.4), this independently confirms the cycle structure. Combined with the uncertainty relation, this would provide converging evidence for the Generative Cycle origin of both quantum dynamics AND quantum uncertainty.
+
+---
+
+*Autaxys Appendix A — Sections 1–3 of 12. Sections 4–12 stubbed for future development. Section 1 (Harmonic Oscillator Quantization) — published v0.1. Sections 2 (Schrödinger Equation) and 3 (Energy-Time Uncertainty) — added v0.2, 2026-07-05.*
