@@ -248,4 +248,115 @@ is the adelic Planck constant. If $\hbar_p \neq \hbar$ for some p, this would me
 
 ---
 
-*Autaxys Appendix A — Sections 1–3 of 12. Sections 4–12 stubbed for future development. Section 1 (Harmonic Oscillator Quantization) — published v0.1. Sections 2 (Schrödinger Equation) and 3 (Energy-Time Uncertainty) — added v0.2, 2026-07-05.*
+*Autaxys Appendix A — Sections 1–5 of 12. Sections 6–12 stubbed for future development. Section 1 (Harmonic Oscillator Quantization) — v0.1. Sections 2–3 (Schrödinger + Uncertainty) — v0.2. Sections 4–5 (Pauli Exclusion + Gauge Symmetries) — v0.3, 2026-07-05.*
+
+---
+
+### 4. Pauli Exclusion from Cycle Phase Anti-Symmetry
+
+#### 4.0 The Problem
+
+The Pauli exclusion principle states that no two identical fermions can occupy the same quantum state. In standard QM, this is a postulate — it follows from the anti-symmetry of the wavefunction under particle exchange, which is itself a postulate. In the Generative Cycle framework, the exclusion principle emerges from the phase structure of coupled cycles.
+
+#### 4.1 Coupled Cycles
+
+Consider two identical subsystems A and B, each with its own Generative Cycle of period τ:
+
+$$|\Psi_A\rangle = e^{-i\hat{H}_A t/\hbar}|\psi_A\rangle, \quad |\Psi_B\rangle = e^{-i\hat{H}_B t/\hbar}|\psi_B\rangle$$
+
+When coupled (e.g., by a resonant interaction g_AB), the joint cycle is:
+
+$$|\Psi_{AB}\rangle = e^{-i(\hat{H}_A + \hat{H}_B + \hat{H}_{AB})t/\hbar} |\psi_A\rangle \otimes |\psi_B\rangle$$
+
+#### 4.2 Exchange as Cycle Phase Shift
+
+Exchanging A and B corresponds to swapping their cycle phases:
+
+$$\text{Swap}: |\Psi_{AB}\rangle \to e^{i\theta_{\text{swap}}} |\Psi_{BA}\rangle$$
+
+The exchange phase θ_swap is determined by the cycle structure:
+
+- **Fermions:** θ_swap = π. Exchanging two identical cycles adds a half-cycle phase shift. Two exchanges return to the original state: e^{2πi} = 1, but the wavefunction acquires a minus sign per exchange: e^{iπ} = -1.
+
+- **Bosons:** θ_swap = 0. Identical cycles are in phase — exchange produces no phase shift.
+
+#### 4.3 Derivation of the Pauli Principle
+
+For two identical fermionic cycles in the same state |ψ⟩:
+
+$$|\Psi_{AA}\rangle = |\psi\rangle_A \otimes |\psi\rangle_A$$
+
+Under exchange:
+$$|\Psi_{AA}\rangle \to e^{i\pi} |\Psi_{AA}\rangle = -|\Psi_{AA}\rangle$$
+
+But the state must be invariant (the two subsystems are physically identical). Therefore:
+
+$$|\Psi_{AA}\rangle = -|\Psi_{AA}\rangle \implies |\Psi_{AA}\rangle = 0$$
+
+**The state vanishes.** Two identical fermionic cycles cannot occupy the same state — this is the Pauli exclusion principle, derived from the π phase shift under cycle exchange.
+
+#### 4.4 Why Fermions Have π Phase Shift
+
+[speculative] The π phase shift for fermions arises because each cycle has a Z_2 (binary) structure: the cycle alternates between two phases separated by π (see Section 1.2 on the half-quantum). Exchanging two such cycles interleaves their Z_2 alternations, producing a net π shift.
+
+**Conjecture:** Particles with p-adic cycle structures at p > 2 would have exchange phases of 2π/p, 2π·2/p, etc., corresponding to "p-ions" — particles with fractional exchange statistics. These are the anyons of Program D.
+
+#### 4.5 Falsifiability
+
+**Test:** If a system of identical particles is found to violate the Pauli principle (two fermions in the same state), the cycle-phase derivation is wrong. Current experimental limits: violation probability < 10^{-27} (Ramberg & Snow, 1990) — consistent with the prediction.
+
+**Prediction for p-adic anyons:** Particles with p-adic cycle structure (Program D) should exhibit exchange phases that are rational multiples of 2π with denominator p. This is testable in anyon interferometry experiments.
+
+---
+
+### 5. Gauge Symmetries as Cycle Invariances
+
+#### 5.0 The Problem
+
+Gauge symmetries — U(1) for electromagnetism, SU(2) for weak, SU(3) for strong — are central to the Standard Model but are treated as mathematical postulates. In the Generative Cycle, gauge symmetries emerge as the invariances of the cycle under reparameterization.
+
+#### 5.1 Cycle Reparameterization
+
+A Generative Cycle with period τ can be reparameterized by a phase function α(t):
+
+$$|\Psi(t)\rangle = e^{-i\hat{H}t/\hbar}|\psi\rangle \to e^{-i\hat{H}t/\hbar + i\alpha(t)}|\psi\rangle$$
+
+The cycle dynamics are unchanged if α(t) is periodic with period τ: α(t + τ) = α(t) + 2πk for integer k. This is the U(1) gauge symmetry: the absolute phase of the cycle is unobservable.
+
+**Physical interpretation:** U(1) electromagnetism IS the phase freedom of the Generative Cycle. The photon is the gauge boson that enforces this phase invariance across space.
+
+#### 5.2 Non-Abelian Extension
+
+For cycles with internal degrees of freedom (multiple coupled subcycles), the reparameterization becomes matrix-valued:
+
+$$|\Psi_i(t)\rangle \to \sum_j U_{ij}(t) |\Psi_j(t)\rangle$$
+
+where U(t) ∈ SU(N) is a unitary matrix acting on the internal cycle space.
+
+The condition that cycle dynamics are invariant under SU(N) reparameterizations gives the non-Abelian gauge theories:
+- SU(2) → weak interaction (2 internal cycle degrees of freedom)
+- SU(3) → strong interaction (3 internal color degrees of freedom)
+
+#### 5.3 Why These Specific Groups?
+
+[speculative] The specific gauge groups (U(1), SU(2), SU(3)) are determined by the internal cycle structure:
+
+| Group | Cycle Structure | Physical Interpretation |
+|:------|:---------------|:-----------------------|
+| U(1) | Single cycle, 1 phase degree | EM — one charge type |
+| SU(2) | Two coupled cycles, 3 generators | Weak — isospin doublet |
+| SU(3) | Three coupled cycles, 8 generators | Strong — color triplet |
+
+The sequence 1, 2, 3 corresponds to the number of coupled subcycles. **The number 3 (three fermion generations) may be related:** three generations × three colors = nine quark types, which is the number of independent parameters in a 3-cycle system.
+
+#### 5.4 The Adelic Connection
+
+[speculative] In the adelic framework (Program D), each p-adic completion has its own gauge group G_p. The "real" gauge group (Archimedean completion, p = ∞) is the Standard Model gauge group. The p-adic gauge groups G_p for finite p may be hidden sectors that couple weakly to the Standard Model.
+
+**Testable prediction:** If finite-p gauge groups exist, they would produce "p-adic dark matter" — particles that interact via p-adic gauge bosons rather than Standard Model gauge bosons. These would appear as dark matter because they don't couple to photons (p = ∞ gauge field).
+
+#### 5.5 Falsifiability
+
+**Disconfirming test:** If a gauge group is discovered that does NOT correspond to an invariance of some cycle structure (e.g., an exceptional group like E_8 that doesn't factor into U(1) × SU(2) × SU(3) × ...), the cycle-invariance derivation is incomplete.
+
+**Confirming test:** If the number of fermion generations (3) and the rank of the gauge group (1+1+2=4) are derived from the same cycle structure (e.g., p=3 adelic cycles producing both three generations and SU(3)), this would be strong evidence for the Generative Cycle origin of gauge symmetries.
