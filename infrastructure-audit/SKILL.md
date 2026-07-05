@@ -254,6 +254,41 @@ print(f"Ultrametric Taxonomy: {len(domain_nodes)} domains, {len(program_nodes)} 
 
 Based on audit findings, report orphaned resources, stale entries, archival mismatches, and cleanup recommendations.
 
+#### 4.1 Paper → Knowledge Graph Sync Health (NEW — v2.0)
+
+> **The #2 undetected failure mode: D1 living-paper has N papers but KG has < N Paper nodes.** This check prevents the systemic desync where publications exist in the database but are invisible to Knowledge Graph queries, impact analysis, and ultrametric ball queries.
+
+```python
+import urllib.request, json
+
+# Get KG Paper node count
+r = urllib.request.Request("https://graph-api.q08.workers.dev/stats",
+    headers={"User-Agent": "Mozilla/5.0"})
+kg = json.loads(urllib.request.urlopen(r, timeout=10).read())
+kg_papers = kg.get("labelCounts", {}).get("Paper", 0)
+print(f"  KG Paper nodes: {kg_papers}")
+
+# Get D1 living-paper count
+r2 = urllib.request.Request("https://qnfo-data-api.q08.workers.dev/v2/stats",
+    headers={"User-Agent": "Mozilla/5.0"})
+try:
+    d1 = json.loads(urllib.request.urlopen(r2, timeout=10).read())
+    d1_papers = d1.get("living_paper", {}).get("papers", 0) if isinstance(d1.get("living_paper", {}), dict) else 0
+    print(f"  D1 living-paper: {d1_papers}")
+    
+    diff = abs(d1_papers - kg_papers)
+    if diff <= 5:
+        print(f"  [OK] Paper-KG sync: {d1_papers}/{kg_papers} (diff={diff} ≤ 5)")
+    elif diff <= 20:
+        print(f"  [WARN] Paper-KG DESYNC: {d1_papers}/{kg_papers} (diff={diff}) — run cron-graph-re-seed")
+    else:
+        print(f"  [BLOCKING] Paper-KG SEVERE DESYNC: {d1_papers}/{kg_papers} (diff={diff} > 20) — IMMEDIATE reconciliation required")
+except Exception as e:
+    print(f"  [WARN] D1 query failed: {e} — cannot verify KG sync")
+```
+
+**GATE:** If diff > 20 → BLOCKING. Run immediate reconciliation via `cron-graph-re-seed` or manual `graph-api /sync`. If diff 5-20 → HIGH severity warning; flag in audit report for next maintenance window.
+
 ## Infrastructure Resource Inventory
 
 | Resource | Expected Count | Current (2026-07-01) |
@@ -324,7 +359,7 @@ No action needed.
 
 > **CRITICAL:** The 2026-07-01 session audit found 18 worker routes, 30 Workers, 10 Pages projects, 42 DNS records, 7 zones, and 4 redirect chains — all grown unconstrained. Root cause: no cross-reference between resources, no baseline counts, no automated enforcement. The session session deleted 24 DNS records, 13 routes, 5 Workers, 5 Pages projects, and 2 redirect rulesets. **These rules prevent recurrence.**
 
-**Resource Baselines (alert if exceeded):** Worker routes ≤ 6, Workers ≤ 32 (was 27 — baseline raised 2026-07-04 to match actual 32 deployed Workers; 2026-07-04 RED-TEAM audit verified 0 orphans), Pages ≤ 10 (was 5 — baseline lifted 2026-07-04 to match actual usage; 26 projects trimmed to 10 in 2026-07-01 cleanup), DNS ≤ 16, Zones ≤ 5, Redirects = 0. **Cross-Reference Enforcement:** every route must target a live Worker; every DNS CNAME to `.pages.dev` must have domain registered on that Pages project; every domain must resolve to HTTP 200. **Growth Detection:** before creating any resource, count current resources; if over baseline, audit and clean up first. **Anti-Proliferation:** create DNS CNAME → add domain to Pages FIRST; create Worker route → verify Worker deployed FIRST; delete Worker → delete all routes FIRST; delete Pages → remove all domains FIRST.
+**Resource Baselines (alert if exceeded):** Worker routes ≤ 6, Workers ≤ 32 (was 27 — baseline raised 2026-07-04 to match actual 32 deployed Workers; 2026-07-04 RED-TEAM audit verified 0 orphans), Pages ≤ 10 (was 5 — baseline lifted 2026-07-04 to match actual usage; 26 projects trimmed to 10 in 2026-07-01 cleanup), DNS ≤ 16, Zones ≤ 7 (12 total with 5 Registrar-managed unremovable zones excluded from baseline), Redirects = 0. **Cross-Reference Enforcement:** every route must target a live Worker; every DNS CNAME to `.pages.dev` must have domain registered on that Pages project; every domain must resolve to HTTP 200. **Growth Detection:** before creating any resource, count current resources; if over baseline, audit and clean up first. **Anti-Proliferation:** create DNS CNAME → add domain to Pages FIRST; create Worker route → verify Worker deployed FIRST; delete Worker → delete all routes FIRST; delete Pages → remove all domains FIRST.
 
 **GATE:** Resource counts MUST be within baseline at session start.
 

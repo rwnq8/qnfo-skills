@@ -537,6 +537,52 @@ When `qnfo/releases/YYYY/MM/<slug>/paper.md` exists on R2 → full content. Othe
 
 ---
 
+## Auto-Sync Architecture: R2 → Queue → Knowledge Graph (v2.2)
+
+> **The #2 infrastructure failure mode: papers are on R2 and D1 but invisible to the Knowledge Graph.** The following architecture ensures this CANNOT happen by providing both synchronous (agent) and asynchronous (event-driven) paths to KG seeding.
+
+### Primitives
+
+| Primitive | Role | Status |
+|:----------|:-----|:-------|
+| `qnfo-lifecycle-queue` | Decouple R2 events from KG consumers | ✅ Deployed (2 producers, 1 consumer) |
+| `graph-api` (`/sync`) | Bulk upsert Paper nodes + edges | ✅ Deployed (graph-api.q08.workers.dev) |
+| `qnfo-agent-session` (DO+SQLite) | `/kg-mutex/acquire|release` — distributed lock for concurrent KG writes | ✅ Deployed v2.0 (qnfo-agent-session.q08.workers.dev) |
+| `cron-graph-re-seed` | Periodic reconciliation: scan R2 for unsynced papers | ✅ Deployed 2026-06-02 |
+| R2 Event Notifications | Trigger on `qnfo/releases/*/paper.md` create/update | Config in wrangler.toml (`r2_buckets[].event_notification`) |
+
+### Synchronous Path (Publication-Publisher Stage 6.5)
+
+Every paper published through the `publication-publisher` skill gets a KG node immediately after R2 upload. The agent calls `graph-api /sync` to seed a `Paper` node with `BELONGS_TO` edges to the `domain-qwav-physics` concept node. See `publication-publisher` skill v2.5+, Stage 6.5.
+
+### Asynchronous Path (Event-Driven Reconciliation)
+
+```
+R2 object create/update (qnfo/releases/*/paper.md)
+  → Event Notification (suffix filter: paper.md)
+  → qnfo-lifecycle-queue
+  → cron-graph-re-seed Worker (periodic, every 15 min)
+    → REST API: List R2 objects (prefix: qnfo/releases/)
+    → DIFF against graph-api nodes (by DOI or slug)
+    → For each missing:
+        → POST qnfo-agent-session /kg-mutex/acquire
+        → Parse paper.md YAML frontmatter
+        → POST graph-api /sync (Paper node + BELONGS_TO edges)
+        → UPSERT D1 living-paper.papers table
+        → POST qnfo-agent-session /kg-mutex/release
+```
+
+### Verification
+
+```bash
+# Check sync health: D1 paper count vs KG Paper node count
+python -c "import urllib.request, json; kg=json.loads(urllib.request.urlopen(urllib.request.Request('https://graph-api.q08.workers.dev/stats',headers={'User-Agent':'Mozilla/5.0'}),timeout=10).read()); print(f'KG Paper nodes: {kg.get(\"labelCounts\",{}).get(\"Paper\",\"?\")}')"
+```
+
+**GATE:** D1 `living-paper.papers` count and KG `Paper` node count should differ by ≤ 5 at all times. Any larger discrepancy → run immediate reconciliation via `cron-graph-re-seed`.
+
+---
+
 ## Common Patterns
 
 ### Deploy a Publication

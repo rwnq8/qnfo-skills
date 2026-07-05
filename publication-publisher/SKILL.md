@@ -364,7 +364,7 @@ def create_zenodo_deposition(metadata: dict, files: list[str], token: str) -> di
             "publication_type": metadata.get("publication_type", "workingpaper"),
             "description": metadata.get("description", ""),
             "creators": metadata.get("creators", [
-                {"name": "QNFO Research", "affiliation": "QWAV / QNFO"}
+                {"name": "Rowan Brad Quni-Gudzinas", "affiliation": "QWAV / QNFO"}
             ]),
             "keywords": metadata.get("keywords", []),
             "license": metadata.get("license", "CC-BY-4.0"),
@@ -472,6 +472,44 @@ npx wrangler r2 object put qnfo/releases/2026/07/<paper-slug>/index.html --file=
 python _generate-seo.py --url https://papers.qnfo.org/<paper-slug>/ --title "<paper title>"
 # Discard: Remove-Item _generate-seo.py
 ```
+
+### Stage 6.5: Knowledge Graph Auto-Seeding (MANDATORY — v2.5)
+
+> **The #2 undetected failure mode: papers are published (Zenodo, R2, Pages) but are invisible to Knowledge Graph queries.** Every paper MUST be seeded in the QNFO Knowledge Graph after R2 upload. This enables: impact analysis (`/impact/{paper}`), ultrametric ball queries, and due diligence discovery.
+
+#### 6.5a. Seed Knowledge Graph Node
+
+```bash
+# Write KG seed script to file, execute, discard
+echo "import urllib.request, json; PAPER_ID='paper-<paper-slug>'; TITLE='<title>'; DOI='<doi>'; payload={'action':'bulk','nodes':[{'id':PAPER_ID,'label':'Paper','name':TITLE,'properties':{'doi':DOI,'author':'Rowan Brad Quni-Gudzinas','date':'<date>','status':'published','r2_path':'qnfo/releases/YYYY/MM/<paper-slug>/paper.md'}}],'edges':[{'id':f'belongs-{PAPER_ID}-domain','source_id':PAPER_ID,'target_id':'domain-qwav-physics','relationship_type':'BELONGS_TO','properties':{}}]}; body=json.dumps(payload).encode(); req=urllib.request.Request('https://graph-api.q08.workers.dev/sync',data=body,method='POST',headers={'Content-Type':'application/json','User-Agent':'Mozilla/5.0'}); result=json.loads(urllib.request.urlopen(req,timeout=15).read()); print(f'KG seeded: nodes={result.get(\"upserted_nodes\",\"?\")}, edges={result.get(\"upserted_edges\",\"?\")}')" > _seed_kg.py
+python _seed_kg.py
+Remove-Item _seed_kg.py
+```
+
+#### 6.5b. Verify KG Connectivity (MANDATORY)
+
+```bash
+# Verify the paper node was created with edges
+echo "import urllib.request, json; r=urllib.request.Request('https://graph-api.q08.workers.dev/neighbors/paper-<paper-slug>',headers={'User-Agent':'Mozilla/5.0'}); data=json.loads(urllib.request.urlopen(r,timeout=10).read()); n=len(data.get('neighbors',[])); assert n>0,f'KG node missing! 0 edges'; print(f'[OK] KG: {n} edges')" > _verify_kg.py
+python _verify_kg.py
+Remove-Item _verify_kg.py
+```
+
+**GATE:** If the paper has 0 KG edges after seeding → `[BLOCKED: KG sync failed]`. Retry with mutex: POST `https://qnfo-agent-session.q08.workers.dev/kg-mutex/acquire` → graph-api `/sync` → POST `/kg-mutex/release`.
+
+#### 6.5c. Architecture: R2 Event Notifications → Queue → Auto-KG-Sync (background)
+
+The KG seeding in this stage is the **immediate** (synchronous) path. The infrastructure also supports an **asynchronous** auto-sync pipeline:
+
+```
+R2 qnfo/releases/*/paper.md (create/update)
+ → R2 Event Notification (wrangler.toml: r2_buckets[].event_notification)
+ → qnfo-lifecycle-queue (producer: R2, consumer: cron-worker)
+ → cron-graph-re-seed Worker (periodic, every 15 min)
+   → Parse YAML, acquire /kg-mutex, graph-api /sync, release mutex
+```
+
+The synchronous seeding (Stage 6.5a) is the primary path. The async pipeline is the reconciliation safety net. Both paths must pass before the paper is considered fully published.
 
 ### Stage 7: Discovery Index Update
 
@@ -830,7 +868,7 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser()
     p.add_argument('--url', required=True); p.add_argument('--title', required=True)
     p.add_argument('--description', default=''); p.add_argument('--doi', default='')
-    p.add_argument('--author', default='QNFO Research'); p.add_argument('--date', default='')
+    p.add_argument('--author', default='Rowan Brad Quni-Gudzinas'); p.add_argument('--date', default='')
     p.add_argument('--keywords', default='')
     a = p.parse_args()
     kw = [k.strip() for k in a.keywords.split(',') if k.strip()]
