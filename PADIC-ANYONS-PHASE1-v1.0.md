@@ -3,7 +3,7 @@
 **Author:** Rowan Brad Quni-Gudzinas | **Date:** 2026-07-05 | **Version:** v1.0
 **License:** QNFO Unified License Agreement (QNFO-ULA): https://legal.qnfo.org/
 **Project:** QLoF Extension — Program D, Phase 1
-**DOI:** Pending
+**DOI:** [10.5281/zenodo.21208366](https://doi.org/10.5281/zenodo.21208366)
 
 ---
 
