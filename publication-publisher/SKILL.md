@@ -1,6 +1,6 @@
 ---
 name: publication-publisher
-description: End-to-end publication workflow — formatting, PDF building, complete artifact bundling, Zenodo upload (with robust retry + versioning + draft recovery via zenodo_api.py), Cloudflare deployment, social media orchestration, and post-publication draft cleanup.
+description: End-to-end publication workflow — formatting, PDF building (LaTeX-typeset via Pandoc+XeLaTeX with enforcement gate), complete artifact bundling, Zenodo upload (with robust retry + versioning + draft recovery via zenodo_api.py), Cloudflare deployment, social media orchestration, and post-publication draft cleanup.
 version: "3.1"
 ---
 
@@ -28,7 +28,7 @@ is required for the task and cannot be loaded after 3 retries, escalate to
 the user with the specific failure reason.
 
 ---
-# PUBLICATION PUBLISHER SKILL — v3.1 — v3.1
+# PUBLICATION PUBLISHER SKILL — v3.2 — v3.2
 
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
@@ -224,20 +224,59 @@ Test-Path PAPER-TITLE-v1.0.pdf
 Remove-Item _build_pdf.py -ErrorAction SilentlyContinue
 ```
 
-**PDF Verification (MANDATORY):**
+**PDF Verification (MANDATORY — 🔴 LaTeX Enforcement Gate):**
+
 ```python
-# Extract text from PDF and scan for rendering failures
-import fitz  # PyMuPDF
-doc = fitz.open("PAPER-TITLE-v1.0.pdf")
-for page in doc:
-    text = page.get_text()
-    # Check for Unicode replacement characters
-    if '\ufffd' in text:
-        print("[BLOCKED] PDF contains rendering failures — font encoding issue")
-        sys.exit(1)
+# LaTeX Enforcement Gate (from pdf-builder v4.0)
+import fitz, sys
+
+def verify_latex_typesetting(pdf_path: str) -> dict:
+    """Verify a PDF was built with proper LaTeX typesetting."""
+    doc = fitz.open(pdf_path)
+    text = ''.join(page.get_text() for page in doc)
+
+    # 1. Font check: Must contain LaTeX fonts (Latin Modern, Computer Modern, or AMS)
+    latex_fonts = set()
+    for page in doc:
+        for b in page.get_text('dict').get('blocks', []):
+            if 'lines' in b:
+                for l in b['lines']:
+                    for s in l['spans']:
+                        font = s.get('font', '')
+                        if any(k in font.lower() for k in
+                               ['lmroman', 'latinmodern', 'cmr', 'cmmi', 'cmsy',
+                                'cmex', 'msam', 'msbm', 'lmmath']):
+                            latex_fonts.add(font[:30])
+    doc.close()
+
+    # 2. No Unicode replacement characters
+    has_ufffd = '\ufffd' in text
+
+    # 3. No reportlab fonts (Helvetica, Courier)
+    is_reportlab = any(k in str(latex_fonts).lower()
+                       for k in ['helvetica', 'courier'])
+
+    passed = len(latex_fonts) > 0 and not is_reportlab and not has_ufffd
+    return {
+        'passed': passed,
+        'latex_fonts': len(latex_fonts),
+        'has_ufffd': has_ufffd,
+        'is_reportlab': is_reportlab,
+        'status': 'PASS' if passed else 'BLOCKED: Not LaTeX-typeset'
+    }
+
+result = verify_latex_typesetting("PAPER-TITLE-v1.0.pdf")
+if not result['passed']:
+    print(f"[BLOCKED] {result['status']}")
+    sys.exit(1)
+print(f"[PASS] LaTeX-typeset: {result['latex_fonts']} LaTeX fonts, 0 ufffd")
 ```
 
-**GATE:** PDF must have zero `\ufffd` characters and all special characters (em dashes, curly quotes) must render correctly. **If PDF generation fails → publication is BLOCKED. Do NOT proceed to Zenodo or Pages without a verified PDF.**
+**GATE (🔴 LaTeX Enforcement):** PDF must:
+- Use LaTeX fonts (Latin Modern / Computer Modern / AMS) — NOT reportlab fonts (Helvetica/Courier)
+- Have zero `\ufffd` Unicode replacement characters
+- Be typeset with Pandoc+XeLaTeX for publications (reportlab is BLOCKED for publications)
+**If PDF verification fails → publication is BLOCKED. Do NOT proceed to Zenodo or Pages without a verified LaTeX-typeset PDF.**
 
 ### Stage 3: HTML Publication Page Generation
 
@@ -1591,6 +1630,7 @@ All QNFO/QWAV publications use the **Silent Radix Light Theme** design system:
 | Publication fails Language Gate | `[BLOCKED: Language Gate]` — list violations, require fix |
 | Zenodo API returns 401 | Token expired — regenerate at zenodo.org/account/settings/applications/ |
 | PDF rendering has `\ufffd` | Font encoding issue — use `--pdf-engine=xelatex` for Unicode support |
+| **PDF uses non-LaTeX fonts (reportlab)** | **[BLOCKED]** — reportlab is prohibited for publications. Rebuild with Pandoc+XeLaTeX. All published paper PDFs MUST use LaTeX fonts (Latin Modern / Computer Modern). See pdf-builder v4.0 LaTeX Enforcement Gate. |
 | MathJax config AFTER script | `[BLOCKED: MathJax order]` — fix HTML template before deploying |
 | Cloudflare Pages deploy fails | Check wrangler auth with `npx wrangler whoami` |
 | R2 upload fails | Verify CLOUDFLARE_API_TOKEN is set and has write permissions |
@@ -1600,7 +1640,7 @@ All QNFO/QWAV publications use the **Silent Radix Light Theme** design system:
 
 ---
 
-*publication-publisher v3.1 — Phase 4–5 of LRAP. v3.1 adds self-contained PROVENANCE BUNDLE toolchain (4 embedded scripts: export_conversation.py, capture_metadata.py, write_manifest.py, generate_readme.py) — all skills fully self-sufficient, no external dependencies. v3.0 KG auto-update: Paper node seeded with ALL known locations.*
+*publication-publisher v3.2 — v3.2 adds LaTeX Enforcement Gate (from pdf-builder v4.0): mandatory LaTeX font verification, reportlab blocked, non-LaTeX PDFs rejected at Stage 2 gate. v3.1 — Phase 4–5 of LRAP. v3.1 adds self-contained PROVENANCE BUNDLE toolchain (4 embedded scripts: export_conversation.py, capture_metadata.py, write_manifest.py, generate_readme.py) — all skills fully self-sufficient, no external dependencies. v3.0 KG auto-update: Paper node seeded with ALL known locations.*
 
 ## RT: RED-TEAM SELF-AUDIT
 
