@@ -270,3 +270,5 @@ Includes prompt injection red-team and autonomous trigger on any prompt modifica
 *v1.0 deprecated 2026-07-01. Replaced by v1.1 with DNS cross-reference edge case and Infrastructure Audit DoD criteria.*
 
 *red-team-dod v1.1 — Autonomous RED-TEAM to DoD to ITERATE to REFINE cycle. Priority 0 via execution-guard integration. v1.1 adds DNS cross-reference edge case + Infrastructure Audit DoD criteria.*
+
+> **Version:** (Kaizen-audited 2026-07-08)

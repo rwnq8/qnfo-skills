@@ -394,3 +394,5 @@ powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\.deepchat\skills\skil
 ```
 
 Execute this as the final step after any skill creation/modification workflow completes. Warn the user briefly, then execute. The current conversation will terminate.
+
+> **Version:** (Kaizen-audited 2026-07-08)

@@ -126,3 +126,5 @@ Examples:
 **--quick mode output format:** 3 assumptions challenged + 2 critical tests + 3 next steps. No deconstruction table, no thematic spiral, no phased plan. Designed for 2x token efficiency. **Recommended for time-pressed practitioners, quick explorations, and first-time users.**
 
 The skill outputs Stages 1-7 in sequence (plus optional Stage 8), using update_plan to track progress.
+
+> **Version:** (Kaizen-audited 2026-07-08)

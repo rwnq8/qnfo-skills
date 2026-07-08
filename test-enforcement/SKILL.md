@@ -227,3 +227,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 **Skill-Specific Checks:** Verify test suite pulled from R2 and executed. Verify 0 critical failures. Verify content quality gate passed (no stubs, non-empty bodies). Verify all tests applicable to current action type.
 
+> **Version:** (Kaizen-audited 2026-07-08)
