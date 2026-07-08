@@ -1,6 +1,6 @@
 ---
 name: skill-autoloader
-description: AUTOMATICALLY loads relevant QNFO skills based on task detection. User NEVER manually loads skills. Cross-references all skills. Handles fallback when skill_view() fails.
+description: "AUTOMATICALLY loads relevant skills based on task detection. User NEVER manually loads skills. Cross-references all skills and handles fallback chains. Use when skill loading is needed, task patterns must be detected, or skill_view() resolution fails and requires fallback recovery."
 pinned: true
 version: "1.1"
 ---

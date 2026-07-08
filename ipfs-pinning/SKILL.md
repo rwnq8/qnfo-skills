@@ -1,6 +1,6 @@
 ---
 name: ipfs-pinning
-description: IPFS content pinning via Pinata — upload, pin, unpin, and manage IPFS content hashes. Use when publishing papers to IPFS, pinning content-addressed data, or managing decentralized storage.
+description: "IPFS content pinning via Pinata -- upload, pin, unpin, and manage IPFS content hashes. Use when user says pin to IPFS, IPFS upload, content-addressed storage, pinata pin, unpin, or when publishing papers to IPFS or managing decentralized storage."
 version: "1.0"
 ---
 

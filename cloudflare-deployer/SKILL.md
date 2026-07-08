@@ -1,6 +1,6 @@
 ---
 name: cloudflare-deployer
-description: Cloudflare platform deployment operations — Pages, R2, Workers, Vectorize, DNS, redirects, and Containers. Use when the agent needs to deploy, manage, or troubleshoot Cloudflare infrastructure.
+description: "Cloudflare platform deployment operations -- Pages, R2, Workers, Vectorize, DNS, redirects, and Containers. Use when user says deploy, ship to production, host on Cloudflare, or push to Cloudflare, or when the agent needs to deploy, manage, or troubleshoot Cloudflare infrastructure."
 version: "2.3"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.

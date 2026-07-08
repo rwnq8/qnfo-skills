@@ -1,6 +1,6 @@
 ---
 name: git-hygiene
-description: Git recovery and hygiene procedures — branch recovery, detached HEAD, merge conflicts, and Iron Rule enforcement. Use when git operations fail or the workspace is in an unexpected state.
+description: "Git recovery and hygiene procedures -- branch recovery, detached HEAD, merge conflicts, and Iron Rule enforcement. Use when user says fix git, git is broken, git error, merge conflict, detached HEAD, branch recovery, or when git operations fail."
 version: "1.0"
 ---
 

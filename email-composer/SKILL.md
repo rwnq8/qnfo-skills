@@ -1,6 +1,6 @@
 ---
 name: email-composer
-description: Outlook email composition, sending, reading, and management via COM automation. Use when the agent needs to send, read, search, or manage emails through Outlook.
+description: "Outlook email composition, sending, reading, and management via COM automation. Use when user says compose email, draft email, send email, read inbox, reply to email, search email, or when the agent needs to send, read, search, or manage emails through Outlook."
 version: "2.1"
 ---
 
