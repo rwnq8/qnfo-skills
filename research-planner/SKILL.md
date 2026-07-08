@@ -1,7 +1,7 @@
 ---
 name: research-planner
 description: Generate phased research plans, abstracts, theses, and research questions from any seed idea or provocative observation. Deconstructs assumptions, identifies hidden scaffolds vs. invariants (epistemic hygiene), spirals out into cross-disciplinary themes, and outputs a complete LLM-executable research program. USE WHEN the user asks to "create a research plan," "develop a research agenda," "generate research questions," "write an abstract and thesis," "deconstruct this idea," "what assumptions are we making," "what are we doing wrong," "analyze this concept," "plan a research project," says "I have a weird thought about," "I keep wondering whether," "there's something off about," "what if everything we think about," "let's investigate," or presents any stream-of-consciousness observation they want turned into a systematic investigation.
-version: "4.2"
+version: "4.4"
 ---
 
 > **Related:** prompt-audit, skill-creator
@@ -39,7 +39,7 @@ Transform any seed observation into a rigorous, LLM-executable research program 
 ### STAGE 1: Seed Clarification & Crisis of Confidence
 - Restate the seed in your own words. Identify the central "wobble."
 - Bullet-list all challenged assumptions.
-- **Crisis of Confidence:** "If our current scaffold is wrong, then we should see X but we keep seeing Y. The most damaging observation would be Z."
+- **Crisis of Confidence:** "If our current scaffold is wrong, then we should see X but we keep seeing Y. The most damaging observation would be Z." **This must be genuinely bold — if the crisis is safe and would never actually endanger the plan (e.g., 'however, the approach is sound'), it is performative scaffolding. A good crisis should specify what observation would force you to abandon the plan entirely.**
 
 ### STAGE 2: Emergent Domain Identification
 - Analyze the seed and generate 3-5 thematic lenses that naturally arise from it. Do NOT force a fixed five; let the seed suggest its own domains.
@@ -62,7 +62,7 @@ For each emergent domain from Stage 2, write:
 - **Research Questions:** 6-10, each tagged with domain and Executor: `[LLM]`, `[Human]`, `[Human+LLM]`. In LLM-Only mode, all must be `[LLM]`.
 
 ### STAGE 6: Phased Research Plan (6 Phases, Phase 0 first)
-Each task includes: name, subtasks, executor tag, and (for LLM tasks) an Execution Path showing the sequence of LLM actions. Output type indicated.
+Each task includes: name, subtasks, executor tag, and (for LLM tasks) an Execution Path showing the sequence of LLM actions. Output type indicated. **Match plan complexity to seed complexity — simple seeds get 2-3 phases, complex seeds get all 6. Do not inflate.**
 
 - **Phase 0: Immediate Critical Experiments** — Prioritized, all LLM-executable in LLM-Only mode.
 - **Phase 1: Foundational Clarification** — Literature synthesis, scaffold taxonomy, formal definitions.
@@ -72,7 +72,7 @@ Each task includes: name, subtasks, executor tag, and (for LLM tasks) an Executi
 - **Phase 5: Synthesis & Dissemination** — Manuscripts, interactive tools, public-facing outputs.
 
 ### STAGE 7: LLM-Executable MVP
-Output a concise "LLM-Executable Core" — a minimal, self-contained project the LLM can start running immediately using only public data, code interpreter, and multi-turn reasoning. Deliverable: reproducible notebook, report, or dataset.
+Output a concise "LLM-Executable Core" — essentially Phase 0 extracted into a standalone, self-contained project the LLM can start running immediately. Deliverable: reproducible notebook, report, or dataset. If Phase 0 already serves as the MVP, note this and skip.
 
 ### STAGE 8 (OPTIONAL — only with --self-critique flag): Self-Critique
 > **Ablation study finding:** Stage 8 adds +0.0 quality for ~40 tokens. Off by default. Enable with `--self-critique`.
@@ -105,6 +105,8 @@ Respond by updating the relevant section and re-outputting if requested.
 ## Scope Constraint
 
 This skill is an LLM-native tool. It cannot recruit humans, run physical labs, or access proprietary databases. Tasks requiring these are either replaced by computational surrogates (LLM-Only) or clearly labeled `[Human]` (Hybrid/Full). Execution Paths for all `[LLM]` tasks must describe concrete tool actions (e.g., "Search arXiv for X, write Python to extract Y, synthesize into table").
+
+**Novelty limitation:** As an LLM, this skill generates exploration frameworks — structured ways to investigate a question — not genuinely novel discoveries. It remixes and reorganizes existing knowledge. Treat its outputs as scaffolding for human creativity, not as finished research.
 
 ---
 
