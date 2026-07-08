@@ -5,6 +5,15 @@ version: "2.2"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
+
+### Domain Self-Critique (Post-Deployment)
+
+After every Cloudflare deployment, autonomously verify:
+- **522 prevention:** For every CNAME to .pages.dev, is the domain registered on the target Pages project? Run infrastructure-audit sec 0.8 cross-reference.
+- **Wrangler version compatibility:** Is the current wrangler version compatible? Check for deprecated commands (e.g., r2 object list removed in v4.95+).
+- **Caching drift:** Did the deployment actually reach users? curl the production URL with ?cache-bust=timestamp and compare against local build.
+- **Stale build artifacts:** Are there orphaned deployments? Check wrangler pages deployment list for stale preview deployments.
+
 > **Related:** infrastructure-audit, closeout-manager
 
 

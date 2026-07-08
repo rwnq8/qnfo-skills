@@ -32,6 +32,16 @@ the user with the specific failure reason.
 
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
+
+### Domain Self-Critique (Post-Publication)
+
+After every publication, autonomously verify:
+- **DOI resolution:** Did the Zenodo DOI actually resolve? Wait 30s after publish, then curl https://doi.org/DOI and verify redirect to Zenodo record.
+- **PDF-MD consistency:** Does the published PDF match the canonical Markdown? Diff the text content (not layout) between source .md and extracted .pdf text.
+- **MathJax on deployed page:** Is MathJax actually loaded? Check deployed HTML for MathJax CDN script tag and verify it is not blocked by CSP.
+- **Citation integrity:** Did any citations break during PDF conversion? Verify all citation references in source exist in the generated bibliography.
+- **Artifact completeness:** Are ALL artifacts (paper.md, paper.pdf, PROVENANCE-BUNDLE.zip, README.md) present on both Zenodo and R2?
+
 > **Related:** cloudflare-deployer, citation-manager, seo-discoverability
 
 > **Phase 4–5 of LRAP.** Handles Zenodo deposition, Cloudflare Pages deployment, PDF generation, and artifact archival for QNFO/QWAV research publications.

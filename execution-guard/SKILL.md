@@ -1,7 +1,7 @@
 ---
 name: execution-guard
 description: "PRIORITY 0 execution enforcement guard. Always active. Prevents planning spirals and phantom completion claims by checking task register before every response. Use when user says 'check my tasks,' 'what\'s pending,' 'track my work,' 'verify everything is done,' 'audit execution.' Triggers: session start, before any response, when tasks are pending."
-version: "1.10"
+version: "1.11"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification — negative verification, try to prove claims are FALSE. (2) Assumption Challenge — state and test every assumption. (3) Edge Case Check — empty/null/max/boundary/desync. (4) DoD Integration — verify all criteria met with tool evidence. (5) Iteration — retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 

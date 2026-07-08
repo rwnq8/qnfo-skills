@@ -5,6 +5,16 @@ version: "4.1"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
+
+### Domain Self-Critique (Post-Execution)
+
+After every PDF build, autonomously verify:
+- **Silent fallback check:** Did pandoc silently fall back from XeLaTeX? Check stderr for "xelatex not found" or "falling back to pdflatex."
+- **Font availability:** Are Computer Modern / Latin Modern fonts installed? Test-Path the TeX Live font directories.
+- **Output validity:** Is the output actually a valid PDF? Check first bytes for "%PDF-" header.
+- **Math rendering:** Do NOT trust that math rendered correctly. Open the PDF and visually spot-check at least 3 equations.
+- **Embedded vs. raster:** Are equations true vector TeX or rasterized fallback images? Check file size — rasterized math inflates PDFs 5-10x.
+
 > **Related:** publication-publisher
 
 

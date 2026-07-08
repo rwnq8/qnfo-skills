@@ -2,7 +2,7 @@
 name: skill-autoloader
 description: AUTOMATICALLY loads relevant QNFO skills based on task detection. User NEVER manually loads skills. Cross-references all skills. Handles fallback when skill_view() fails.
 pinned: true
-version: "1.0"
+version: "1.1"
 ---
 
 ### Programmatic Loading & Execution

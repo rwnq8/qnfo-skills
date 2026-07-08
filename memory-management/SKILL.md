@@ -1,7 +1,7 @@
 ---
 name: memory-management
 description: Guide the agent to recall, remember, and route durable learning into Memory, Skills, Scheduled Tasks, or Tape. Use when user says "remember this," "recall previous work," "save this for later," "what do you know about," "continue where we left off," "memory," or when a task produces knowledge that should persist across sessions.
-version: "1.0"
+version: "1.1"
 ---
 
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- verify all criteria met with tool evidence. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
