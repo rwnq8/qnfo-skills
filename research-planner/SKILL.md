@@ -1,7 +1,7 @@
 ---
 name: research-planner
-description: Generate phased research plans, abstracts, theses, and research questions from any seed idea or provocative observation. Deconstructs assumptions, identifies hidden scaffolds vs. invariants (epistemic hygiene), spirals out into cross-disciplinary themes, and outputs a complete LLM-executable research program. USE WHEN the user asks to "create a research plan," "develop a research agenda," "generate research questions," "write an abstract and thesis," "deconstruct this idea," "what assumptions are we making," "what are we doing wrong," "analyze this concept," "plan a research project," or presents any stream-of-consciousness observation they want turned into a systematic investigation.
-version: "4.1"
+description: Generate phased research plans, abstracts, theses, and research questions from any seed idea or provocative observation. Deconstructs assumptions, identifies hidden scaffolds vs. invariants (epistemic hygiene), spirals out into cross-disciplinary themes, and outputs a complete LLM-executable research program. USE WHEN the user asks to "create a research plan," "develop a research agenda," "generate research questions," "write an abstract and thesis," "deconstruct this idea," "what assumptions are we making," "what are we doing wrong," "analyze this concept," "plan a research project," says "I have a weird thought about," "I keep wondering whether," "there's something off about," "what if everything we think about," "let's investigate," or presents any stream-of-consciousness observation they want turned into a systematic investigation.
+version: "4.2"
 ---
 
 > **Related:** prompt-audit, skill-creator
@@ -33,6 +33,8 @@ Transform any seed observation into a rigorous, LLM-executable research program 
 ---
 
 ## Pipeline (7 Stages, +1 optional with --self-critique)
+
+**Pre-Stage Gate: Seed Quality Check.** Before executing Stage 1, scan the seed for nonsense patterns (category errors, category fusion, non-applicable predicates). If the seed is fundamentally untestable or rests on a category error, output `[SEED-QUALITY-WARNING: category error detected]` and stop. Only proceed if the seed identifies a genuine conceptual tension.
 
 ### STAGE 1: Seed Clarification & Crisis of Confidence
 - Restate the seed in your own words. Identify the central "wobble."
