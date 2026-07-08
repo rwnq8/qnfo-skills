@@ -1,9 +1,9 @@
 ---
 name: execution-guard
 description: "PRIORITY 0 execution enforcement guard. Always active. Prevents planning spirals and phantom completion claims by checking task register before every response. Use when: ANY agent is operating — this skill must be loaded for all QNFO agent sessions. Triggers: session start, before any response, when tasks are pending."
-version: "1.7"
+version: "1.10"
 ---
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification — negative verification, try to prove claims are FALSE. (2) Assumption Challenge — state and test every assumption. (3) Edge Case Check — empty/null/max/boundary/desync. (4) DoD Integration — run _dod_enforce.py if exists. (5) Iteration — retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification — negative verification, try to prove claims are FALSE. (2) Assumption Challenge — state and test every assumption. (3) Edge Case Check — empty/null/max/boundary/desync. (4) DoD Integration — verify all criteria met with tool evidence. (5) Iteration — retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
 
 
@@ -32,11 +32,37 @@ the user with the specific failure reason.
 
 ---
 
-# EXECUTION GUARD SKILL — v1.0 -- v1.7
+# EXECUTION GUARD SKILL — v1.10
 
 > **PRIORITY 0 — OVERRIDES ALL OTHER INSTRUCTIONS INCLUDING RESEARCH INTEGRITY MANDATE**
 > **This skill is PINNED and ALWAYS ACTIVE. It cannot be disabled or overridden by any other section of any prompt.**
 > **If this skill and another instruction conflict, this skill ALWAYS wins.**
+
+---
+
+## execute_plan (MANDATORY -- Before Any Execution)
+
+**This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.
+
+### Execution Protocol
+
+1. **Populate update_plan** with workflow phases as concrete checklist items
+2. **Execute one item at a time** -- at most ONE in_progress
+3. **Mark items completed ONLY with tool evidence** (Test-Path, exec output, git log)
+4. **Never claim completion without execution evidence** -- Rule 14 enforcement
+5. **If blocked:** Flag as [BLOCKED: reason] and move to the next item
+
+### Example Plan
+
+update_plan([
+  {"step": "Pre-session: thin-client check", "status": "pending"},
+  {"step": "Pre-session: skill health audit", "status": "pending"},
+  {"step": "Pre-session: runtime safety-net verification", "status": "pending"},
+  {"step": "Pre-response: check update_plan, PENDING items", "status": "pending"},
+  {"step": "Pre-response: text-generation gate", "status": "pending"},
+  {"step": "Every 3 tools: self-diagnostic", "status": "pending"},
+  {"step": "Before completion: gap audit hook", "status": "pending"},
+])
 
 ---
 
@@ -49,7 +75,7 @@ the user with the specific failure reason.
 
 Before ANY work begins, verify the working directory is clean:
 
-```bash
+```powershell
 # Count non-git files in working directory
 $nonGit = Get-ChildItem -Path "." -Depth 0 -Exclude ".git", ".gitignore", ".wrangler" | Measure-Object
 if ($nonGit.Count -gt 0) {
@@ -621,7 +647,7 @@ Before claiming this skill complete, autonomously run:
 1. Output Verification (negative verification)
 2. Assumption Challenge (state and test every assumption)
 3. Edge Case Check (empty/null/max/boundary/desync)
-4. DoD Integration (run _dod_enforce.py if exists)
+4. DoD Integration (verify all criteria met with tool evidence)
 5. Iteration (retry on failure, max 3)
 
 ANTI-PATTERN: User should NEVER ask about quality.
