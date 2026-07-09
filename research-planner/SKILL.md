@@ -35,9 +35,51 @@ the user with the specific failure reason.
 
 ---
 
-## execute_plan (MANDATORY)
+## execute_plan (MANDATORY — Before Any Execution)
 
-Always use update_plan for multi-stage outputs. Stages 1-7 below become checklist items (Stage 8 optional with --self-critique). Mark each complete only after its output is fully written.
+**This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.
+
+### Execution Protocol
+
+1. **Populate update_plan** with workflow phases as concrete checklist items
+2. **Execute one item at a time** — at most ONE in_progress
+3. **Mark items completed ONLY with tool evidence** (Test-Path, exec output, git log)
+4. **Never claim completion without execution evidence** — Rule 14 enforcement
+5. **If blocked:** Flag as [BLOCKED: reason] and move to the next item
+
+### Example Plan (Full Mode)
+
+```python
+update_plan([
+  {"step": "Stage 1: Seed Clarification & Crisis of Confidence", "status": "pending"},
+  {"step": "Stage 2: Emergent Domain Identification (3-5 lenses)", "status": "pending"},
+  {"step": "Stage 3: Deconstruction Table + Narrative Synthesis", "status": "pending"},
+  {"step": "Stage 4: Thematic Spiraling with Critical Tests", "status": "pending"},
+  {"step": "Stage 5: Abstract, Thesis, Research Questions (6-10)", "status": "pending"},
+  {"step": "Stage 6: Phased Research Plan (Phase 0 first)", "status": "pending"},
+  {"step": "Stage 7: LLM-Executable MVP (standalone project)", "status": "pending"},
+])
+```
+
+### Example Plan (Quick Mode)
+
+```python
+update_plan([
+  {"step": "Stage 1: Identify 3 challenged assumptions", "status": "pending"},
+  {"step": "Stage 2: Define 2 critical tests", "status": "pending"},
+  {"step": "Stage 3: Generate 3 next steps", "status": "pending"},
+])
+```
+
+### Verification
+
+- **Content quality:** Verify each stage output exists as markdown in the response (not a claim in memory)
+- **Plan completeness:** All 7 stages (or 3 for quick mode) have verifiable output
+- **Source labels:** All claims carry [LLM-INFERRED], [WEB-SEARCH], or [CODE-EXECUTED] labels
+- **Seed quality gate:** Verify pre-stage gate passed (no category errors detected)
+- **Output saved:** If writing to file — `Test-Path <output_file>` must return True
+
+**Stages 1-7 below become checklist items (Stage 8 optional with --self-critique). Mark each complete only after its output is fully written.**
 
 ---
 
