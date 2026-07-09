@@ -95,7 +95,7 @@ Integrate with the Buffer GraphQL API (api.buffer.com) to create, schedule, and 
 # Get token from: https://buffer.com/developers
 # IMPORTANT: Save as UTF-8 without BOM
 # Write setup script to file, execute, discard
-echo "import os; token = input('Buffer Access Token: ').strip(); path = os.path.expandvars(r'%USERPROFILE%\\.buffer_token'); open(path, 'w', encoding='utf-8-sig').write(token); print('[OK] Buffer token stored')" > _setup_buffer_token.py
+echo "import os; token = input('Buffer Access Token: ').strip(); path = os.path.expandvars(os.path.join(os.environ['USERPROFILE'], '.buffer_token')); open(path, 'w', encoding='utf-8-sig').write(token); print('[OK] Buffer token stored')" > _setup_buffer_token.py
 python _setup_buffer_token.py
 Remove-Item _setup_buffer_token.py
 ```
@@ -105,7 +105,7 @@ Remove-Item _setup_buffer_token.py
 If you see `UnicodeEncodeError: 'latin-1' codec can't encode character '\ufeff'`:
 ```bash
 # Write BOM removal script to file, execute, discard
-echo "import os; p = os.path.expandvars(r'%USERPROFILE%\\.buffer_token'); raw = open(p, 'rb').read(); open(p, 'wb').write(raw[3:]) if raw[:3] == b'\xef\xbb\xbf' else None; print('[OK] BOM removed from token file')" > _fix_bom.py
+echo "import os; p = os.path.expandvars(os.path.join(os.environ['USERPROFILE'], '.buffer_token')); raw = open(p, 'rb').read(); open(p, 'wb').write(raw[3:]) if raw[:3] == b'\xef\xbb\xbf' else None; print('[OK] BOM removed from token file')" > _fix_bom.py
 python _fix_bom.py
 Remove-Item _fix_bom.py
 ```
@@ -166,6 +166,13 @@ def list_channels(token: str) -> list[dict]:
 Create posts via the `createPost` mutation:
 
 ```python
+# NOTE: CreatePostInput NOW requires these fields:
+#   - schedulingType (required): "automatic"
+#   - channelId (required): 24-char hex ID
+#   - assets (required, new): list of media assets (can be []) 
+#   - mode (required, new): "automatic"
+#   - text (optional but recommended): post body text
+
 def create_post(token: str, channel_id: str, text: str,
                 link_url: str = None, schedule_at: str = None,
                 now: bool = False, service: str = "") -> dict:
@@ -320,7 +327,7 @@ The legacy REST API at `api.bufferapp.com` is **permanently shut down** and retu
 The Buffer GraphQL channels query returns `id` fields that are **exactly 24 hexadecimal characters**. Copy them verbatim — do NOT truncate, do NOT change case, do NOT add prefixes. Example:
 
 ```json
-{"id": "679f024fd7abca001fddb4c2"}
+{"id": "<query-from-api>"}
 ```
 
 A truncated ID like `679f024fd7abca` (12 chars) will NOT work. Verify your channel IDs have 24 characters before calling `create_post()`.
@@ -346,8 +353,8 @@ The GraphQL API was **proven working** for 6 posts across 3 channels:
 
 | Paper | DOI | Twitter | Bluesky | LinkedIn |
 |:------|:----|:--------|:--------|:---------|
-| Silent Radix | 10.5281/zenodo.21067593 | `6a43d23a1ec479235021c836` | `6a43d23c1e42905afea3b54c` | `6a43d23d9c6ee994bd422862` |
-| Cyclic Measurement | 10.5281/zenodo.21047527 | `6a43d2519c6ee994bd422947` | `6a43d2533a82910a41251a3c` | `6a43d254032afd2413bd5075` |
+| Silent Radix | 10.5281/zenodo.21067593 | `<query-from-api>` | `6a43d23c1e42905afea3b54c` | `6a43d23d9c6ee994bd422862` |
+| Cyclic Measurement | 10.5281/zenodo.21047527 | `<query-from-api>` | `6a43d2533a82910a41251a3c` | `6a43d254032afd2413bd5075` |
 
 **Key corrections in v2.1:**
 1. `schedulingType` and `mode` are **separate top-level fields** in CreatePostInput (not nested)
