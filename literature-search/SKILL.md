@@ -35,6 +35,20 @@ the user with the specific failure reason.
 
 ---
 
+## Autonomous Continuation Protocol (v1.1)
+
+**All 5 search stages execute autonomously without user intervention.** The agent MUST:
+
+1. After ANY stage marked [EXECUTED], immediately proceed to next stage
+2. Before advancing: tag `[AUTO-CONTINUE -> Stage N+1]` in the response
+3. If a source API fails: tag `[BLOCKED: <source> unavailable]`, continue with remaining sources
+4. At completion of all stages: tag `[SEARCH-COMPLETE: <total> papers, <core> core]`
+5. Never wait for user confirmation between stages
+
+**ANTI-PATTERN:** User should NEVER need to say "CONTINUE" between search stages.
+
+---
+
 ## execute_plan (MANDATORY -- Before Any Execution)
 
 **This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.

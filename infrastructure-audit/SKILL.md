@@ -40,6 +40,20 @@ the user with the specific failure reason.
 
 ---
 
+## Autonomous Continuation Protocol (v1.0)
+
+**All 7 audit categories execute autonomously without user intervention.** The agent MUST:
+
+1. After ANY category marked [EXECUTED], immediately proceed to the next category
+2. Before advancing: tag `[AUTO-CONTINUE -> Category N+1]` in the response
+3. If a category fails: tag `[BLOCKED: reason]`, skip to next, aggregate failures
+4. At completion of all categories: tag `[AUDIT-COMPLETE: <pass>/<total> passed]`
+5. Never wait for user confirmation between audit categories
+
+**ANTI-PATTERN:** User should NEVER need to say "CONTINUE" between audit phases.
+
+---
+
 ## execute_plan (MANDATORY — Before Any Execution)
 
 **This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.

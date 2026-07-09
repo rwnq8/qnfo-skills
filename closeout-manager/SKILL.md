@@ -43,6 +43,20 @@ the user with the specific failure reason.
 
 ---
 
+## Autonomous Continuation Protocol (v3.6)
+
+**All 10 closeout steps execute autonomously without user intervention.** The agent MUST:
+
+1. Auto-detect completion signal — no "TERMINATE" prompt needed
+2. Run all 10 steps sequentially, advancing with `[AUTO-CONTINUE -> Step N+1]`
+3. If a step fails: `[BLOCKED: reason]`, attempt fix (max 3), skip on non-retryable
+4. Never ask "shall I close out?" — just detect and execute
+5. At completion: present checklist summary with tool evidence for each step
+
+**ANTI-PATTERN:** User should NEVER need to say "TERMINATE" or "CONTINUE."
+
+---
+
 ## execute_plan (MANDATORY — Before Any Execution)
 
 **This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.

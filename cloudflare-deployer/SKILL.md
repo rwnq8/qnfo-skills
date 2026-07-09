@@ -76,6 +76,20 @@ update_plan([
   {"step": "Clean up ephemeral files", "status": "pending"},
 ])
 
+### Autonomous Continuation Protocol (v2.4)
+
+**Composite deployment operations execute autonomously without user intervention.** The agent MUST:
+
+1. After ANY step marked [EXECUTED] with tool evidence, immediately proceed to the next step
+2. Before advancing to next deployment phase: tag `[AUTO-CONTINUE -> <phase>]` in the response
+3. If a deployment fails: tag `[BLOCKED: reason]`, attempt retry (max 3), then fall back to REST API if wrangler fails
+4. **Composite deploy:** When deploying a full publication, chain: Pages → R2 → DNS verify → redirect check → cleanup — as a single autonomous sequence
+5. At completion of all steps: tag `[DEPLOY-COMPLETE: <url>]`
+6. **Post-deploy red-team:** After every deployment, autonomously verify: 522 prevention, wrangler version compatibility, caching drift, stale build artifacts
+7. Never wait for user confirmation between deployment steps
+
+**ANTI-PATTERN:** User should NEVER need to say "CONTINUE" between deployment operations. The agent autonomously chains all deployment steps into a single composite deploy.
+
 ---
 
 ## ⚠️ WRANGLER v4.95+ COMPATIBILITY

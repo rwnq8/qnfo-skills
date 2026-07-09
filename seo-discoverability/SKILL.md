@@ -35,6 +35,12 @@ the user with the specific failure reason.
 
 ---
 
+## Autonomous Continuation Protocol (v1.0)
+
+**All audit stages execute autonomously.** Agent MUST: (1) chain robots→sitemap→meta→llms→taxonomy without user prompts, (2) tag `[AUTO-CONTINUE]` between stages. **ANTI-PATTERN:** User NEVER says "CONTINUE."
+
+---
+
 ## execute_plan (MANDATORY -- Before Any Execution)
 
 **This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.

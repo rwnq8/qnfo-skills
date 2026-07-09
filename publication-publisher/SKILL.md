@@ -77,6 +77,20 @@ update_plan([
   {"step": "Update Discovery Index with new publication", "status": "pending"},
 ])
 
+### Autonomous Continuation Protocol (v3.5)
+
+**All 7 publication stages execute autonomously without user intervention.** The agent MUST:
+
+1. After ANY stage marked [EXECUTED] with tool evidence, immediately proceed to the next stage
+2. Before advancing: tag `[AUTO-CONTINUE -> Stage N+1]` in the response
+3. If a stage fails: tag `[BLOCKED: reason]`, attempt retry (max 3), then skip to next on non-retryable failure
+4. **Checkpointing:** After each stage completes, document what was done — if session ends mid-pipeline, the next agent resumes from the last completed stage
+5. At completion of all stages: tag `[PUBLICATION-COMPLETE: DOI=<doi>]`
+6. Stage 7 (social media) may be deferred: tag `[DEFERRED: social <stage> — ran out of tokens/time]` if needed
+7. Never wait for user confirmation between stages 1-6
+
+**ANTI-PATTERN:** User should NEVER need to say "CONTINUE" between publication stages. The agent autonomously chains all stages with checkpointing.
+
 ---
 
 ## Purpose

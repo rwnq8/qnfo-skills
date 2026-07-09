@@ -62,8 +62,22 @@ update_plan([
   {"step": "Phase 6: Dry-run deploy + git commit", "status": "pending"},
   {"step": "Phase 7: Upload Kaizen report to R2", "status": "pending"},
   {"step": "Phase 8: Verify hooks and scheduled tasks", "status": "pending"},
-  {"step": "Phase 9: Restart DeepChat (mandatory)", "status": "pending"},
+  {"step": "Phase 9: Restart DeepChat (mandatory — terminal boundary)", "status": "pending"},
 ])
+
+### Autonomous Continuation Protocol (v1.3)
+
+**Phases 0-8 execute autonomously without user intervention.** The agent MUST:
+
+1. After ANY phase marked [EXECUTED] with tool evidence, immediately proceed to the next phase
+2. Before advancing: tag `[AUTO-CONTINUE -> Phase N+1]` in the response
+3. At completion of all phases 0-8: tag `[PHASES-0-8-COMPLETE]`
+4. Phase 9 (restart) is the ONLY manual boundary — execute as terminal step
+5. If a phase fails: tag `[BLOCKED: reason]`, skip to next phase, report in Kaizen report
+6. If ALL phases 0-8 complete but restart cannot execute: tag `[HANDOFF: restart pending]` with details
+7. Never wait for user confirmation between phases 0-8
+
+**ANTI-PATTERN:** User should NEVER need to say "CONTINUE" between phases 0-8. The agent autonomously chains all phases.
 
 ---
 
