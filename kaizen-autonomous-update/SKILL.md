@@ -122,6 +122,7 @@ The Phase 0 comprehensive audit (`_kaizen_system_audit.py`) checks:
 6. **Guardrail completeness** — all essential guardrails present
 7. **Kaizen engine health** — conversation search, R2 integration
 8. **GAP AUDIT (v1.2 — per closeout-manager §2.6):** Run the full POST-PHASE GAP AUDIT (A-F categories) as part of Phase 0. Any BLOCKING gaps → halt the Kaizen update. Document all gaps in the Kaizen report.
+9. **VARIANT DEDUPLICATION (v1.0 — DeepChat v1.0.9):** Skills adopted from external agents (Claude Code, Agents SDK) that conflicted with existing DeepChat skills were renamed with `-claude-code` or `-agents` suffixes. The canonical variant is the base-named skill (e.g., `cloudflare`, not `cloudflare-claude-code`). When updating skills, ONLY update the canonical (base-named) variant. Do NOT independently update `-claude-code` or `-agents` suffixed copies — these are imports of the canonical version and will be overwritten on next skill-sync. If a suffixed copy has diverged, flag it as `[VARIANT-DRIFT: <name>-claude-code diverged from <name>]` and report in the Kaizen report.
 
 ## Related Skills
 
