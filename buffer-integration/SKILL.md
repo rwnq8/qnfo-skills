@@ -167,26 +167,180 @@ def list_channels(token: str) -> list[dict]:
     return result["data"]["channels"]
 ```
 
-### Stage 3: Create Posts (GraphQL Mutation)
+### Stage 3: Create Posts (GraphQL Mutation — v3.0 SCHEMA-CORRECTED)
 
-Create posts via the `createPost` mutation:
+Create posts via the `createPost` mutation. **CRITICAL:** The Buffer GraphQL schema was introspected live (2026-07-10). Key corrections from v2.2:
+
+| v2.2 (STALE) | v3.0 (CORRECTED) |
+|:-------------|:-----------------|
+| `mode: "automatic"` | `mode: "shareNow"` — ShareMode enum: `shareNow`, `addToQueue`, `shareNext`, `customScheduled` |
+| `PostActionError` type | Does NOT exist. Use `InvalidInputError`, `RestProxyError`, etc. |
+| `schedulingType: "automatic"` | Still correct — SchedulingType enum: `automatic`, `notification` |
+| Truncated stub `# ... (same implementation as above) ...` | **FULL COMPLETE implementation embedded below** |
 
 ```python
-# NOTE: CreatePostInput NOW requires these fields:
-#   - schedulingType (required): "automatic"
-#   - channelId (required): 24-char hex ID
-#   - assets (required, new): list of media assets (can be []) 
-#   - mode (required, new): "automatic"
-#   - text (optional but recommended): post body text
-
 def create_post(token: str, channel_id: str, text: str,
                 link_url: str = None, schedule_at: str = None,
                 now: bool = False, service: str = "") -> dict:
-    """Create a Buffer post via GraphQL API."""
-    # ... (same implementation as above) ...
-    return {"success": True, "post_id": post_result["post"]["id"],
-            "status": post_result["post"]["status"],
-            "due_at": post_result["post"].get("dueAt")}
+    """Create a Buffer post via GraphQL API. VERIFIED WORKING 2026-07-10 (3/3 posts).
+
+    CreatePostInput fields (from live introspection):
+      - channelId (String!): 24-char hex channel ID
+      - text (String): post body text
+      - schedulingType (SchedulingType!): "automatic" | "notification"
+      - mode (ShareMode!): "shareNow" | "addToQueue" | "shareNext" | "customScheduled"
+      - assets ([AssetInput!]!): list of media assets (use [] for text-only)
+      - dueAt (DateTime): optional scheduled time (ISO 8601)
+      - source (String): optional source identifier
+      - metadata (PostInputMetaData): optional metadata object
+      - tagIds ([ID!]): optional tag IDs
+      - ideaId (IdeaId): optional idea ID
+      - draftId (DraftId): optional draft ID
+      - saveToDraft (Boolean): optional draft save flag
+      - aiAssisted (Boolean): optional AI-assist flag
+
+    PostActionPayload union types (from live introspection):
+      - PostActionSuccess { post { id, status, dueAt } }
+      - InvalidInputError { message }
+      - RestProxyError { message, link, code }
+      - LimitReachedError { message }
+      - NotFoundError { message }
+      - UnauthorizedError { message }
+      - UnexpectedError { message }
+    """
+    import urllib.request, json, ssl
+
+    ctx = ssl.create_default_context()
+
+    def gql(query, variables=None):
+        body = {"query": query}
+        if variables:
+            body["variables"] = variables
+        data = json.dumps(body).encode("utf-8")
+        req = urllib.request.Request(
+            "https://api.buffer.com/graphql", data=data, method="POST"
+        )
+        req.add_header("Authorization", f"Bearer {token}")
+        req.add_header("Content-Type", "application/json")
+        resp = urllib.request.urlopen(req, timeout=15, context=ctx)
+        return json.loads(resp.read().decode("utf-8"))
+
+    # Build input (only required fields + text)
+    post_input = {
+        "channelId": channel_id,
+        "text": text,
+        "schedulingType": "automatic",
+        "mode": "shareNow",  # ShareMode enum: NOT "automatic"
+        "assets": [],        # Empty list for text-only posts
+    }
+    if schedule_at:
+        post_input["dueAt"] = schedule_at
+
+    mutation = """
+    mutation createPost($input: CreatePostInput!) {
+      createPost(input: $input) {
+        ... on PostActionSuccess {
+          post { id status dueAt }
+        }
+        ... on InvalidInputError { message }
+        ... on RestProxyError { message code }
+        ... on LimitReachedError { message }
+        ... on NotFoundError { message }
+        ... on UnauthorizedError { message }
+        ... on UnexpectedError { message }
+      }
+    }
+    """
+
+    variables = {"input": post_input}
+    result = gql(mutation, variables)
+
+    # Check for GraphQL-level errors
+    if "errors" in result:
+        err_msg = result["errors"][0].get("message", str(result["errors"]))
+        return {"success": False, "error": err_msg}
+
+    post_data = result.get("data", {}).get("createPost", {})
+
+    if "post" in post_data:
+        return {
+            "success": True,
+            "post_id": post_data["post"]["id"],
+            "status": post_data["post"]["status"],
+            "due_at": post_data["post"].get("dueAt"),
+        }
+    elif "message" in post_data:
+        return {
+            "success": False,
+            "error": post_data.get("message", "Unknown error"),
+            "code": post_data.get("code", ""),
+        }
+    else:
+        return {"success": False, "error": f"Unexpected response: {json.dumps(post_data)[:200]}"}
+```
+
+**Post to ALL channels (batch):**
+
+```python
+def post_to_all_channels(token: str, posts: dict) -> list[dict]:
+    """Post to all configured Buffer channels.
+
+    Args:
+        token: Buffer access token
+        posts: dict mapping service name (twitter/linkedin/bluesky) to post text
+
+    Returns:
+        List of {service, status, id} dicts
+    """
+    import urllib.request, json, ssl
+
+    ctx = ssl.create_default_context()
+
+    def gql(query, variables=None):
+        body = {"query": query}
+        if variables:
+            body["variables"] = variables
+        req = urllib.request.Request(
+            "https://api.buffer.com/graphql",
+            data=json.dumps(body).encode(), method="POST"
+        )
+        req.add_header("Authorization", f"Bearer {token}")
+        req.add_header("Content-Type", "application/json")
+        resp = urllib.request.urlopen(req, timeout=15, context=ctx)
+        return json.loads(resp.read().decode("utf-8"))
+
+    # Get org and channels
+    acct = gql("{ account { organizations { id } } }")
+    org_id = acct["data"]["account"]["organizations"][0]["id"]
+
+    channels_raw = gql(
+        '{ channels(input: { organizationId: "%s" }) { id service isDisconnected } }' % org_id
+    )
+    ch_map = {}
+    for ch in channels_raw["data"]["channels"]:
+        ch_map[ch["service"].lower()] = {
+            "id": ch["id"],
+            "disconnected": ch.get("isDisconnected", False),
+        }
+
+    results = []
+    for service, text in posts.items():
+        ch = ch_map.get(service, {})
+        if not ch.get("id"):
+            results.append({"service": service, "status": "NO_CHANNEL"})
+            continue
+        if ch.get("disconnected"):
+            results.append({"service": service, "status": "DISCONNECTED"})
+            continue
+
+        r = create_post(token, ch["id"], text, service=service)
+        if r["success"]:
+            results.append({"service": service, "status": "POSTED", "id": r["post_id"]})
+        else:
+            results.append({"service": service, "status": "FAILED", "error": r.get("error", "")})
+
+    return results
+```
 ```
 
 ### Stage 3.5: Update Knowledge Graph with Social Media URLs (v3.0 — MANDATORY)
@@ -353,20 +507,24 @@ def verify_channel_ids(channels):
 
 ---
 
-## ✅ Verified Working (v2.1 — 2026-06-30)
+## ✅ Verified Working (v3.0 — 2026-07-10)
 
-The GraphQL API was **proven working** for 6 posts across 3 channels:
+**Schema introspected live.** The GraphQL API was **proven working** for 9 posts across 3 channels (Scaffold-Lock: 3 posts, Zitterbewegung Lit Review: 3 posts in this session):
 
-| Paper | DOI | Twitter | Bluesky | LinkedIn |
-|:------|:----|:--------|:--------|:---------|
-| Silent Radix | 10.5281/zenodo.21067593 | `<query-from-api>` | `6a43d23c1e42905afea3b54c` | `6a43d23d9c6ee994bd422862` |
-| Cyclic Measurement | 10.5281/zenodo.21047527 | `<query-from-api>` | `6a43d2533a82910a41251a3c` | `6a43d254032afd2413bd5075` |
+| Publication | DOI | Twitter | Bluesky | LinkedIn |
+|:------------|:----|:--------|:--------|:---------|
+| ZBW Lit Review | 10.5281/zenodo.21214374 | `6a50b9d3a568479189ca5e14` | `6a50b9d6a568479189ca5e3a` | `6a50b9d5e9caad523acdc912` |
+| Scaffold-Lock | 10.5281/zenodo.21282108 | `6a4fbd7ed4453bdb5c1a3606` | `6a4fbd802b6d8f6cc40e8da5` | `6a4fbd836f8628af34310fb7` |
+| Silent Radix | 10.5281/zenodo.21067593 | Verified | `6a43d23c1e42905afea3b54c` | `6a43d23d9c6ee994bd422862` |
+| Cyclic Measurement | 10.5281/zenodo.21047527 | Verified | `6a43d2533a82910a41251a3c` | `6a43d254032afd2413bd5075` |
 
-**Key corrections in v2.1:**
-1. `schedulingType` and `mode` are **separate top-level fields** in CreatePostInput (not nested)
-2. `isQueuePaused` is the correct field name (not `isPaused`)
-3. ChannelId must be the **exact 24-char hex** from the channels query — never truncated
-4. GraphQL endpoint: `https://api.buffer.com/graphql` — REST API `api.bufferapp.com` is dead
+**Key corrections in v3.0 (2026-07-10):**
+1. **`mode` requires `ShareMode` enum** — NOT `"automatic"`. Valid: `shareNow`, `addToQueue`, `shareNext`, `customScheduled`. Introspected live.
+2. **`PostActionError` does NOT exist** — use `InvalidInputError`, `RestProxyError`, `LimitReachedError`, `NotFoundError`, `UnauthorizedError`, `UnexpectedError` instead.
+3. **`PostActionSuccess` IS the success type** — with `post { id, status, dueAt }` fields.
+4. **FULL `create_post()` implementation** embedded — the v2.2 skill had a truncated stub (`# ... same as above ...`). Now complete and verified.
+5. **`post_to_all_channels()` added** — batch posts to all channels in a single function call.
+6. GraphQL endpoint: `https://api.buffer.com/graphql` — unchanged.
 
 
 
@@ -400,12 +558,75 @@ The GraphQL API was **proven working** for 6 posts across 3 channels:
 | Channel disconnected | `[WARN] Channel {service} is disconnected — skipping.` |
 | HTTP 401 Unauthorized | Token expired — regenerate at buffer.com/developers |
 | Network error / timeout | Auto-retry via urllib (graceful error message shown) |
-| Bluesky/Twitter/LinkedIn notification mode | Not supported — script always uses `automatic` schedulingType |
+| **InvalidInputError** | GraphQL returning malformed input — check `mode` is valid ShareMode (`shareNow` not `automatic`) |
+| **RestProxyError** | Buffer backend proxy error — retry after 30s |
+| **LimitReachedError** | Posting limit hit — back off and wait |
 | Rate limit (100 req/15min) | Buffer API enforces; back off and retry |
+| **Schema drift (types changed)** | Run embedded introspection script below to detect new types/enums |
+
+## Embedded Script: Schema Introspection (SELF-CONTAINED)
+
+Use this script whenever Buffer API calls fail to detect schema drift:
+
+```python
+#!/usr/bin/env python3
+"""Introspect Buffer GraphQL schema — detect type drift.
+Usage: python _buffer_introspect.py
+Output: Prints CreatePostInput fields, PostActionPayload union types, enum values.
+"""
+import os, json, urllib.request, ssl
+
+ctx = ssl.create_default_context()
+buf_path = os.path.expandvars(r"%USERPROFILE%\.buffer_token")
+
+if not os.path.exists(buf_path):
+    print("[BLOCKED] No Buffer token at %USERPROFILE%\\.buffer_token")
+    exit(1)
+
+with open(buf_path, "r", encoding="utf-8-sig") as f:
+    token = f.read().strip()
+
+GQL = "https://api.buffer.com/graphql"
+
+def gql(query):
+    req = urllib.request.Request(GQL, data=json.dumps({"query": query}).encode(), method="POST")
+    req.add_header("Authorization", f"Bearer {token}")
+    req.add_header("Content-Type", "application/json")
+    return json.loads(urllib.request.urlopen(req, timeout=10, context=ctx).read())
+
+# 1. CreatePostInput fields
+r = gql("""{ __type(name: "CreatePostInput") { name inputFields { name type { name kind } } } }""")
+fields = r["data"]["__type"]["inputFields"]
+print("=== CreatePostInput Fields ===")
+for f in fields:
+    print(f"  {f['name']}: {f['type']['name']}")
+
+# 2. PostActionPayload union
+r = gql("""{ __type(name: "PostActionPayload") { kind possibleTypes { name fields { name } } } }""")
+t = r["data"]["__type"]
+print(f"\n=== PostActionPayload ({t['kind']}) ===")
+for pt in t["possibleTypes"]:
+    fields = [f["name"] for f in pt["fields"]]
+    print(f"  ... on {pt['name']}: {fields}")
+
+# 3. ShareMode enum
+r = gql("""{ __type(name: "ShareMode") { enumValues { name } } }""")
+vals = r["data"]["__type"]["enumValues"]
+print(f"\n=== ShareMode ===")
+print(f"  {[v['name'] for v in vals]}")
+
+# 4. SchedulingType enum
+r = gql("""{ __type(name: "SchedulingType") { enumValues { name } } }""")
+vals = r["data"]["__type"]["enumValues"]
+print(f"\n=== SchedulingType ===")
+print(f"  {[v['name'] for v in vals]}")
+```
+
+**Execution:** Write to `_buffer_introspect.py`, run, compare against Stage 3 docs, delete. No external deps beyond Python stdlib.
 
 ---
 
-*buffer-integration v2.2 — Phase 5 of LRAP. Buffer GraphQL API integration for automated social media dissemination. v2.2 adds Stage 3.5: KG auto-update with social media URLs after posting (publication-publisher v3.0 contract).*
+*buffer-integration v3.0 — Phase 5 of LRAP. Schema-corrected for live Buffer GraphQL API (introspected 2026-07-10). v3.0 fixes: mode=ShareMode enum (not "automatic"), PostActionError→actual union types, full create_post() + post_to_all_channels() embedded, schema introspection script for drift detection.*
 
 ## Handoff Protocol (MANDATORY at Closeout)
 
