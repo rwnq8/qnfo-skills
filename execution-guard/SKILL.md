@@ -543,6 +543,23 @@ Forcing execution NOW. Text generation BLOCKED until tasks executed.]
 
 ### 1.4 WHAT-ELSE GAP DETECTION HOOK (v1.2 — AUTONOMOUS COMPLETION AUDIT)
 
+
+### 1.4.1 DEC-034 Concurrency Verification Hook (v1.3 — 2026-07-10)
+
+**The WHAT-ELSE gap detection (§1.4) now includes concurrency verification.**
+
+After every task marked [COMPLETED], the guard MUST verify:
+
+1. **Active DO locks:** `curl -s https://infra-lock-manager.q08.workers.dev/api/list`
+2. **D1 version drift:** `SELECT id, _version FROM decisions` — versions must match expected
+3. **Write token leak:** `SELECT COUNT(*) FROM write_tokens WHERE status='active'` — must be 0 or only this session
+4. **Skill sync conflict:** `bootstrap_skills.py --check` — no R2 drift detected
+
+**GATE:** If any active locks from OTHER sessions → `[BLOCKED: concurrent session active — DO lock held by <session>]`. Wait for release or escalate.
+
+**Protocol:** DEC-034 Universal Multi-Session Write Collision Prevention
+**DO endpoint:** `https://infra-lock-manager.q08.workers.dev`
+
 **The #4 agent failure mode: the user having to ask "WHAT ELSE? WHAT'S NEXT? WHAT REMAINS?" because the agent declared completion without running a gap audit.** This hook ELIMINATES that pattern. Before ANY claim of completion, the agent MUST run the gap audit.
 
 #### Trigger Detection
