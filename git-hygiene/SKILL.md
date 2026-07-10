@@ -4,6 +4,20 @@ description: "Git recovery and hygiene procedures -- branch recovery, detached H
 version: "1.1"
 ---
 
+
+
+### DEC-034 Safe Push Protocol (v1.5 — 2026-07-10)
+
+**CRITICAL:** Multiple LLM sessions can push to the same git branch simultaneously. Amended commits, force pushes, and tag updates can silently overwrite prior work. Use the InfraLockManager DO for git coordination.
+
+**Safe Push Flow:** lock("git", "repo:branch", 300s) → verify HEAD matches origin → git push → unlock
+
+**Lock Required For:** Amend (YES, 300s) | Force push (YES, 300s) | Tag overwrite (YES, 120s) | Merge conflict resolution (YES, 600s) | Normal fast-forward push (NO — git handles this natively)
+
+**DO endpoint:** `https://infra-lock-manager.q08.workers.dev`
+**Protocol:** DEC-034 Universal Multi-Session Write Collision Prevention
+
+
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
 ### Programmatic Loading & Execution

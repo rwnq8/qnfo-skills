@@ -5,6 +5,20 @@ pinned: true
 version: "1.2"
 ---
 
+
+
+### DEC-034 Concurrency-Safe Loading + Variant Deduplication (v1.3 — 2026-07-10)
+
+**CRITICAL:** Multiple LLM sessions can modify skills simultaneously. The autoloader MUST check InfraLockManager DO locks before loading and deduplicate variant copies.
+
+**Concurrency-Safe Loading:** Check DO for active locks → locked: log [SKILL-LOCKED], load stale copy → unlocked: normal load → post-load: register in D1 skill_versions with hash + session ID.
+
+**Variant Deduplication:** Load canonical (base-named) first → skip -claude-code/-agents variants if canonical exists → flag [VARIANT-DRIFT] if content differs → report variant statistics in load summary.
+
+**DO endpoint:** `https://infra-lock-manager.q08.workers.dev`
+**Protocol:** DEC-034 Universal Multi-Session Write Collision Prevention
+
+
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
 > **Related:** closeout-manager, skill-sync, execution-guard, qnfo-agent
