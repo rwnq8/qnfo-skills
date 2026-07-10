@@ -115,7 +115,7 @@ result = json.loads(urllib.request.urlopen(req).read())
 
 ## Authentication
 
-**PERSISTENT -- 2026-06-19:** The CLOUDFLARE_API_TOKEN is stored at User-level with ALL Cloudflare permissions. No manual loading needed. Token survives reboots.
+**PERSISTENT -- 2026-06-19 (UPDATED 2026-07-10):** The CLOUDFLARE_API_TOKEN is stored at User-level with ALL Cloudflare permissions. No manual loading needed. Token survives reboots. **CRITICAL: As of 2026-07-10, `CF_API_TOKEN` (cfat_Imj...) is the working token. `CLOUDFLARE_API_TOKEN` (cfat_ffMOS...) is STALE/INVALID. Set `$env:CLOUDFLARE_API_TOKEN = $env:CF_API_TOKEN` at session start until the env var is updated.**
 
 **Token:** API Token with ALL PERMISSIONS (full account access)
 - Account: quniverse (edb167b78c9fb901ea5bca3ce58ccc4b)
