@@ -33,9 +33,9 @@ the user with the specific failure reason.
 
 ---
 
-# BUFFER INTEGRATION SKILL — v3.3
+# BUFFER INTEGRATION SKILL — v3.4
 
-> **Version:** v3.3 (Kaizen-audited 2026-07-11) — findings-first design: the most surprising/provocative finding leads every post; no venue boilerplate; indexing metadata only on LinkedIn where space allows
+> **Version:** v3.4 (Kaizen-audited 2026-07-11) — platform-native communication: Twitter (bold claim), LinkedIn (credibility + full title), Bluesky (clean + conversational); consistent 📄 visual language across platforms
 
 
 > **Phase 5 of LRAP.** Enables automated social media dissemination of QNFO/QWAV publications via Buffer **GraphQL API**.
@@ -410,16 +410,22 @@ def update_kg_social_urls(paper_slug: str, post_results: list) -> dict:
 
 ### Stage 4: Channel-Specific Formatting
 
-Each social platform has different character limits, formatting rules, and audience expectations. **POSTS ARE FINDINGS-FIRST, NOT METADATA-FIRST.** The most surprising, provocative, or compelling research result leads every post. No boilerplate about venue/publisher (Zenodo) that mainstream academics dismiss as "not peer-reviewed." Let the finding speak for itself.
+Each social platform has different audiences who respond to different messaging and formatting. **POSTS ARE FINDINGS-FIRST.** The most surprising, provocative, or compelling research result leads every post. No boilerplate about venue/publisher (Zenodo). Platform-native communication:
+
+- **Twitter**: Bold, unfiltered claim. Aggressive hashtags for discoverability. Make them stop scrolling.
+- **LinkedIn**: Professional credibility. Full title, indexing metadata for scholarly legitimacy. Polished but not corporate-speak.
+- **Bluesky**: Clean, conversational, community-driven. No hashtags (Bluesky doesn't use them the same way).
 
 ```python
 def format_for_channel(service: str, paper_title: str, paper_doi: str, 
                         key_finding: str = "", paper_url: str = "",
                         indexing: str = "") -> str:
-    """Generate channel-optimized post text — findings-first, metadata-trailing.
+    """Generate platform-native post text — findings-first, metadata-trailing.
     
-    The finding IS the hook. Lead with the most surprising, provocative,
-    or compelling research result. Title, DOI, and indexing info follow.
+    Different platforms = different audiences = different messaging:
+    - Twitter: bold, unfiltered claim + hashtags for discoverability
+    - LinkedIn: professional credibility with full title + indexing
+    - Bluesky: clean, conversational, no hashtags
     
     Args:
         service: 'twitter', 'linkedin', or 'bluesky'
@@ -427,10 +433,10 @@ def format_for_channel(service: str, paper_title: str, paper_doi: str,
         paper_doi: Zenodo DOI (e.g., '10.5281/zenodo.XXXXXXX')
         key_finding: THE most compelling finding — this is the hook
         paper_url: Custom URL (defaults to doi.org/DOI)
-        indexing: Indexing services (shown only on LinkedIn)
+        indexing: Indexing services (shown only on LinkedIn where scholarly legitimacy matters)
     """
     
-    # Indexing metadata — LinkedIn only (too verbose for Twitter/Bluesky)
+    # Indexing metadata — LinkedIn only (scholarly legitimacy signal)
     indexing_line = f"📚 Indexed: {indexing}" if indexing else "📚 Indexed: Zenodo, Google Scholar, Semantic Scholar"
     
     templates = {
@@ -448,7 +454,7 @@ def format_for_channel(service: str, paper_title: str, paper_doi: str,
             "max_chars": 3000,
             "format": (
                 "{finding}\n\n"
-                "— New research: {title}\n\n"
+                "📄 {title}\n\n"
                 "🔗 Read the full paper: {link}\n\n"
                 "{indexing_line}\n\n"
                 "{hashtags}"
@@ -565,7 +571,7 @@ def verify_channel_ids(channels):
 | **LinkedIn** | 3000 chars | **Finding-first** (2000 chars), title, DOI, indexing | 3-5 professional hashtags | Rich preview | Tue-Thu 8-10am |
 | **Bluesky** | 300 chars | **Finding-first** (200 chars), title, DOI | Optional, community-driven | Plain text link | Tue-Thu 10am-12pm |
 
-> **v3.3 — Findings-First Design**: The most surprising/provocative/compelling research result leads EVERY post. No venue/publisher boilerplate. No "New research:" prefix. Indexing metadata shown only on LinkedIn. Let the finding grab attention — title, DOI, and hashtags trail behind.
+> **v3.4 — Platform-Native Communication**: Different platforms = different audiences = different messaging. Twitter: bold, unfiltered claim + aggressive hashtags. LinkedIn: professional credibility with full title + indexing. Bluesky: clean, conversational, no hashtags. Consistent 📄 visual language across all platforms.
 
 ## Failure Handling
 
@@ -647,7 +653,7 @@ print(f"  {[v['name'] for v in vals]}")
 
 ---
 
-*buffer-integration v3.3 — Phase 5 of LRAP. v3.3 (2026-07-11): findings-first design — the most surprising/provocative finding leads every post (no more "New research:" boilerplate); venue/Zenodo boilerplate removed entirely; indexing metadata shown only on LinkedIn. Title and DOI trail the finding. v3.2: removed journal_line. v3.1: added journal+indexing. v3.0: GraphQL schema corrected.*
+*buffer-integration v3.4 — Phase 5 of LRAP. v3.4 (2026-07-11): platform-native communication — Twitter (bold unfiltered claim), LinkedIn (professional credibility + full title + indexing), Bluesky (clean conversational, no hashtags). Consistent 📄 visual language. v3.3: findings-first design. v3.2: removed journal_line. v3.1: added journal+indexing. v3.0: GraphQL schema corrected.*
 
 ## Handoff Protocol (MANDATORY at Closeout)
 
