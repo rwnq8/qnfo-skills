@@ -27,25 +27,25 @@
 
 ## PAGES PROJECTS — 15 (13 orphans deleted 2026-07-11) → TARGET 6
 
-**2026-07-11 UPDATE:** 13 orphaned projects deleted (no custom domains). Live count: 15 projects with custom domains. Target consolidation of remaining projects still needed.
+**2026-07-11 UPDATE v2:** 13 orphaned projects deleted (no custom domains). 5 additional CONSOLIDATE targets already deleted (Pages projects + DNS records removed). Live count: 10 projects with custom domains. Target: 6 (keep 5 essential + ask-qwav).
 
-| Project | Domain(s) | Tier | Action |
-|:--------|:----------|:-----|:------|
-| qnfo-hub | hub.qnfo.org, qnfo.org, www.qnfo.org, q08.org | ESSENTIAL | KEEP — landing |
-| qnfo-publications | papers.qnfo.org, archive.qnfo.org | ESSENTIAL | KEEP — library |
-| qnfo-legal | legal.qnfo.org | ESSENTIAL | KEEP — legal |
-| qnfo-design-system | design.qnfo.org | ESSENTIAL | KEEP — CSS/components |
-| ask-qwav | ask.qwav.tech | SUPPORT | KEEP — AI interface |
-| qwav | deep.qwav.tech, primer.qwav.tech + 9 aliases | CONSOLIDATE | 301→papers.qnfo.org |
-| hensel-code | hensel.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
-| discovery-momentum | momentum.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
-| verb-lexicon | lexicon.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
-| uqc-benchmark | uqc-benchmark.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
-| unity-of-ultrametric-physics | unity.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
-| ultrametric-paradigm | paradigm.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
-| ultrametric-benchmark | ultrametric-benchmark.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
-| ultrametric-ai-poc | ai-poc.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
-| two-ways-of-measuring | measure.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
+| Project | Domain(s) | Tier | Action | Status |
+|:--------|:----------|:-----|:------|:------|
+| qnfo-hub | hub.qnfo.org, qnfo.org, www.qnfo.org, q08.org | ESSENTIAL | KEEP — landing | ✅ |
+| qnfo-publications | papers.qnfo.org, archive.qnfo.org | ESSENTIAL | KEEP — library | ✅ |
+| qnfo-legal | legal.qnfo.org | ESSENTIAL | KEEP — legal | ✅ |
+| qnfo-design-system | design.qnfo.org | ESSENTIAL | KEEP — CSS/components | ✅ |
+| ask-qwav | ask.qwav.tech | SUPPORT | KEEP — AI interface | ✅ |
+| qwav | deep.qwav.tech, primer.qwav.tech | ACTIVE | KEEP — has active content | ⚠️ SKIP |
+| hensel-code | hensel.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org | ✅ DONE 2026-07-11 |
+| discovery-momentum | momentum.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org | ❌ DEAD DNS |
+| verb-lexicon | lexicon.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org | ❌ DEAD DNS |
+| uqc-benchmark | uqc-benchmark.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org | ❌ DEAD DNS |
+| ~unity-of-ultrametric-physics~ | ~unity.qnfo.org~ | DELETED | Pages project already deleted | ✅ |
+| ~ultrametric-paradigm~ | ~paradigm.qnfo.org~ | DELETED | Pages project already deleted | ✅ |
+| ~ultrametric-benchmark~ | ~ultrametric-benchmark.qnfo.org~ | DELETED | Pages project already deleted | ✅ |
+| ~ultrametric-ai-poc~ | ~ai-poc.qnfo.org~ | DELETED | Pages project already deleted | ✅ |
+| ~two-ways-of-measuring~ | ~measure.qnfo.org~ | DELETED | Pages project already deleted | ✅ |
 
 **Deleted 2026-07-11 (13 orphans, .pages.dev only):** oft-proof, scaffold-lab, cocyle, different-physics, analytics-dashboard, adelic-qec-synthesis, solo-scientist, yogananda-scientific-claims, ultrametric-tree-ai, ultrametric-quantum, toward-p-adic-qec, retrospective-prophecy-astrology, qwav-marquee
 
@@ -53,58 +53,75 @@
 
 ## WORKERS — 33 → TARGET 15
 
-### TIER 1: ESSENTIAL CORE (10 — actively maintained by LLM)
+**2026-07-11 RECLASSIFICATION:** MASTER-INVENTORY classification was stale (many classified workers no longer exist, 21 unclassified July-burst workers). This section reclassified against live workers as of 2026-07-11.
+
+### TIER 1: ESSENTIAL CORE (15 — actively maintained)
 
 | Worker | Domain | Rationale |
 |:-------|:-------|:----------|
-| ask-qwav (v2.4) | AI Synthesis | Core AI pipeline — semantic search + LLM synthesis |
-| api-gateway (v2.2) | Routing | Single entry point per MASTER-PLAN |
-| graph-api | Knowledge | KG queries — 621n/1308e |
-| cms-api | Content | Content management — CMS client depends on this |
-| qnfo-data-api (v2.0) | Data | Cross-system data aggregation |
+| ask-qwav | AI Synthesis | Core AI pipeline — semantic search + LLM synthesis |
+| graph-api | Knowledge | KG queries — 3190 nodes, 4629 edges |
+| papers-server | Publications | Dynamic paper rendering (replaces static Pages deploys) |
 | qnfo-lifecycle | Lifecycle | Automated project lifecycle (cron daily 06:00 UTC) |
 | qnfo-archive-worker | Archive | Queue consumer for R2 archival migration |
-| qnfo-archive-verify | Archive | Archive verification |
-| living-papers-api | Publications | Single paper API (post-merge of living-paper-api, living-paper-proxy) |
+| qnfo-agent-session | State | DO+SQLite for agent sessions, locks (kg-mutex) |
+| infra-lock-manager | Deploy | DEC-034 deployment concurrency control |
+| api-gateway | Routing | Single entry point per MASTER-PLAN |
+| qnfo-data-api | Data | Cross-system data aggregation |
 | ultrametric-tree-api | Research | Ultrametric tree computations |
+| qnfo-edge-router | Routing | Edge traffic routing |
+| search-worker | Search | Full-text search |
+| portfolio-api | Inventory | Infrastructure inventory (D1 portfolio-state) |
+| audit-worker | Audit | Audit trail storage |
+| cron-graph-re-seed | Cron | KG-D1 paper reconciliation (every 15 min) |
 
-### TIER 2: SUPPORT (5 — surface audit only)
+### TIER 2: SUPPORT / RESEARCH (10 — keep with audit)
 
-| Worker | Domain |
-|:-------|:-------|
-| search-worker | Search |
-| portfolio-api | Portfolio state |
-| qacp-api | Agent protocol |
-| annotation-store | Research annotations |
-| audit-worker | Audit trails |
+| Worker | Domain | Purpose |
+|:-------|:-------|:--------|
+| qnfo-ai-worker | AI | Workers AI computation |
+| paper-pipeline | Pipeline | Paper processing pipeline |
+| murtagh-engine | Research | Murtagh ultrametric engine |
+| braid-matrix | Research | Braid co-occurrence matrix |
+| conjecture-test | Research | Braided Register conjecture verification |
+| qnfo-infra-mcp | Infra | Infrastructure management MCP server |
+| dns-cleanup | DNS | Automated DNS scanning + cleanup (5 zones) |
+| qnfo-asset-api | Assets | Asset query API |
+| qnfo-analytics-dashboard | Analytics | Analytics dashboard |
+| archive-worker | Archive | Archive operations (VERIFY: duplicate of qnfo-archive-worker?) |
 
-### TIER 3: CONSOLIDATE — MERGE (10 → absorbed into Tier 1)
+### TIER 3: SEO/META (8 — consolidation candidates)
 
-| Worker | Merge Target | Rationale |
-|:-------|:-------------|:----------|
-| seo-injector | → cms-api | Near-duplicate of seo-metadata-injector |
-| seo-metadata-injector | → cms-api | Near-duplicate of seo-injector |
-| living-paper-api | → living-papers-api | Near-duplicate API |
-| living-paper-ai | → ask-qwav | AI synthesis in ask-qwav |
-| living-paper-proxy | → DELETE | Unnecessary proxy layer |
-| document-preview | → cms-api | Content preview = CMS domain |
-| qnfo-asset-api | → qnfo-data-api | Asset queries = data API domain |
+| Worker | Domain | Consolidation Path |
+|:-------|:-------|:-------------------|
+| seo-inline | SEO | Merge into qnfo-seo-proxy or papers-server |
+| r2-seo-uploader | SEO | Merge into qnfo-seo-proxy |
+| qnfo-seo-proxy | SEO | Become single SEO gateway (absorb seo-inline + r2-seo-uploader) |
+| qnfo-meta | Meta | Metadata management |
+| deep-qwav-meta | Meta | deep.qwav.tech metadata (merge into qnfo-meta?) |
+| qwav-redirect | Redirect | QWAV redirect — could be Pages redirect rules |
+| status-validator | Status | One-time validation — may be deletable |
+| paper-catalog | Papers | Paper catalog (duplicate of papers-server /papers list) |
 
-### TIER 4: CRON — MERGE (5 → single cron-scheduler Worker)
+### TIER 4: CONSOLIDATION TARGET (merge 18 → reach ~15)
 
-| Worker | Merge Target |
-|:-------|:-------------|
-| cron-dead-link-check | → cron-scheduler |
-| cron-graph-re-seed | → cron-scheduler |
-| cron-paper-index-refresh | → cron-scheduler |
-| cron-r2-state-audit | → cron-scheduler |
-| cron-stale-project-flag | → cron-scheduler |
+| Action | Count | Workers |
+|:-------|:-----:|:--------|
+| SEO worker merge | 3→1 | seo-inline, r2-seo-uploader → qnfo-seo-proxy |
+| Meta worker merge | 2→1 | deep-qwav-meta → qnfo-meta |
+| Paper dedup | 2→1 | paper-catalog → papers-server |
+| Archive dedup | 2→1 | archive-worker → qnfo-archive-worker (verify) |
+| Redirect to Pages rules | 1→0 | qwav-redirect → Pages _redirects |
+| One-time workers | 2→0 | dns-cleanup, status-validator (delete after verification) |
+| **Net reduction** | **12→3** | **33 → ~24, then further to ~15** |
 
-### TIER 5: DEPRECATE — DELETE (3)
+### TIER 5: DELETED/REMOVED (historical)
 
-| Worker | Rationale |
-|:-------|:----------|
-| umbrella-router | DNS routing via Pages aliases + redirect rules |
+| Worker | Date | Reason |
+|:-------|:-----|:-------|
+| cms-api | 2026-07-01 | Non-functional, returned 404 |
+| umbrella-router | pre-2026-07 | DNS routing via Pages aliases |
+| All TIER 4 cron workers | pre-2026-07 | Never deployed (aspirational)liases + redirect rules |
 | qnfo-kaizen-analytics | Covered by audit-worker + qnfo-data-api |
 | qnfo-design-system-worker | Design system = static Pages site, not Worker |
 
