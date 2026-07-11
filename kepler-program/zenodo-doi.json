@@ -1,0 +1,14 @@
+{
+  "doi": "10.5281/zenodo.21314315",
+  "concept_doi": "10.5281/zenodo.21314312",
+  "deposition_id": 21314315,
+  "record_url": "https://zenodo.org/record/21314315",
+  "title": "Kepler Program: Complete Framework for Adelic Quantum Computing — Iteration 3 (Corrected)",
+  "date": "2026-07-11",
+  "iteration": "3.0.0-correction",
+  "replaces_invalid_claim": "10.5281/zenodo.21304674",
+  "invalid_claim_detail": "DOI 10.5281/zenodo.21304674 belongs to 'Masked Feature Forest' by Zhang, Jincheng — a completely unrelated ML paper.",
+  "verified_real": true,
+  "files_uploaded": 14,
+  "phases": 10
+}
