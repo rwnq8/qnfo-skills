@@ -1,5 +1,5 @@
-# QNFO CLOUDFLARE ECOSYSTEM MASTER INVENTORY — 2026-07-11 (Session 11 Update)
-## Consolidated for LLM Maintenance Capacity | Workers: 33→28, SEO verified
+# QNFO CLOUDFLARE ECOSYSTEM MASTER INVENTORY — 2026-07-11 (Session 12 Update)
+## Consolidated for LLM Maintenance Capacity | Workers: 33→28→26, SEO verified, Red-Team audited
 
 ---
 
@@ -41,7 +41,7 @@
 
 ---
 
-## WORKERS — 28 (was 33; 5 deleted Session 11)
+## WORKERS — 26 (was 33; 5 deleted Session 11, 2 deleted Session 12)
 
 ### TIER 1: ESSENTIAL CORE (15)
 
@@ -98,6 +98,10 @@
 | qnfo-meta | JSON-LD injector — can be baked into Pages |
 | qnfo-seo-proxy | R2 SEO proxy — papers-server handles SEO now |
 
+### Session 12 Deletions
+| dns-cleanup | One-off DNS cleanup utility — 0 traffic |
+| conjecture-test | Test worker — 0 traffic |
+
 ---
 
 ## SEO STATUS (papers.qnfo.org) — ✅ VERIFIED
@@ -130,7 +134,7 @@ Files generated from D1 living-paper (616 papers), stored in R2 at `qnfo/seo/`.
 
 | Resource | Session 9 | Session 11 | Target |
 |:---------|:---------:|:----------:|:------:|
-| Workers | 33 | **28** (−5) | 15 |
+| Workers | 33 | 28 | **26** (−7) | 15 |
 | Pages | 10 | 7 | 6 |
 | D1 | 5 | 5 | 5 |
 | Vectorize | 3 | 3 | 3 |
