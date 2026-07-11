@@ -33,7 +33,7 @@ the user with the specific failure reason.
 
 ---
 
-# BUFFER INTEGRATION SKILL — v3.4
+# BUFFER INTEGRATION SKILL — v3.5
 
 > **Version:** v3.4 (Kaizen-audited 2026-07-11) — platform-native communication: Twitter (bold claim), LinkedIn (credibility + full title), Bluesky (clean + conversational); consistent 📄 visual language across platforms
 
@@ -179,8 +179,14 @@ Create posts via the `createPost` mutation. **CRITICAL:** The Buffer GraphQL sch
 ```python
 def create_post(token: str, channel_id: str, text: str,
                 link_url: str = None, schedule_at: str = None,
-                now: bool = False, service: str = "") -> dict:
-    """Create a Buffer post via GraphQL API. VERIFIED WORKING 2026-07-10 (3/3 posts).
+                now: bool = False, service: str = "",
+                try_schedule_first: bool = True) -> dict:
+    """Create a Buffer post via GraphQL API with scheduling fallback.
+
+    Buffer free plan has a 10 scheduled post limit. This function:
+    1. Defaults to mode="addToQueue" (scheduled) with a dueAt time
+    2. If LimitReachedError (queue full) → retries with mode="shareNow" (immediate)
+    3. If try_schedule_first=False → posts immediately (skips scheduling attempt)
 
     CreatePostInput fields (from live introspection):
       - channelId (String!): 24-char hex channel ID
@@ -190,12 +196,6 @@ def create_post(token: str, channel_id: str, text: str,
       - assets ([AssetInput!]!): list of media assets (use [] for text-only)
       - dueAt (DateTime): optional scheduled time (ISO 8601)
       - source (String): optional source identifier
-      - metadata (PostInputMetaData): optional metadata object
-      - tagIds ([ID!]): optional tag IDs
-      - ideaId (IdeaId): optional idea ID
-      - draftId (DraftId): optional draft ID
-      - saveToDraft (Boolean): optional draft save flag
-      - aiAssisted (Boolean): optional AI-assist flag
 
     PostActionPayload union types (from live introspection):
       - PostActionSuccess { post { id, status, dueAt } }
@@ -207,6 +207,7 @@ def create_post(token: str, channel_id: str, text: str,
       - UnexpectedError { message }
     """
     import urllib.request, json, ssl
+    from datetime import datetime, timezone, timedelta
 
     ctx = ssl.create_default_context()
 
@@ -223,16 +224,26 @@ def create_post(token: str, channel_id: str, text: str,
         resp = urllib.request.urlopen(req, timeout=15, context=ctx)
         return json.loads(resp.read().decode("utf-8"))
 
-    # Build input (only required fields + text)
+    # Determine mode: try scheduling first, fall back to immediate
+    if now or not try_schedule_first:
+        mode = "shareNow"
+        due_at = None
+    else:
+        mode = "addToQueue"
+        due_at = schedule_at or (
+            datetime.now(timezone.utc) + timedelta(minutes=30)
+        ).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    # Build input
     post_input = {
         "channelId": channel_id,
         "text": text,
         "schedulingType": "automatic",
-        "mode": "shareNow",  # ShareMode enum: NOT "automatic"
-        "assets": [],        # Empty list for text-only posts
+        "mode": mode,
+        "assets": [],
     }
-    if schedule_at:
-        post_input["dueAt"] = schedule_at
+    if due_at:
+        post_input["dueAt"] = due_at
 
     mutation = """
     mutation createPost($input: CreatePostInput!) {
@@ -253,7 +264,6 @@ def create_post(token: str, channel_id: str, text: str,
     variables = {"input": post_input}
     result = gql(mutation, variables)
 
-    # Check for GraphQL-level errors
     if "errors" in result:
         err_msg = result["errors"][0].get("message", str(result["errors"]))
         return {"success": False, "error": err_msg}
@@ -266,11 +276,32 @@ def create_post(token: str, channel_id: str, text: str,
             "post_id": post_data["post"]["id"],
             "status": post_data["post"]["status"],
             "due_at": post_data["post"].get("dueAt"),
+            "mode": mode,
         }
     elif "message" in post_data:
+        err_msg = post_data.get("message", "")
+        # If queue is full (LimitReachedError on __typename or message),
+        # retry with shareNow immediately
+        if ("limit" in err_msg.lower() or "reached" in err_msg.lower()) and mode != "shareNow":
+            print(f"[RETRY] Queue limit reached for {service} — posting immediately")
+            # Retry with shareNow
+            post_input["mode"] = "shareNow"
+            post_input.pop("dueAt", None)
+            variables = {"input": post_input}
+            retry_result = gql(mutation, variables)
+            retry_data = retry_result.get("data", {}).get("createPost", {})
+            if "post" in retry_data:
+                return {
+                    "success": True,
+                    "post_id": retry_data["post"]["id"],
+                    "status": retry_data["post"]["status"],
+                    "due_at": retry_data["post"].get("dueAt"),
+                    "mode": "shareNow",
+                    "fallback": True,
+                }
         return {
             "success": False,
-            "error": post_data.get("message", "Unknown error"),
+            "error": err_msg,
             "code": post_data.get("code", ""),
         }
     else:
@@ -281,16 +312,23 @@ def create_post(token: str, channel_id: str, text: str,
 
 ```python
 def post_to_all_channels(token: str, posts: dict) -> list[dict]:
-    """Post to all configured Buffer channels.
+    """Post to all configured Buffer channels with staggered scheduling.
+
+    Scheduling strategy (Buffer free plan: 10 scheduled post limit):
+    1. Twitter: try addToQueue at T+0 (or shareNow if queue full)
+    2. LinkedIn: try addToQueue at T+60min (or shareNow if queue full)
+    3. Bluesky: try addToQueue at T+120min (or shareNow if queue full)
+    4. Any LimitReachedError → retry with shareNow (immediate posting)
 
     Args:
         token: Buffer access token
         posts: dict mapping service name (twitter/linkedin/bluesky) to post text
 
     Returns:
-        List of {service, status, id} dicts
+        List of {service, status, id, mode} dicts
     """
     import urllib.request, json, ssl
+    from datetime import datetime, timezone, timedelta
 
     ctx = ssl.create_default_context()
 
@@ -321,7 +359,10 @@ def post_to_all_channels(token: str, posts: dict) -> list[dict]:
             "disconnected": ch.get("isDisconnected", False),
         }
 
+    # Stagger schedule: Twitter immediate, LinkedIn +1hr, Bluesky +2hr
+    stagger_minutes = {"twitter": 0, "linkedin": 60, "bluesky": 120}
     results = []
+
     for service, text in posts.items():
         ch = ch_map.get(service, {})
         if not ch.get("id"):
@@ -331,11 +372,32 @@ def post_to_all_channels(token: str, posts: dict) -> list[dict]:
             results.append({"service": service, "status": "DISCONNECTED"})
             continue
 
-        r = create_post(token, ch["id"], text, service=service)
+        # Calculate scheduled time for this service
+        offset = stagger_minutes.get(service, 0)
+        schedule_at = (
+            datetime.now(timezone.utc) + timedelta(minutes=offset)
+        ).strftime("%Y-%m-%dT%H:%M:%SZ") if offset > 0 else None
+
+        # Try scheduling first; create_post handles LimitReachedError fallback
+        r = create_post(token, ch["id"], text,
+                        schedule_at=schedule_at,
+                        try_schedule_first=True,
+                        service=service)
         if r["success"]:
-            results.append({"service": service, "status": "POSTED", "id": r["post_id"]})
+            results.append({
+                "service": service,
+                "status": "POSTED",
+                "id": r["post_id"],
+                "mode": r.get("mode", "unknown"),
+                "fallback": r.get("fallback", False),
+                "due_at": r.get("due_at"),
+            })
         else:
-            results.append({"service": service, "status": "FAILED", "error": r.get("error", "")})
+            results.append({
+                "service": service,
+                "status": "FAILED",
+                "error": r.get("error", ""),
+            })
 
     return results
 ```
