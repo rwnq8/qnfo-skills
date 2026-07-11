@@ -1,5 +1,5 @@
-# CLOUDFLARE ECOSYSTEM MASTER INVENTORY — 2026-06-29
-## Consolidated for LLM Maintenance Capacity
+# CLOUDFLARE ECOSYSTEM MASTER INVENTORY — 2026-07-11
+## Consolidated for LLM Maintenance Capacity | Updated: 13 orphaned Pages deleted, live counts verified
 
 ---
 
@@ -25,20 +25,29 @@
 
 ---
 
-## PAGES PROJECTS — 10 → TARGET 6
+## PAGES PROJECTS — 15 (13 orphans deleted 2026-07-11) → TARGET 6
+
+**2026-07-11 UPDATE:** 13 orphaned projects deleted (no custom domains). Live count: 15 projects with custom domains. Target consolidation of remaining projects still needed.
 
 | Project | Domain(s) | Tier | Action |
 |:--------|:----------|:-----|:------|
-| qnfo-hub | hub.qnfo.org, qnfo.org, www.qnfo.org | ESSENTIAL | KEEP — landing |
-| qnfo-publications | papers.qnfo.org + 5 topic domains | ESSENTIAL | KEEP — library |
+| qnfo-hub | hub.qnfo.org, qnfo.org, www.qnfo.org, q08.org | ESSENTIAL | KEEP — landing |
+| qnfo-publications | papers.qnfo.org, archive.qnfo.org | ESSENTIAL | KEEP — library |
 | qnfo-legal | legal.qnfo.org | ESSENTIAL | KEEP — legal |
-| quantum-laws-of-form | laws.qnfo.org → 301 | SUPPORT | KEEP_REDIRECT |
-| qnfo-ipfs-archive | .pages.dev | SUPPORT | KEEP — IPFS archive |
-| qnfo-design-system | .pages.dev | SUPPORT | KEEP — CSS/components |
-| qwav | deep.qwav.tech | CONSOLIDATE | 301→papers.qnfo.org |
-| qnfo-archive | archive.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org/archive |
-| adelic-qft | adelic.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
-| qlof-primer | primer.qwav.tech | CONSOLIDATE | 301→papers.qnfo.org |
+| qnfo-design-system | design.qnfo.org | ESSENTIAL | KEEP — CSS/components |
+| ask-qwav | ask.qwav.tech | SUPPORT | KEEP — AI interface |
+| qwav | deep.qwav.tech, primer.qwav.tech + 9 aliases | CONSOLIDATE | 301→papers.qnfo.org |
+| hensel-code | hensel.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
+| discovery-momentum | momentum.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
+| verb-lexicon | lexicon.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
+| uqc-benchmark | uqc-benchmark.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
+| unity-of-ultrametric-physics | unity.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
+| ultrametric-paradigm | paradigm.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
+| ultrametric-benchmark | ultrametric-benchmark.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
+| ultrametric-ai-poc | ai-poc.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
+| two-ways-of-measuring | measure.qnfo.org | CONSOLIDATE | 301→papers.qnfo.org |
+
+**Deleted 2026-07-11 (13 orphans, .pages.dev only):** oft-proof, scaffold-lab, cocyle, different-physics, analytics-dashboard, adelic-qec-synthesis, solo-scientist, yogananda-scientific-claims, ultrametric-tree-ai, ultrametric-quantum, toward-p-adic-qec, retrospective-prophecy-astrology, qwav-marquee
 
 ---
 
@@ -130,7 +139,7 @@
 | **Total** | **49** | **31** (−18) |
 | **LLM Active Maintenance** | 29 workers | **15 workers** ✓ |
 
-### Execution Plan
+### 2026-07-11 UPDATE: 13 orphan Pages deleted. Workers still at 33 (18 new since June plan — reclassification needed). Full worker consolidation deferred to dedicated session.
 
 1. **MERGE Workers** (create cron-scheduler, merge into cms-api/ask-qwav/living-papers-api/qnfo-data-api)
 2. **DELETE** deprecated Workers (umbrella-router, qnfo-kaizen-analytics, qnfo-design-system-worker, living-paper-proxy)
