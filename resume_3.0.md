@@ -1,6 +1,7 @@
 ---
 ORCID: 0009-0002-4317-5604
 ISNI: 0000000526456062
+doi: 10.5281/zenodo.21312925
 author: Rowan Brad Quni-Gudzinas
 title: ROWAN BRAD QUNI-GUDZINAS
 modified: 2026-07-11T00:00:00Z
