@@ -617,6 +617,231 @@ def verify_channel_ids(channels):
 
 ---
 
+### Stage 5: Expanded Dissemination Channels (Beyond Buffer)
+
+Buffer covers Twitter/X, LinkedIn, and Bluesky. For wider scholarly reach, these additional channels integrate directly via API (no academic gatekeeping):
+
+#### Stage 5a: Reddit -- via PRAW (Python Reddit API Wrapper)
+
+> **TRACKING HOOK:** Every successful Reddit post auto-records to D1 `dissemination_tracker` via `track_dissemination()` (Stage 6). The post's Reddit permalink is stored as `post_url`.
+
+```python
+# pip install praw
+import praw
+from datetime import datetime, timezone
+
+def post_to_reddit(client_id, client_secret, user_agent,
+                   username, password, subreddit,
+                   title, text, flair=""):
+    reddit = praw.Reddit(
+        client_id=client_id, client_secret=client_secret,
+        user_agent=user_agent, username=username, password=password)
+    sub = reddit.subreddit(subreddit)
+    submission = sub.submit(title=title, selftext=text, flair_id=flair if flair else None)
+    result = {
+        "success": True, "post_id": submission.id,
+        "url": f"https://reddit.com{submission.permalink}",
+        "subreddit": subreddit, "title": title,
+        "posted_at": datetime.now(timezone.utc).isoformat()}
+    return result
+```
+
+#### Stage 5b: Mastodon -- via Mastodon.py
+
+> **TRACKING HOOK:** Every successful Mastodon toot auto-records to D1 `dissemination_tracker` via `track_dissemination()` (Stage 6).
+
+```python
+# pip install Mastodon.py
+from mastodon import Mastodon
+
+def post_to_mastodon(instance_url, access_token, text, content_warning="", visibility="public"):
+    mastodon = Mastodon(access_token=access_token, api_base_url=instance_url)
+    kwargs = {"visibility": visibility}
+    if content_warning:
+        kwargs["spoiler_text"] = content_warning
+    status = mastodon.status_post(text, **kwargs)
+    result = {"success": True, "post_id": str(status["id"]),
+              "url": status.get("url", ""), "instance": instance_url,
+              "visibility": visibility}
+    return result
+```
+
+#### Stage 5c: RSS Feed Generation -- stdlib xml.etree
+
+> **TRACKING HOOK:** Each paper added to the RSS feed auto-records to D1 `dissemination_tracker` (Stage 6) as `channel='rss_feed'`.
+
+```python
+import xml.etree.ElementTree as ET
+from datetime import datetime, timezone
+
+def build_rss_feed(papers, feed_title="QNFO/QWAV Research",
+                   feed_link="https://papers.qnfo.org/",
+                   feed_description="QNFO/QWAV Research Publications"):
+    rss = ET.Element("rss", version="2.0")
+    channel = ET.SubElement(rss, "channel")
+    ET.SubElement(channel, "title").text = feed_title
+    ET.SubElement(channel, "link").text = feed_link
+    ET.SubElement(channel, "description").text = feed_description
+    for paper in papers:
+        item = ET.SubElement(channel, "item")
+        ET.SubElement(item, "title").text = paper["title"]
+        desc = paper.get("finding", "") + "\n\nDOI: " + paper.get("doi", "")
+        ET.SubElement(item, "description").text = desc
+        ET.SubElement(item, "link").text = paper.get("url", f"https://doi.org/{paper.get('doi', '')}")
+        ET.SubElement(item, "guid").text = paper.get("doi", paper.get("slug", ""))
+        ET.SubElement(item, "pubDate").text = paper.get("date", "")
+    return ET.tostring(rss, encoding="unicode", xml_declaration=True)
+```
+
+#### Stage 5d: ORCID -- Auto-Add Publications to Researcher Profile
+
+> **TRACKING HOOK:** Successful ORCID additions auto-record to D1 `dissemination_tracker` (Stage 6) as `channel='orcid'`.
+
+```python
+def add_to_orcid(orcid_id, access_token, paper_title, paper_doi, paper_date):
+    import urllib.request
+    work_xml = f'''<?xml version="1.0" encoding="UTF-8"?>
+    <work:work xmlns:work="http://www.orcid.org/ns/work"
+               xmlns:common="http://www.orcid.org/ns/common">
+      <work:title><common:title>{paper_title}</common:title></work:title>
+      <work:type>working-paper</work:type>
+      <work:external-ids>
+        <work:external-id>
+          <common:external-id-type>doi</common:external-id-type>
+          <common:external-id-value>{paper_doi}</common:external-id-value>
+          <common:external-id-url>https://doi.org/{paper_doi}</common:external-id-url>
+          <common:external-id-relationship>self</common:external-id-relationship>
+        </work:external-id>
+      </work:external-ids>
+    </work:work>'''
+    url = f"https://api.orcid.org/v3.0/{orcid_id}/work"
+    req = urllib.request.Request(url, data=work_xml.encode(), method="POST")
+    req.add_header("Authorization", f"Bearer {access_token}")
+    req.add_header("Content-Type", "application/orcid+xml")
+    resp = urllib.request.urlopen(req, timeout=15)
+    return {"success": resp.status == 201, "orcid_id": orcid_id, "doi": paper_doi}
+```
+
+---
+
+### Stage 6: D1 Dissemination Tracking (MANDATORY -- v3.7)
+
+Every external post, link, and dissemination event MUST be tracked in D1 for impact/reach auditing. This includes Buffer, Reddit, Mastodon, RSS, ORCID, and any non-Cloudflare-hosted links.
+
+#### 6a. D1 Schema -- dissemination_tracker
+
+```sql
+CREATE TABLE IF NOT EXISTS dissemination_tracker (
+    id TEXT PRIMARY KEY,
+    paper_slug TEXT NOT NULL,
+    paper_doi TEXT,
+    paper_title TEXT,
+    channel TEXT NOT NULL,
+    action TEXT NOT NULL DEFAULT 'posted',
+    post_url TEXT,
+    post_id TEXT,
+    post_text_snippet TEXT,
+    mode TEXT,
+    fallback INTEGER DEFAULT 0,
+    posted_at TEXT,
+    zenodo_url TEXT,
+    pages_url TEXT,
+    github_url TEXT,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_dt_paper ON dissemination_tracker(paper_slug);
+CREATE INDEX IF NOT EXISTS idx_dt_channel ON dissemination_tracker(channel);
+CREATE INDEX IF NOT EXISTS idx_dt_posted ON dissemination_tracker(posted_at);
+```
+
+#### 6b. track_dissemination() -- Record Every External Post
+
+```python
+def track_dissemination(paper_slug, paper_doi, paper_title, channel,
+                        action="posted", post_url="", post_id="",
+                        post_text="", mode="", fallback=False,
+                        zenodo_url="", pages_url="", github_url=""):
+    import urllib.request, json, uuid, os
+    from datetime import datetime, timezone
+    TOKEN = os.environ.get('CLOUDFLARE_API_TOKEN', '')
+    ACCOUNT = 'edb167b78c9fb901ea5bca3ce58ccc4b'
+    DB_ID = 'qnfo-audit'
+    row_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc).isoformat()
+    snippet = post_text[:200].replace("'", "''") if post_text else ""
+    safe_title = paper_title.replace("'", "''")
+    sql = f"INSERT INTO dissemination_tracker (id, paper_slug, paper_doi, paper_title, channel, action, post_url, post_id, post_text_snippet, mode, fallback, posted_at, zenodo_url, pages_url, github_url) VALUES ('{row_id}', '{paper_slug}', '{paper_doi}', '{safe_title}', '{channel}', '{action}', '{post_url}', '{post_id}', '{snippet}', '{mode}', {1 if fallback else 0}, '{now}', '{zenodo_url}', '{pages_url}', '{github_url}')"
+    url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT}/d1/database/{DB_ID}/query"
+    body = json.dumps({"sql": sql}).encode()
+    req = urllib.request.Request(url, data=body, method="POST")
+    req.add_header("Authorization", f"Bearer {TOKEN}")
+    req.add_header("Content-Type", "application/json")
+    try:
+        resp = urllib.request.urlopen(req, timeout=10)
+        result = json.loads(resp.read().decode())
+        success = result.get("success", False)
+    except Exception as e:
+        result = {"error": str(e)}
+        success = False
+    return {"id": row_id, "channel": channel, "action": action, "success": success}
+```
+
+#### 6c. get_impact_report() -- Query Dissemination Reach
+
+```python
+def get_impact_report(paper_slug=""):
+    import urllib.request, json, os
+    TOKEN = os.environ.get('CLOUDFLARE_API_TOKEN', '')
+    ACCOUNT = 'edb167b78c9fb901ea5bca3ce58ccc4b'
+    DB_ID = 'qnfo-audit'
+    where = f"WHERE paper_slug = '{paper_slug}'" if paper_slug else ""
+    queries = {
+        "total": f"SELECT COUNT(*) as c FROM dissemination_tracker {where}",
+        "by_channel": f"SELECT channel, COUNT(*) as c FROM dissemination_tracker {where} GROUP BY channel ORDER BY c DESC",
+        "by_action": f"SELECT action, COUNT(*) as c FROM dissemination_tracker {where} GROUP BY action",
+        "recent": f"SELECT channel, post_url, posted_at FROM dissemination_tracker {where} ORDER BY posted_at DESC LIMIT 20",
+        "first": f"SELECT MIN(posted_at) as first FROM dissemination_tracker {where}",
+        "last": f"SELECT MAX(posted_at) as last FROM dissemination_tracker {where}"}
+    url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT}/d1/database/{DB_ID}/query"
+    headers = {"Authorization": f"Bearer {TOKEN}", "Content-Type": "application/json"}
+    results = {}
+    for key, sql in queries.items():
+        body = json.dumps({"sql": sql}).encode()
+        req = urllib.request.Request(url, data=body, method="POST", headers=headers)
+        resp = json.loads(urllib.request.urlopen(req, timeout=10).read())
+        results[key] = resp.get("result", [{}])[0].get("results", [])
+    return results
+```
+
+---
+
+### Stage 7: Non-Traditional Dissemination -- NO ARXIV, NO JOURNALS
+
+> **POLICY:** arXiv and traditional journals are GATEKEPT dissemination channels. All QNFO/QWAV research is published exclusively on Zenodo (open access, immediate, no peer-review barrier). The channels below reach scholarly audiences WITHOUT academic gatekeeping.
+
+| # | Channel | Method | Audience | Effort | Impact | Automatable |
+|:--|:--------|:-------|:---------|:-------|:-------|:------------|
+| 1 | **Hacker News** | Submit to news.ycombinator.com | Technical audience | Low | HIGH if upvoted | Script + manual submit |
+| 2 | **Discord Webhooks** | Post to academic Discord servers via webhook API | Niche communities | Low | MEDIUM | Write script, execute, discard |
+| 3 | **YouTube Shorts** | LLM-generated 60s explainer video | General public | Medium | HIGH | LLM script + pipeline |
+| 4 | **GitHub Discussions** | Post to paper's GitHub repo Discussions | Developer-academics | Low | MEDIUM | GitHub API |
+| 5 | **Wikipedia Citations** | Cite paper in relevant Wikipedia articles | Evergreen credibility | Medium | LONG-TERM HIGH | Manual (must be genuine) |
+| 6 | **Physics Stack Exchange** | Answer questions, reference paper | Academic credibility | Low | MEDIUM | Draft answer, human posts |
+| 7 | **Infographics** | One-image visual summary via infographic-syntax-creator | Highly shareable | Low | HIGH | Fully automated |
+| 8 | **LinkedIn Articles** | Full long-form article on LinkedIn Publishing | Professional network | Medium | MEDIUM | LLM draft, human posts |
+| 9 | **X Communities** | Post to field-specific X/Twitter Communities | Targeted academics | Low | MEDIUM | Buffer API |
+| 10 | **Email Listservs** | Draft pitch email to field mailing lists | Direct inbox | Medium | MEDIUM | LLM draft, human sends |
+| 11 | **Podcast Pitches** | Draft pitch to academic podcasts | Long-form exposure | Medium | LONG-TERM HIGH | LLM draft, human sends |
+| 12 | **Citation Alerts** | Google Scholar alert when cited (passive) | Track organic impact | Low | PASSIVE | Manual setup, then passive |
+| 13 | **LLM SEO** | llms.txt, robots.txt, semantic markup, sitemap | AI crawlers (ChatGPT, Claude) | Low | PASSIVE HIGH | seo-discoverability skill |
+
+> **NO ARXIV:** arXiv requires endorsement for first submission in most categories -- this is academic gatekeeping. QNFO/QWAV research is published on Zenodo (immediate, open, no endorsement). arXiv is NOT a dissemination channel for this pipeline.
+>
+> **NO TRADITIONAL JOURNALS:** Journal submission = multi-month delay, paywall, copyright transfer. QNFO research is immediate open access. The channels above provide wider reach, faster, without gatekeepers.
+
+---
+
 ## Integration Points
 
 | Upstream Skill | How It Feeds Buffer Integration |
