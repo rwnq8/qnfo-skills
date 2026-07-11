@@ -16,9 +16,9 @@ The session-based LLM system can actively maintain ~15 Workers with deep quality
 | Database | ID | Size | Content | Status |
 |:---------|:---|:-----|:--------|:------|
 | qnfo-audit | 35e2e573 | 954KB | tasks(73), projects(78) | ESSENTIAL |
-| qnfo-graph | a1954b92 | 368KB | KG(703n/2126e) — 19 node types, 28 edge types | ESSENTIAL — all CF assets tracked, research edges added 2026-06-29 |
+| qnfo-graph | a1954b92 | 368KB | KG(3190n/4629e) — 33 node types, 57 edge types | ESSENTIAL — all CF assets tracked, research edges active |
 | qnfo-cms | 0458a344 | 208KB | CMS(34e/5t) | ESSENTIAL |
-| living-paper | 70a58cb3 | 241KB | papers(170) | ESSENTIAL — schema incomplete (8 cols missing) |
+| living-paper | 70a58cb3 | 241KB | papers(616) | ESSENTIAL — schema needs review |
 | portfolio-state | d80fdf2a | 118KB | resources(66), handoffs(8), decisions(26) | ESSENTIAL — canonical infra inventory |
 
 ---
@@ -50,7 +50,7 @@ The session-based LLM system can actively maintain ~15 Workers with deep quality
 
 ---
 
-## WORKERS — 29 → TARGET 15
+## WORKERS — 33 → TARGET 15
 
 ### TIER 1: ESSENTIAL CORE (10 Workers — actively maintained by LLM)
 

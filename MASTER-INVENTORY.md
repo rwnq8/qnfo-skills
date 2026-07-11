@@ -8,9 +8,9 @@
 | Database | ID | Content | Status |
 |:---------|:---|:--------|:------|
 | qnfo-audit | 35e2e573 | tasks(73), projects(78) | ESSENTIAL — task/project audit |
-| qnfo-graph | a1954b92 | KG(621n/1308e) | ESSENTIAL — knowledge graph |
+| qnfo-graph | a1954b92 | KG(3190n/4629e) | ESSENTIAL — knowledge graph (33 node types, 57 edge types) |
 | qnfo-cms | 0458a344 | CMS(34e/5t) | ESSENTIAL — content management |
-| living-paper | 70a58cb3 | papers(170) | ESSENTIAL — needs schema completion |
+| living-paper | 70a58cb3 | papers(616) | ESSENTIAL — needs schema completion |
 | portfolio-state | d80fdf2a | resources(66), handoffs(8), decisions(26) | ESSENTIAL — infrastructure inventory |
 
 ---
@@ -42,7 +42,7 @@
 
 ---
 
-## WORKERS — 29 → TARGET 15
+## WORKERS — 33 → TARGET 15
 
 ### TIER 1: ESSENTIAL CORE (10 — actively maintained by LLM)
 
