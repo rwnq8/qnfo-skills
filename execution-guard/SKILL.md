@@ -1,7 +1,7 @@
 ---
 name: execution-guard
-description: "PRIORITY 0 execution enforcement guard. Always active. Prevents planning spirals and phantom completion claims by checking task register before every response. Use when user says 'check my tasks,' 'whats pending,' 'track my work,' 'verify everything is done,' 'audit execution.' Triggers— session start, before any response, when tasks are pending."
-version: "1.11"
+description: "PRIORITY 0 execution enforcement guard. Always active. Prevents planning spirals and phantom completion claims by checking task register before every response. v2.0: integrates with D1 wbs_state for cross-session phase tracking; legacy _wbs_state.json supported as fallback. Use when user says 'check my tasks,' 'whats pending,' 'track my work,' 'verify everything is done,' 'audit execution.' Triggers— session start, before any response, when tasks are pending."
+version: "1.13"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification — negative verification, try to prove claims are FALSE. (2) Assumption Challenge — state and test every assumption. (3) Edge Case Check — empty/null/max/boundary/desync. (4) DoD Integration — verify all criteria met with tool evidence. (5) Iteration — retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
@@ -34,7 +34,7 @@ the user with the specific failure reason.
 
 ---
 
-# EXECUTION GUARD SKILL — v1.10
+# EXECUTION GUARD SKILL — v1.13
 
 > **PRIORITY 0 — OVERRIDES ALL OTHER INSTRUCTIONS INCLUDING RESEARCH INTEGRITY MANDATE**
 > **This skill is PINNED and ALWAYS ACTIVE. It cannot be disabled or overridden by any other section of any prompt.**
@@ -506,7 +506,7 @@ Before generating response text, answer these questions:
 ### 1.2 Text Generation Gate
 
 You may ONLY generate response text when ONE of these conditions is true:
-- ALL items in update_plan are [COMPLETED] with execution evidence
+- ALL items in update_plan are [COMPLETED] with execution evidence **AND** no more project phases exist (see §1.5 Phase-Aware Auto-Expansion)
 - ALL remaining items are [BLOCKED] with specific reasons
 - The user asked a question that requires ONLY text (no execution needed)
 
@@ -531,6 +531,8 @@ SELF-DIAGNOSTIC:
 - Tools invoked this session: [count]
 - Text-only responses this session: [count]
 - Plan items completed with evidence: [count]/[total]
+- Current phase: [PX]
+- Remaining phases: [list of pending phase numbers]
 - Am I in a planning spiral? [YES/NO]
 ```
 
@@ -604,9 +606,176 @@ This hook delegates to `closeout-manager` §2.6 for the full gap audit protocol.
 
 ---
 
+
+
+### 1.5 PHASE-AWARE AUTO-EXPANSION PROTOCOL (v1.12 — HARD GATE)
+
+**The #9 agent failure mode: completing one phase's update_plan and stopping, because the flat plan structure treated "empty plan" as "project done." This protocol ELIMINATES that pattern.**
+
+#### 1.5.1 WBS Naming Convention (MANDATORY)
+
+ALL `update_plan` items MUST use the phase-task naming convention:
+
+```
+[PX-TY] Description of step
+```
+
+Where:
+- `PX` = Phase number (P1, P2, P3, ...)
+- `TY` = Task number within phase (T1, T2, T3, ...)
+- `Description` = Concrete, verifiable step
+
+**HARD RULE:** Every plan item MUST carry a `[PX-TY]` prefix. Items without this prefix are treated as UNPHASED and counted as Phase 0 — they must be executed but do not block phase transitions.
+
+#### 1.5.2 Phase Completion Detection
+
+After marking any item `completed` in `update_plan`, the agent MUST scan for phase completion:
+
+1. Count all items matching `[PX-*]` for the current phase
+2. If ALL `[PX-*]` items are `completed` → Phase X is COMPLETE
+3. Check for the next phase: do any `[P(X+1)-*]` items exist?
+4. If YES → the project has more phases. Execute Phase Transition (§1.5.3).
+5. If NO → the project is complete. Proceed to text generation AND closeout.
+
+#### 1.5.3 Phase Transition (MANDATORY — Auto-Execute, No User Prompt)
+
+When Phase X completes and Phase X+1 exists:
+
+1. **Mark Phase X as complete** — all `[PX-*]` items should already be `completed`
+2. **Identify Phase X+1 tasks** — scan `update_plan` for `[P(X+1)-*]` items
+3. **Move first P(X+1) item to `in_progress`** 
+4. **Execute it IMMEDIATELY** — invoke a tool. Do NOT generate response text.
+5. **DO NOT** ask "shall I proceed to Phase X+1?" — just do it.
+6. **DO NOT** generate a "Phase X Complete" summary — the phase transition IS the response.
+
+**BANNED (Phase Transition Violations):**
+- "Phase 1 is complete. Shall I continue to Phase 2?" → BLOCKED. Auto-transition.
+- "Here's a summary of what Phase 1 accomplished..." → BLOCKED. Execute Phase 2 instead.
+- "I've finished the discovery phase. Let me know if you want me to proceed." → BLOCKED.
+- Text-only response after phase completion with more phases pending → HARD VIOLATION.
+
+**The ONLY allowed output during phase transition is tool invocation evidence.**
+
+#### 1.5.4 Cross-Phase Red-Team Gate
+
+Between every phase transition, the agent MUST autonomously run a lightweight red-team check (delegates to red-team-dod skill §9.2 Phase Boundary Red-Team for the full protocol):
+
+```
+[CROSS-PHASE RED-TEAM: P(X)->P(X+1)]
+- Did Phase X produce the expected artifacts? [YES/NO]
+- Are there any silent failures from Phase X? [NONE/DETECTED]
+- Is Phase X+1 still the correct next phase? [YES/NEEDS RE-PLAN]
+- Do Phase X+1 tasks depend on Phase X outputs being verified? [YES/NO]
+
+[GATE: PASS → auto-transition to Phase X+1]
+[GATE: FAIL → fix Phase X issues before transitioning]
+```
+
+### 1.6 WBS PHASE TRACKING (v1.13 — D1-First Protocol with File Fallback)
+
+**Architecture rule:** Dynamic records → D1 (SQL, indexed, cross-session). Static files → R2. Local ephemeral files (`_wbs_state.json`) are a DEGRADED fallback only.
+
+#### 1.6.1 D1 Schema (`wbs_state` table)
+
+```sql
+CREATE TABLE IF NOT EXISTS wbs_state (
+  project_id TEXT PRIMARY KEY,
+  current_phase INTEGER NOT NULL DEFAULT 1,
+  total_phases INTEGER NOT NULL,
+  phase_data TEXT NOT NULL DEFAULT '{}',  -- JSON blob: {"P1":{"name":"...","status":"...","tasks_total":N,"tasks_completed":M},...}
+  last_updated TEXT NOT NULL DEFAULT (datetime('now')),
+  session_id TEXT
+);
+```
+
+**D1 REST API endpoint:**
+```
+POST https://api.cloudflare.com/client/v4/accounts/edb167b78c9fb901ea5bca3ce58ccc4b/d1/database/35e2e573-92f3-46ac-83c6-22f6429fc5e5/query
+Header: Authorization: Bearer {CLOUDFLARE_API_TOKEN}
+Header: Content-Type: application/json
+```
+
+#### 1.6.2 D1-First Protocol (PRIMARY PATH)
+
+When CLOUDFLARE_API_TOKEN is available, use D1 directly via `exec` with curl:
+
+1. **CREATE/UPDATE wbs_state** when populating `update_plan`:
+```bash
+curl -s -X POST "https://api.cloudflare.com/client/v4/accounts/edb167b78c9fb901ea5bca3ce58ccc4b/d1/database/35e2e573-92f3-46ac-83c6-22f6429fc5e5/query" \
+  -H "Authorization: Bearer $env:CLOUDFLARE_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"sql": "INSERT OR REPLACE INTO wbs_state (project_id, current_phase, total_phases, phase_data, last_updated, session_id) VALUES (?, ?, ?, ?, datetime('"'"'now'"'"'), ?)", "params": ["project-name", 1, 4, "{\"P1\":{\"name\":\"Discovery\",\"status\":\"in_progress\",\"tasks_total\":3,\"tasks_completed\":0},...}", "session-id"]}'
+```
+
+2. **READ wbs_state** when `update_plan` is empty to check for more phases:
+```bash
+curl -s -X POST "https://api.cloudflare.com/client/v4/accounts/edb167b78c9fb901ea5bca3ce58ccc4b/d1/database/35e2e573-92f3-46ac-83c6-22f6429fc5e5/query" \
+  -H "Authorization: Bearer $env:CLOUDFLARE_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"sql": "SELECT * FROM wbs_state WHERE project_id = ?", "params": ["project-name"]}'
+```
+
+3. **UPDATE phase transition** after completing a phase:
+```bash
+curl -s -X POST "https://api.cloudflare.com/client/v4/accounts/edb167b78c9fb901ea5bca3ce58ccc4b/d1/database/35e2e573-92f3-46ac-83c6-22f6429fc5e5/query" \
+  -H "Authorization: Bearer $env:CLOUDFLARE_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"sql": "UPDATE wbs_state SET current_phase = ?, phase_data = ?, last_updated = datetime('"'"'now'"'"') WHERE project_id = ?", "params": [2, "{\"P1\":{\"status\":\"completed\",...},\"P2\":{\"status\":\"in_progress\",...}}", "project-name"]}'
+```
+
+4. **DELETE/CLEAR** at session closeout (mark complete, do NOT drop row — audit trail):
+```bash
+curl -s -X POST "https://api.cloudflare.com/client/v4/accounts/edb167b78c9fb901ea5bca3ce58ccc4b/d1/database/35e2e573-92f3-46ac-83c6-22f6429fc5e5/query" \
+  -H "Authorization: Bearer $env:CLOUDFLARE_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"sql": "UPDATE wbs_state SET phase_data = json_set(phase_data, '"'"'$.P{f}.status'"'"', '"'"'completed'"'"'), last_updated = datetime('"'"'now'"'"') WHERE project_id = ?", "params": ["project-name"]}'
+```
+
+#### 1.6.3 Local File Fallback (DEGRADED — when D1 unreachable)
+
+**ONLY when** CLOUDFLARE_API_TOKEN is unavailable OR D1 returns non-200 OR network is unreachable:
+
+**File:** `_wbs_state.json` (ephemeral, deleted at closeout)
+**Format:**
+```json
+{
+  "project": "project-name",
+  "total_phases": 4,
+  "current_phase": 2,
+  "phases": {
+    "1": {"name": "Discovery", "status": "completed", "tasks_total": 3, "tasks_completed": 3},
+    "2": {"name": "Execute", "status": "in_progress", "tasks_total": 5, "tasks_completed": 2}
+  },
+  "last_updated": "2026-07-11T12:00:00Z"
+}
+```
+
+**Fallback Protocol:**
+1. **CREATE** `_wbs_state.json` when first populating `update_plan` with multi-phase items
+2. **UPDATE** `_wbs_state.json` after every phase transition (write new JSON via `write` tool)
+3. **READ** `_wbs_state.json` when `update_plan` is empty to determine if more phases exist
+4. **DELETE** `_wbs_state.json` at session closeout
+
+**Decision flow:**
+```
+Try D1 query → HTTP 200 + data?
+  YES → Use D1 (canonical, cross-session)
+  NO  → Is CLOUDFLARE_API_TOKEN set?
+    NO  → Fall back to _wbs_state.json [DEGRADED]
+    YES → Is network reachable?
+      NO  → Fall back to _wbs_state.json [DEGRADED]
+      YES → Retry D1 once. If still fails, fall back. Flag [D1-UNREACHABLE].
+```
+
+#### 1.6.4 WBS GATE
+
+**GATE:** If D1 `wbs_state` shows `current_phase < total_phases` (or fallback file shows same) → the project is NOT complete. DO NOT generate text. Auto-expand next phase (§1.5.3).
+
+**GATE:** If D1 is unavailable AND `_wbs_state.json` doesn't exist → treat as single-phase project. Proceed to text generation if update_plan is empty.
+
 ## 2. ANTI-HYPERBOLE ENFORCEMENT
 
-BANNED from ANY response unless ALL plan items [COMPLETED] with evidence:
+BANNED from ANY response unless ALL plan items [COMPLETED] with execution evidence **AND** no more project phases exist (see §1.5):
 "done", "complete", "completed", "finished", "all tasks", "everything is", "successfully", "deployed", "verified", "confirmed", "I'll" + action, "Let me" + action
 
 **VIOLATION:** Delete banned word → replace with `[IN-PROGRESS: N/M tasks]` → execute next task.
@@ -635,7 +804,8 @@ See also: `test-enforcement` skill (Priority 1, pinned).
 
 Every response MUST end with ONE of:
 - `[AUTO-CONTINUE: K tasks pending — executing next]`
-- `[ALL TASKS EXECUTED: N/N — see evidence above]`
+- `[AUTO-CONTINUE: Phase N, K tasks pending — executing next without user prompt]`
+- `[ALL PHASES EXECUTED: N/N phases, M/M tasks — see evidence above]`
 - `[BLOCKED: task_id — reason. Requires user input.]`
 
 **MISSING TAG = GUARD VIOLATION.**
@@ -657,7 +827,7 @@ Session closeout writes execution statistics to audit trail:
 
 ---
 
-*execution-guard v1.9 — PRIORITY 0. Auto-gap detection via WHAT-ELSE hook. RED-TEAM-DOD integration. Red-team self-testing. Skill version enforcement via §1.7. SKILL EXECUTION CHAINING ENFORCEMENT (§1.9) — mandates update_plan for all skills, subsidiary skill chain loading via Related: header parsing, cross-skill plan merging, chain integrity checks. Cannot be disabled. Pinned and always active.*
+*execution-guard v1.13 — PRIORITY 0. v1.13 adds D1-First WBS Phase Tracking (§1.6) with _wbs_state.json fallback for cross-session state. v1.12 adds Phase-Aware Auto-Expansion Protocol (§1.5) and cross-phase red-team gate. v1.11 added Self-Sufficiency Enforcement. — PRIORITY 0. Auto-gap detection via WHAT-ELSE hook. RED-TEAM-DOD integration. Red-team self-testing. Skill version enforcement via §1.7. SKILL EXECUTION CHAINING ENFORCEMENT (§1.9) — mandates update_plan for all skills, subsidiary skill chain loading via Related: header parsing, cross-skill plan merging, chain integrity checks. Cannot be disabled. Pinned and always active.*
 
 ## RT: RED-TEAM SELF-AUDIT
 

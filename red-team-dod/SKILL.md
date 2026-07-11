@@ -1,7 +1,7 @@
 ---
 name: red-team-dod
 description: AUTONOMOUS red-team + Definition of Done enforcement protocol. Runs output verification, assumption challenges, edge case checks, DoD integration, and iteration for EVERY agent response. The user should NEVER prompt for quality checks.
-version: "1.2"
+version: "1.3"
 ---
 
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- verify all criteria met with tool evidence. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
@@ -44,19 +44,19 @@ the user with the specific failure reason.
 4. **Never claim completion without execution evidence** -- Rule 14 enforcement
 5. **If blocked:** Flag as [BLOCKED: reason] and move to the next item
 
-### Example Plan
+### Example Plan (WBS Naming Convention — per execution-guard §1.4.1)
 
 update_plan([
-  {"step": "Verify all claims with negative verification", "status": "pending"},
-  {"step": "Challenge every assumption with counter-evidence", "status": "pending"},
-  {"step": "Test all applicable edge cases (empty/null/max/boundary)", "status": "pending"},
-  {"step": "Run DoD gate — all criteria met with tool evidence", "status": "pending"},
-  {"step": "Iterate: check for optimization opportunities", "status": "pending"},
-  {"step": "Refine: apply improvements, update documentation", "status": "pending"}
+  {"step": "[P1-T1] Verify all claims with negative verification", "status": "pending"},
+  {"step": "[P1-T2] Challenge every assumption with counter-evidence", "status": "pending"},
+  {"step": "[P1-T3] Test all applicable edge cases (empty/null/max/boundary)", "status": "pending"},
+  {"step": "[P2-T1] Run DoD gate — all criteria met with tool evidence", "status": "pending"},
+  {"step": "[P3-T1] Iterate: check for optimization opportunities", "status": "pending"},
+  {"step": "[P4-T1] Refine: apply improvements, update documentation", "status": "pending"}
 ])
 
 
-# RED-TEAM-DOD SKILL — v1.2
+# RED-TEAM-DOD SKILL — v1.3
 
 > **AUTONOMOUS.** The user should NEVER have to prompt for red-teaming, DoD verification, iteration, or refinement. This skill mandates these behaviors natively in EVERY QNFO agent session.
 > **PRIORITY 0 INTEGRATION.** This skill hooks into execution-guard (§1.5) and is auto-loaded at session start. All other skills inherit red-team/DoD/iterate/refine behavior through this framework.
@@ -267,11 +267,64 @@ Includes prompt injection red-team and autonomous trigger on any prompt modifica
 
 ---
 
+## 9. PHASE-AWARE ITERATION — CROSS-PHASE CONTINUATION (v1.3)
+
+**The #7 undetected failure mode: completing RED-TEAM→DoD→ITERATE→REFINE on one phase's tasks and stopping — without checking whether the PROJECT has more phases.** This section adds the cross-phase continuation check that integrates with execution-guard's Phase-Aware Auto-Expansion Protocol (§1.4).
+
+### 9.1 Phase Completion Signal
+
+After the 4-phase cycle (RED-TEAM→DoD→ITERATE→REFINE) completes for the current project phase:
+
+1. **Check `_wbs_state.json`** (see execution-guard §1.5): does `current_phase < total_phases`?
+2. **If YES** → The project has more phases. DO NOT generate completion text.
+3. **Auto-populate Phase N+1** tasks into `update_plan` using `[P(N+1)-T1]`, `[P(N+1)-T2]`, ... naming convention.
+4. **Execute Phase N+1 immediately** — invoke a tool. Do NOT wait for user prompt.
+5. **If NO (all phases complete)** → Proceed to session closeout (closeout-manager skill).
+
+### 9.2 Phase Boundary Red-Team
+
+Between every phase transition, run an autonomous phase-boundary check:
+
+```
+[PHASE-BOUNDARY RED-TEAM: Phase N → Phase N+1]
+1. OUTPUT VERIFICATION: Did Phase N produce ALL expected artifacts?
+2. ASSUMPTION CHALLENGE: Are dependencies for Phase N+1 satisfied?
+3. EDGE CASES: Are there partial/incomplete outputs from Phase N that Phase N+1 depends on?
+4. DoD INTEGRATION: Do ALL Phase N tasks pass their DoD gates?
+5. ITERATION: Could Phase N have been executed better? What did we learn?
+
+[GATE: PASS → auto-transition to Phase N+1, update D1 wbs_state (or _wbs_state.json fallback)]
+[GATE: FAIL → fix Phase N gaps before transitioning. Document gap in handoff if unfixable.]
+```
+
+### 9.3 Autonomous Trigger: Phase Completion
+
+Add this trigger to the §6 Autonomous Trigger Rules table:
+
+| Trigger | When | Action |
+|:--------|:-----|:-------|
+| **ALL [PX-*] items completed** | Current phase fully done | Run §9.2 Phase Boundary Red-Team, then auto-expand Phase N+1 |
+
+### 9.4 Anti-Phase-Stall Detection
+
+If the agent has completed all tasks in the current phase AND has generated response text but has NOT auto-expanded to the next phase:
+
+1. **Detection pattern:** `update_plan` shows all `[PX-*]` items `completed`, but response is text-only AND D1 `wbs_state` (or `_wbs_state.json` fallback) shows `current_phase < total_phases`
+2. **Action:** This is a PHASE STALL — equivalent to a planning spiral. Force execution: auto-populate Phase N+1 NOW.
+3. **Log:** `[PHASE-STALL-DETECTED: Phase N complete, Phase N+1 pending. Auto-expanding.]`
+
+### 9.5 Integration with Execution-Guard
+
+This section IS the red-team-dod implementation of execution-guard §1.5 (Phase-Aware Auto-Expansion Protocol). When execution-guard detects a phase completion and queries D1 `wbs_state` (or `_wbs_state.json` fallback), red-team-dod's Phase Boundary Red-Team (§9.2) fires before the auto-expansion. This ensures every phase transition is quality-gated.
+
+---
+
 *v1.0 deprecated 2026-07-01. Replaced by v1.1 with DNS cross-reference edge case and Infrastructure Audit DoD criteria.*
 
-*red-team-dod v1.1 — Autonomous RED-TEAM to DoD to ITERATE to REFINE cycle. Priority 0 via execution-guard integration. v1.1 adds DNS cross-reference edge case + Infrastructure Audit DoD criteria.*
+*red-team-dod v1.3 — Autonomous RED-TEAM to DoD to ITERATE to REFINE cycle plus Phase-Aware Iteration (§9). Priority 0 via execution-guard integration. v1.2 added Phase-Aware Iteration with cross-phase continuation, phase boundary red-team, and anti-phase-stall detection. v1.1 added DNS cross-reference edge case + Infrastructure Audit DoD criteria.*
 
-> **Version:** (Kaizen-audited 2026-07-08)
+> **Version:** (Kaizen-audited 2026-07-11)
+
 ## Handoff Protocol (MANDATORY at Closeout)
 
 1. **Verify** ALL execute_plan items marked [EXECUTED] with tool evidence (Test-Path, exec output, git log)

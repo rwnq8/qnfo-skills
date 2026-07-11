@@ -65,7 +65,7 @@ update_plan([
 
 ## Purpose
 
-Skills are modified locally but must be pushed to GitHub and R2 for redundancy. This skill automates the three-way sync, updates the Discovery Index with current versions, and **triggers the POST-PHASE GAP AUDIT** to verify no desync or drift remains.
+Skills are modified locally but must be pushed to GitHub, R2, and D1 skills_index for redundancy. This skill automates the four-way sync, updates the Discovery Index with current versions, and **triggers the POST-PHASE GAP AUDIT** to verify no desync or drift remains.
 
 ## When to Use
 
@@ -138,8 +138,9 @@ python "%USERPROFILE%\.deepchat\skills\bootstrap_skills.py" --sync
 This:
 1. Commits and pushes all skill changes to GitHub (`rwnq8/qnfo-skills`)
 2. Uploads all skills to R2 (`qnfo/prompts/skills/<name>/SKILL.md`)
-3. Reports sync status
-4. **AUTO-TRIGGERS gap audit** (closeout-manager §2.6) — verifies R2, GitHub, and DI consistency
+3. Updates D1 skills_index (`qnfo-audit.skills_index`) with current versions and metadata
+4. Reports sync status
+5. **AUTO-TRIGGERS gap audit** (closeout-manager §2.6) — verifies R2, GitHub, D1, and DI consistency
 
 ### Variant Deduplication (v1.0 — DeepChat v1.0.9 Multi-Agent Adoption)
 
@@ -224,8 +225,9 @@ This section documents the complete DeepChat skill storage, loading, and registr
 
 | Path | Purpose | Populated? |
 |:-----|:--------|:-----------|
-| `%USERPROFILE%\.deepchat\skills\<name>\SKILL.md` | **PRIMARY** — canonical skill definitions, git-tracked, synced to R2 | Yes — 53 skills |
-| `%USERPROFILE%\.deepchat\skills\discovery\index.json` | Secondary index built by build scripts — populated during sync. May or may not be read by DeepChat runtime | Yes — 53 entries |
+| `%USERPROFILE%\.deepchat\skills\<name>\SKILL.md` | **PRIMARY** — canonical skill definitions, git-tracked, synced to R2 | Yes — 54 skills |
+| `%USERPROFILE%\.deepchat\skills\discovery\index.json` | Secondary index built by build scripts — populated during sync. May or may not be read by DeepChat runtime | Yes — 54 entries |
+| `D1: qnfo-audit.skills_index` | **Canonical skill registry** — SQL-backed with RED_TEAM, RELATED, SKILL_LOADING, version fields | 54 rows |
 | `%APPDATA%\DeepChat\skills\` | DeepChat internal skills directory — currently EMPTY and UNUSED | No — 0 skills |
 | `%APPDATA%\DeepChat\kaizen\prompts\discovery\index.json` | Kaizen discovery index mirror — currently EMPTY | No — 0 bytes |
 
@@ -361,11 +363,12 @@ Must exist locally for this skill to work:
 
 ## Auto-Gap-Audit Integration (v1.3)
 
-After sync completes (GitHub + R2), this skill automatically triggers the POST-PHASE GAP AUDIT (closeout-manager §2.6):
+After sync completes (GitHub + R2 + D1), this skill automatically triggers the POST-PHASE GAP AUDIT (closeout-manager §2.6):
 1. Verify R2 sync count matches local count
 2. Verify GitHub HEAD matches local commit
-3. Verify Discovery Index is updated with current versions
-4. Report any desync or drift as gaps
+3. Verify D1 skills_index row count matches local skill count
+4. Verify Discovery Index is updated with current versions
+5. Report any desync or drift as gaps
 
 ## Mandatory Post-Sync Restart
 
