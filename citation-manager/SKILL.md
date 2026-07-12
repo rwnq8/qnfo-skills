@@ -1,11 +1,43 @@
-﻿---
+---
 name: citation-manager
 description: Academic citation management for QNFO research pipeline. Extract citations from Markdown, verify against BibTeX bibliographies, auto-generate BibTeX entries from DOIs, flag missing/unused citations, and produce citation verification reports. Use when user says "check my citations," "verify bibliography," "generate BibTeX entries," "are all citations accounted for," or when Phase 2 of LRAP requires citation validation before publication.
+version: "1.1"
 ---
 
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- verify all criteria met with tool evidence. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('citation-manager')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
 
 > **Related:** publication-publisher, literature-search
+
+---
+
+## Autonomous Continuation Protocol (v1.0)
+
+**All citation stages execute autonomously.** Agent MUST: (1) chain extract→verify→BibTeX→report without user prompts, (2) tag `[AUTO-CONTINUE]` between stages, (3) flag `[BLOCKED: reason]` on failure. **ANTI-PATTERN:** User NEVER says "CONTINUE."
 
 ---
 
@@ -492,3 +524,28 @@ python citation_manager.py --paper paper.md --fix
 |:-----------------|:-------------------------------|
 | `fabrication-audit` | Verified citations → cross-reference claims against sources |
 | `publication-publisher` | Clean bibliography → artifact-ready paper |
+## Handoff Protocol (MANDATORY at Closeout)
+
+1. **Verify** ALL execute_plan items marked [EXECUTED] with tool evidence (Test-Path, exec output, git log)
+2. **Archive** session artifacts to R2 canonical storage: `npx wrangler r2 object put qnfo/audit/... --remote --file=<artifact>`
+3. **Generate** continuation prompt documenting pending work and current state for the next session
+4. **Clean up** ephemeral _* files and __pycache__ directories: `Remove-Item _* -Recurse -Force`
+
+### Continuation Prompt Template
+```
+TASK: [description of pending work from execute_plan]
+STATE: [current state — what's executed, what's blocked, why]
+NEXT: [first executable action for the next session]
+R2: [canonical path for session artifacts]
+```
+
+
+## Closeout Protocol (MANDATORY)
+
+Before declaring this skill workflow complete:
+1. **Task Execution Verification:** Compare planned tasks ([PENDING] in execute_plan) vs executed tasks ([EXECUTED] with evidence)
+2. **Filesystem Verification:** `Test-Path <file>` for every file claimed as created/modified. Never claim from memory.
+3. **Git Verification:** `git log -1 --oneline` for every commit claimed. Verify commit hash exists.
+4. **R2 State Upload:** Upload session audit trail to `qnfo/audit/` — conversations, decisions, state files.
+5. **Discovery Index Update:** Update `qnfo/discovery/index.json` with any new resources created, projects modified, or publications generated.
+6. **Ephemeral Cleanup:** Delete ALL _* prefixed files and __pycache__ directories. Session is not complete until `Get-ChildItem -File -Name | Where-Object { $_ -match '^_' }` returns zero results.

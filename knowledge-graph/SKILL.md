@@ -1,4 +1,4 @@
-﻿---
+---
 name: knowledge-graph
 description: QNFO Knowledge Graph querying for due diligence, impact analysis, ultrametric clustering, and cross-system discovery. Supports ball queries, hierarchical taxonomy, and lifecycle-aware project queries.
 version: "2.4"
@@ -31,6 +31,12 @@ MUST execute this fallback chain:
 **NEVER silently proceed without a skill's critical instructions.** If a skill 
 is required for the task and cannot be loaded after 3 retries, escalate to 
 the user with the specific failure reason.
+
+---
+
+## Autonomous Continuation Protocol (v1.0)
+
+**All graph operations execute autonomously.** Agent MUST: (1) chain query→analyze→seed→verify without user prompts, (2) tag `[AUTO-CONTINUE]` between stages. **ANTI-PATTERN:** User NEVER says "CONTINUE."
 
 ---
 
@@ -403,6 +409,32 @@ The Knowledge Graph is the central registry for project lifecycle. Key propertie
 | **STORED_AT references opaque** | R2Object node IDs are hashes (`r2-3f1a008e7ba4b96d`) — cannot resolve to human-readable R2 paths through the KG. | Store actual R2 path as a property on the R2Object node. | `L5_a35Udjt-Ou3msEgYVG` — blocked paper indexing pipeline |
 | **`/query` endpoint format** | Results returned in `rows` key, not `results`. `json_extract()` may not work on all queries. | Parse `rows` from the response JSON. Test queries individually. | `dFIACfjsDq_MFfvRSA8ni` |
 
+## Handoff Protocol (MANDATORY at Closeout)
+
+1. **Verify** ALL execute_plan items marked [EXECUTED] with tool evidence (Test-Path, exec output, git log)
+2. **Archive** session artifacts to R2 canonical storage: `npx wrangler r2 object put qnfo/audit/... --remote --file=<artifact>`
+3. **Generate** continuation prompt documenting pending work and current state for the next session
+4. **Clean up** ephemeral _* files and __pycache__ directories: `Remove-Item _* -Recurse -Force`
+
+### Continuation Prompt Template
+```
+TASK: [description of pending work from execute_plan]
+STATE: [current state — what's executed, what's blocked, why]
+NEXT: [first executable action for the next session]
+R2: [canonical path for session artifacts]
+```
+
+
+## Closeout Protocol (MANDATORY)
+
+Before declaring this skill workflow complete:
+1. **Task Execution Verification:** Compare planned tasks ([PENDING] in execute_plan) vs executed tasks ([EXECUTED] with evidence)
+2. **Filesystem Verification:** `Test-Path <file>` for every file claimed as created/modified. Never claim from memory.
+3. **Git Verification:** `git log -1 --oneline` for every commit claimed. Verify commit hash exists.
+4. **R2 State Upload:** Upload session audit trail to `qnfo/audit/` — conversations, decisions, state files.
+5. **Discovery Index Update:** Update `qnfo/discovery/index.json` with any new resources created, projects modified, or publications generated.
+6. **Ephemeral Cleanup:** Delete ALL _* prefixed files and __pycache__ directories. Session is not complete until `Get-ChildItem -File -Name | Where-Object { $_ -match '^_' }` returns zero results.
+
 ## RT: RED-TEAM SELF-AUDIT
 
 Before claiming this skill complete, autonomously run:
@@ -416,3 +448,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 
+> **Version:** (Kaizen-audited 2026-07-08)

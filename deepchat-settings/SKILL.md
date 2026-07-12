@@ -1,6 +1,6 @@
 ---
 name: deepchat-settings
-description: DeepChat app settings modification (DeepChat 设置/偏好) skill. Activate ONLY when the user explicitly asks to change DeepChat's own settings/preferences (e.g., theme, language, font size...). Do NOT activate for OS/system settings, editor settings, or other apps.
+description: DeepChat app settings modification (DeepChat u8bbeu7f6e/u504fu597d) skill. Activate ONLY when the user explicitly asks to change DeepChat's own settings/preferences (e.g., theme, language, font size...). Do NOT activate for OS/system settings, editor settings, or other apps.
 version: "1.1"
 allowedTools:
   - deepchat_settings_toggle
@@ -144,3 +144,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 
+> **Version:** (Kaizen-audited 2026-07-08)

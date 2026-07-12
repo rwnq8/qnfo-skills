@@ -1,11 +1,51 @@
-﻿---
+---
 name: literature-search
 description: Automated multi-source academic literature search and paper triage for LLM Research Automation Pipeline (LRAP). Queries preprint servers, Semantic Scholar, QNFO Vectorize, and web search; deduplicates results; classifies papers as core/supporting/background/reject. Use when user asks "search for papers on X," "find literature about Y," "what's published on Z," or when executing Phase 1 of any research project.
+version: "1.1"
 ---
 
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- verify all criteria met with tool evidence. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('literature-search')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
 
 > **Related:** publication-publisher, citation-manager
+
+---
+
+## Autonomous Continuation Protocol (v1.1)
+
+**All 5 search stages execute autonomously without user intervention.** The agent MUST:
+
+1. After ANY stage marked [EXECUTED], immediately proceed to next stage
+2. Before advancing: tag `[AUTO-CONTINUE -> Stage N+1]` in the response
+3. If a source API fails: tag `[BLOCKED: <source> unavailable]`, continue with remaining sources
+4. At completion of all stages: tag `[SEARCH-COMPLETE: <total> papers, <core> core]`
+5. Never wait for user confirmation between stages
+
+**ANTI-PATTERN:** User should NEVER need to say "CONTINUE" between search stages.
 
 ---
 
@@ -566,3 +606,28 @@ python literature_search.py --query "topological quantum computing surface codes
 | `research-orchestrator` | Calls this skill as Phase 1, passes brief to Phase 2 |
 | `knowledge-graph` | Seeds new paper nodes with metadata |
 | `fabrication-audit` | Cross-references claims against identified papers |
+## Handoff Protocol (MANDATORY at Closeout)
+
+1. **Verify** ALL execute_plan items marked [EXECUTED] with tool evidence (Test-Path, exec output, git log)
+2. **Archive** session artifacts to R2 canonical storage: `npx wrangler r2 object put qnfo/audit/... --remote --file=<artifact>`
+3. **Generate** continuation prompt documenting pending work and current state for the next session
+4. **Clean up** ephemeral _* files and __pycache__ directories: `Remove-Item _* -Recurse -Force`
+
+### Continuation Prompt Template
+```
+TASK: [description of pending work from execute_plan]
+STATE: [current state — what's executed, what's blocked, why]
+NEXT: [first executable action for the next session]
+R2: [canonical path for session artifacts]
+```
+
+
+## Closeout Protocol (MANDATORY)
+
+Before declaring this skill workflow complete:
+1. **Task Execution Verification:** Compare planned tasks ([PENDING] in execute_plan) vs executed tasks ([EXECUTED] with evidence)
+2. **Filesystem Verification:** `Test-Path <file>` for every file claimed as created/modified. Never claim from memory.
+3. **Git Verification:** `git log -1 --oneline` for every commit claimed. Verify commit hash exists.
+4. **R2 State Upload:** Upload session audit trail to `qnfo/audit/` — conversations, decisions, state files.
+5. **Discovery Index Update:** Update `qnfo/discovery/index.json` with any new resources created, projects modified, or publications generated.
+6. **Ephemeral Cleanup:** Delete ALL _* prefixed files and __pycache__ directories. Session is not complete until `Get-ChildItem -File -Name | Where-Object { $_ -match '^_' }` returns zero results.

@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: Generate well-formatted git commit messages following conventional commit standards. Use when user wants to generate a commit message, needs guidance on commit format, or asks to commit code changes.
+description: "Generate well-formatted git commit messages following conventional commit standards. Use when user says commit, generate commit message, make a commit, stage changes, conventional commit, or asks to commit code changes."
 version: "2.0"
 allowedTools:
   - exec
@@ -200,3 +200,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 
+> **Version:** (Kaizen-audited 2026-07-08)

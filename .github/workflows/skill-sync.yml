@@ -1,0 +1,148 @@
+# DEC-034 Tier 2: GitHub Actions CI/CD for Skill Sync + Worker Deploy
+# Concurrency-safe: uses concurrency group to prevent parallel runs
+# Protocol: DEC-034 Universal Multi-Session Write Collision Prevention
+
+name: QNFO Skills CI/CD
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - '**.md'
+      - 'bootstrap_skills.py'
+  pull_request:
+    branches: [master, main]
+    paths:
+      - '**.md'
+  workflow_dispatch:
+    inputs:
+      sync_target:
+        description: 'Sync target (r2, workers, all)'
+        required: true
+        default: 'all'
+        type: choice
+        options: ['r2', 'workers', 'all']
+
+# Prevents concurrent CI runs on the same branch
+concurrency:
+  group: skills-sync-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: Skill Audit (js-yaml validity)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Audit SKILL.md frontmatter
+        run: |
+          echo "Auditing skills for js-yaml validity..."
+          BROKEN=0
+          for dir in */; do
+            name="${dir%/}"
+            # Skip variant copies
+            if [[ "$name" == *-claude-code ]] || [[ "$name" == *-agents ]]; then
+              continue
+            fi
+            skill_md="${name}/SKILL.md"
+            if [[ -f "$skill_md" ]]; then
+              # Extract frontmatter
+              FM=$(sed -n '/^---$/,/^---$/p' "$skill_md" | sed '1d;$d')
+              if [[ -z "$FM" ]]; then
+                echo "BROKEN [$name]: No frontmatter delimiters"
+                BROKEN=$((BROKEN+1))
+                continue
+              fi
+              # Check for name field
+              if ! echo "$FM" | grep -q "^name:"; then
+                echo "BROKEN [$name]: Missing name field"
+                BROKEN=$((BROKEN+1))
+                continue
+              fi
+              echo "OK [$name]"
+            fi
+          done
+          echo "Audit complete: $BROKEN broken"
+          if [[ $BROKEN -gt 0 ]]; then
+            echo "::error::${BROKEN} broken skills detected"
+            exit 1
+          fi
+
+  sync-r2:
+    name: Sync Skills to R2
+    needs: audit
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install wrangler
+        run: npm install -g wrangler
+
+      - name: Sync skills to R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          echo "Syncing skills to R2..."
+          OK=0
+          FAIL=0
+          for dir in */; do
+            name="${dir%/}"
+            # Skip variant copies
+            if [[ "$name" == *-claude-code ]] || [[ "$name" == *-agents ]]; then
+              continue
+            fi
+            skill_md="${name}/SKILL.md"
+            if [[ -f "$skill_md" ]]; then
+              echo "  Uploading $name..."
+              if npx wrangler r2 object put "qnfo/prompts/skills/$name/SKILL.md" \
+                --remote --file="$skill_md" 2>&1 | grep -q "Upload complete"; then
+                OK=$((OK+1))
+              else
+                echo "  FAILED: $name"
+                FAIL=$((FAIL+1))
+              fi
+            fi
+          done
+          echo "R2 sync: $OK uploaded, $FAIL failed"
+          if [[ $FAIL -gt 0 ]]; then
+            exit 1
+          fi
+
+  deploy-workers:
+    name: Deploy Workers (conditional)
+    needs: sync-r2
+    runs-on: ubuntu-latest
+    if: github.event.inputs.sync_target == 'workers' || github.event.inputs.sync_target == 'all'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy infra-lock-manager
+        if: hashFiles('infra-lock-manager/src/**') != ''
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          cd infra-lock-manager
+          npx wrangler deploy
+          echo "InfraLockManager deployed."
+
+  notify:
+    name: Post-Sync Notification
+    needs: [sync-r2, deploy-workers]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summary
+        run: |
+          echo "## DEC-034 CI/CD Pipeline Complete" >> $GITHUB_STEP_SUMMARY
+          echo "- Audit: ${{ needs.audit.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- R2 Sync: ${{ needs.sync-r2.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Workers: ${{ needs.deploy-workers.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Concurrency group: skills-sync-${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Protocol: DEC-034 Universal Multi-Session Write Collision Prevention" >> $GITHUB_STEP_SUMMARY

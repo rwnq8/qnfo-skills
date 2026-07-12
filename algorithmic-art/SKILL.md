@@ -491,3 +491,5 @@ Refer to RED-TEAM-PROTOCOL.md for full protocol.
 - System font stack, max-width 800px centered layout
 - Clean tables with border-collapse: collapse
 - MathJax CHTML with left-aligned display equations
+
+> **Version:** (Kaizen-audited 2026-07-08)

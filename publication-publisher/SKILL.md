@@ -1,7 +1,7 @@
 ---
 name: publication-publisher
-description: End-to-end publication workflow — formatting, PDF building, complete artifact bundling, Zenodo upload (with robust retry + versioning + draft recovery via zenodo_api.py), Cloudflare deployment, social media orchestration, and post-publication draft cleanup.
-version: "3.1"
+description: End-to-end publication workflow — formatting, PDF building (LaTeX-typeset via Pandoc+XeLaTeX ONLY — no reportlab/HTML fallbacks), complete artifact bundling, Zenodo upload (with robust retry + versioning + draft recovery via zenodo_api.py), Cloudflare deployment, social media orchestration, and post-publication draft cleanup.
+version: "3.4"
 ---
 
 ### Programmatic Loading & Execution
@@ -28,9 +28,19 @@ is required for the task and cannot be loaded after 3 retries, escalate to
 the user with the specific failure reason.
 
 ---
-# PUBLICATION PUBLISHER SKILL — v3.1 — v3.1
+# PUBLICATION PUBLISHER SKILL — v3.2 — v3.2
 
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
+
+
+### Domain Self-Critique (Post-Publication)
+
+After every publication, autonomously verify:
+- **DOI resolution:** Did the Zenodo DOI actually resolve? Wait 30s after publish, then curl https://doi.org/DOI and verify redirect to Zenodo record.
+- **PDF-MD consistency:** Does the published PDF match the canonical Markdown? Diff the text content (not layout) between source .md and extracted .pdf text.
+- **MathJax on deployed page:** Is MathJax actually loaded? Check deployed HTML for MathJax CDN script tag and verify it is not blocked by CSP.
+- **Citation integrity:** Did any citations break during PDF conversion? Verify all citation references in source exist in the generated bibliography.
+- **Artifact completeness:** Are ALL artifacts (paper.md, paper.pdf, PROVENANCE-BUNDLE.zip, README.md) present on both Zenodo and R2?
 
 > **Related:** cloudflare-deployer, citation-manager, seo-discoverability
 
@@ -66,6 +76,20 @@ update_plan([
   {"step": "Generate SEO metadata for discoverability", "status": "pending"},
   {"step": "Update Discovery Index with new publication", "status": "pending"},
 ])
+
+### Autonomous Continuation Protocol (v3.5)
+
+**All 7 publication stages execute autonomously without user intervention.** The agent MUST:
+
+1. After ANY stage marked [EXECUTED] with tool evidence, immediately proceed to the next stage
+2. Before advancing: tag `[AUTO-CONTINUE -> Stage N+1]` in the response
+3. If a stage fails: tag `[BLOCKED: reason]`, attempt retry (max 3), then skip to next on non-retryable failure
+4. **Checkpointing:** After each stage completes, document what was done — if session ends mid-pipeline, the next agent resumes from the last completed stage
+5. At completion of all stages: tag `[PUBLICATION-COMPLETE: DOI=<doi>]`
+6. Stage 7 (social media) may be deferred: tag `[DEFERRED: social <stage> — ran out of tokens/time]` if needed
+7. Never wait for user confirmation between stages 1-6
+
+**ANTI-PATTERN:** User should NEVER need to say "CONTINUE" between publication stages. The agent autonomously chains all stages with checkpointing.
 
 ---
 
@@ -207,37 +231,84 @@ def validate_publication(md_path: str) -> dict:
 > ```
 > **LoF Symbol Note:** Papers using Spencer-Brown cross symbols (`\lrcorner`/`\rrcorner`) MUST include `\providecommand{\rrcorner}{\ensuremath{\urcorner}}` in the preamble. `\lrcorner` is defined by amssymb; `\rrcorner` is NOT standard and requires this definition. Without it, pandoc+XeLaTeX will fail with "Undefined control sequence."
 
-> **TeX Live Detection:** Check `C:\texlive\2025\bin\windows\xelatex.exe` (Windows) or `/usr/bin/xelatex` (Linux/Mac). If not found, fall back to `build_pdf.py`.
+> **TeX Live Detection:** Check `C:\texlive\2025\bin\windows\xelatex.exe` (Windows) or use `Get-Command xelatex` for cross-platform detection (Linux/Mac). If not found, **BLOCK publication** — do NOT fall back to reportlab or HTML pipelines. Install from https://tug.org/texlive/.
 
-Build PDF from canonical Markdown. Use pandoc+XeLaTeX if available, fall back to embedded `build_pdf.py`:
+Build PDF from canonical Markdown using Pandoc+XeLaTeX **ONLY**. No fallback permitted — reportlab and HTML+MathJax+playwright pipelines are **BLOCKED** for publications. If XeLaTeX is unavailable, the publication is BLOCKED until TeX Live is installed.
 
 ```bash
-# Check toolchain and generate PDF (preferred path)
+# 🔴 VERIFY LATEX TOOLCHAIN FIRST (gate BEFORE build — v3.3)
+$XELATEX = $null
 if (Test-Path "C:\texlive\2025\bin\windows\xelatex.exe") {
-    pandoc paper.md -o PAPER-TITLE-v1.0.pdf --pdf-engine="C:\texlive\2025\bin\windows\xelatex.exe" --from=markdown+tex_math_dollars+tex_math_single_backslash+smart --standalone -H _preamble.tex -V documentclass=article -V papersize=a4 -V geometry=margin=1in -V fontsize=11pt -V colorlinks=true -V linkcolor=blue --toc --metadata title="Paper Title"
-} else {
-    python _build_pdf.py --input paper.md --output PAPER-TITLE-v1.0.pdf
+    $XELATEX = "C:\texlive\2025\bin\windows\xelatex.exe"
+} elseif (Get-Command xelatex -ErrorAction SilentlyContinue) {
+    $XELATEX = (Get-Command xelatex).Source
 }
+
+if (-not $XELATEX) {
+    Write-Error "[BLOCKED] TeX Live + XeLaTeX required for publication PDF. Install from https://tug.org/texlive/"
+    exit 1
+}
+
+# Generate publication-quality LaTeX PDF
+pandoc paper.md -o PAPER-TITLE-v1.0.pdf --pdf-engine="$XELATEX" --from=markdown+tex_math_dollars+tex_math_single_backslash+smart --standalone -H _preamble.tex -V documentclass=article -V papersize=a4 -V geometry=margin=1in -V fontsize=11pt -V colorlinks=true -V linkcolor=blue --toc --metadata title="Paper Title"
+
 # Verify PDF exists and is non-empty
 Test-Path PAPER-TITLE-v1.0.pdf
-# Discard build script if used
-Remove-Item _build_pdf.py -ErrorAction SilentlyContinue
 ```
 
-**PDF Verification (MANDATORY):**
+**PDF Verification (MANDATORY — 🔴 LaTeX Enforcement Gate):**
+
 ```python
-# Extract text from PDF and scan for rendering failures
-import fitz  # PyMuPDF
-doc = fitz.open("PAPER-TITLE-v1.0.pdf")
-for page in doc:
-    text = page.get_text()
-    # Check for Unicode replacement characters
-    if '\ufffd' in text:
-        print("[BLOCKED] PDF contains rendering failures — font encoding issue")
-        sys.exit(1)
+# LaTeX Enforcement Gate (from pdf-builder v4.0)
+import fitz, sys
+
+def verify_latex_typesetting(pdf_path: str) -> dict:
+    """Verify a PDF was built with proper LaTeX typesetting."""
+    doc = fitz.open(pdf_path)
+    text = ''.join(page.get_text() for page in doc)
+
+    # 1. Font check: Must contain LaTeX fonts (Latin Modern, Computer Modern, or AMS)
+    latex_fonts = set()
+    for page in doc:
+        for b in page.get_text('dict').get('blocks', []):
+            if 'lines' in b:
+                for l in b['lines']:
+                    for s in l['spans']:
+                        font = s.get('font', '')
+                        if any(k in font.lower() for k in
+                               ['lmroman', 'latinmodern', 'cmr', 'cmmi', 'cmsy',
+                                'cmex', 'msam', 'msbm', 'lmmath']):
+                            latex_fonts.add(font[:30])
+    doc.close()
+
+    # 2. No Unicode replacement characters
+    has_ufffd = '\ufffd' in text
+
+    # 3. No reportlab fonts (Helvetica, Courier)
+    is_reportlab = any(k in str(latex_fonts).lower()
+                       for k in ['helvetica', 'courier'])
+
+    passed = len(latex_fonts) > 0 and not is_reportlab and not has_ufffd
+    return {
+        'passed': passed,
+        'latex_fonts': len(latex_fonts),
+        'has_ufffd': has_ufffd,
+        'is_reportlab': is_reportlab,
+        'status': 'PASS' if passed else 'BLOCKED: Not LaTeX-typeset'
+    }
+
+result = verify_latex_typesetting("PAPER-TITLE-v1.0.pdf")
+if not result['passed']:
+    print(f"[BLOCKED] {result['status']}")
+    sys.exit(1)
+print(f"[PASS] LaTeX-typeset: {result['latex_fonts']} LaTeX fonts, 0 ufffd")
 ```
 
-**GATE:** PDF must have zero `\ufffd` characters and all special characters (em dashes, curly quotes) must render correctly. **If PDF generation fails → publication is BLOCKED. Do NOT proceed to Zenodo or Pages without a verified PDF.**
+**GATE (🔴 LaTeX Enforcement):** PDF must:
+- Use LaTeX fonts (Latin Modern / Computer Modern / AMS) — NOT reportlab fonts (Helvetica/Courier)
+- Have zero `\ufffd` Unicode replacement characters
+- Be typeset with Pandoc+XeLaTeX for publications (reportlab is BLOCKED for publications)
+**If PDF verification fails → publication is BLOCKED. Do NOT proceed to Zenodo or Pages without a verified LaTeX-typeset PDF.**
 
 ### Stage 3: HTML Publication Page Generation
 
@@ -1035,162 +1106,14 @@ No R2 pull required for core functionality.
 > Pull full versions from R2 only if advanced features needed. All scripts are self-contained — no external dependencies beyond Python stdlib.
 > Scripts 4–7 are the PROVENANCE BUNDLE toolchain used by Stage 3.5.
 
-### 1. build_pdf.py — QNFO Light Theme PDF Builder v2.1
+### 1. build_pdf.py — LEGACY (REMOVED v3.3 — reportlab pipeline BLOCKED for publications)
 
-```python
-"""QNFO PDF Builder v2.1 — Self-contained reportlab pipeline with heading HTML fix."""
-import sys, os, re
-try:
-    from reportlab.lib.pagesizes import A4
-    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.lib.units import inch
-    from reportlab.lib.colors import HexColor
-    from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_JUSTIFY
-    from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer, Table,
-                                     TableStyle, Preformatted, HRFlowable)
-    HAS_REPORTLAB = True
-except ImportError:
-    HAS_REPORTLAB = False
-    print('[ERROR] reportlab required. Install: pip install reportlab')
-    sys.exit(1)
-
-PAGE_W, PAGE_H = A4
-MARGIN = inch
-
-C = {
-    'bg': HexColor('#FFFFFF'), 'text': HexColor('#363636'),
-    'heading': HexColor('#000000'), 'muted': HexColor('#808080'),
-    'code_bg': HexColor('#EFEFEF'), 'table_border': HexColor('#CCCCCC'),
-    'quote_text': HexColor('#666666'),
-}
-
-def build_styles():
-    s = getSampleStyleSheet()
-    h = dict(fontName='Helvetica-Bold', textColor=C['heading'])
-    s.add(ParagraphStyle('QNFO_Body',parent=s['Normal'],fontSize=11,leading=15.4,textColor=C['text'],alignment=TA_JUSTIFY,spaceAfter=8))
-    s.add(ParagraphStyle('QNFO_H1',parent=s['Heading1'],fontSize=18,leading=25.2,spaceAfter=12,spaceBefore=24,**h))
-    s.add(ParagraphStyle('QNFO_H2',parent=s['Heading2'],fontSize=14,leading=19.6,spaceAfter=10,spaceBefore=20,**h))
-    s.add(ParagraphStyle('QNFO_H3',parent=s['Heading3'],fontSize=12,leading=16.8,spaceAfter=8,spaceBefore=16,**h))
-    s.add(ParagraphStyle('QNFO_H4',parent=s['Heading4'],fontSize=11,leading=15.4,spaceAfter=6,spaceBefore=12,**h))
-    s.add(ParagraphStyle('QNFO_Code',parent=s['Code'],fontName='Courier',fontSize=9,leading=12.6,textColor=C['text'],backColor=C['code_bg'],borderPadding=6,spaceAfter=8))
-    s.add(ParagraphStyle('QNFO_Quote',parent=s['Normal'],fontName='Helvetica-Oblique',fontSize=11,leading=15.4,textColor=C['quote_text'],leftIndent=20,spaceAfter=8))
-    s.add(ParagraphStyle('QNFO_Meta',parent=s['Normal'],fontName='Helvetica',fontSize=9.5,leading=13.3,textColor=C['muted'],spaceAfter=4))
-    s.add(ParagraphStyle('QNFO_Footer',parent=s['Normal'],fontName='Helvetica',fontSize=8.5,leading=12,textColor=C['muted'],alignment=TA_CENTER))
-    s.add(ParagraphStyle('QNFO_Title',parent=s['Title'],fontName='Helvetica-Bold',fontSize=22,leading=30.8,textColor=C['heading'],spaceAfter=6))
-    s.add(ParagraphStyle('QNFO_TableCell',parent=s['Normal'],fontName='Helvetica',fontSize=10,leading=14,textColor=C['text']))
-    s.add(ParagraphStyle('QNFO_TableHeader',parent=s['Normal'],fontName='Helvetica-Bold',fontSize=10,leading=14,textColor=C['heading']))
-    return s
-
-def clean_html_tags(text):
-    return re.sub(r'</?[a-zA-Z][^>]*>', '', text)
-
-def extract_text_until(tokens, start, tag):
-    parts, depth, i = [], 1, start
-    while i < len(tokens):
-        t = tokens[i]
-        if re.match(rf'</{tag}[>\s]', t): depth -= 1
-        if depth == 0: break
-        elif re.match(rf'<{tag}[>\s]', t): depth += 1
-        parts.append(t); i += 1
-    return ''.join(parts)
-
-def skip_to_closing(tokens, start, tag):
-    depth, i = 1, start
-    while i < len(tokens):
-        t = tokens[i]
-        if re.match(rf'</{tag}[>\s]', t): depth -= 1
-        if depth == 0: return i
-        elif re.match(rf'<{tag}[>\s]', t): depth += 1
-        i += 1
-    return i
-
-def build_table(headers, rows, styles, col_widths=None):
-    hrow = [Paragraph(h, styles['QNFO_TableHeader']) for h in headers]
-    drows = [[Paragraph(str(c), styles['QNFO_TableCell']) for c in r] for r in rows]
-    tbl = Table([hrow] + drows, colWidths=col_widths, repeatRows=1)
-    cmds = [
-        ('BACKGROUND', (0,0), (-1,0), C['code_bg']),
-        ('TEXTCOLOR', (0,0), (-1,0), C['heading']),
-        ('LINEBELOW', (0,0), (-1,-1), 0.5, C['table_border']),
-        ('TOPPADDING', (0,0), (-1,-1), 4), ('BOTTOMPADDING', (0,0), (-1,-1), 4),
-        ('LEFTPADDING', (0,0), (-1,-1), 6), ('RIGHTPADDING', (0,0), (-1,-1), 6),
-        ('VALIGN', (0,0), (-1,-1), 'TOP'),
-    ]
-    tbl.setStyle(TableStyle(cmds))
-    return tbl
-
-def parse_html_to_flowables(html, styles):
-    tokens = re.split(r'(</?[^>]+>)', html)
-    flowables, i = [], 0
-    while i < len(tokens):
-        token = tokens[i].strip()
-        if not token: i += 1; continue
-        if token.startswith('</'): i += 1; continue
-        m = re.match(r'<(\w+)', token)
-        if m:
-            tag = m.group(1)
-            if tag in ('h1','h2','h3','h4'):
-                text = clean_html_tags(extract_text_until(tokens, i+1, tag))
-                flowables.append(Paragraph(text, styles[f'QNFO_{tag.upper()}']))
-                i = skip_to_closing(tokens, i+1, tag)
-            elif tag == 'p':
-                text = clean_html_tags(extract_text_until(tokens, i+1, 'p'))
-                if text.strip(): flowables.append(Paragraph(text, styles['QNFO_Body']))
-                i = skip_to_closing(tokens, i+1, 'p')
-            elif tag == 'pre':
-                text = clean_html_tags(extract_text_until(tokens, i+1, 'pre'))
-                flowables.append(Preformatted(text, styles['QNFO_Code']))
-                i = skip_to_closing(tokens, i+1, 'pre')
-            elif tag == 'blockquote':
-                text = clean_html_tags(extract_text_until(tokens, i+1, 'blockquote'))
-                flowables.append(Paragraph(text, styles['QNFO_Quote']))
-                i = skip_to_closing(tokens, i+1, 'blockquote')
-            elif tag == 'hr':
-                flowables.append(HRFlowable(width='100%', thickness=0.5, color=C['table_border'], spaceAfter=12))
-                i += 1
-            elif tag == 'li':
-                text = clean_html_tags(extract_text_until(tokens, i+1, 'li'))
-                if text.strip(): flowables.append(Paragraph(chr(8226)+' '+text, styles['QNFO_Body']))
-                i = skip_to_closing(tokens, i+1, 'li')
-            elif tag in ('ul','ol','div','span','strong','em','code','a','thead','tbody','tr','th','td','br','img','head','body','html','meta','title','link','script','style'):
-                i += 1
-            else: i += 1
-        else: i += 1
-    return flowables
-
-def build_pdf(md_path, output_path, metadata=None):
-    styles = build_styles()
-    with open(md_path, 'r', encoding='utf-8') as f: md = f.read()
-    title_match = re.search(r'^#\s+(.+)$', md, re.MULTILINE)
-    title = title_match.group(1) if title_match else os.path.basename(md_path).replace('.md','')
-    doc = SimpleDocTemplate(output_path, pagesize=A4, leftMargin=MARGIN, rightMargin=MARGIN, topMargin=MARGIN, bottomMargin=MARGIN)
-    story = [Paragraph(title, styles['QNFO_Title']), Spacer(1,4)]
-    if metadata:
-        m = []
-        if metadata.get('author'): m.append(f"Author: {metadata['author']}")
-        if metadata.get('date'): m.append(f"Date: {metadata['date']}")
-        if m: story.append(Paragraph(' | '.join(m), styles['QNFO_Meta']))
-    story.extend([Spacer(1,12), HRFlowable(width='100%', thickness=0.5, color=C['table_border'], spaceAfter=12)])
-    html = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', md)
-    html = re.sub(r'\*(.+?)\*', r'<em>\1</em>', html)
-    story.extend(parse_html_to_flowables(html, styles))
-    story.extend([Spacer(1,24), HRFlowable(width='100%', thickness=0.5, color=C['table_border'], spaceAfter=8)])
-    story.append(Paragraph('Published under QNFO ULA. www.qnfo.org', styles['QNFO_Footer']))
-    doc.build(story)
-    print(f'[OK] PDF built: {output_path}')
-    return output_path
-
-if __name__ == '__main__':
-    import argparse
-    p = argparse.ArgumentParser(description='QNFO PDF Builder v2.1')
-    p.add_argument('--input','-i',required=True,help='Input Markdown')
-    p.add_argument('--output','-o',help='Output PDF')
-    p.add_argument('--author',help='Author')
-    p.add_argument('--date',help='Date')
-    a = p.parse_args()
-    if not a.output: a.output = os.path.splitext(os.path.basename(a.input))[0]+'-v1.0.pdf'
-    build_pdf(a.input, a.output, {'author':a.author,'date':a.date})
-```
+> **🔴 REMOVED 2026-07-06.** The reportlab-based `build_pdf.py` (157 lines) has been removed from this skill per the LaTeX Enforcement Gate (pdf-builder v4.0). Reportlab produces programmer-art PDFs with Helvetica fonts, bitmap math, no microtype, no ligatures, and is BLOCKED for ALL QNFO publications.
+>
+> **Canonical historical copy preserved on R2:** `qnfo/tools/archive/build_pdf.py`
+> **All publication PDFs MUST use Pandoc+XeLaTeX (pdf-builder v4.0 PRIMARY pipeline).**
+> If XeLaTeX is unavailable → publication is BLOCKED until TeX Live is installed.
+> No fallback. No reportlab. No HTML+MathJax+playwright.
 
 ### 2. zenodo_api.py — Zenodo Deposition Client
 
@@ -1591,6 +1514,7 @@ All QNFO/QWAV publications use the **Silent Radix Light Theme** design system:
 | Publication fails Language Gate | `[BLOCKED: Language Gate]` — list violations, require fix |
 | Zenodo API returns 401 | Token expired — regenerate at zenodo.org/account/settings/applications/ |
 | PDF rendering has `\ufffd` | Font encoding issue — use `--pdf-engine=xelatex` for Unicode support |
+| **PDF uses non-LaTeX fonts (reportlab)** | **[BLOCKED]** — reportlab is prohibited for publications. Rebuild with Pandoc+XeLaTeX. All published paper PDFs MUST use LaTeX fonts (Latin Modern / Computer Modern). See pdf-builder v4.0 LaTeX Enforcement Gate. |
 | MathJax config AFTER script | `[BLOCKED: MathJax order]` — fix HTML template before deploying |
 | Cloudflare Pages deploy fails | Check wrangler auth with `npx wrangler whoami` |
 | R2 upload fails | Verify CLOUDFLARE_API_TOKEN is set and has write permissions |
@@ -1600,7 +1524,7 @@ All QNFO/QWAV publications use the **Silent Radix Light Theme** design system:
 
 ---
 
-*publication-publisher v3.1 — Phase 4–5 of LRAP. v3.1 adds self-contained PROVENANCE BUNDLE toolchain (4 embedded scripts: export_conversation.py, capture_metadata.py, write_manifest.py, generate_readme.py) — all skills fully self-sufficient, no external dependencies. v3.0 KG auto-update: Paper node seeded with ALL known locations.*
+*publication-publisher v3.3 — v3.3 removes reportlab bypass: Stage 2 now BLOCKs publication if XeLaTeX unavailable (no fallback). Embedded 157-line reportlab build_pdf.py removed. Cross-platform TeX Live detection. All escape hatches eliminated — LaTeX Enforcement Gate is now pre-build gate, not post-hoc. v3.2 had LaTeX Enforcement Gate integrated into Stage 2. v3.1 added self-contained PROVENANCE BUNDLE toolchain.*
 
 ## RT: RED-TEAM SELF-AUDIT
 
@@ -1614,3 +1538,5 @@ Before claiming this skill complete, autonomously run:
 
 ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
+
+> **Version:** (Kaizen-audited 2026-07-08)

@@ -1,4 +1,4 @@
-﻿---
+---
 name: infrastructure-audit
 description: Audit all Cloudflare infrastructure resources (D1, R2, Workers, Pages, Vectorize, Queues) including lifecycle pipeline. Reports orphaned/duplicate resources, state mismatches, lifecycle health, and archival integrity.
 version: "2.0"
@@ -37,6 +37,20 @@ the user with the specific failure reason.
 # INFRASTRUCTURE AUDIT SKILL — v1.0 -- v2.0
 
 > **LIFECYCLE-AWARE. GAP-AUDIT INTEGRATION. RED-TEAM-DOD INTEGRATION. RESOURCE GOVERNANCE. 522-PREVENTION. UPDATED 2026-07-01.** v1.9 adds §0.8 522 Root Cause Detection (CNAME × Pages cross-reference), §0.9 CNAME Chain Detection, §0.10 Dead Worker CNAME Detection, and §0.11 Empty Zone Detection — all learned from the 2026-07-01 qwav.tech 522 outage. Prevents the #1 failure mode: CNAME to `.pages.dev` without domain registration.
+
+---
+
+## Autonomous Continuation Protocol (v1.0)
+
+**All 7 audit categories execute autonomously without user intervention.** The agent MUST:
+
+1. After ANY category marked [EXECUTED], immediately proceed to the next category
+2. Before advancing: tag `[AUTO-CONTINUE -> Category N+1]` in the response
+3. If a category fails: tag `[BLOCKED: reason]`, skip to next, aggregate failures
+4. At completion of all categories: tag `[AUDIT-COMPLETE: <pass>/<total> passed]`
+5. Never wait for user confirmation between audit categories
+
+**ANTI-PATTERN:** User should NEVER need to say "CONTINUE" between audit phases.
 
 ---
 
@@ -725,3 +739,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 
+> **Version:** (Kaizen-audited 2026-07-08)

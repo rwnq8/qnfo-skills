@@ -1,3 +1,42 @@
+---
+name: ipfs-pinning
+description: "IPFS content pinning via Pinata -- upload, pin, unpin, and manage IPFS content hashes. Use when user says pin to IPFS, IPFS upload, content-addressed storage, pinata pin, unpin, or when publishing papers to IPFS or managing decentralized storage."
+version: "1.1"
+---
+
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration — run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('ipfs-pinning')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
+
+## Autonomous Continuation Protocol (v1.0)
+
+**All pinning stages execute autonomously.** Agent MUST: (1) chain upload→pin→verify→metadata without user prompts, (2) tag `[AUTO-CONTINUE]` between stages. **ANTI-PATTERN:** User NEVER says "CONTINUE."
+
+---
+
 ## execute_plan (MANDATORY -- Before Any Execution)
 
 **This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.
@@ -26,6 +65,7 @@ update_plan([
 > **Related:** cloudflare-deployer, publication-publisher, closeout-manager
 > **Auto-load triggers:** ipfs, pinata, cid, pinning, paper hash, content-addressing
 
+version: "1.0"
 ---
 
 ## 0. WHY THIS EXISTS
@@ -539,3 +579,8 @@ Until CID conversion is implemented:
 ---
 
 *ipfs-pinning v1.0 — Permanent solution for IPFS blocking. v1.1 adds CID format handling per red-team finding 2026-07-02.* Auto-discovers credentials, syncs live state, self-heals registry, and integrates with LP D1 + CMS + cross-ecosystem platform.*
+
+> **Version:** (Kaizen-audited 2026-07-08)
+## Autonomous Execution
+
+This skill participates in the Autonomous Continuation Protocol ($AUTONOMOUS_CONTINUATION). After every tool invocation, poll the outstanding task register for executable items. The default state is EXECUTION, not WAITING. Do not wait for user prompting — if execute_plan items are [PENDING] and unblocked, execute them immediately without generating response text.

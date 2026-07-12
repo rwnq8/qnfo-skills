@@ -1,10 +1,57 @@
 ---
 name: git-hygiene
-description: Git recovery and hygiene procedures — branch recovery, detached HEAD, merge conflicts, and Iron Rule enforcement. Use when git operations fail or the workspace is in an unexpected state.
-version: "1.0"
+description: "Git recovery and hygiene procedures -- branch recovery, detached HEAD, merge conflicts, and Iron Rule enforcement. Use when user says fix git, git is broken, git error, merge conflict, detached HEAD, branch recovery, or when git operations fail."
+version: "1.1"
 ---
 
+
+
+### DEC-034 Safe Push Protocol (v1.5 — 2026-07-10)
+
+**CRITICAL:** Multiple LLM sessions can push to the same git branch simultaneously. Amended commits, force pushes, and tag updates can silently overwrite prior work. Use the InfraLockManager DO for git coordination.
+
+**Safe Push Flow:** lock("git", "repo:branch", 300s) → verify HEAD matches origin → git push → unlock
+
+**Lock Required For:** Amend (YES, 300s) | Force push (YES, 300s) | Tag overwrite (YES, 120s) | Merge conflict resolution (YES, 600s) | Normal fast-forward push (NO — git handles this natively)
+
+**DO endpoint:** `https://infra-lock-manager.q08.workers.dev`
+**Protocol:** DEC-034 Universal Multi-Session Write Collision Prevention
+
+
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
+
+### Programmatic Loading & Execution
+This skill is loaded and executed **programmatically by the LLM system** 
+during response generation. Loading is triggered automatically via 
+`skill_view('git-hygiene')` or `read()` with filesystem path.
+**The user NEVER manually loads this skill.** The `skill-autoloader` 
+detects task patterns and handles all skill loading. If this skill fails 
+to load, the LLM system automatically retries via the fallback chain 
+documented below.
+**Pinning:** This skill is [On-demand — loads when triggered by task patterns].
+
+### Skill Loading Retry Protocol
+If `skill_view('name')` fails during programmatic loading, the LLM system 
+MUST execute this fallback chain:
+1. **Retry 1:** `read('%USERPROFILE%\.deepchat\skills\<name>\SKILL.md')`
+2. **Retry 2:** Pull from Cloudflare R2: `npx wrangler r2 object get 
+   qnfo/prompts/skills/<name>/SKILL.md --remote --file=_skill.md`
+3. **Retry 3:** If R2 fails, search local filesystem for any cached copy
+4. **Fallback:** If ALL retries fail, continue with `[SKILL-UNAVAILABLE: <name>]` 
+   and best-effort knowledge
+**NEVER silently proceed without a skill's critical instructions.** If a skill 
+is required for the task and cannot be loaded after 3 retries, escalate to 
+the user with the specific failure reason.
+
+---
+
+### DEC-034 Safe Push Protocol (v1.5 — 2026-07-10)
+
+CRITICAL: Acquire DO lock before git amend/force-push to prevent multi-session collisions.
+Lock required for: amend(300s), force-push(300s), tag-overwrite(120s), merge-conflict(600s).
+Normal fast-forward push: NO lock needed (git handles this).
+DO: https://infra-lock-manager.q08.workers.dev | Protocol: DEC-034
+
 
 > **Related:** closeout-manager
 
@@ -201,3 +248,5 @@ Follow the **Conventional Commits** specification:
 ---
 
 *git-hygiene v1.0 — QNFO custom skill. Load via read('R2 `qnfo/prompts/skills/git-hygiene\\SKILL.md'). Not accessible via skill_view().*
+
+> **Version:** (Kaizen-audited 2026-07-08)

@@ -1,9 +1,34 @@
-﻿---
-name: cloudflare-deployer
-description: Cloudflare platform deployment operations — Pages, R2, Workers, Vectorize, DNS, redirects, and Containers. Use when the agent needs to deploy, manage, or troubleshoot Cloudflare infrastructure.
-version: "2.2"
 ---
+name: cloudflare-deployer
+description: "Cloudflare platform deployment operations -- Pages, R2, Workers, Vectorize, DNS, redirects, and Containers. Use when user says deploy, ship to production, host on Cloudflare, or push to Cloudflare, or when the agent needs to deploy, manage, or troubleshoot Cloudflare infrastructure."
+version: "2.3"
+---
+
+
+### DEC-034 Safe Deploy Protocol (v1.5 — 2026-07-10)
+
+**CRITICAL:** Multiple LLM sessions can deploy Workers, Pages, or DNS records simultaneously. Without coordination, the last deploy silently overwrites prior changes. ALL Cloudflare deployments MUST use the InfraLockManager DO for concurrency control.
+
+**Safe Deploy Flow:** lock(resource) → deploy → verify → unlock
+
+**Resource Lock Matrix:** Worker: worker:<name> (600s), Pages: pages:<project> (600s), DNS: dns:<zone>:<record> (300s), R2: r2:<path> (300s), KV: kv:<ns>:<key> (120s), Vectorize: vectorize:<index> (300s)
+
+**Collision Handling:** Exponential backoff (1s, 2s, 4s) on LockCollision. Max 3 retries.
+
+**DO endpoint:** `https://infra-lock-manager.q08.workers.dev`
+**Client:** `infra_lock_client.py` | **Protocol:** DEC-034 Universal Multi-Session Write Collision Prevention
+
+
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
+
+
+### Domain Self-Critique (Post-Deployment)
+
+After every Cloudflare deployment, autonomously verify:
+- **522 prevention:** For every CNAME to .pages.dev, is the domain registered on the target Pages project? Run infrastructure-audit sec 0.8 cross-reference.
+- **Wrangler version compatibility:** Is the current wrangler version compatible? Check for deprecated commands (e.g., r2 object list removed in v4.95+).
+- **Caching drift:** Did the deployment actually reach users? curl the production URL with ?cache-bust=timestamp and compare against local build.
+- **Stale build artifacts:** Are there orphaned deployments? Check wrangler pages deployment list for stale preview deployments.
 
 > **Related:** infrastructure-audit, closeout-manager
 
@@ -33,6 +58,13 @@ is required for the task and cannot be loaded after 3 retries, escalate to
 the user with the specific failure reason.
 
 ---
+
+### DEC-034 Safe Deploy Protocol (v1.5 — 2026-07-10)
+
+CRITICAL: Multiple LLM sessions can deploy Workers/Pages/DNS simultaneously. Use InfraLockManager DO.
+Lock matrix: worker:<name>(600s), pages:<project>(600s), dns:<zone>:<record>(300s), r2:<path>(300s), kv:<ns>:<key>(120s).
+DO: https://infra-lock-manager.q08.workers.dev | Protocol: DEC-034
+
 
 # CLOUDFLARE DEPLOYER SKILL — v1.3 — v2.2
 
@@ -67,6 +99,20 @@ update_plan([
   {"step": "Clean up ephemeral files", "status": "pending"},
 ])
 
+### Autonomous Continuation Protocol (v2.4)
+
+**Composite deployment operations execute autonomously without user intervention.** The agent MUST:
+
+1. After ANY step marked [EXECUTED] with tool evidence, immediately proceed to the next step
+2. Before advancing to next deployment phase: tag `[AUTO-CONTINUE -> <phase>]` in the response
+3. If a deployment fails: tag `[BLOCKED: reason]`, attempt retry (max 3), then fall back to REST API if wrangler fails
+4. **Composite deploy:** When deploying a full publication, chain: Pages → R2 → DNS verify → redirect check → cleanup — as a single autonomous sequence
+5. At completion of all steps: tag `[DEPLOY-COMPLETE: <url>]`
+6. **Post-deploy red-team:** After every deployment, autonomously verify: 522 prevention, wrangler version compatibility, caching drift, stale build artifacts
+7. Never wait for user confirmation between deployment steps
+
+**ANTI-PATTERN:** User should NEVER need to say "CONTINUE" between deployment operations. The agent autonomously chains all deployment steps into a single composite deploy.
+
 ---
 
 ## ⚠️ WRANGLER v4.95+ COMPATIBILITY
@@ -92,7 +138,7 @@ result = json.loads(urllib.request.urlopen(req).read())
 
 ## Authentication
 
-**PERSISTENT -- 2026-06-19:** The CLOUDFLARE_API_TOKEN is stored at User-level with ALL Cloudflare permissions. No manual loading needed. Token survives reboots.
+**PERSISTENT -- 2026-06-19 (UPDATED 2026-07-10):** The CLOUDFLARE_API_TOKEN is stored at User-level with ALL Cloudflare permissions. No manual loading needed. Token survives reboots. **CRITICAL: As of 2026-07-10, `CF_API_TOKEN` (cfat_Imj...) is the working token. `CLOUDFLARE_API_TOKEN` (cfat_ffMOS...) is STALE/INVALID. Set `$env:CLOUDFLARE_API_TOKEN = $env:CF_API_TOKEN` at session start until the env var is updated.**
 
 **Token:** API Token with ALL PERMISSIONS (full account access)
 - Account: quniverse (edb167b78c9fb901ea5bca3ce58ccc4b)
@@ -1142,3 +1188,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.\n**Skill-Specific Checks:**\n6. Pages Preview URL: Verify deploy accessible at *.pages.dev before custom domain\n7. R2 Sync: Verify qnfo-cms-client.js exists on R2 with correct version\n8. CDN Purge: Verify custom domain serves latest deploy after CDN propagation\n9. MathJax Config: For publication pages, verify MathJax config BEFORE script tag
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 
+> **Version:** (Kaizen-audited 2026-07-08)

@@ -1,7 +1,7 @@
 ---
 name: kaizen-autonomous-update
-description: Autonomous system-wide Kaizen improvement protocol — triggers when user says "UPDATE ALL FROM KAIZEN" or when Kaizen engine detects 5+ unapplied improvements. Updates all prompts, templates, skills, agents/subagents, deploys, and commits.
-version: "1.1"
+description: Autonomous system-wide Kaizen continuous improvement protocol. Updates all prompts, templates, skills, agents/subagents, deploys, and commits. Use when user says "UPDATE ALL FROM KAIZEN," "system update," "update all skills," "continuous improvement," "Kaizen update," "auto-update," "upgrade everything," "refresh all settings," or when Kaizen engine detects 5+ unapplied improvements.
+version: "1.3"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
@@ -52,6 +52,46 @@ the user with the specific failure reason.
 
 ### Example Plan
 
+### DEC-034 Lock-Before-Edit Protocol (v1.3 — 2026-07-10)
+
+**CRITICAL:** Before modifying ANY skill file, acquire an InfraLockManager DO lock. This prevents multi-session write collisions where two sessions edit the same skill and one silently overwrites the other's changes.
+
+#### Protocol
+
+```python
+from infra_lock_client import LockClient, LockCollision
+
+client = LockClient()
+
+# 1. Lock before editing
+try:
+    client.lock("r2", f"prompts/skills/{skill_name}/SKILL.md", ttl_seconds=600)
+except LockCollision:
+    # Another session is editing this skill — wait and retry
+    time.sleep(3)
+    client.lock("r2", f"prompts/skills/{skill_name}/SKILL.md", ttl_seconds=600)
+
+# 2. Edit the skill
+
+# 3. Sync (bootstrap_skills.py handles R2 upload + unlock)
+# python bootstrap_skills.py --sync
+
+# 4. Unlock (bootstrap_skills.py does this automatically)
+```
+
+#### Resource Lock Matrix for Kaizen Updates
+
+| Phase | Resources Modified | Lock Required |
+|:------|:-------------------|:-------------|
+| Phase 1 (prompts) | Prompt templates | `r2:prompts/*` |
+| Phase 3 (skills) | Skill SKILL.md files | `r2:prompts/skills/*/SKILL.md` |
+| Phase 4 (agents) | Agent configs | `d1:agents:*` |
+| Phase 6 (deploy) | Workers, R2 | `worker:*` + `r2:*` |
+
+**DO endpoint:** `https://infra-lock-manager.q08.workers.dev`
+**Client:** `infra_lock_client.py` (in infra-lock-manager workspace)
+
+
 update_plan([
   {"step": "Phase 0: Pull Discovery Index + run Kaizen audit", "status": "pending"},
   {"step": "Phase 1: Update system prompts", "status": "pending"},
@@ -62,8 +102,22 @@ update_plan([
   {"step": "Phase 6: Dry-run deploy + git commit", "status": "pending"},
   {"step": "Phase 7: Upload Kaizen report to R2", "status": "pending"},
   {"step": "Phase 8: Verify hooks and scheduled tasks", "status": "pending"},
-  {"step": "Phase 9: Restart DeepChat (mandatory)", "status": "pending"},
+  {"step": "Phase 9: Restart DeepChat (mandatory — terminal boundary)", "status": "pending"},
 ])
+
+### Autonomous Continuation Protocol (v1.3)
+
+**Phases 0-8 execute autonomously without user intervention.** The agent MUST:
+
+1. After ANY phase marked [EXECUTED] with tool evidence, immediately proceed to the next phase
+2. Before advancing: tag `[AUTO-CONTINUE -> Phase N+1]` in the response
+3. At completion of all phases 0-8: tag `[PHASES-0-8-COMPLETE]`
+4. Phase 9 (restart) is the ONLY manual boundary — execute as terminal step
+5. If a phase fails: tag `[BLOCKED: reason]`, skip to next phase, report in Kaizen report
+6. If ALL phases 0-8 complete but restart cannot execute: tag `[HANDOFF: restart pending]` with details
+7. Never wait for user confirmation between phases 0-8
+
+**ANTI-PATTERN:** User should NEVER need to say "CONTINUE" between phases 0-8. The agent autonomously chains all phases.
 
 ---
 
@@ -108,6 +162,7 @@ The Phase 0 comprehensive audit (`_kaizen_system_audit.py`) checks:
 6. **Guardrail completeness** — all essential guardrails present
 7. **Kaizen engine health** — conversation search, R2 integration
 8. **GAP AUDIT (v1.2 — per closeout-manager §2.6):** Run the full POST-PHASE GAP AUDIT (A-F categories) as part of Phase 0. Any BLOCKING gaps → halt the Kaizen update. Document all gaps in the Kaizen report.
+9. **VARIANT DEDUPLICATION (v1.0 — DeepChat v1.0.9):** Skills adopted from external agents (Claude Code, Agents SDK) that conflicted with existing DeepChat skills were renamed with `-claude-code` or `-agents` suffixes. The canonical variant is the base-named skill (e.g., `cloudflare`, not `cloudflare-claude-code`). When updating skills, ONLY update the canonical (base-named) variant. Do NOT independently update `-claude-code` or `-agents` suffixed copies — these are imports of the canonical version and will be overwritten on next skill-sync. If a suffixed copy has diverged, flag it as `[VARIANT-DRIFT: <name>-claude-code diverged from <name>]` and report in the Kaizen report.
 
 ## Related Skills
 
@@ -157,6 +212,21 @@ Tools execute locally (Python requires filesystem access) but do NOT persist:
 3. **Discard:** `Remove-Item _<name>.py`
 4. If R2 copy missing: flag `[SKILL-GAP: script <name>.py missing from R2, cannot bootstrap]`
 
+## Handoff Protocol (MANDATORY at Closeout)
+
+1. **Verify** ALL execute_plan items marked [EXECUTED] with tool evidence (Test-Path, exec output, git log)
+2. **Archive** session artifacts to R2 canonical storage: `npx wrangler r2 object put qnfo/audit/... --remote --file=<artifact>`
+3. **Generate** continuation prompt documenting pending work and current state for the next session
+4. **Clean up** ephemeral _* files and __pycache__ directories: `Remove-Item _* -Recurse -Force`
+
+### Continuation Prompt Template
+```
+TASK: [description of pending work from execute_plan]
+STATE: [current state — what's executed, what's blocked, why]
+NEXT: [first executable action for the next session]
+R2: [canonical path for session artifacts]
+```
+
 ## RT: RED-TEAM SELF-AUDIT
 
 Before claiming this skill complete, autonomously run:
@@ -170,3 +240,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 
+> **Version:** (Kaizen-audited 2026-07-08)

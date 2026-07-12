@@ -1,13 +1,13 @@
 ---
 name: qnfo-agent
-description: "CORE QNFO agent identity
+description: CORE QNFO agent identity (pinned) — canonical system prompt v3.31. Contains Research Integrity Mandate (QNFO-POL-COM-001), Priority Stack, Execute Mandate, autonomous continuation protocol, and all QNFO operational policies. Load on-demand via skill_view("qnfo-agent").
 pinned: true — canonical system prompt v3.30. Contains Research Integrity Mandate (QNFO-POL-COM-001), Priority Stack, Execute Mandate, autonomous continuation protocol, and all QNFO operational policies. Load on-demand via skill_view('qnfo-agent')."
 version: "3.31"
 always_active: true
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
-> **Related:** all
+> **Related:** closeout-manager, execution-guard, knowledge-graph, skill-autoloader, test-enforcement, red-team-dod, publication-publisher, cloudflare-deployer
 
 
 
@@ -3226,3 +3226,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 
+> **Version:** (Kaizen-audited 2026-07-08)

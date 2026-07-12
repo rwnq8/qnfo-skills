@@ -1,0 +1,336 @@
+{
+  "total": 55,
+  "skills": [
+    {
+      "name": "agents-sdk",
+      "description": "Build AI agents on Cloudflare Workers using the Agents SDK. Load when creating stateful agents, durable workflows, real-time WebSocket apps, scheduled tasks, MCP servers, chat applications, voice agents, or browser automation. Covers Agent class, state management, callable RPC, Workflows, durable execution, queues, retries, observability, and React hooks. Biases towards retrieval from Cloudflare docs over pre-trained knowledge.",
+      "version": "0.0.0",
+      "path": "agents-sdk/SKILL.md"
+    },
+    {
+      "name": "algorithmic-art",
+      "description": "Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generative art, algorithmic art, flow fields, or particle systems. Create original algorithmic art rather than copying existing artists' work to avoid copyright violations.",
+      "version": "2.0",
+      "path": "algorithmic-art/SKILL.md"
+    },
+    {
+      "name": "bling-usability-audit",
+      "description": "Executable usability audit — drives YoBrowser to navigate UI as a real user, tests all interactions, captures screenshots, evaluates visual polish, and fills out the BLING-USABILITY-AUDIT template. Combines functional testing with visual polish review. Use when user says \"test my app,\" \"check my website,\" \"run usability test,\" \"UI audit,\" \"screenshot test,\" \"browser test,\" \"accessibility check.\"",
+      "version": "1.2",
+      "path": "bling-usability-audit/SKILL.md"
+    },
+    {
+      "name": "buffer-integration",
+      "description": "Buffer API integration for social media posting on QNFO/QWAV channels. Create, schedule, and manage social media posts across Twitter/X, LinkedIn, and Bluesky via Buffer. Use when user says \"post this to social media,\" \"schedule a tweet,\" \"publish to LinkedIn,\" or when Phase 5 of LRAP requires social dissemination of a new publication.",
+      "version": "1.0",
+      "path": "buffer-integration/SKILL.md"
+    },
+    {
+      "name": "citation-manager",
+      "description": "Academic citation management for QNFO research pipeline. Extract citations from Markdown, verify against BibTeX bibliographies, auto-generate BibTeX entries from DOIs, flag missing/unused citations, and produce citation verification reports. Use when user says \"check my citations,\" \"verify bibliography,\" \"generate BibTeX entries,\" \"are all citations accounted for,\" or when Phase 2 of LRAP requires citation validation before publication.",
+      "version": "1.1",
+      "path": "citation-manager/SKILL.md"
+    },
+    {
+      "name": "closeout-manager",
+      "description": "Session close-out procedures — autonomous trigger detection, task execution verification, project handoff initialization, audit trail export, R2 state upload, lifecycle timestamp update, archive operations, draft artifact cleanup, and handoff documentation. Auto-executes at session end without user prompting.",
+      "version": "3.5",
+      "path": "closeout-manager/SKILL.md"
+    },
+    {
+      "name": "cloudflare",
+      "description": "Comprehensive Cloudflare platform skill covering Workers, Pages, storage (KV, D1, R2), AI (Workers AI, Vectorize, Agents SDK), feature flags (Flagship), networking (Tunnel, Spectrum), security (WAF, DDoS), and infrastructure-as-code (Terraform, Pulumi). Use for any Cloudflare development task. Biases towards retrieval from Cloudflare docs over pre-trained knowledge.",
+      "version": "0.0.0",
+      "path": "cloudflare/SKILL.md"
+    },
+    {
+      "name": "cloudflare-deployer",
+      "description": "Cloudflare platform deployment operations -- Pages, R2, Workers, Vectorize, DNS, redirects, and Containers. Use when user says deploy, ship to production, host on Cloudflare, or push to Cloudflare, or when the agent needs to deploy, manage, or troubleshoot Cloudflare infrastructure.",
+      "version": "2.3",
+      "path": "cloudflare-deployer/SKILL.md"
+    },
+    {
+      "name": "cloudflare-email-service",
+      "description": "Send and receive transactional emails with Cloudflare Email Service (Email Sending + Email Routing). Use when building email sending (Workers binding or REST API), email routing, Agents SDK email handling, or integrating email into any app — Workers, Node.js, Python, Go, etc. Also use for email deliverability, SPF/DKIM/DMARC, wrangler email setup, MCP email tools, or when a coding agent needs to send emails. Even for simple requests like \"add email to my Worker\" — this skill has critical config details.",
+      "version": "0.0.0",
+      "path": "cloudflare-email-service/SKILL.md"
+    },
+    {
+      "name": "cloudflare-one",
+      "description": "Guides Cloudflare One Zero Trust and SASE work across Access, Gateway, WARP, Tunnel, Cloudflare WAN, DLP, CASB, device posture, and identity. Use when designing, configuring, troubleshooting, or reviewing Cloudflare One deployments. Retrieval-first— use current Cloudflare docs/API schemas instead of embedded product docs.",
+      "version": "0.0.0",
+      "path": "cloudflare-one/SKILL.md"
+    },
+    {
+      "name": "cloudflare-one-migrations",
+      "description": "Plans migrations from Zscaler ZIA/ZPA, Palo Alto, legacy VPN, SWG, or SASE stacks to Cloudflare One. Use for migration assessments, policy mapping, rollout plans, and parity/gap analysis.",
+      "version": "0.0.0",
+      "path": "cloudflare-one-migrations/SKILL.md"
+    },
+    {
+      "name": "code-review",
+      "description": "Comprehensive code review assistant that analyzes code quality, security, and best practices. Use when user asks for code review, security audit, implementation feedback, or wants code quality assessment.",
+      "version": "2.1",
+      "path": "code-review/SKILL.md"
+    },
+    {
+      "name": "deepchat-settings",
+      "description": "DeepChat app settings modification (DeepChat u8bbeu7f6e/u504fu597d) skill. Activate ONLY when the user explicitly asks to change DeepChat's own settings/preferences (e.g., theme, language, font size...). Do NOT activate for OS/system settings, editor settings, or other apps.",
+      "version": "1.1",
+      "path": "deepchat-settings/SKILL.md"
+    },
+    {
+      "name": "doc-coauthoring",
+      "description": "Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This workflow helps users efficiently transfer context, refine content through iteration, and verify the doc works for readers. Trigger when user mentions writing docs, creating proposals, drafting specs, or similar documentation tasks.",
+      "version": "1.1",
+      "path": "doc-coauthoring/SKILL.md"
+    },
+    {
+      "name": "docx",
+      "description": "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. When Claude needs to work with professional documents (.docx files) for — (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks",
+      "version": "2.0",
+      "path": "docx/SKILL.md"
+    },
+    {
+      "name": "durable-objects",
+      "description": "Create and review Cloudflare Durable Objects. Use when building stateful coordination (chat rooms, multiplayer games, booking systems), implementing RPC methods, SQLite storage, alarms, WebSockets, or reviewing DO code for best practices. Covers Workers integration, wrangler config, and testing with Vitest. Biases towards retrieval from Cloudflare docs over pre-trained knowledge.",
+      "version": "0.0.0",
+      "path": "durable-objects/SKILL.md"
+    },
+    {
+      "name": "email-composer",
+      "description": "Outlook email composition, sending, reading, and management via COM automation. Use when user says compose email, draft email, send email, read inbox, reply to email, search email, or when the agent needs to send, read, search, or manage emails through Outlook.",
+      "version": "2.2",
+      "path": "email-composer/SKILL.md"
+    },
+    {
+      "name": "execution-guard",
+      "description": "PRIORITY 0 execution enforcement guard. Always active. Prevents planning spirals and phantom completion claims by checking task register before every response. Use when user says 'check my tasks,' 'whats pending,' 'track my work,' 'verify everything is done,' 'audit execution.' Triggers— session start, before any response, when tasks are pending.",
+      "version": "1.11",
+      "path": "execution-guard/SKILL.md"
+    },
+    {
+      "name": "frontend-design",
+      "description": "Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, artifacts, posters, or applications (examples include websites, landing pages, dashboards, React components, HTML/CSS layouts, or when styling/beautifying any web UI). Generates creative, polished code and UI design that avoids generic AI aesthetics.",
+      "version": "1.1",
+      "path": "frontend-design/SKILL.md"
+    },
+    {
+      "name": "git-commit",
+      "description": "Generate well-formatted git commit messages following conventional commit standards. Use when user says commit, generate commit message, make a commit, stage changes, conventional commit, or asks to commit code changes.",
+      "version": "2.0",
+      "path": "git-commit/SKILL.md"
+    },
+    {
+      "name": "git-hygiene",
+      "description": "Git recovery and hygiene procedures -- branch recovery, detached HEAD, merge conflicts, and Iron Rule enforcement. Use when user says fix git, git is broken, git error, merge conflict, detached HEAD, branch recovery, or when git operations fail.",
+      "version": "1.1",
+      "path": "git-hygiene/SKILL.md"
+    },
+    {
+      "name": "github-manager",
+      "description": "DEPRECATED -- ARCHIVED (2026-06-01). GitHub fully deprecated per ADR-001. All PM is Cloudflare-native (R2, D1, Workers, Pages). This skill retained for historical reference only. Do NOT use for new operations.",
+      "version": "0.0.0",
+      "path": "github-manager/SKILL.md"
+    },
+    {
+      "name": "infographic-syntax-creator",
+      "description": "Generate AntV Infographic syntax outputs. Use when asked to turn user content into the Infographic DSL (template selection, data structuring, theme), or to output `infographic <template>` plain syntax.",
+      "version": "1.1",
+      "path": "infographic-syntax-creator/SKILL.md"
+    },
+    {
+      "name": "infrastructure-audit",
+      "description": "Audit all Cloudflare infrastructure resources (D1, R2, Workers, Pages, Vectorize, Queues) including lifecycle pipeline. Reports orphaned/duplicate resources, state mismatches, lifecycle health, and archival integrity.",
+      "version": "2.0",
+      "path": "infrastructure-audit/SKILL.md"
+    },
+    {
+      "name": "ipfs-pinning",
+      "description": "IPFS content pinning via Pinata -- upload, pin, unpin, and manage IPFS content hashes. Use when user says pin to IPFS, IPFS upload, content-addressed storage, pinata pin, unpin, or when publishing papers to IPFS or managing decentralized storage.",
+      "version": "1.1",
+      "path": "ipfs-pinning/SKILL.md"
+    },
+    {
+      "name": "kaizen-autonomous-update",
+      "description": "Autonomous system-wide Kaizen continuous improvement protocol. Updates all prompts, templates, skills, agents/subagents, deploys, and commits. Use when user says \"UPDATE ALL FROM KAIZEN,\" \"system update,\" \"update all skills,\" \"continuous improvement,\" \"Kaizen update,\" \"auto-update,\" \"upgrade everything,\" \"refresh all settings,\" or when Kaizen engine detects 5+ unapplied improvements.",
+      "version": "1.3",
+      "path": "kaizen-autonomous-update/SKILL.md"
+    },
+    {
+      "name": "knowledge-graph",
+      "description": "QNFO Knowledge Graph querying for due diligence, impact analysis, ultrametric clustering, and cross-system discovery. Supports ball queries, hierarchical taxonomy, and lifecycle-aware project queries.",
+      "version": "2.4",
+      "path": "knowledge-graph/SKILL.md"
+    },
+    {
+      "name": "literature-search",
+      "description": "Automated multi-source academic literature search and paper triage for LLM Research Automation Pipeline (LRAP). Queries preprint servers, Semantic Scholar, QNFO Vectorize, and web search; deduplicates results; classifies papers as core/supporting/background/reject. Use when user asks \"search for papers on X,\" \"find literature about Y,\" \"what's published on Z,\" or when executing Phase 1 of any research project.",
+      "version": "1.1",
+      "path": "literature-search/SKILL.md"
+    },
+    {
+      "name": "local-to-r2-migration",
+      "description": "Migrate local project files to cloud storage — scan, classify, purge orphaned ephemeral files, upload project assets, update Discovery Index, and clean up local copies. Use when user says \"clean local files,\" \"push to cloud,\" \"migrate files to R2,\" \"enforce thin client,\" \"clean up workspace,\" or when migrating local project clutter to Cloudflare R2.",
+      "version": "1.2",
+      "path": "local-to-r2-migration/SKILL.md"
+    },
+    {
+      "name": "mcp-builder",
+      "description": "Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK).",
+      "version": "1.1",
+      "path": "mcp-builder/SKILL.md"
+    },
+    {
+      "name": "memory-management",
+      "description": "Guide the agent to recall, remember, and route durable learning into Memory, Skills, Scheduled Tasks, or Tape. Use when user says \"remember this,\" \"recall previous work,\" \"save this for later,\" \"what do you know about,\" \"continue where we left off,\" \"memory,\" or when a task produces knowledge that should persist across sessions.",
+      "version": "1.2",
+      "path": "memory-management/SKILL.md"
+    },
+    {
+      "name": "pdf",
+      "description": "Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale.",
+      "version": "2.0",
+      "path": "pdf/SKILL.md"
+    },
+    {
+      "name": "pdf-builder",
+      "description": "Build publication-quality PDFs from Markdown files using Pandoc+XeLaTeX for proper TeX typesetting with full LaTeX math rendering. Use when the agent needs to convert .md to .pdf for QNFO publications, papers, or reports. XeLaTeX ONLY — no reportlab or HTML fallbacks permitted for publications.",
+      "version": "4.2",
+      "path": "pdf-builder/SKILL.md"
+    },
+    {
+      "name": "pptx",
+      "description": "Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for — (1) Creating new presentations, (2) Modifying or editing content, (3) Working with layouts, (4) Adding comments or speaker notes, or any other presentation tasks",
+      "version": "2.0",
+      "path": "pptx/SKILL.md"
+    },
+    {
+      "name": "prompt-audit",
+      "description": "Self-audit skill — agents use this to evaluate their own system prompts, skills, and templates against 19 industry design patterns and anti-patterns. Checks Priority Stack, Decision Tree, Output Contract, Knowledge Boundary, Escalation Path, Persona Lock, Format Negotiation, Confidence Calibration, Context Management, Role+Constraints, Chain of Verification, Structured Output, Tool Selection, Error Recovery, Context Window, Guard Rails, Progressive Disclosure, Memory Integration, and Self-Evaluation Loop.",
+      "version": "1.1",
+      "path": "prompt-audit/SKILL.md"
+    },
+    {
+      "name": "publication-publisher",
+      "description": "End-to-end publication workflow — formatting, PDF building (LaTeX-typeset via Pandoc+XeLaTeX ONLY — no reportlab/HTML fallbacks), complete artifact bundling, Zenodo upload (with robust retry + versioning + draft recovery via zenodo_api.py), Cloudflare deployment, social media orchestration, and post-publication draft cleanup.",
+      "version": "3.4",
+      "path": "publication-publisher/SKILL.md"
+    },
+    {
+      "name": "qnfo-agent",
+      "description": "CORE QNFO agent identity (pinned) — canonical system prompt v3.31. Contains Research Integrity Mandate (QNFO-POL-COM-001), Priority Stack, Execute Mandate, autonomous continuation protocol, and all QNFO operational policies. Load on-demand via skill_view(\"qnfo-agent\").",
+      "version": "3.31",
+      "path": "qnfo-agent/SKILL.md"
+    },
+    {
+      "name": "red-team-dod",
+      "description": "AUTONOMOUS red-team + Definition of Done enforcement protocol. Runs output verification, assumption challenges, edge case checks, DoD integration, and iteration for EVERY agent response. The user should NEVER prompt for quality checks.",
+      "version": "1.2",
+      "path": "red-team-dod/SKILL.md"
+    },
+    {
+      "name": "research-planner",
+      "description": "Generates phased research plans, abstracts, theses, and research questions from a seed idea or provocative observation. Maps to standard research methodology— assumption analysis, hypothesis generation, literature gap identification, experimental design, and dissemination planning. Deconstructs assumptions to separate arbitrary conventions (scaffolds) from persistent relational structures (invariants), then spirals into cross-disciplinary themes. Outputs an LLM-executable research program in quick (3-stage) or full (7-stage) modes. USE WHEN the user asks to \"create a research plan,\" \"develop a research agenda,\" \"generate research questions,\" \"write an abstract and thesis,\" \"deconstruct this idea,\" \"what assumptions are we making,\" \"analyze this concept,\" \"plan a research project,\" says \"I have a weird thought about,\" \"I keep wondering whether,\" \"there's something off about,\" \"what if everything we think about,\" \"let's investigate,\" or presents a stream-of-consciousness observation they want turned into a systematic investigation. NOT for: literature-only searches, citation formatting, code debugging, factual QA, or tasks requiring physical lab access.",
+      "version": "5.0",
+      "path": "research-planner/SKILL.md"
+    },
+    {
+      "name": "sandbox-sdk",
+      "description": "Build sandboxed applications for secure code execution. Load when building AI code execution, code interpreters, CI/CD systems, interactive dev environments, or executing untrusted code. Covers Sandbox SDK lifecycle, commands, files, code interpreter, and preview URLs. Biases towards retrieval from Cloudflare docs over pre-trained knowledge.",
+      "version": "0.0.0",
+      "path": "sandbox-sdk/SKILL.md"
+    },
+    {
+      "name": "seo-discoverability",
+      "description": "Automated SEO and AI crawler discoverability optimization for Cloudflare Pages sites. Audits robots.txt, sitemaps, meta tags, structured data, llms.txt, and topic taxonomies. Use when deploying new publications, auditing discoverability, or improving organic + AI traffic.",
+      "version": "1.1",
+      "path": "seo-discoverability/SKILL.md"
+    },
+    {
+      "name": "skill-autoloader",
+      "description": "AUTOMATICALLY loads relevant skills based on task detection. User NEVER manually loads skills. Cross-references all skills and handles fallback chains. Use when skill loading is needed, task patterns must be detected, or skill_view() resolution fails and requires fallback recovery.",
+      "version": "1.2",
+      "path": "skill-autoloader/SKILL.md"
+    },
+    {
+      "name": "skill-creator",
+      "description": "Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.",
+      "version": "1.1",
+      "path": "skill-creator/SKILL.md"
+    },
+    {
+      "name": "skill-sync",
+      "description": "Sync all DeepChat skills between local disk, GitHub, and Cloudflare R2. Monitors skill modifications and auto-syncs after changes. Updates Discovery Index with current versions. Use when skills are modified and need to be pushed to redundant backups, or to check sync status.",
+      "version": "1.5",
+      "path": "skill-sync/SKILL.md"
+    },
+    {
+      "name": "template-catalog",
+      "description": "Template discovery and parameter documentation for all QNFO prompt templates. Use when user says find template, list templates, what templates are available, template parameters, or when the agent needs to find the right template for a task.",
+      "version": "1.1",
+      "path": "template-catalog/SKILL.md"
+    },
+    {
+      "name": "test-enforcement",
+      "description": "MANDATORY test enforcement for ALL code changes, deployments, and infrastructure modifications. Runs canonical test suite before claiming any action as EXECUTED. Priority 1 — pinned and always active.",
+      "version": "1.3",
+      "path": "test-enforcement/SKILL.md"
+    },
+    {
+      "name": "tufte-viz",
+      "description": "Ideate and critique data visualizations using Edward Tufte's principles from \"The Visual Display of Quantitative Information.\" Use this skill when:\n(1) Designing new data visualizations or charts\n(2) Critiquing or improving existing visualizations\n(3) Reviewing dashboards or reports for graphical integrity\n(4) Deciding between visualization approaches\n(5) Reducing chartjunk or improving data-ink ratio\n(6) Planning small multiples or high-density displays\nApplies principles: data-ink ratio, chartjunk elimination, graphical integrity, lie factor, small multiples, and data density.",
+      "version": "0.0.0",
+      "path": "tufte-viz/SKILL.md"
+    },
+    {
+      "name": "turnstile-spin",
+      "description": "Set up Cloudflare Turnstile end-to-end in a project — scan the codebase, create the widget via the Cloudflare API, deploy the managed siteverify Worker, write the frontend snippets, validate, and persist the skill. Load this when a user asks to add Turnstile, set up CAPTCHA, protect a form from bots, or fix a Turnstile integration. Mirrors developers.cloudflare.com/turnstile/spin.",
+      "version": "0.0.0",
+      "path": "turnstile-spin/SKILL.md"
+    },
+    {
+      "name": "ultrametric-engine",
+      "description": "Deploy 20 mathematical principles (ultrametric distance, p-adic valuation, Ostrowski's theorem, Hensel's lemma, Mahler compression, Berkovich spaces, Tate/Amice spectral analysis, Hasse local-global, Witt vectors, Bruhat-Tits buildings, p-adic caching, intrinsic Amice transform) as a production Cloudflare discovery engine. Use when building ultrametric tree-based search, p-adic ranked paper corpora, hierarchical dendrogram visualizations, or multi-endpoint Workers with R2/D1/Pages/Vectorize bindings.",
+      "version": "1.1",
+      "path": "ultrametric-engine/SKILL.md"
+    },
+    {
+      "name": "web-artifacts-builder",
+      "description": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.",
+      "version": "2.0",
+      "path": "web-artifacts-builder/SKILL.md"
+    },
+    {
+      "name": "web-perf",
+      "description": "Analyzes web performance using Chrome DevTools MCP. Measures Core Web Vitals (LCP, INP, CLS) and supplementary metrics (FCP, TBT, Speed Index), identifies render-blocking resources, network dependency chains, layout shifts, caching issues, and accessibility gaps. Use when asked to audit, profile, debug, or optimize page load performance, Lighthouse scores, or site speed. Biases towards retrieval from current documentation over pre-trained knowledge.",
+      "version": "0.0.0",
+      "path": "web-perf/SKILL.md"
+    },
+    {
+      "name": "web3-ipfs-deployer",
+      "description": "Web3/IPFS development toolkit for research publication permanence — CID computation, DAG building, CAR archive creation, gateway verification, DID/ENS identity, multi-service pinning (Pinata, web3.storage, Lighthouse, Filecoin, Arweave), and end-to-end publication pipeline integration with QNFO infrastructure (Cloudflare R2, D1, Workers, Pages). Use when the user wants to — (1) compute IPFS CIDs or generate content-addressed manifests, (2) create CAR archives for publication preservation, (3) verify content availability across IPFS gateways, (4) generate DIDs and sign content attestations, (5) pin content to IPFS pinning services, (6) explore or deploy IPFS/Web3 permanence layers for research publications, (7) design or implement content-addressed storage architecture, or (8) run the full QNFO publication-to-IPFS pipeline.",
+      "version": "1.1",
+      "path": "web3-ipfs-deployer/SKILL.md"
+    },
+    {
+      "name": "workers-best-practices",
+      "description": "Reviews and authors Cloudflare Workers code against production best practices. Load when writing new Workers, reviewing Worker code, configuring wrangler.jsonc, or checking for common Workers anti-patterns (streaming, floating promises, global state, secrets, bindings, observability). Biases towards retrieval from Cloudflare docs over pre-trained knowledge.",
+      "version": "0.0.0",
+      "path": "workers-best-practices/SKILL.md"
+    },
+    {
+      "name": "wrangler",
+      "description": "Cloudflare Workers CLI for deploying, developing, and managing Workers, KV, R2, D1, Vectorize, Hyperdrive, Workers AI, Containers, Queues, Workflows, Pipelines, and Secrets Store. Load before running wrangler commands to ensure correct syntax and best practices. Biases towards retrieval from Cloudflare docs over pre-trained knowledge.",
+      "version": "0.0.0",
+      "path": "wrangler/SKILL.md"
+    },
+    {
+      "name": "xlsx",
+      "description": "Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for — (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas",
+      "version": "2.0",
+      "path": "xlsx/SKILL.md"
+    }
+  ],
+  "updated": "2026-07-09T00:00:00Z"
+}

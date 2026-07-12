@@ -3,7 +3,7 @@ name: closeout-manager
 description: Session close-out procedures — autonomous trigger detection, task execution verification, project handoff initialization, audit trail export, R2 state upload, lifecycle timestamp update, archive operations, draft artifact cleanup, and handoff documentation. Auto-executes at session end without user prompting.
 version: "3.5"
 ---
-> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification — negative verification. (2) Assumption Challenge — state and test every assumption. (3) Edge Case Check — empty/null/max/boundary/desync. (4) DoD Integration — run _dod_enforce.py if exists. (5) Iteration — retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
+> **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification — negative verification. (2) Assumption Challenge — state and test every assumption. (3) Edge Case Check — empty/null/max/boundary/desync. (4) DoD Integration — verify all criteria met with tool evidence. (5) Iteration — retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
 > **Related:** execution-guard, cloudflare-deployer, knowledge-graph
 
@@ -40,6 +40,20 @@ the user with the specific failure reason.
 > **LIFECYCLE-AWARE.** This release integrates with the automated lifecycle pipeline — `last_active` timestamps are reset on closeout to prevent premature staleness. Archive paths follow the ultrametric `qnfo/archive/projects/<name>/` convention.
 > **AUTONOMOUS skill.** Do NOT wait for user to say "TERMINATE." Detect completion and auto-initiate closeout. Includes POST-PHASE GAP AUDIT — user should NEVER have to ask "WHAT ELSE?"
 > Source: `CLOSEOUT-CHECKLIST` template + execution-guard skill + handoff-protocol skill
+
+---
+
+## Autonomous Continuation Protocol (v3.6)
+
+**All 10 closeout steps execute autonomously without user intervention.** The agent MUST:
+
+1. Auto-detect completion signal — no "TERMINATE" prompt needed
+2. Run all 10 steps sequentially, advancing with `[AUTO-CONTINUE -> Step N+1]`
+3. If a step fails: `[BLOCKED: reason]`, attempt fix (max 3), skip on non-retryable
+4. Never ask "shall I close out?" — just detect and execute
+5. At completion: present checklist summary with tool evidence for each step
+
+**ANTI-PATTERN:** User should NEVER need to say "TERMINATE" or "CONTINUE."
 
 ---
 
@@ -433,6 +447,18 @@ Execute these checks programmatically. Do NOT rely on memory or assumptions:
 **RED-TEAM:** If publication occurred but no provenance bundle, README.md, Cloudflare mirror (D1 + KG), or KG location properties (social_urls, zenodo_url, github_url, pages_url) were created → `[BLOCKING: publication without provenance — violation of publication-publisher v3.1 Stage 3.5 + Stage 6.5 + Stage 6.6 gates]`. Fix before closeout: assemble provenance bundle + README, seed D1 + KG with ALL known locations, create new Zenodo version if necessary.
 
 **F. TEST SUITE (if available)**
+
+**F.2 CONCURRENCY VERIFICATION (DEC-034 — v3.6 — 2026-07-10)**
+
+| Check | Command | Gate |
+|:------|:--------|:-----|
+| DO healthy? | `curl -s https://infra-lock-manager.q08.workers.dev/health` | status=healthy |
+| Active locks? | `curl -s https://infra-lock-manager.q08.workers.dev/api/list` | Must be 0 (or only this session's locks) |
+| D1 version drift? | `SELECT id, _version FROM decisions` vs local state | Versions must match |
+| D1 table drift? | `SELECT name FROM pragma_table_info('<table>') WHERE name='_version'` | All mutable tables must have `_version` column |
+
+**GATE:** If any active locks from OTHER sessions → `[BLOCKING: concurrent session active — resources may be modified]`. Wait for locks to clear or escalate.
+
 ```bash
 python _test_suite.py --quick  # Smoke test
 ```
@@ -884,3 +910,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 **Skill-Specific Checks:** Verify all handoffs written to D1. Verify lifecycle timestamps reset. Verify thin-client cleanup complete. Verify closeout checklist passed all phases.
 
+> **Version:** (Kaizen-audited 2026-07-08)

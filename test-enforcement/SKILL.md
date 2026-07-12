@@ -1,7 +1,7 @@
 ---
 name: test-enforcement
 description: MANDATORY test enforcement for ALL code changes, deployments, and infrastructure modifications. Runs canonical test suite before claiming any action as EXECUTED. Priority 1 — pinned and always active.
-version: "1.2"
+version: "1.3"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification — negative verification. (2) Assumption Challenge. (3) Edge Case Check. (4) DoD Integration. (5) Iteration — retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
@@ -37,7 +37,7 @@ the user with the specific failure reason.
 | Worker deploy | `_test_suite.py --cms` — all endpoints OK | BLOCKING |
 | D1 schema change | `_test_suite.py --d1` — tables accessible | BLOCKING |
 | Content change | Content quality: bodies non-empty, DOIs present | BLOCKING |
-| Skills edit | `bootstrap_skills.py --verify && _deploy.py --verify` | BLOCKING |
+| Skills edit | `red-team audit + SKILL.md frontmatter verified` | BLOCKING |
 | ANY Cloudflare deploy | `_test_suite.py` full run within 30s | BLOCKING |
 | Session closeout | `_test_suite.py` full run + gap audit (closeout-manager §2.6) | MANDATORY |
 
@@ -227,3 +227,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 **Skill-Specific Checks:** Verify test suite pulled from R2 and executed. Verify 0 critical failures. Verify content quality gate passed (no stubs, non-empty bodies). Verify all tests applicable to current action type.
 
+> **Version:** (Kaizen-audited 2026-07-08)
