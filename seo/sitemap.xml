@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- QNFO Hub -->
+  <url><loc>https://qnfo.org/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://hub.qnfo.org/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <!-- Publications -->
+  <url><loc>https://papers.qnfo.org/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://archive.qnfo.org/</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <!-- Legal -->
+  <url><loc>https://legal.qnfo.org/</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
+  <!-- Design -->
+  <url><loc>https://design.qnfo.org/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <!-- QWAV -->
+  <url><loc>https://deep.qwav.tech/</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://ask.qwav.tech/</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://primer.qwav.tech/</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://qwav.tech/</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <!-- Hensel (redirect) -->
+  <url><loc>https://hensel.qnfo.org/</loc><priority>0.4</priority><changefreq>monthly</changefreq></url>
+</urlset>

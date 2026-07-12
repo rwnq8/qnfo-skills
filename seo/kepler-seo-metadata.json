@@ -1,0 +1,28 @@
+{
+  "title": "The Kepler Program: A Comprehensive Framework for Adelic Quantum Computing and Ultrametric Physics",
+  "description": "Synthesis paper covering all 10 phases of the Kepler Program: Ostrowski's Theorem QEC, Multi-Prime Hensel Codec, 2-adic biological coherence, Planck bootstrap, and cross-phase verification matrix.",
+  "og": {
+    "title": "The Kepler Program: Adelic Quantum Computing and Ultrametric Physics",
+    "description": "Ten-phase synthesis unifying adelic number theory with quantum computing, ultrametric physics, and informational cosmology.",
+    "type": "article",
+    "url": "https://papers.qnfo.org/kepler-synthesis/"
+  },
+  "citation": {
+    "title": "The Kepler Program: A Comprehensive Framework for Adelic Quantum Computing and Ultrametric Physics",
+    "author": "Rowan Brad Quni-Gudzinas",
+    "date": "2026-07-12",
+    "doi": "pending"
+  },
+  "robots": "index, follow",
+  "keywords": [
+    "adelic quantum computing",
+    "ultrametric physics",
+    "Hensel codec",
+    "Ostrowski's Theorem",
+    "quantum error correction",
+    "Bruhat-Tits buildings",
+    "p-adic analysis",
+    "Planck bootstrap",
+    "2-adic biological coherence"
+  ]
+}
