@@ -1,0 +1,12 @@
+name = "papers-server"
+main = "workers/papers-server-v3.0.js"
+compatibility_date = "2026-07-12"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "living-paper"
+database_id = "70a58cb3-b2cd-498d-877f-ecca86859a22"
+
+[[r2_buckets]]
+binding = "PAPERS_BUCKET"
+bucket_name = "qnfo"
