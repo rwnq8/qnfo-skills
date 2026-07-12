@@ -238,7 +238,7 @@ function reqMeta(request) {
 
 async function trackAnalytics(env, eventType, pageUrl, sessionId, meta, extraMeta = {}) {
   try {
-    const m = { ...extraMeta, ...reqMeta };
+    const m = { ...extraMeta, ...meta };
     // Upsert session
     await env.DB.prepare(
       `INSERT INTO sessions (session_id, ip_address, user_agent, country, last_seen, total_events)
