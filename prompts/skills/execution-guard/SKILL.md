@@ -1,11 +1,11 @@
 ---
 name: execution-guard
-description: "PRIORITY 0 execution enforcement guard. Always active. Prevents planning spirals and phantom completion claims by checking task register before every response. v2.0: integrates with D1 wbs_state for cross-session phase tracking; legacy _wbs_state.json supported as fallback. Use when user says 'check my tasks,' 'whats pending,' 'track my work,' 'verify everything is done,' 'audit execution.' Triggers— session start, before any response, when tasks are pending."
-version: "1.13"
+description: "PRIORITY 0 execution enforcement guard. Always active. Prevents planning spirals and phantom completion claims by checking task register before every response. v2.0 — integrates with D1 wbs_state for cross-session phase tracking; legacy _wbs_state.json supported as fallback. Use when user says 'check my tasks,' 'whats pending,' 'track my work,' 'verify everything is done,' 'audit execution.' Triggers— session start, before any response, when tasks are pending."
+version: "1.14"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification — negative verification, try to prove claims are FALSE. (2) Assumption Challenge — state and test every assumption. (3) Edge Case Check — empty/null/max/boundary/desync. (4) DoD Integration — verify all criteria met with tool evidence. (5) Iteration — retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
-> **Related:** closeout-manager, qnfo-agent, test-enforcement
+> **Related:** closeout-manager, qnfo-agent, test-enforcement, github-cloudflare-sync
 
 
 
@@ -485,6 +485,35 @@ At session closeout, report self-sufficiency compliance:
 
 Prompt-level instructions failed. This skill is the strongest possible guard short of code-level enforcement.
 
+### 0.1 GITHUB ISSUE-AWARE TASK TRACKING (v1.14 — 2026-07-11)
+
+**The #12 agent failure mode: tracking tasks in D1 but ignoring GitHub issue state, leading to completed work having open GitHub issues — and vice versa.**
+
+#### Trigger: Session Start + Before Task Completion
+
+1. **At session start:** When `GITHUB_TOKEN` is available, verify GitHub↔D1 alignment:
+   ```bash
+   # Quick drift check
+   curl -s -H "Authorization: Bearer $env:GITHUB_TOKEN" \
+     "https://api.github.com/repos/QNFO/QWAV/issues?state=open&per_page=1&page=1" \
+     -I 2>&1 | Select-String "link:" | % { $_ -match 'page=(\d+)'; [int]$matches[1] * 100 }
+   # Compare with:
+   npx wrangler d1 execute qnfo-audit --remote \
+     --command "SELECT COUNT(*) FROM tasks WHERE source='github' AND status IN ('pending','in_progress')" --json
+   ```
+
+2. **Before marking any task [COMPLETED]:** If the task has a `github_issue_number`, auto-close the GitHub issue:
+   ```bash
+   curl -s -X PATCH "https://api.github.com/repos/QNFO/QWAV/issues/{issue_number}" \
+     -H "Authorization: Bearer $env:GITHUB_TOKEN" \
+     -H "Accept: application/vnd.github.v3+json" \
+     -d '{"state":"closed"}' 
+   ```
+
+3. **When GitHub issue is closed manually:** Auto-update D1 task status to `closed` with `completed_at` timestamp.
+
+**GATE:** If GITHUB_TOKEN is unavailable and tasks have github_issue_number references → flag `[GH-CLOSURE-UNAVAILABLE: N tasks need GitHub closure]`. Do NOT skip — escalate to user.
+
 ---
 
 ## 1. PRE-RESPONSE HOOK (MANDATORY — Before ANY Text Generation)
@@ -827,7 +856,7 @@ Session closeout writes execution statistics to audit trail:
 
 ---
 
-*execution-guard v1.13 — PRIORITY 0. v1.13 adds D1-First WBS Phase Tracking (§1.6) with _wbs_state.json fallback for cross-session state. v1.12 adds Phase-Aware Auto-Expansion Protocol (§1.5) and cross-phase red-team gate. v1.11 added Self-Sufficiency Enforcement. — PRIORITY 0. Auto-gap detection via WHAT-ELSE hook. RED-TEAM-DOD integration. Red-team self-testing. Skill version enforcement via §1.7. SKILL EXECUTION CHAINING ENFORCEMENT (§1.9) — mandates update_plan for all skills, subsidiary skill chain loading via Related: header parsing, cross-skill plan merging, chain integrity checks. Cannot be disabled. Pinned and always active.*
+*execution-guard v1.14 — PRIORITY 0. v1.14 adds GitHub Issue-Aware Task Tracking (§0.1) — auto-close GitHub issues when D1 tasks complete, auto-update D1 when GitHub issues close. v1.13 adds D1-First WBS Phase Tracking (§1.6). v1.12 adds Phase-Aware Auto-Expansion Protocol (§1.5). v1.11 added Self-Sufficiency Enforcement. — PRIORITY 0. Auto-gap detection via WHAT-ELSE hook. RED-TEAM-DOD integration. Red-team self-testing. Skill version enforcement via §1.7. SKILL EXECUTION CHAINING ENFORCEMENT (§1.9). Cannot be disabled. Pinned and always active.*
 
 ## RT: RED-TEAM SELF-AUDIT
 

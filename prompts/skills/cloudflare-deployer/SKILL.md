@@ -30,7 +30,7 @@ After every Cloudflare deployment, autonomously verify:
 - **Caching drift:** Did the deployment actually reach users? curl the production URL with ?cache-bust=timestamp and compare against local build.
 - **Stale build artifacts:** Are there orphaned deployments? Check wrangler pages deployment list for stale preview deployments.
 
-> **Related:** infrastructure-audit, closeout-manager
+> **Related:** infrastructure-audit, closeout-manager, github-cloudflare-sync
 
 
 

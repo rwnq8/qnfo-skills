@@ -1,7 +1,7 @@
 ---
 name: prompt-audit
 description: Self-audit skill — agents use this to evaluate their own system prompts, skills, and templates against 19 industry design patterns and anti-patterns. Checks Priority Stack, Decision Tree, Output Contract, Knowledge Boundary, Escalation Path, Persona Lock, Format Negotiation, Confidence Calibration, Context Management, Role+Constraints, Chain of Verification, Structured Output, Tool Selection, Error Recovery, Context Window, Guard Rails, Progressive Disclosure, Memory Integration, and Self-Evaluation Loop.
-version: "1.0"
+version: "1.2"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
@@ -363,7 +363,7 @@ This skill is self-contained — no external scripts required. All checks are ma
 
 ---
 
-*PROMPT-AUDIT Skill v1.1 — Self-audit for system prompts, skills, and templates against 19 industry patterns and anti-patterns. RED-TEAM-DOD integrated. Autonomous trigger on prompt modification. GIT: Skip. All output labeled [LLM-INFERRED].*
+*PROMPT-AUDIT Skill v1.2 — Self-audit for system prompts, skills, and templates against 19 industry patterns and anti-patterns. RED-TEAM-DOD integrated. Autonomous trigger on prompt modification. GIT: Skip. All output labeled [LLM-INFERRED].*
 
 ## RT: RED-TEAM SELF-AUDIT
 
@@ -378,4 +378,19 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 
-> **Version:** (Kaizen-audited 2026-07-08)
+## Handoff Protocol (MANDATORY at Closeout)
+
+1. **Verify** ALL execute_plan items marked [EXECUTED] with tool evidence (Test-Path, exec output, git log)
+2. **Archive** session artifacts to R2 canonical storage: `npx wrangler r2 object put qnfo/audit/... --remote --file=<artifact>`
+3. **Generate** continuation prompt documenting pending work and current state for the next session
+4. **Clean up** ephemeral _* files and __pycache__ directories: `Remove-Item _* -Recurse -Force`
+
+### Continuation Prompt Template
+```
+TASK: [description of pending work from execute_plan]
+STATE: [current state — what's executed, what's blocked, why]
+NEXT: [first executable action for the next session]
+R2: [canonical path for session artifacts]
+```
+
+> **Version:** (Kaizen-audited 2026-07-11)

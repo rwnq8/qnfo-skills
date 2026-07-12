@@ -5,7 +5,7 @@ version: "2.0"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
-> **Related:** cloudflare-deployer, knowledge-graph
+> **Related:** cloudflare-deployer, knowledge-graph, github-cloudflare-sync
 
 
 
@@ -238,6 +238,80 @@ for url, expected, name in redirects:
     except Exception as e:
         print(f'  [FAIL] {name}: {e}')
 ```
+
+### Phase 1.8: GitHub ↔ D1 Sync Verification (v2.1 — 2026-07-11)
+
+> **CRITICAL:** GitHub Issues (QNFO/QWAV) and Cloudflare D1 must stay synchronized. The 2026-07-11 audit found 55 skills, ZERO handling GitHub↔Cloudflare bidirectional sync. **This phase prevents the #2 failure mode: agents updating only one system and forgetting the other.**
+
+**Trigger:** Runs during every Phase 1 infrastructure audit when `GITHUB_TOKEN` env var is present.
+
+```python
+import urllib.request, json, os, ssl
+
+GH_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+CF_TOKEN = os.environ.get("CLOUDFLARE_API_TOKEN", "")
+ctx = ssl.create_default_context()
+
+# Quick drift detection — full sync delegates to github-cloudflare-sync skill
+def gh_cf_drift_check():
+    if not GH_TOKEN:
+        print("  [GH-SYNC-SKIPPED] GITHUB_TOKEN not available")
+        return None
+    
+    # Count GitHub issues
+    gh_open = gh_closed = 0
+    for state in ["open", "closed"]:
+        url = f"https://api.github.com/repos/QNFO/QWAV/issues?state={state}&per_page=1"
+        req = urllib.request.Request(url,
+            headers={"Authorization": f"Bearer {GH_TOKEN}",
+                     "Accept": "application/vnd.github.v3+json",
+                     "User-Agent": "QNFO-Audit/2.1"})
+        resp = urllib.request.urlopen(req, timeout=10, context=ctx)
+        # GitHub returns total count in link header or we use last page
+        data = json.loads(resp.read())
+        link = resp.headers.get("Link", "")
+        if "last" in link:
+            import re
+            match = re.search(r'[?&]page=(\d+)>; rel="last"', link)
+            count = int(match.group(1)) * 100 if match else len(data)
+        else:
+            count = len(data)
+        if state == "open":
+            gh_open = count
+        else:
+            gh_closed = count
+    
+    # Count D1 tasks
+    d1_url = f"https://api.cloudflare.com/client/v4/accounts/edb167b78c9fb901ea5bca3ce58ccc4b/d1/database/35e2e573-92f3-46ac-83c6-22f6429fc5e5/query"
+    req = urllib.request.Request(d1_url,
+        headers={"Authorization": f"Bearer {CF_TOKEN}", "Content-Type": "application/json"},
+        method="POST",
+        data=json.dumps({"sql": "SELECT github_state, COUNT(*) as cnt FROM tasks WHERE source='github' GROUP BY github_state"}).encode())
+    d1_data = json.loads(urllib.request.urlopen(req, timeout=10, context=ctx).read())
+    d1_counts = {r["github_state"]: r["cnt"] for r in d1_data.get("result", [{}])[0].get("results", [])}
+    
+    d1_pending = d1_counts.get("open", 0)
+    d1_closed = d1_counts.get("closed", 0)
+    
+    print(f"  GitHub: {gh_open} open, {gh_closed} closed = {gh_open + gh_closed} total")
+    print(f"  D1:     {d1_pending} pending, {d1_closed} closed = {d1_pending + d1_closed} total")
+    
+    gh_total = gh_open + gh_closed
+    d1_total = d1_pending + d1_closed
+    
+    if gh_open != d1_pending or gh_closed != d1_closed:
+        print(f"  [DRIFT-DETECTED] GitHub≠D1: Δopen={gh_open - d1_pending}, Δclosed={gh_closed - d1_closed}")
+        print(f"  [ACTION] Run full sync: skill_view('github-cloudflare-sync') → run_full_sync()")
+        return {"drift": True, "gh_open": gh_open, "d1_pending": d1_pending,
+                "gh_closed": gh_closed, "d1_closed": d1_closed}
+    else:
+        print(f"  [OK] GitHub ↔ D1 in sync")
+        return {"drift": False}
+```
+
+**GATE:** If drift detected → auto-load `github-cloudflare-sync` skill and run full remediation. Do NOT proceed without resolving drift.
+
+**Integration:** This phase delegates heavy sync logic to `github-cloudflare-sync` skill. The audit phase is a lightweight pre-check that triggers the full sync only when needed.
 
 ### Phase 2: Orphan Detection
 
@@ -587,7 +661,7 @@ for z in zones:
 
 ---
 
-*infrastructure-audit v2.0 — Resource Governance (§0.7) + 522 Prevention (§0.8-§0.11). Automated CNAME×Pages cross-reference, chain detection, dead worker detection, empty zone detection. 25-check audit with automated fix capability. **Updated 2026-07-11: KG stats 3190n/4629e, Workers baseline 33, live infrastructure cross-check.***
+*infrastructure-audit v2.1 — GitHub↔D1 Sync Phase 1.8 (§1.8) + Resource Governance (§0.7) + 522 Prevention (§0.8-§0.11). 26-check audit with automated fix capability. **Updated 2026-07-11: KG stats 3190n/4629e, Workers baseline 33, GitHub↔D1 drift detection.***
 
 
 *v1.8 and earlier deprecated 2026-07-01. Replaced by v1.9 with automated 522 root cause detection, CNAME chain detection, dead worker detection, and empty zone detection.*

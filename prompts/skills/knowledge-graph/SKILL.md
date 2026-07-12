@@ -73,7 +73,7 @@ update_plan([
 The QNFO Knowledge Graph is a D1-backed graph database (Cloudflare-native, zero external services) connecting every entity in the QNFO ecosystem. It now includes an **ultrametric hierarchical taxonomy** where projects are organized into 4 domains, 12 programs, forming a 2-adic tree with distances that satisfy the strong triangle inequality: $d(x,z) \leq \max(d(x,y), d(y,z))$.
 
 **Deployed API:** `https://graph-api.q08.workers.dev` (Cloudflare Worker, D1 qnfo-graph)
-**Current State:** 1680 nodes, 2927 edges, 8 API endpoints (verified live 2026-07-05)
+**Current State:** 3,242 nodes, 4,697 edges, 8 API endpoints (verified live 2026-07-12 — v2.5 count refresh; paper seeding in progress)
 
 ## Ultrametric Taxonomy Structure
 
@@ -130,14 +130,14 @@ r = urllib.request.Request("https://graph-api.q08.workers.dev/stats",
     headers={"User-Agent": "Mozilla/5.0"})
 data = json.loads(urllib.request.urlopen(r, timeout=10).read())
 # Returns: {totalNodes, totalEdges, nodeLabels: [...], relationshipTypes: [...]}
-# Current: 2721 nodes, 3993 edges
+# Current: 3,242 nodes, 4,697 edges (v2.5, 2026-07-12)
 ```
 
 ### GET /nodes?label=Project&search=pdf
 List nodes, optionally filtered by label and/or name search.
 
 ```python
-# All Projects (74 currently)
+# All Projects (114 currently)
 url = "https://graph-api.q08.workers.dev/nodes?label=Project"
 
 # Ultrametric concept nodes (32 — 16 domain, 12 program, 4 other)
@@ -349,20 +349,28 @@ GET /neighbors/PAPER_SLUG
 
 | Type | Count | Purpose |
 |------|:-----:|---------|
-| RELATES_TO | 522 | General-purpose relationship |
-| OWNS | 274 | Organizational hierarchy |
-| BELONGS_TO | 154 | Ultrametric taxonomy edges |
-| PUBLISHED_AS | 124 | Publication DOI mapping |
-| AUTHORED_BY | 109 | Paper authorship |
-| HOSTED_AT | 108 | Pages deployment hosting |
+| BELONGS_TO | 1,926 | Ultrametric taxonomy + structural containment |
+| RELATES_TO | 786 | General-purpose relationship |
+| PUBLISHED_AS | 597 | Publication DOI/phase mapping |
+| OWNS | 276 | Organizational hierarchy |
+| REFERENCES | 157 | Paper-to-paper citations |
+| AUTHORED_BY | 110 | Paper authorship |
+| HOSTED_AT | 109 | Pages deployment hosting |
 | LICENSED_UNDER | 108 | License attribution |
-| STORED_AT | 103 | R2 storage location |
-| PUBLISHED_IN | 63 | Zenodo venue records |
+| STORED_AT | 105 | R2 storage location |
+| PUBLISHED_IN | 64 | Zenodo venue records |
 | ULTRA_CONTAINS | 59 | 2-adic hierarchical containment |
-| REFERENCES | 38 | Paper-to-paper citations |
-| AFFECTS | 35 | Cross-entity impact |
-| DEPENDS_ON | 34 | Infrastructure dependency |
+| DEPENDS_ON | 48 | Infrastructure dependency |
+| MOTIVATES | 47 | Cross-phase motivation links |
+| AFFECTS | 36 | Cross-entity impact |
+| BUILDS_ON | 25 | Cross-phase build dependencies |
 | OWNED_BY | 24 | Reverse organizational |
+| HAS_DOMAIN | 16 | Domain association |
+| HAS_FINDING | 15 | Research findings |
+| REFINES | 10 | Phase iteration refinement (v3→v4) |
+| COMPUTATIONALLY_VERIFIES | 2 | Code-verified cross-phase links |
+| ISOMORPHIC_TO | 1 | Mathematical isomorphism between phases |
+| VALUATION_MAPS_TO | 1 | Valuation theory mapping |
 
 ## Lifecycle Integration
 
@@ -389,6 +397,7 @@ The Knowledge Graph is the central registry for project lifecycle. Key propertie
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
+| v2.5 | 2026-07-12 | **Kepler Iteration 4 cross-reference:** Seeded 10 Kepler phase nodes (kepler-p1 through p10), 4 ZenodoRecord nodes (OFT, Bruhat-Tits, Page-Wootters, Bundle), 25 Worker nodes, 5 Pages project nodes, 3 D1 database nodes, 1 GitHub repo (qnfo-skills), 1 publication project (ultrametric-foundation). Added 10 phase→kepler-program BELONGS_TO edges, 4 Zenodo PUBLISHED_AS edges, 10 old→new phase REFINES edges, 5 cross-phase verification edges (COMPUTATIONALLY_VERIFIES, ISOMORPHIC_TO, HIERARCHICAL_BASIS_OF, COHERENCE_MAPS_TO, VALUATION_MAPS_TO). Paper seeding from papers.qnfo.org llms.txt (2,803 papers parsed, seeding in progress). Count refresh: 3,242 nodes, 4,697 edges. Edge type table expanded to 22 types. |
 | v2.4 | 2026-07-04 | **DO+SQLite + Workers AI Integration:** Added DO+SQLite Worker (qnfo-agent-session) for KG write coordination via `/kg-mutex/*` endpoints. Added R2 Event Notifications auto-trigger for graph re-indexing. Added Workers AI Worker (qnfo-ai-worker) for paper enrichment (classify, citations). Updated API endpoint table with 4 new DO endpoints. |
 | v2.3 | 2026-07-02 | **Count refresh:** 2721 nodes (40+ labels), 3993 edges (50+ types). Added Paper (178), CloudflareAsset (148), ZenodoRecord (124), R2Object (115) labels. Edge type table expanded to 14 types. RELATES_TO now dominant (522). Verified live via KG API. |
 | v2.2 | 2026-06-28 | **Count refresh:** Verified live — 261 nodes, 401 edges. OWNS now dominant edge (205 vs 99). Needs paper REFERENCES edges (currently 0 paper connections). |
@@ -448,4 +457,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 
-> **Version:** (Kaizen-audited 2026-07-08)
+> **Version:** (Kaizen-audited 2026-07-12)

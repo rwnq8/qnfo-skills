@@ -1,11 +1,11 @@
 ---
 name: kaizen-autonomous-update
 description: Autonomous system-wide Kaizen continuous improvement protocol. Updates all prompts, templates, skills, agents/subagents, deploys, and commits. Use when user says "UPDATE ALL FROM KAIZEN," "system update," "update all skills," "continuous improvement," "Kaizen update," "auto-update," "upgrade everything," "refresh all settings," or when Kaizen engine detects 5+ unapplied improvements.
-version: "1.3"
+version: "1.4"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
-> **Related:** closeout-manager, skill-sync
+> **Related:** closeout-manager, skill-sync, github-cloudflare-sync
 
 
 > **QNFO Custom Skill** — Load via `read('R2 `qnfo/prompts/skills/kaizen-autonomous-update\\SKILL.md')`
@@ -139,7 +139,7 @@ Execute the complete 7-phase execution protocol documented below (templates depr
 
 | Phase | Description | Key Output |
 |:------|:-----------|:-----------|
-| **0. Pre-Flight** | Discovery Index pull, Kaizen audit, comprehensive Python audit | Gap report |
+| **0. Pre-Flight** | Discovery Index pull, Kaizen audit, comprehensive Python audit, **GitHub↔D1 sync check** | Gap report + drift report |
 | **1. System Prompts** | Update DEFAULT.md, QWAV-DEFAULT.md, META-PROMPT-DEEPSEEK.md | Version bumps |
 | **2. Templates** | Audit staleness, merge duplicates, deprecate unused | Clean template set |
 | **3. Skills** | Version headers, tool docs, read-based loading patterns | Versioned skills |
@@ -162,7 +162,8 @@ The Phase 0 comprehensive audit (`_kaizen_system_audit.py`) checks:
 6. **Guardrail completeness** — all essential guardrails present
 7. **Kaizen engine health** — conversation search, R2 integration
 8. **GAP AUDIT (v1.2 — per closeout-manager §2.6):** Run the full POST-PHASE GAP AUDIT (A-F categories) as part of Phase 0. Any BLOCKING gaps → halt the Kaizen update. Document all gaps in the Kaizen report.
-9. **VARIANT DEDUPLICATION (v1.0 — DeepChat v1.0.9):** Skills adopted from external agents (Claude Code, Agents SDK) that conflicted with existing DeepChat skills were renamed with `-claude-code` or `-agents` suffixes. The canonical variant is the base-named skill (e.g., `cloudflare`, not `cloudflare-claude-code`). When updating skills, ONLY update the canonical (base-named) variant. Do NOT independently update `-claude-code` or `-agents` suffixed copies — these are imports of the canonical version and will be overwritten on next skill-sync. If a suffixed copy has diverged, flag it as `[VARIANT-DRIFT: <name>-claude-code diverged from <name>]` and report in the Kaizen report.
+9. **GITHUB↔D1 DRIFT CHECK (v1.1 — 2026-07-11):** When `GITHUB_TOKEN` is available, run the lightweight drift check from `github-cloudflare-sync` skill. If GitHub open/closed counts differ from D1 pending/closed counts → flag `[GH-CF-DRIFT: N issues out of sync]` and auto-remediate before proceeding to Phase 1.
+10. **VARIANT DEDUPLICATION (v1.0 — DeepChat v1.0.9):** Skills adopted from external agents (Claude Code, Agents SDK) that conflicted with existing DeepChat skills were renamed with `-claude-code` or `-agents` suffixes. The canonical variant is the base-named skill (e.g., `cloudflare`, not `cloudflare-claude-code`). When updating skills, ONLY update the canonical (base-named) variant. Do NOT independently update `-claude-code` or `-agents` suffixed copies — these are imports of the canonical version and will be overwritten on next skill-sync. If a suffixed copy has diverged, flag it as `[VARIANT-DRIFT: <name>-claude-code diverged from <name>]` and report in the Kaizen report.
 
 ## Related Skills
 
@@ -240,4 +241,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 
-> **Version:** (Kaizen-audited 2026-07-08)
+> **Version:** v1.1 (Kaizen-audited 2026-07-11 — GitHub↔D1 sync added to Phase 0 pre-flight)

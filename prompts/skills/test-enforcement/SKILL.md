@@ -5,7 +5,7 @@ version: "1.0"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification — negative verification. (2) Assumption Challenge. (3) Edge Case Check. (4) DoD Integration. (5) Iteration — retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
-> **Related:** execution-guard, closeout-manager
+> **Related:** execution-guard, closeout-manager, github-cloudflare-sync
 
 ### Programmatic Loading & Execution
 This skill is loaded and executed **programmatically by the LLM system** 

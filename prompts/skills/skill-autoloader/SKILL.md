@@ -21,7 +21,7 @@ version: "2.0"
 
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
-> **Related:** closeout-manager, skill-sync, execution-guard, qnfo-agent
+> **Related:** closeout-manager, skill-sync, execution-guard, qnfo-agent, github-cloudflare-sync
 
 
 ### Programmatic Loading & Execution
@@ -173,6 +173,7 @@ When the user's message or the LLM's planned task matches a pattern, auto-load t
 | red team, DoD, definition of done, quality check, verify | `red-team-dod` |
 | test, verify, test suite, enforce | `test-enforcement` |
 | ultrametric, p-adic, tree | `ultrametric-engine` |
+| sync GitHub, GitHub issues, cross-reference, GitHub and D1, GitHub alignment, GH sync, drift detection | `github-cloudflare-sync` |
 | desktop app, GUI, automate, click, type, window, Computer Use, CUA | `computer-use` [PLUGIN: com.deepchat.plugins.cua] |
 
 
@@ -302,7 +303,7 @@ Once a skill is loaded, cache its content for the session. Don't re-load the sam
 | `doc-coauthoring` | documentation, proposal, spec, co-author, technical writing | â€” |
 | `mcp-builder` | MCP server, Model Context Protocol, FastMCP, API integration | â€” |
 | `deepchat-settings` | settings, preferences, theme, language, font | â€” |
-| `skill-creator` | create skill, new skill, update skill, prompt audit | skill-sync |
+| `github-cloudflare-sync` | sync GitHub, GitHub issues, cross-reference, GitHub and D1, GitHub alignment | infrastructure-audit, kaizen-autonomous-update, execution-guard, closeout-manager |
 
 ## Anti-Patterns
 
