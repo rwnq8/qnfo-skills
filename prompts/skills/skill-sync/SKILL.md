@@ -1,11 +1,11 @@
 ---
 name: skill-sync
-description: Sync all DeepChat skills between local disk, GitHub, and Cloudflare R2. Monitors skill modifications and auto-syncs after changes. Updates Discovery Index with current versions. Use when skills are modified and need to be pushed to redundant backups, or to check sync status.
-version: "1.3"
+description: Sync all DeepChat skills between local disk, GitHub, and Cloudflare R2. Monitors skill modifications and auto-syncs after changes. Updates D1 portfolio-state with current versions. Use when skills are modified and need to be pushed to redundant backups, or to check sync status.
+version: "1.5"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
-> **Related:** kaizen-autonomous-update, github-cloudflare-sync
+> **Related:** kaizen-autonomous-update
 
 
 

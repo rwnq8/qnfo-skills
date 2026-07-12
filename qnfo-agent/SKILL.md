@@ -768,15 +768,15 @@ Before starting any significant task, the agent MUST execute unified discovery t
 **The workflow is automatic.** The agent does not wait for user prompting to discover, verify, or close out. See each phase's section for detailed protocols.
 
 
-### 3.1 Pull Discovery Index (MANDATORY first step)
+### 3.1 Query D1 Portfolio-State (MANDATORY first step)
 
 ```bash
-npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json
+npx wrangler d1 execute portfolio-state --remote --command "SELECT type, COUNT(*) as count FROM resources GROUP BY type" -y
 ```
 
-The Discovery Index (`qnfo/discovery/index.json` on R2) is the SINGLE entry point for discovering ALL QNFO ecosystem assets — projects, publications, decisions, templates, skills, archived work, and infrastructure. It maps every artifact to its canonical Cloudflare home.
+> **DEPRECATED:** The Discovery Index (`qnfo/discovery/index.json` on R2) is NO longer used. All ecosystem asset discovery (projects, publications, resources, skills) is now done through D1 queries against `portfolio-state`, `qnfo-audit`, and `living-paper`. The R2 Discovery Index has been fully deprecated (2026-07-12). See MASTER-INVENTORY.md deprecation notice.
 
-**Thin-Client Reality:** There is NO local filesystem to browse for project discovery. `ls`, `rg`, and directory enumeration will NOT reveal what projects exist. The Discovery Index is your ONLY mechanism for finding what exists in the ecosystem. Do not skip this step — without the index, you are blind.
+**D1-FIRST Reality:** Discovery is now done through D1 queries. `portfolio-state`, `qnfo-audit`, and `living-paper` are your mechanisms for finding what exists in the ecosystem. Do not skip this step — without D1, you are blind.
 
 **Session-Start Thin-Client Scan (MANDATORY — v3.30 ENFORCEMENT):** Before ANY work begins, scan the working directory. This machine is a thin client — the ONLY files that should persist locally are `.git/`, `.gitignore`, and `.wrangler/` (cache). Everything else is clutter from a prior session that failed to clean up.
 
@@ -797,18 +797,17 @@ if ($remaining) { Write-Output "WARNING: $($remaining.Count) items locked — wi
 
 **Thin-Client Violation Detection:** If ANY files outside `.git/`, `.gitignore`, and `.wrangler/` are found ? a prior session failed to close out. This is a *systemic violation of the thin-client mandate*. Log: `[THIN-CLIENT-VIOLATION: N files from prior session]`. Delete them all. Do NOT use `-ErrorAction SilentlyContinue` — verify every deletion with `Test-Path`.
 
-**Index Integrity Gate (MANDATORY):** After pulling the index, validate it before use:
-1. Count projects via script file: write `_count_projects.py`, execute `python _count_projects.py`, verify output, then `Remove-Item _count_projects.py` (script imports json and reads _discovery_index.json)
-2. If project count < 5: index is CORRUPTED. Rebuild from filesystem enumeration + R2 and upload. Flag session as `[DISCOVERY-CORRUPTED-REBUILT]`.
-3. If `\ufffd` (replacement character) found anywhere in the index: index is CORRUPTED. Same rebuild protocol.
-4. Never write to the Discovery Index without first pulling the latest version AND creating a timestamped backup: `wrangler r2 object put qnfo/discovery/index-backup-YYYY-MM-DD.json --file=_discovery_index.json --remote`
-5. **All referenced R2 paths MUST be verified before upload (v3.16):** For every `r2_path`, `pipeline_status_path`, or any other R2 reference in the index, query that path on R2 to confirm it exists: `npx wrangler r2 object get qnfo/<path> --remote`. If the path returns "The specified key does not exist" — the reference is WRONG. Fix it before uploading. An unverified path causes downstream agents to trust a broken reference, requiring self-undoing fixes. Root cause of 2026-06-02 d63e735→8bda41d fix cycle.
+**D1 Integrity Gate (MANDATORY):** After querying D1, validate results before use:
+1. Verify D1 response is not empty — if empty, run infrastructure-audit to enumerate live resources
+2. If resource count < 5: D1 may be stale. Run infrastructure-audit to cross-check. Flag session as `[D1-STALE-VERIFIED]`.
+3. Never write to D1 without first reading current state to avoid overwrites
+4. **All referenced R2 paths MUST be verified before upload (v3.16):** For every `r2_path`, `pipeline_status_path`, or any other R2 reference, query that path on R2 to confirm it exists: `npx wrangler r2 object get qnfo/<path> --remote`. If the path returns "The specified key does not exist" — the reference is WRONG. Fix it before uploading. An unverified path causes downstream agents to trust a broken reference, requiring self-undoing fixes. Root cause of 2026-06-02 d63e735→8bda41d fix cycle.
 
 ### 3.1.5 Query Knowledge Graph (Impact Analysis)
 
-**Purpose:** The Discovery Index tells you WHAT exists. The Knowledge Graph tells you HOW things connect — dependencies, impact chains, and audit trails.
+**Purpose:** D1 tells you WHAT exists. The Knowledge Graph tells you HOW things connect — dependencies, impact chains, and audit trails.
 
-After pulling the Discovery Index, query the QNFO Knowledge Graph API for impact analysis on your target entity:
+After querying D1 portfolio-state, query the QNFO Knowledge Graph API for impact analysis on your target entity:
 
 ```python
 import urllib.request, json
@@ -954,12 +953,12 @@ Use `read('%APPDATA%\DeepChat\skills\knowledge-graph\SKILL.md')` for automated d
 6. **Check local filesystem:** Verify project directory, check for unindexed local work
 7. **Read tier-1 source files:** Only after discovery is complete, read project-specific files
 
-### 3.3 Discovery Index Fallback
+### 3.3 D1 Fallback
 
-If `qnfo/discovery/index.json` does not exist or is corrupt:
-1. Rebuild from sources: enumerate R2 objects (`qnfo/audit/state/`, `qnfo/releases/YYYY/MM/`, `qnfo/archive/`), local projects (`qnfo/projects/` [ephemeral cache; R2 canonical: `qnfo/projects/`]), Archive (`qnfo/archive/` [local convenience only])
-2. Build fresh index and upload to `qnfo/discovery/index.json`
-3. Flag session as `[DISCOVERY-REBUILT]` — this is a system recovery action
+If D1 `portfolio-state` is unreachable or returns empty:
+1. Rebuild from sources: enumerate R2 objects (`qnfo/audit/state/`, `qnfo/releases/YYYY/MM/`), query `qnfo-audit` D1 for projects
+2. Run `infrastructure-audit` skill for full ecosystem enumeration
+3. Flag session as `[D1-RECOVERY]` — this is a system recovery action
 
 ### 3.4 Discovery Reporting
 
@@ -2115,7 +2114,7 @@ python _kaizen_engine.py --auto            # Full auto: audit + apply + deploy +
 | `audit/conversations/` | Session summaries, decisions, patterns |
 | `audit/kaizen/last_run.json` | Prior improvement actions, trends |
 | Cloudflare R2 `qnfo/audit/` | Project states, backlogs, decision logs |
-| Cloudflare R2 `qnfo/discovery/index.json` | Ecosystem asset changes |
+| D1 `portfolio-state` + `qnfo-audit` | Ecosystem asset tracking (Discovery Index DEPRECATED) |
 | `conversation-search-server` MCP | Live conversation pattern search |
 | `_system_audit.py` | Cross-file consistency, version drift |
 
@@ -2872,12 +2871,11 @@ if __name__ == "__main__":
    d. Update decision log if new decisions made:
       `wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --remote --file=<temp>`
       → Append new decisions → `wrangler r2 object put qnfo/audit/decisions/DECISION-LOG.md --remote --file=<temp>`
-   e. **Update Discovery Index** (MANDATORY — every session close-out):
-      - Pull current index: `wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json`
-      - Add/update entries for: new projects created, publications generated, projects archived, state changes
-      - Upload updated index: `wrangler r2 object put qnfo/discovery/index.json --file=<updated> --remote`
-      - If index missing: rebuild from R2 + local filesystem enumeration and upload fresh
-   f. R2 path: `qnfo/audit/` (conversations/, decisions/, infrastructure/) + `qnfo/discovery/`
+   e. **Update D1 Portfolio-State** (MANDATORY — every session close-out):
+      - Write session summary to D1 `portfolio-state` handoffs table
+      - Update project status in `qnfo-audit` projects table
+      - Log publications in `living-paper` papers table
+   f. R2 path: `qnfo/audit/` (conversations/, decisions/, infrastructure/)
    g. For Cloudflare operation details: `read('%APPDATA%\DeepChat\skills\cloudflare-deployer\SKILL.md')`
    i. For session closeout workflow: `read('%APPDATA%\DeepChat\skills\closeout-manager\SKILL.md')`
    j. For complete rebuild from crash, read REBUILD-FROM-SCRATCH.md

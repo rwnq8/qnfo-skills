@@ -1,7 +1,7 @@
 ---
 name: cloudflare-deployer
 description: "Cloudflare platform deployment operations -- Pages, R2, Workers, Vectorize, DNS, redirects, and Containers. Use when user says deploy, ship to production, host on Cloudflare, or push to Cloudflare, or when the agent needs to deploy, manage, or troubleshoot Cloudflare infrastructure."
-version: "1.3"
+version: "2.3"
 ---
 
 
@@ -30,7 +30,7 @@ After every Cloudflare deployment, autonomously verify:
 - **Caching drift:** Did the deployment actually reach users? curl the production URL with ?cache-bust=timestamp and compare against local build.
 - **Stale build artifacts:** Are there orphaned deployments? Check wrangler pages deployment list for stale preview deployments.
 
-> **Related:** infrastructure-audit, closeout-manager, github-cloudflare-sync
+> **Related:** infrastructure-audit, closeout-manager
 
 
 
@@ -204,7 +204,7 @@ All Cloudflare policies verified via both wrangler CLI and REST API direct calls
 
 ### Available Resources (Enumerated)
 
-**R2 Buckets:** `qnfo` (primary) — audit trails, releases, deployments, tools, projects, discovery index
+**R2 Buckets:** `qnfo` (primary) — audit trails, releases, deployments, tools, projects
 
 **D1 Databases (5):**
 - `qnfo-cms` (0458a344) — CMS content management (34 entries, 5 types)
@@ -531,7 +531,6 @@ All 28 QNFO DeepChat skills are redundantly backed up. This skill itself is reco
 |:-------|:---------|:-----------------|
 | **GitHub** | `rwnq8/qnfo-skills` | `git clone https://github.com/rwnq8/qnfo-skills.git %USERPROFILE%\.deepchat\skills` |
 | **R2** | `qnfo/prompts/skills/cloudflare-deployer/SKILL.md` | `python bootstrap_skills.py --source r2` |
-| **Discovery Index** | `qnfo/discovery/index.json` (skills_backup) | JSON lookup |
 
 **Bootstrap tools on R2:**
 - `qnfo/tools/bootstrap_skills.py` — One-command restore from GitHub or R2
@@ -718,7 +717,7 @@ R2 object create/update (qnfo/releases/*/paper.md)
 
 ```bash
 # Check sync health: D1 paper count vs KG Paper node count
-python -c "import urllib.request, json; kg=json.loads(urllib.request.urlopen(urllib.request.Request('https://graph-api.q08.workers.dev/stats',headers={'User-Agent':'Mozilla/5.0'}),timeout=10).read()); print(f'KG Paper nodes: {next((nl['count'] for nl in kg.get('nodeLabels',[]) if nl['label']=='Paper'),'?')}')"
+python -c "import urllib.request, json; kg=json.loads(urllib.request.urlopen(urllib.request.Request('https://graph-api.q08.workers.dev/stats',headers={'User-Agent':'Mozilla/5.0'}),timeout=10).read()); print(f'KG Paper nodes: {kg.get(\"labelCounts\",{}).get(\"Paper\",\"?\")}')"
 ```
 
 **GATE:** D1 `living-paper.papers` count and KG `Paper` node count should differ by ≤ 5 at all times. Any larger discrepancy → run immediate reconciliation via `cron-graph-re-seed`.
@@ -759,10 +758,8 @@ Generates sitemap.xml, robots.txt, and llms.txt for discoverability.
 v1.0 — 2026-05-31
 
 Usage:
-  # SEO deployed from R2 canonical: qnfo/sites/deep.qwav.tech/
-# python generate-seo.py --domain deep.qwav.tech --dir <r2-canonical> --base-url "https://deep.qwav.tech"
-  # SEO deployed from R2 canonical: qnfo/projects/qlof/deploy/
-# python generate-seo.py --domain laws.qnfo.org --dir <r2-canonical>
+  python generate-seo.py --domain deep.qwav.tech --dir "G:/My Drive/QWAV" --base-url "https://deep.qwav.tech"
+  python generate-seo.py --domain laws.qnfo.org --dir "G:\My Drive\projects\qlof\deploy"
 """
 
 import argparse

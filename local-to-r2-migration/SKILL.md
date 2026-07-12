@@ -53,7 +53,7 @@ the user with the specific failure reason.
 
 
 
-**Solution:** This skill scans local directories, classifies every file, purges the junk (orphaned `_*` files, build artifacts, caches), uploads legitimate project files to R2, registers everything in the Discovery Index, and deletes the local copies after verified upload.
+**Solution:** This skill scans local directories, classifies every file, purges the junk (orphaned `_*` files, build artifacts, caches), uploads legitimate project files to R2, registers everything in D1 portfolio-state, and deletes the local copies after verified upload.
 
 
 
@@ -107,7 +107,7 @@ update_plan([
 
   {"step": "Phase 3: Upload R2 migration candidates with verification", "status": "pending"},
 
-  {"step": "Phase 4: Update Discovery Index (D1-FIRST)", "status": "pending"},
+  {"step": "Phase 4: Register in D1 Portfolio-State", "status": "pending"},
 
   {"step": "Phase 5: Delete local copies after verified upload", "status": "pending"},
 
@@ -452,7 +452,7 @@ Create `_upload_manifest.json` tracking every uploaded file:
 
 
 
-### Phase 4: UPDATE DISCOVERY INDEX
+### Phase 4: Register in D1 Portfolio-State (Discovery Index DEPRECATED)
 
 
 
@@ -460,171 +460,24 @@ Create `_upload_manifest.json` tracking every uploaded file:
 
 
 
-**IMPORTANT:** Follow the Discovery Index Edit Protocol (§4.5 of META-PROMPT):
+### Phase 4: Register Resources in D1 Portfolio-State
 
-1. **Re-pull latest from R2** before editing
-
-2. **Verify all referenced R2 paths** exist before upload
-
-3. **Create timestamped backup** before upload
-
-4. **Verify upload** by re-pulling and diffing
-
-
+**Goal:** All migrated project assets are tracked in D1 portfolio-state. The Discovery Index (R2 qnfo/discovery/index.json) is FULLY DEPRECATED as of 2026-07-12.
 
 ```bash
-
-# Step 4.1: Pull current index
-
-# D1-FIRST: Query D1 for discovery instead of R2 index. R2 qnfo/discovery/index.json is DEPRECATED.
-
-
-
-# Step 4.2: Update index entries (use Python for JSON manipulation)
-
-# Write Discovery Index update script, execute, discard
-cat > _update_discovery_index.py << 'PYEOF'
-import json, sys
-
-from datetime import datetime
-
-
-
-with open('_discovery_index.json', 'r') as f:
-
-    index = json.load(f)
-
-
-
-with open('_upload_manifest.json', 'r') as f:
-
-    manifest = json.load(f)
-
-
-
-# For each uploaded project, add/update the projects section
-
-if 'projects' not in index:
-
-    index['projects'] = {}
-
-
-
-# Extract unique project names from uploaded paths
-
-projects_updated = set()
-
-for entry in manifest['uploaded']:
-
-    r2_path = entry['r2']
-
-    if r2_path.startswith('qnfo/projects/'):
-
-        project_name = r2_path.split('/')[2]
-
-        if project_name == '_top':
-
-            continue  # Skip the top-level catchall
-
-        projects_updated.add(project_name)
-
-        if project_name not in index['projects']:
-
-            index['projects'][project_name] = {
-
-                'name': project_name,
-
-                'r2_path': f'qnfo/projects/{project_name}/',
-
-                'migrated_from_local': True,
-
-                'migration_date': datetime.utcnow().isoformat() + 'Z',
-
-                'status': 'migrated'
-
-            }
-
-
-
-# Update metadata
-
-index['metadata']['last_modified'] = datetime.utcnow().isoformat() + 'Z'
-
-index['metadata']['last_action'] = 'local-to-r2-migration'
-
-index['metadata']['projects_migrated'] = list(projects_updated)
-
-
-
-# Also update the asset_registry if it exists
-
-if 'asset_registry' not in index:
-
-    index['asset_registry'] = {}
-
-for project in projects_updated:
-
-    key = f'projects/{project}'
-
-    index['asset_registry'][key] = {
-
-        'type': 'project',
-
-        'r2_bucket': 'qnfo',
-
-        'r2_prefix': f'projects/{project}/',
-
-        'migrated': True
-
-    }
-
-
-
-with open('_discovery_index.json', 'w') as f:
-
-    json.dump(index, f, indent=2)
-
-
-
-print(f'Updated Discovery Index: {len(projects_updated)} projects added/updated')
-
-for p in sorted(projects_updated):
-
-    print(f'  + {p}')
-PYEOF
-python _update_discovery_index.py
-Remove-Item _update_discovery_index.py via script file
-
-
-
-# Step 4.3: Create backup
-
-$timestamp = Get-Date -Format 'yyyy-MM-ddTHHmmss'
-
-npx wrangler r2 object put "qnfo/discovery/index-backup-${timestamp}.json" --file=_discovery_index.json --remote
-
-
-
-# Step 4.4: Upload updated index
-
-npx wrangler r2 object put qnfo/discovery/index.json --file=_discovery_index.json --remote
-
-
-
-# Step 4.5: Verify upload
-
-npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index_verify.json
-
-# Verify: cat > _verify_di.py << 'PYEOF'
-# import json; a=json.load(open('_discovery_index.json')); b=json.load(open('_discovery_index_verify.json')); assert a==b, 'VERIFICATION FAILED'; print('Index upload verified')
-# PYEOF
-# python _verify_di.py && Remove-Item _verify_di.py
-
-```
-
-
-
-### Phase 5: CLEAN UP & REPORT
+# Step 4.1: Query D1 portfolio-state for current resources
+npx wrangler d1 execute portfolio-state --remote --command "SELECT type, COUNT(*) FROM resources GROUP BY type" -y
+
+# Step 4.2: Register migrated project assets
+Write-Output "[D1-REGISTER] Use portfolio-state API or D1 INSERT to register migrated projects"
+Write-Output "[D1-REGISTER] npx wrangler d1 execute portfolio-state --remote --command `"INSERT INTO resources VALUES (...)`" -y"
+
+# Step 4.3: Verify registration
+npx wrangler d1 execute portfolio-state --remote --command "SELECT * FROM resources WHERE status = 'migrated'" -y
+
+# Step 4.4: Update project statuses in qnfo-audit
+npx wrangler d1 execute qnfo-audit --remote --command "UPDATE projects SET status = 'migrated' WHERE name IN (...)" -y
+```## Phase 5: CLEAN UP & REPORT
 
 
 
@@ -1406,7 +1259,7 @@ Agent:
 
 
 
-  6. [Phase 4] Updates Discovery Index with 32 project entries.
+  6. [Phase 4] Registers migrated resources in D1 portfolio-state.
 
      → Backup created, index uploaded, verified
 
@@ -1438,7 +1291,7 @@ Agent:
 
 | R2 upload fails for a file | Log failure in manifest. Skip deletion. Retry batch at end. After 3 failures: mark `[FAILED]` and continue. |
 
-| Discovery Index pull fails | Attempt rebuild from R2 enumeration. If that fails: report `[BLOCKED: Cannot access Discovery Index]` |
+| D1 registration fails | Verify wrangler auth, check D1 schema |
 
 | User aborts mid-migration | Save state in `_migration_state.json`. Can resume with `--resume` flag. |
 
@@ -1481,3 +1334,4 @@ ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 
 > **Version:** (Kaizen-audited 2026-07-08)
+

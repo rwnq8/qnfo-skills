@@ -5,7 +5,7 @@ version: "2.0"
 ---
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
-> **Related:** cloudflare-deployer, knowledge-graph, github-cloudflare-sync
+> **Related:** cloudflare-deployer, knowledge-graph
 
 
 
@@ -34,7 +34,7 @@ the user with the specific failure reason.
 
 ---
 
-# INFRASTRUCTURE AUDIT SKILL — v2.0
+# INFRASTRUCTURE AUDIT SKILL — v1.0 -- v2.0
 
 > **LIFECYCLE-AWARE. GAP-AUDIT INTEGRATION. RED-TEAM-DOD INTEGRATION. RESOURCE GOVERNANCE. 522-PREVENTION. UPDATED 2026-07-01.** v1.9 adds §0.8 522 Root Cause Detection (CNAME × Pages cross-reference), §0.9 CNAME Chain Detection, §0.10 Dead Worker CNAME Detection, and §0.11 Empty Zone Detection — all learned from the 2026-07-01 qwav.tech 522 outage. Prevents the #1 failure mode: CNAME to `.pages.dev` without domain registration.
 
@@ -85,7 +85,7 @@ update_plan([
 
 ## Purpose
 
-The #1 cause of duplicate work in QNFO is agents executing tasks without checking live infrastructure state. This skill automates the Infrastructure State Verification Gate (qnfo-agent §3.2 step 1.6) by querying all Cloudflare resources including the automated lifecycle pipeline and comparing against handoff/Discovery Index claims.
+The #1 cause of duplicate work in QNFO is agents executing tasks without checking live infrastructure state. This skill automates the Infrastructure State Verification Gate (qnfo-agent §3.2 step 1.6) by querying all Cloudflare resources including the automated lifecycle pipeline and comparing against handoff/D1 portfolio-state claims.
 
 ## When to Use
 
@@ -169,7 +169,7 @@ r4 = urllib.request.Request("https://graph-api.q08.workers.dev/stats",
     headers={"User-Agent": "Mozilla/5.0"})
 kg = json.loads(urllib.request.urlopen(r4, timeout=10).read())
 print(f"Knowledge Graph: {kg.get('totalNodes',0)} nodes, {kg.get('totalEdges',0)} edges")
-# Expected: 3190 nodes, 4629 edges
+# Expected: 261 nodes, 401 edges
 ```
 
 ### Phase 1.7: DNS Resolution & Domain Classification Audit (v1.7 — 2026-07-01)
@@ -239,83 +239,9 @@ for url, expected, name in redirects:
         print(f'  [FAIL] {name}: {e}')
 ```
 
-### Phase 1.8: GitHub ↔ D1 Sync Verification (v2.1 — 2026-07-11)
-
-> **CRITICAL:** GitHub Issues (QNFO/QWAV) and Cloudflare D1 must stay synchronized. The 2026-07-11 audit found 55 skills, ZERO handling GitHub↔Cloudflare bidirectional sync. **This phase prevents the #2 failure mode: agents updating only one system and forgetting the other.**
-
-**Trigger:** Runs during every Phase 1 infrastructure audit when `GITHUB_TOKEN` env var is present.
-
-```python
-import urllib.request, json, os, ssl
-
-GH_TOKEN = os.environ.get("GITHUB_TOKEN", "")
-CF_TOKEN = os.environ.get("CLOUDFLARE_API_TOKEN", "")
-ctx = ssl.create_default_context()
-
-# Quick drift detection — full sync delegates to github-cloudflare-sync skill
-def gh_cf_drift_check():
-    if not GH_TOKEN:
-        print("  [GH-SYNC-SKIPPED] GITHUB_TOKEN not available")
-        return None
-    
-    # Count GitHub issues
-    gh_open = gh_closed = 0
-    for state in ["open", "closed"]:
-        url = f"https://api.github.com/repos/QNFO/QWAV/issues?state={state}&per_page=1"
-        req = urllib.request.Request(url,
-            headers={"Authorization": f"Bearer {GH_TOKEN}",
-                     "Accept": "application/vnd.github.v3+json",
-                     "User-Agent": "QNFO-Audit/2.1"})
-        resp = urllib.request.urlopen(req, timeout=10, context=ctx)
-        # GitHub returns total count in link header or we use last page
-        data = json.loads(resp.read())
-        link = resp.headers.get("Link", "")
-        if "last" in link:
-            import re
-            match = re.search(r'[?&]page=(\d+)>; rel="last"', link)
-            count = int(match.group(1)) * 100 if match else len(data)
-        else:
-            count = len(data)
-        if state == "open":
-            gh_open = count
-        else:
-            gh_closed = count
-    
-    # Count D1 tasks
-    d1_url = f"https://api.cloudflare.com/client/v4/accounts/edb167b78c9fb901ea5bca3ce58ccc4b/d1/database/35e2e573-92f3-46ac-83c6-22f6429fc5e5/query"
-    req = urllib.request.Request(d1_url,
-        headers={"Authorization": f"Bearer {CF_TOKEN}", "Content-Type": "application/json"},
-        method="POST",
-        data=json.dumps({"sql": "SELECT github_state, COUNT(*) as cnt FROM tasks WHERE source='github' GROUP BY github_state"}).encode())
-    d1_data = json.loads(urllib.request.urlopen(req, timeout=10, context=ctx).read())
-    d1_counts = {r["github_state"]: r["cnt"] for r in d1_data.get("result", [{}])[0].get("results", [])}
-    
-    d1_pending = d1_counts.get("open", 0)
-    d1_closed = d1_counts.get("closed", 0)
-    
-    print(f"  GitHub: {gh_open} open, {gh_closed} closed = {gh_open + gh_closed} total")
-    print(f"  D1:     {d1_pending} pending, {d1_closed} closed = {d1_pending + d1_closed} total")
-    
-    gh_total = gh_open + gh_closed
-    d1_total = d1_pending + d1_closed
-    
-    if gh_open != d1_pending or gh_closed != d1_closed:
-        print(f"  [DRIFT-DETECTED] GitHub≠D1: Δopen={gh_open - d1_pending}, Δclosed={gh_closed - d1_closed}")
-        print(f"  [ACTION] Run full sync: skill_view('github-cloudflare-sync') → run_full_sync()")
-        return {"drift": True, "gh_open": gh_open, "d1_pending": d1_pending,
-                "gh_closed": gh_closed, "d1_closed": d1_closed}
-    else:
-        print(f"  [OK] GitHub ↔ D1 in sync")
-        return {"drift": False}
-```
-
-**GATE:** If drift detected → auto-load `github-cloudflare-sync` skill and run full remediation. Do NOT proceed without resolving drift.
-
-**Integration:** This phase delegates heavy sync logic to `github-cloudflare-sync` skill. The audit phase is a lightweight pre-check that triggers the full sync only when needed.
-
 ### Phase 2: Orphan Detection
 
-Compare live resources against Discovery Index to find unregistered or stale entries.
+Compare live resources against D1 portfolio-state + qnfo-audit to find unregistered or stale entries.
 
 ```python
 # Check for projects in DI with no R2 path
@@ -326,15 +252,21 @@ Compare live resources against Discovery Index to find unregistered or stale ent
 ### Phase 3: Archival Integrity (NEW)
 
 ```python
-import json, urllib.request
+# D1-FIRST: Query D1 instead of R2 discovery index (DEPRECATED)
+# Projects: await get from qnfo-audit D1 projects table
+# Resources: await get from portfolio-state D1 resources table
 
-# Pull Discovery Index
-# D1-FIRST: Query D1 instead of R2 discovery index
-# Projects: npx wrangler d1 execute qnfo-audit --remote --command 'SELECT * FROM discovery_projects' -y
-# Resources: npx wrangler d1 execute portfolio-state --remote --command 'SELECT * FROM resources' -y
-    headers={"Authorization": f"Bearer {TOKEN}", "User-Agent": "Mozilla/5.0"})
-di = json.loads(urllib.request.urlopen(r, timeout=15).read())
-projects = di.get("projects", {})
+# NOTE: The Discovery Index (qnfo/discovery/index.json on R2) is DEPRECATED.
+# All project/resource data lives in D1:
+#   - qnfo-audit.projects  (78 entries)
+#   - portfolio-state.resources (66 entries)
+
+# Query D1 for projects:
+#   npx wrangler d1 execute qnfo-audit --remote --command "SELECT name, status, r2_path FROM projects" -y
+
+# Check archived projects have archive paths
+# Check project paths exist on R2
+# Verify ultrametric taxonomy
 
 # Check archived projects have archive paths
 archived = [(n, p.get("r2_path","")) for n, p in projects.items() if "ARCHIVED" in (p.get("status","")).upper()]
@@ -371,7 +303,7 @@ import urllib.request, json
 r = urllib.request.Request("https://graph-api.q08.workers.dev/stats",
     headers={"User-Agent": "Mozilla/5.0"})
 kg = json.loads(urllib.request.urlopen(r, timeout=10).read())
-kg_papers = next((nl['count'] for nl in kg.get('nodeLabels', []) if nl['label'] == 'Paper'), 0)
+kg_papers = kg.get("labelCounts", {}).get("Paper", 0)
 print(f"  KG Paper nodes: {kg_papers}")
 
 # Get D1 living-paper count
@@ -397,21 +329,21 @@ except Exception as e:
 
 ## Infrastructure Resource Inventory
 
-| Resource | Expected Count | Current (2026-07-11) |
+| Resource | Expected Count | Current (2026-07-01) |
 |:---------|:-----:|:------|
-| D1 Databases | 5 | qnfo-cms, **living-paper (CANONICAL PUBLICATIONS DATABASE — 616 papers)**, qnfo-audit, qnfo-graph, portfolio-state |
+| D1 Databases | 5 | qnfo-cms (page content), **living-paper (CANONICAL PUBLICATIONS DATABASE — 170 papers)**, qnfo-audit, qnfo-graph, portfolio-state |
 | KV Namespaces | 1 | equation-cache |
 | Vectorize Indexes | 3 | qwav-research-v2 (1024-dim, active), qnfo-handoffs, qnfo-tasks |
-| Pages Projects | 10 | qnfo-hub, qnfo-publications, qwav, qnfo-design-system, ask-qwav, cocyle, different-physics, hensel-code, oft-proof, scaffold-lab |
-| Workers | 33 | ask-qwav (v2.4), graph-api, api-gateway, qnfo-agent-session (DO+SQLite), qnfo-lifecycle, qnfo-archive-worker, papers-server, qnfo-data-api, search-worker + 24 more |
+| Pages Projects | 10 (5 active, 5 dormant) | qnfo-hub, qnfo-publications, qnfo-legal, qwav, qnfo-design-system + 5 dormant |
+| Workers | 25 | papers-server, ask-qwav, graph-api, qnfo-agent-session (DO+SQLite), qnfo-ai-worker (Workers AI), +25 more |
 | **Durable Objects** | 2 namespaces, 3 classes | `portfolio-api_StateRegistry` (StateRegistry), `qnfo-agent-session` (AgentSession + QnfoAgentSession w/ **SQLite ON**) — Fully persistent agent state, KG mutex, lifecycle state machine |
 | Queues | 1 | qnfo-lifecycle-queue (essential) |
 | **R2 Event Rules** | 2 | releases/*.md + discovery/*.json → qnfo-lifecycle-queue (created 2026-07-04) |
-| **Secrets Store** | 1 store, 20 secrets | `default_secrets_store` (8ef28060) — CLOUDFLARE_API_TOKEN, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, ZENODO_API_TOKEN, BUFFER_ACCESS_TOKEN, GITHUB_TOKEN, PINATA_JWT, PINATA_API_KEY, etc. |
+| **Secrets Store** | 1 store, 20 secrets | `default_secrets_store` (8ef28060) — CLOUDFLARE_API_TOKEN, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, ZENODO_API_TOKEN, BUFFER_ACCESS_TOKEN, GITHUB_TOKEN, S3_ENDPOINT, ADMIN_API_TOKEN, ADMIN_TOKEN, CF_API_TOKEN, GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET, BUFFER_CLIENT_ID, BUFFER_CLIENT_SECRET, FILEBASE_ACCESS_KEY, FILEBASE_ENDPOINT, FILEBASE_SECRET_KEY, PINATA_API_KEY, PINATA_API_SECRET, PINATA_JWT. **READ via env var; canonical store is Secrets Store.** |
 | **Workers AI** | 60 models, 10 task types | Text Gen, Embeddings (1024-dim), Translation, TTS, Image Gen confirmed |
-| Knowledge Graph | 3190 nodes, 4629 edges | ACTIVE — graph-api Worker, D1 qnfo-graph (33 node types, 57 edge types, 1792 papers, 152 CloudflareAssets, 56 skills) |
+| Knowledge Graph | 2721 nodes, 3993 edges | ACTIVE — graph-api Worker, D1 qnfo-graph |
 | R2 Bucket | 1 (qnfo) | papers, publications, discovery, archive, projects, releases, tools |
-| Live Domains | 16 (verified 2026-07-11) | 7 zones, all resolving HTTP 200 |
+| Live Domains | 26 (verified 2026-07-05) | 10 zones, all resolving HTTP 200 |
 
 ## Lifecycle Pipeline Health Checks
 
@@ -437,9 +369,9 @@ except Exception as e:
 | KV Namespaces | 2→1 | OK (git-on-cloudflare-routes deprecated) |
 | Vectorize Indexes | 3 | OK (qwav-research-v2 active, 2 obsolete deleted) |
 | Pages Projects | 10 | OK (3 essential, 4 redirecting, 3 support) |
-| Workers | 33 | OK |
+| Workers | 27 | OK |
 | Queues | 2 | OK (git-on-cloudflare-repo-maint deprecated) |
-| Knowledge Graph | 3190n/4629e | ACTIVE (33 node types, 57 edge types, full citation graph) |
+| Knowledge Graph | 261n/401e | ACTIVE (needs paper REFERENCES edges) |
 | Lifecycle Worker | Running | OK |
 | Archive Worker | Running | OK |
 
@@ -465,7 +397,7 @@ No action needed.
 
 > **CRITICAL:** The 2026-07-01 session audit found 18 worker routes, 30 Workers, 10 Pages projects, 42 DNS records, 7 zones, and 4 redirect chains — all grown unconstrained. Root cause: no cross-reference between resources, no baseline counts, no automated enforcement. The session session deleted 24 DNS records, 13 routes, 5 Workers, 5 Pages projects, and 2 redirect rulesets. **These rules prevent recurrence.**
 
-**Resource Baselines (alert if exceeded):** Worker routes ≤ 6, Workers ≤ 33 (baseline raised 2026-07-11 to match 33 deployed Workers; 33 Workers live verified, 0 orphans), Pages ≤ 10 (was 5 — baseline lifted 2026-07-04 to match actual usage; 26 projects trimmed to 10 in 2026-07-01 cleanup), DNS ≤ 16, Zones ≤ 7 (12 total with 5 Registrar-managed unremovable zones excluded from baseline), Redirects = 0. **Cross-Reference Enforcement:** every route must target a live Worker; every DNS CNAME to `.pages.dev` must have domain registered on that Pages project; every domain must resolve to HTTP 200. **Growth Detection:** before creating any resource, count current resources; if over baseline, audit and clean up first. **Anti-Proliferation:** create DNS CNAME → add domain to Pages FIRST; create Worker route → verify Worker deployed FIRST; delete Worker → delete all routes FIRST; delete Pages → remove all domains FIRST.
+**Resource Baselines (alert if exceeded):** Worker routes ≤ 6, Workers ≤ 32 (was 27 — baseline raised 2026-07-04 to match actual 32 deployed Workers; 2026-07-04 RED-TEAM audit verified 0 orphans), Pages ≤ 10 (was 5 — baseline lifted 2026-07-04 to match actual usage; 26 projects trimmed to 10 in 2026-07-01 cleanup), DNS ≤ 16, Zones ≤ 7 (12 total with 5 Registrar-managed unremovable zones excluded from baseline), Redirects = 0. **Cross-Reference Enforcement:** every route must target a live Worker; every DNS CNAME to `.pages.dev` must have domain registered on that Pages project; every domain must resolve to HTTP 200. **Growth Detection:** before creating any resource, count current resources; if over baseline, audit and clean up first. **Anti-Proliferation:** create DNS CNAME → add domain to Pages FIRST; create Worker route → verify Worker deployed FIRST; delete Worker → delete all routes FIRST; delete Pages → remove all domains FIRST.
 
 **GATE:** Resource counts MUST be within baseline at session start.
 
@@ -661,8 +593,7 @@ for z in zones:
 
 ---
 
-*infrastructure-audit v2.1 — GitHub↔D1 Sync Phase 1.8 (§1.8) + Resource Governance (§0.7) + 522 Prevention (§0.8-§0.11). 26-check audit with automated fix capability. **Updated 2026-07-11: KG stats 3190n/4629e, Workers baseline 33, GitHub↔D1 drift detection.***
-
+*infrastructure-audit v1.9 — Resource Governance (§0.7) + 522 Prevention (§0.8-§0.11). Automated CNAME×Pages cross-reference, chain detection, dead worker detection, empty zone detection. 25-check audit with automated fix capability.*
 
 *v1.8 and earlier deprecated 2026-07-01. Replaced by v1.9 with automated 522 root cause detection, CNAME chain detection, dead worker detection, and empty zone detection.*
 
@@ -814,4 +745,4 @@ Before claiming this skill complete, autonomously run:
 ANTI-PATTERN: User should NEVER ask about quality.
 Refer to RED-TEAM-PROTOCOL.md for full protocol.
 
-> **Version:** v2.0 (Kaizen-audited 2026-07-11 — live infrastructure cross-check, KG: 3190n/4629e, Workers: 33, Pages: 10)
+> **Version:** (Kaizen-audited 2026-07-08)
