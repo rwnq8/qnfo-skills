@@ -1,5 +1,5 @@
 name = "papers-server"
-main = "papers-server-v3.1.js"
+main = "papers-server-v3.4.js"
 compatibility_date = "2026-07-12"
 
 [[d1_databases]]
@@ -10,3 +10,8 @@ database_id = "70a58cb3-b2cd-498d-877f-ecca86859a22"
 [[r2_buckets]]
 binding = "PAPERS_BUCKET"
 bucket_name = "qnfo"
+
+[vars]
+# ADMIN_TOKEN: This worker checks env.ADMIN_TOKEN for admin endpoint auth
+# Set via: npx wrangler secret put ADMIN_TOKEN --name papers-server
+# The secret is injected as env.ADMIN_TOKEN at runtime

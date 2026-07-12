@@ -491,6 +491,61 @@ async function handleHealth(env) {
   });
 }
 
+// ── POST /api/chat ── Interactive drafting dialog
+
+async function handleChat(request, env) {
+  if (request.method !== 'POST') return json({ error: 'Use POST' }, 405);
+
+  let body;
+  try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+
+  const messages = body.messages || [];
+  if (!messages.length) return json({ error: 'messages array required' }, 400);
+
+  // Build the conversation for AI
+  const systemPrompt = `You are a patent disclosure drafting assistant helping an inventor prepare a US Provisional Patent Disclosure. Your goal is to ask clarifying questions to help the inventor fully describe their invention. 
+
+Important guidelines:
+- Ask ONE or TWO focused questions at a time. Be concise.
+- Help identify gaps: technical field, background/problem, how it works, what makes it novel, alternative embodiments, specific components/materials/methods.
+- Be encouraging and supportive. The inventor may not know patent terminology.
+- If they've provided enough detail, tell them they're ready to generate their disclosure.
+- Do NOT write the disclosure yourself — just guide them to provide enough information.
+- After 3-4 rounds of good exchanges, suggest they click "Generate Disclosure."
+
+Respond conversationally. Keep responses under 3 paragraphs.`;
+
+  // Convert messages to AI format (exclude system messages to save tokens)
+  const aiMessages = [
+    { role: 'system', content: systemPrompt },
+    ...messages.slice(-6).map(m => ({ role: m.role === 'system' ? 'assistant' : m.role, content: m.content }))
+  ];
+
+  try {
+    const result = await env.AI.run('@cf/meta/llama-3-8b-instruct', {
+      messages: aiMessages,
+      max_tokens: 400,
+      temperature: 0.7,
+    });
+
+    const response = result.response || result.choices?.[0]?.message?.content || 'I understand. Could you tell me more about how your invention works?';
+    return json({ content: response.trim() });
+  } catch (e) {
+    console.error('AI chat error:', e.message);
+    // Fallback: ask a generic clarifying question based on message count
+    const questionCount = messages.filter(m => m.role === 'assistant').length;
+    const fallbacks = [
+      "Thanks for sharing! To help draft a strong disclosure, could you tell me: What problem does your invention solve, and how does it work differently from existing solutions?",
+      "That's helpful! Now, could you describe the specific components, materials, or steps involved? The more detail, the stronger your disclosure.",
+      "Great progress! Are there any alternative ways to implement your invention? Thinking about variations helps broaden your disclosure.",
+      "Almost there! Is there anything else unique or novel about your approach that I should know about before we generate the disclosure?",
+      "I think we have enough detail now! Click 'Generate Disclosure' to create your professional draft, or tell me anything else you'd like to add."
+    ];
+    const idx = Math.min(questionCount, fallbacks.length - 1);
+    return json({ content: fallbacks[idx] });
+  }
+}
+
 // ── Router ──
 
 export default {
@@ -511,6 +566,7 @@ export default {
       if (path === '/api/analytics')      return handleAnalytics(request, env);
       if (path === '/api/stats')          return handleStats(request, env);
       if (path === '/api/health')         return handleHealth(env);
+      if (path === '/api/chat')           return handleChat(request, env);
 
       // Catch-all
       return Response.redirect('https://ipatent.me', 302);
