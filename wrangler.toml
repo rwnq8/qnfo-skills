@@ -1,5 +1,5 @@
 name = "papers-server"
-main = "workers/papers-server-v3.0.js"
+main = "workers/papers-server-v3.1.js"
 compatibility_date = "2026-07-12"
 
 [[d1_databases]]
