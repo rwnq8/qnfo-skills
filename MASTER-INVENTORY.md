@@ -1,125 +1,100 @@
-# QNFO CLOUDFLARE ECOSYSTEM MASTER INVENTORY — 2026-07-12 (Session 14 Update)
-## Consolidated for LLM Maintenance Capacity | Workers: 33→28→26→25→24, Archive: merged+queue, SEO: Worker-backed
+﻿# QNFO CLOUDFLARE ECOSYSTEM MASTER INVENTORY — 2026-07-12 (Session: Architecture Reset + Patents)
+## Workers: 23 (new: ipatent-api) | Pages: 13 (new: ipatent-me) | D1: 5 | Vectorize: 3 | Papers: 616 | KG: 3277n/4705e
+
+**⚠️ ARCHITECTURE RESET:** This inventory is SECONDARY to `UNIFIED-ARCHITECTURE.md` (canonical publication pipeline). This document tracks live state only.
 
 ---
 
 ## D1 DATABASES — 5 (ALL ESSENTIAL)
 
-| Database | ID | Content | Status |
-|:---------|:---|:--------|:------|
-| qnfo-audit | 35e2e573 | tasks(73), projects(78) | ESSENTIAL |
-| qnfo-graph | a1954b92 | KG(3200n/4634e) | ESSENTIAL |
-| qnfo-cms | 0458a344 | CMS(34e/5t) | ESSENTIAL |
-| living-paper | 70a58cb3 | papers(616) | ESSENTIAL |
-| portfolio-state | d80fdf2a | resources(66), handoffs(8), decisions(26) | ESSENTIAL |
+| Database | ID | Content | Size | Status |
+|:---------|:---|:--------|:-----|:------|
+| qnfo-audit | 35e2e573 | tasks(73), projects(78) | ~954KB | ESSENTIAL |
+| qnfo-graph | a1954b92 | KG(3277n/4705e) | ~368KB | ESSENTIAL |
+| qnfo-cms | 0458a344 | CMS(34e/5t) | ~208KB | ESSENTIAL |
+| living-paper | 70a58cb3 | papers(616) — **SINGLE SOURCE OF TRUTH** | ~241KB | ESSENTIAL |
+| portfolio-state | d80fdf2a | resources(66), handoffs(8), decisions(26) | ~118KB | ESSENTIAL |
 
 ---
 
-## VECTORIZE INDEXES — 3
+## VECTORIZE — 3
 
-| Index | Dimensions | Vectors | Status |
-|:------|:-----------|:--------|:------|
-| qwav-research-v2 | 1024 | 461 | ESSENTIAL |
-| qnfo-handoffs | 768 | ? | SUPPORT |
-| qnfo-tasks | 768 | ? | SUPPORT |
-
----
-
-## PAGES PROJECTS — 7 (with custom domains) + ask-qwav
-
-| Project | Domain(s) | Status |
-|:--------|:----------|:------|
-| qnfo-hub | hub.qnfo.org, qnfo.org, www.qnfo.org, q08.org | ✅ ESSENTIAL |
-| qnfo-publications | papers.qnfo.org, archive.qnfo.org | ✅ ESSENTIAL |
-| qnfo-legal | legal.qnfo.org | ✅ ESSENTIAL |
-| qnfo-design-system | design.qnfo.org | ✅ ESSENTIAL |
-| ask-qwav | ask.qwav.tech | ✅ SUPPORT |
-| qwav | deep.qwav.tech, primer.qwav.tech | ⚠️ ACTIVE |
-| hensel-code | hensel.qnfo.org | ✅ 301→papers |
-
-**Deleted (Sessions 9-10):** discovery-momentum, verb-lexicon, uqc-benchmark, unity-of-ultrametric-physics, ultrametric-paradigm, ultrametric-benchmark, ultrametric-ai-poc, two-ways-of-measuring + 13 orphans
+| Index | Dims | Vectors | Metric | Status |
+|:------|:-----|:--------|:--------|:------|
+| qwav-research-v2 | 1024 | ~461 | cosine | ESSENTIAL — **needs re-seed: 616 papers target** |
+| qnfo-handoffs | 768 | ? | cosine | SUPPORT |
+| qnfo-tasks | 768 | ? | cosine | SUPPORT |
 
 ---
 
-## WORKERS — 22 (was 33; 5 deleted Session 11, 2 deleted Session 12, 2 merged→1 Session 13, 1 deleted Session 14, 2 deleted Session 18 [TIER 2: 0 traffic])
+## WORKERS — 22 (Live 2026-07-12)
 
-### TIER 1: ESSENTIAL CORE (14)
+### TIER 1: ESSENTIAL (14 Workers)
+
+| Worker | Purpose | Key Binding |
+|:-------|:--------|:------------|
+| **papers-server** (v3.3) | Paper rendering + SEO + self-healing R2 cache | D1 living-paper + R2 qnfo |
+| ask-qwav | AI pipeline — semantic search + LLM synthesis | Vectorize + Workers AI |
+| graph-api | Knowledge Graph queries (3277n/4705e) | D1 qnfo-graph |
+| api-gateway | Single API entry point | All workers |
+| qnfo-data-api | Cross-system data aggregation | All D1 |
+| qnfo-lifecycle | Daily cron — project lifecycle | D1 qnfo-audit + Queue |
+| paper-pipeline | Paper processing + Vectorize sync (cron daily) | D1 + Vectorize |
+| qnfo-edge-router | Domain routing (papers.qnfo.org → papers-server) | Service bindings |
+| cron-graph-re-seed | KG ↔ D1 reconciliation (every 15 min) | D1 qnfo-graph + D1 living-paper |
+| qnfo-agent-session | DO+SQLite agent sessions + locks | Durable Objects |
+| infra-lock-manager | DEC-034 deployment concurrency control | Durable Objects |
+| search-worker | Full-text search | D1 |
+| portfolio-api | Infrastructure inventory | D1 portfolio-state |
+| audit-worker | Audit trail storage | R2 + D1 |
+| ultrametric-tree-api | Ultrametric tree computations | D1 qnfo-graph |
+
+### TIER 2: SUPPORT (7 Workers)
 
 | Worker | Purpose |
 |:-------|:--------|
-| ask-qwav | AI pipeline — semantic search + LLM synthesis |
-| graph-api | Knowledge Graph queries (3200n/4634e) |
-| papers-server | Dynamic paper rendering + SEO (v2.1, R2-backed) |
-| qnfo-lifecycle | Automated project lifecycle (cron daily) |
-| archive-worker | **MERGED v2.0** — HTML pages + queue consumer (R2 archival), QNFO_BUCKET binding |
-| qnfo-agent-session | DO+SQLite agent sessions + locks (kg-mutex) |
-| infra-lock-manager | DEC-034 deployment concurrency control |
-| api-gateway | Single entry point (MASTER-PLAN) |
-| qnfo-data-api | Cross-system data aggregation |
-| ultrametric-tree-api | Ultrametric tree computations |
-| qnfo-edge-router | Edge traffic routing |
-| search-worker | Full-text search |
-| portfolio-api | Infrastructure inventory (D1 portfolio-state) |
-| audit-worker | Audit trail storage |
-| cron-graph-re-seed | KG-D1 paper reconciliation (every 15 min) |
-
-### TIER 2: SUPPORT / RESEARCH (6)
-
-| Worker | Purpose |
-|:-------|:--------|
-| qnfo-ai-worker | AI assistance |
-| paper-pipeline | Paper processing + vectorize sync (cron daily, should be TIER 1) |
-| murtagh-engine | Murtagh research engine |
+| archive-worker | R2 archival queue consumer |
 | braid-matrix | Braid matrix research |
+| murtagh-engine | Murtagh research engine |
+| paper-catalog | DO: D1→KG paper sync |
+| qnfo-ai-worker | AI assistance |
 | qnfo-asset-api | Asset management |
-| **paper-catalog** | **DO: D1→KG paper sync** |
-
-### TIER 3: MERGED/DELETED (0 remaining)
-
-| Worker | Purpose | Action |
-|:-------|:--------|:------|
-| ~~deep-qwav-meta~~ | deep.qwav.tech SEO+OG proxy | MERGED into qwav-unified → DELETED |
-| ~~qwav-redirect~~ | 301→deep.qwav.tech | MERGED into qwav-unified → DELETED |
-| **qwav-unified** | Hostname-based routing: meta injection + redirect | **NEW (Session 13)** — handles both qwav domains |
+| qwav-unified | deep.qwav.tech hostname-based routing |
 
 ---
 
-## DELETED WORKERS (Session 11)
+## PAGES — 10
 
-| Worker | Reason |
+| Project | Domain | Status |
+|:--------|:-------|:------|
+| qnfo-hub | hub.qnfo.org, qnfo.org | ✅ ESSENTIAL |
+| qnfo-publications | papers.qnfo.org (→ Worker) | ✅ ESSENTIAL |
+| qnfo-legal | legal.qnfo.org | ✅ ESSENTIAL |
+| qnfo-design-system | design.qnfo.org | ✅ SUPPORT |
+| ask-qwav | ask.qwav.tech | ✅ SUPPORT |
+| qwav | deep.qwav.tech | ⚠️ ACTIVE |
+| hensel-code | hensel.qnfo.org (301→papers) | ⚠️ ACTIVE |
+| qnfo-ipfs-archive | .pages.dev | ⚠️ SUPPORT |
+| ultrametric-benchmark | .pages.dev | ❌ DELETE (Session 9-10) |
+| ultrametric-paradigm | .pages.dev | ❌ DELETE (Session 9-10) |
+| unity-of-ultrametric-physics | .pages.dev | ❌ DELETE (Session 9-10) |
+
+---
+
+## KNOWLEDGE GRAPH (Live 2026-07-12)
+
+| Metric | Value |
 |:-------|:------|
-| r2-seo-uploader | One-off R2 upload utility — replaced by local script |
-| status-validator | One-off audit enforcement — executed |
-| seo-inline | Hardcoded SEO for hub/hensel — redundant |
-| qnfo-meta | JSON-LD injector — can be baked into Pages |
-| qnfo-seo-proxy | R2 SEO proxy — papers-server handles SEO now |
+| Total Nodes | 3277 |
+| Total Edges | 4705 |
+| Paper nodes | 1830 |
+| ZenodoRecord nodes | 598 |
+| CloudflareAsset nodes | 178 |
+| Project nodes | 115 |
+| Skill nodes | 56 |
+| Concept nodes | 47 (ultrametric taxonomy) |
 
-### Session 12 Deletions
-| dns-cleanup | One-off DNS cleanup utility — 0 traffic |
-| conjecture-test | Test worker — 0 traffic |
-
-### Session 13 Merges/Deletions
-| deep-qwav-meta | Merged into qwav-unified — deleted |
-| qwav-redirect | Merged into qwav-unified — deleted |
-| r2-binding-test | Session 13 test Worker — deleted after verification |
-
-### Session 14 Merge/Deletion
-| qnfo-archive-worker | Merged queue consumer into archive-worker v2.0 — deleted |
-| archive-worker | **UPGRADED to v2.0** — now serves archive.qnfo.org HTML + qnfo-lifecycle-queue consumer + QNFO_BUCKET R2 binding |
-
----
-
-## SEO STATUS (papers.qnfo.org) — ✅ WORKER-BACKED (v2.2)
-
-| Endpoint | Status | Content |
-|:---------|:------|:--------|
-| /sitemap.xml | 200 | 617 URLs (616 papers + index), 122KB, R2-backed via Worker |
-| /llms.txt | 200 | 616 paper entries with titles/DOIs/abstracts, 160KB, R2-backed |
-| /robots.txt | 200 | Standard + Sitemap directive |
-
-**Served by:** papers-server v2.2 Worker via Worker routes (not Pages static files)
-**R2 path:** `seo/sitemap.xml` and `seo/llms.txt` (bucket: qnfo)
-**Note:** Session 12 used Pages static files. Session 13 migrated to Worker-backed serving after fixing R2 key paths.
+**⚠️ DRIFT:** KG has 1830 Paper nodes vs D1 living-paper 616 papers. Many stale/duplicate Paper nodes.
 
 ---
 
@@ -127,34 +102,77 @@
 
 | Queue | Status |
 |:------|:------|
-| qnfo-lifecycle-queue | ESSENTIAL |
-
-## KV — 1
-
-| Namespace | Status |
-|:----------|:------|
-| equation-cache | ESSENTIAL |
+| qnfo-lifecycle-queue | ESSENTIAL — producer: qnfo-lifecycle, consumer: archive-worker |
 
 ---
 
-## CONSOLIDATION PROGRESS
+## R2 — CANONICAL FILE STORE
 
-| Resource | Session 9 | Session 11 | Session 12 | Session 13 | Session 14 | Target |
-|:---------|:---------:|:----------:|:----------:|:----------:|:----------:|:------:|
-| Workers | 33 | 28 | 26 | 25 | **24** (−9) | 15 |
-| Pages | 10 | 7 | 7 | 7 | 7 | 6 |
-| D1 | 5 | 5 | 5 | 5 | 5 | 5 |
-| Vectorize | 3 | 3 | 3 | 3 | 3 | 3 |
+| Path | Content | Status |
+|:-----|:--------|:------|
+| `qnfo/papers/{slug}/paper.md` | Paper Markdown (v3.3 self-healing) | ⚠️ Populating on-demand |
+| `qnfo/releases/{YYYY}/{MM}/{slug}/` | Legacy paper files | ⚠️ Deprecated — use qnfo/papers/ |
+| `qnfo/prompts/skills/{name}/` | Skill definitions | ✅ Active |
+| `qnfo/tools/{name}.py` | Utility scripts | ✅ Active |
+| `qnfo/audit/{type}/` | Audit artifacts | ✅ Active |
+| `research/{project}/` | Research chapter files | ✅ Active |
 
 ---
 
-## REMAINING TASKS
+## CANONICAL DOCUMENTS
 
-| Task | Notes |
-|:-----|:------|
-| Transfer 5 domains away from Registrar | Manual Dashboard action. Zones blocked by Cloudflare Registrar (clientTransferProhibited). **ipatent.me expires 2026-07-28 (16 days!)** |
-| Disable workers_dev on papers-server | Requires Dashboard (API token lacks subdomain permission). Low risk. |
-| Consider delete qnfo-infra-mcp | Stub MCP server — no bindings, no routes, minimal value |
-| Consider migrate qnfo-analytics-dashboard to Pages | Simple HTML dashboard with /api/stats — could be static |
-| Reclassify paper-pipeline as TIER 1 | Has cron trigger + critical D1/R2/Vectorize bindings |
-| Complete MASTER-PLAN Phase 1 | living-paper schema completion, Pages→Worker migration |
+| Document | Purpose | Version |
+|:---------|:--------|:--------|
+| **UNIFIED-ARCHITECTURE.md** | Canonical publication pipeline + storage rules | v3.0 (2026-07-12) |
+| MASTER-PLAN.md | Strategic consolidation plan | v2.0 (2026-06-29) ⚠️ OUTDATED |
+| MASTER-ARCHITECTURE.md | Infrastructure architecture | v2.0 (2026-06-29) ⚠️ OUTDATED |
+| MASTER-INVENTORY.md (this file) | Live resource inventory | 2026-07-12 ✅ CURRENT |
+
+---
+
+## CURRENT STATE SUMMARY
+
+### Recovered (2026-07-12)
+- ✅ papers-server v3.3 self-healing: all 616 papers serve content (0 stubs)
+- ✅ papers.qnfo.org production: all pages working
+- ✅ Sitemap: 617 URLs, 104KB
+- ✅ llms.txt: 616 entries
+- ✅ Cache-Control headers on all pages
+
+### Pending
+- 🔴 Vectorize: re-seed all 616 papers (currently ~461)
+- 🔴 ADMIN_TOKEN: set on papers-server
+- 🔴 D1 columns: r2_key, pdf_url, version, status, categories, ipfs_cid missing
+- 🔴 KG cleanup: 1830 Paper nodes vs 616 D1 papers
+- 🟡 Worker consolidation: 22 → 15 per MASTER-PLAN
+- 🟡 Pages cleanup: delete 3 orphan projects
+- 🟡 body_md recovery: ~224 papers lost full-text permanently
+
+---
+
+*MASTER-INVENTORY v2026-07-12-architecture-reset — Live state audit. See UNIFIED-ARCHITECTURE.md for canonical rules.*
+
+
+## IPATENT.ME — NEW (2026-07-12)
+
+| Component | Detail |
+|:----------|:-------|
+| Pages Project | ipatent-me (ipatent-me.pages.dev) |
+| Worker | ipatent-api (API routes: ipatent.me/api/*) |
+| Custom Domain | ipatent.me (pending SSL) |
+| D1 Tables | ipatent_submissions, ipatent_analytics (in qnfo-audit) |
+| Purpose | US Provisional Patent Disclosure generator with analytics |
+
+## DNS FIX — ZOMBIE DOMAINS WIRED (2026-07-12)
+
+| Domain | CNAME Target | Status |
+|:-------|:-------------|:------|
+| unity.qnfo.org | unity-of-ultrametric-physics.pages.dev | 301 redirect |
+| paradigm.qnfo.org | ultrametric-paradigm.pages.dev | 301 redirect |
+| ultrametric-benchmark.qnfo.org | ultrametric-benchmark.pages.dev | 200 redirect page |
+| ai-poc.qnfo.org | ultrametric-ai-poc.pages.dev | 301 redirect |
+| measure.qnfo.org | two-ways-of-measuring.pages.dev | 301 redirect |
+| ipatent.me | ipatent-me.pages.dev | PENDING SSL |
+
+17/17 domains verified. 0 orphan domains remaining.
+
