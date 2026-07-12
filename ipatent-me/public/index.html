@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ipatent.me — US Provisional Patent Disclosure Generator</title>
-<meta name="description" content="Generate a US Provisional Patent Disclosure in minutes. Free, secure, confidential. Semantic search across all disclosures.">
+<meta name="description" content="Generate a professional US Provisional Patent Disclosure with guided claims, structured sections, and inline regulatory guidance. Free, secure, confidential.">
 <meta name="theme-color" content="#1e3a5f">
-<meta property="og:title" content="ipatent.me — US Provisional Patent Disclosure Generator">
-<meta property="og:description" content="Generate a US Provisional Patent Disclosure in minutes. Free, secure, confidential.">
+<meta property="og:title" content="ipatent.me — Professional Provisional Patent Disclosures">
+<meta property="og:description" content="Structured disclosure wizard with claims formatting, multi-user support, and USPTO guidance.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ipatent.me">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ipatent.me">
-<meta name="twitter:description" content="US Provisional Disclosure Generator + Semantic Search">
+<meta name="twitter:description" content="Professional Provisional Patent Disclosure Generator">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -41,6 +41,8 @@
   --success:#059669;
   --success-bg:#ecfdf5;
   --success-border:#a7f3d0;
+  --warning:#d97706;
+  --warning-bg:#fffbeb;
   --shadow-sm:0 1px 2px rgba(0,0,0,.04);
   --shadow-md:0 4px 12px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.04);
   --shadow-lg:0 12px 32px rgba(0,0,0,.08),0 4px 8px rgba(0,0,0,.04);
@@ -54,11 +56,8 @@
   --transition:200ms cubic-bezier(.4,0,.2,1);
 }
 
-/* ══════════════════════════════════════════
-   RESET & BASE
-   ══════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 body{
   background:var(--bg);
   color:var(--text);
@@ -69,46 +68,27 @@ body{
   overflow-x:hidden;
 }
 ::selection{background:var(--accent-light);color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent-cta);outline-offset:2px;border-radius:var(--radius-sm)}
 
-/* ══════════════════════════════════════════
-   FOCUS — Accessibility
-   ══════════════════════════════════════════ */
-:focus-visible{
-  outline:2px solid var(--accent-cta);
-  outline-offset:2px;
-  border-radius:var(--radius-sm);
-}
-
-/* ══════════════════════════════════════════
-   SUBTLE BACKGROUND TEXTURE
-   ══════════════════════════════════════════ */
 .bg-texture{
   position:fixed;inset:0;
   background-image:
-    linear-gradient(to bottom,transparent 0%,rgba(30,58,95,.015) 100%),
-    radial-gradient(ellipse at 20% 0%,rgba(37,99,235,.04) 0%,transparent 50%),
-    radial-gradient(ellipse at 80% 100%,rgba(30,58,95,.03) 0%,transparent 50%);
+    linear-gradient(to bottom,transparent 0%,rgba(30,58,95,.012) 100%),
+    radial-gradient(ellipse at 20% 0%,rgba(37,99,235,.03) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 100%,rgba(30,58,95,.02) 0%,transparent 50%);
   pointer-events:none;z-index:0;
 }
 
-/* ══════════════════════════════════════════
-   CONTAINER
-   ══════════════════════════════════════════ */
-.container{
-  position:relative;z-index:1;
-  max-width:var(--max-w);
-  margin:0 auto;
-  padding:2rem 1.5rem 4rem;
-}
+.container{position:relative;z-index:1;max-width:var(--max-w);margin:0 auto;padding:2rem 1.5rem 4rem}
 
 /* ══════════════════════════════════════════
    HEADER
    ══════════════════════════════════════════ */
 header{
   text-align:center;
-  padding:3.5rem 0 2.5rem;
+  padding:3rem 0 2rem;
   border-bottom:1px solid var(--border-light);
-  margin-bottom:1.5rem;
+  margin-bottom:1rem;
 }
 .logo{
   font-family:var(--font-display);
@@ -118,24 +98,16 @@ header{
   color:var(--accent);
   line-height:1.15;
 }
-.logo-accent{
-  color:var(--accent-cta);
-  font-weight:400;
-  font-style:italic;
-}
+.logo-accent{color:var(--accent-cta);font-weight:400;font-style:italic}
 .tagline{
   color:var(--text-secondary);
-  font-size:1.05rem;
-  margin-top:.65rem;
+  font-size:1rem;
+  margin-top:.5rem;
   font-weight:400;
-  max-width:520px;
+  max-width:540px;
   margin-left:auto;margin-right:auto;
 }
-.badge-row{
-  display:flex;gap:.6rem;
-  justify-content:center;flex-wrap:wrap;
-  margin-top:1.25rem;
-}
+.badge-row{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-top:1.25rem}
 .badge{
   background:var(--accent-light);
   border:1px solid transparent;
@@ -145,13 +117,57 @@ header{
   color:var(--accent);
   font-weight:500;
   display:flex;align-items:center;gap:.35rem;
-  transition:background var(--transition),border-color var(--transition);
+  transition:background var(--transition);
 }
 .badge:hover{background:#dce4f2}
 .badge svg,.badge .icon-s{width:14px;height:14px;flex-shrink:0}
-.badge .icon-s.check{color:var(--success)}
-.badge .icon-s.lock{color:var(--accent)}
-.badge .icon-s.search-icon{color:var(--accent-cta)}
+
+/* ══════════════════════════════════════════
+   WIZARD — Step Indicator
+   ══════════════════════════════════════════ */
+.wizard-steps{
+  display:flex;gap:.5rem;
+  justify-content:center;
+  margin-bottom:2rem;
+  flex-wrap:wrap;
+}
+.wizard-step{
+  display:flex;align-items:center;gap:.4rem;
+  padding:.45rem 1rem;
+  border-radius:20px;
+  font-size:.78rem;
+  font-weight:500;
+  color:var(--muted);
+  background:var(--surface);
+  border:1px solid var(--border);
+  transition:all var(--transition);
+}
+.wizard-step.active{color:var(--accent);border-color:var(--accent);background:var(--accent-light);font-weight:600}
+.wizard-step.done{color:var(--success);border-color:var(--success);background:var(--success-bg)}
+.wizard-step .step-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700}
+.wizard-step.active .step-num{background:var(--accent);color:#fff}
+.wizard-step.done .step-num{background:var(--success);color:#fff}
+
+/* ══════════════════════════════════════════
+   USER TYPE SELECTOR
+   ══════════════════════════════════════════ */
+.user-type-group{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.user-type-btn{
+  flex:1;min-width:140px;
+  padding:1rem 1.25rem;
+  border:2px solid var(--border);
+  border-radius:var(--radius);
+  background:var(--surface);
+  cursor:pointer;
+  transition:all var(--transition);
+  text-align:center;
+  font-family:var(--font-body);
+}
+.user-type-btn:hover{border-color:var(--accent);background:var(--accent-light)}
+.user-type-btn.selected{border-color:var(--accent);background:var(--accent-light);box-shadow:0 0 0 1px var(--accent)}
+.user-type-btn .ut-icon{font-size:1.5rem;margin-bottom:.3rem;display:block}
+.user-type-btn .ut-title{font-weight:600;font-size:.88rem;color:var(--text)}
+.user-type-btn .ut-desc{font-size:.72rem;color:var(--text-secondary);margin-top:.15rem}
 
 /* ══════════════════════════════════════════
    TABS
@@ -160,7 +176,6 @@ header{
   display:flex;gap:.25rem;
   margin-bottom:1.75rem;
   border-bottom:2px solid var(--border-light);
-  padding:0;
 }
 .tab{
   padding:.7rem 1.5rem;
@@ -177,16 +192,10 @@ header{
   border-radius:var(--radius-sm) var(--radius-sm) 0 0;
 }
 .tab:hover{color:var(--text);background:var(--surface-alt)}
-.tab.active{
-  color:var(--accent);
-  font-weight:600;
-  border-bottom-color:var(--accent);
-  background:var(--accent-light);
-}
-.tab:focus-visible{outline-offset:-2px}
+.tab.active{color:var(--accent);font-weight:600;border-bottom-color:var(--accent);background:var(--accent-light)}
 
 /* ══════════════════════════════════════════
-   CARDS
+   CARDS & SECTIONS
    ══════════════════════════════════════════ */
 .card{
   background:var(--surface);
@@ -200,14 +209,49 @@ header{
 .card:hover{box-shadow:var(--shadow-md)}
 .card-title{
   font-family:var(--font-display);
-  font-size:1.2rem;
+  font-size:1.15rem;
   font-weight:600;
-  margin-bottom:1.5rem;
+  margin-bottom:1.25rem;
   display:flex;align-items:center;gap:.6rem;
   color:var(--accent);
   letter-spacing:-.01em;
 }
 .card-title .icon{width:22px;height:22px;color:var(--accent);flex-shrink:0}
+
+/* Section toggle blocks */
+.section-block{
+  margin-bottom:1rem;
+  border:1px solid var(--border-light);
+  border-radius:var(--radius);
+  overflow:hidden;
+  transition:border-color var(--transition);
+}
+.section-block:hover{border-color:var(--border)}
+.section-header{
+  padding:.85rem 1.25rem;
+  background:var(--surface-alt);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  font-weight:600;
+  font-size:.9rem;
+  user-select:none;
+}
+.section-header:hover{background:#ecebe5}
+.section-header .section-toggle{font-size:1.1rem;color:var(--muted);transition:transform var(--transition)}
+.section-header[aria-expanded="true"] .section-toggle{transform:rotate(45deg)}
+.section-body{padding:1.25rem;display:none}
+.section-block.open .section-body{display:block}
+.section-block.open{border-color:var(--accent)}
+.section-tip{
+  background:var(--warning-bg);
+  border-left:3px solid var(--warning);
+  padding:.65rem 1rem;
+  margin-top:.75rem;
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  font-size:.78rem;
+  color:#92400e;
+  line-height:1.5;
+}
 
 /* ══════════════════════════════════════════
    FORMS
@@ -223,7 +267,8 @@ header{
   letter-spacing:.05em;
 }
 .form-group .required::after{content:' *';color:var(--danger)}
-.form-group input,.form-group textarea{
+.form-group .optional::after{content:' (recommended)';color:var(--muted);font-weight:400;font-size:.72rem;text-transform:none}
+.form-group input,.form-group textarea,.form-group select{
   width:100%;
   background:var(--surface-alt);
   border:1.5px solid var(--border);
@@ -235,18 +280,56 @@ header{
   line-height:1.6;
   transition:border-color var(--transition),box-shadow var(--transition),background var(--transition);
 }
-.form-group input:hover,.form-group textarea:hover{border-color:#c4c8d0}
-.form-group input:focus,.form-group textarea:focus{
+.form-group input:hover,.form-group textarea:hover,.form-group select:hover{border-color:#c4c8d0}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{
   outline:none;
   border-color:var(--accent-cta);
   box-shadow:0 0 0 3px rgba(37,99,235,.1);
   background:var(--surface);
 }
 .form-group input::placeholder,.form-group textarea::placeholder{color:var(--muted);opacity:.7}
-.form-group textarea{resize:vertical;min-height:200px;font-size:.9rem}
+.form-group textarea{resize:vertical;min-height:140px;font-size:.9rem}
 .form-group .hint{font-size:.76rem;color:var(--muted);margin-top:.3rem}
+.form-group textarea.claims-area{min-height:120px;font-family:var(--font-mono);font-size:.82rem;line-height:1.5}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media(max-width:600px){.form-row{grid-template-columns:1fr}}
+
+/* Word count */
+.char-count{font-size:.72rem;color:var(--muted);margin-top:.2rem;text-align:right}
+.char-count.warn{color:var(--warning)}
+.char-count.good{color:var(--success)}
+
+/* ══════════════════════════════════════════
+   HELP TOOLTIP
+   ══════════════════════════════════════════ */
+.help-icon{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:16px;height:16px;
+  border-radius:50%;
+  background:var(--accent-light);
+  color:var(--accent);
+  font-size:.65rem;
+  font-weight:700;
+  cursor:help;
+  vertical-align:middle;
+  margin-left:.3rem;
+  position:relative;
+}
+.help-icon:hover::after{
+  content:attr(data-tip);
+  position:absolute;bottom:120%;left:50%;transform:translateX(-50%);
+  background:var(--text);color:#fff;
+  padding:.5rem .75rem;
+  border-radius:6px;
+  font-size:.7rem;
+  font-weight:400;
+  white-space:nowrap;
+  z-index:50;
+  max-width:280px;
+  white-space:normal;
+  line-height:1.4;
+  pointer-events:none;
+}
 
 /* ══════════════════════════════════════════
    BUTTONS
@@ -265,62 +348,29 @@ header{
   letter-spacing:.01em;
   white-space:nowrap;
 }
-.btn-primary{
-  background:var(--accent-cta);
-  color:#fff;
-  box-shadow:0 2px 8px rgba(37,99,235,.25);
-}
-.btn-primary:hover{
-  background:var(--accent-cta-hover);
-  transform:translateY(-1px);
-  box-shadow:0 6px 16px rgba(37,99,235,.3);
-}
+.btn-primary{background:var(--accent-cta);color:#fff;box-shadow:0 2px 8px rgba(37,99,235,.25)}
+.btn-primary:hover{background:var(--accent-cta-hover);transform:translateY(-1px);box-shadow:0 6px 16px rgba(37,99,235,.3)}
 .btn-primary:active{transform:translateY(0)}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-.btn-secondary{
-  background:var(--surface);
-  color:var(--text);
-  border:1.5px solid var(--border);
-}
+.btn-secondary{background:var(--surface);color:var(--text);border:1.5px solid var(--border)}
 .btn-secondary:hover{background:var(--surface-alt);border-color:var(--muted)}
 .btn-sm{padding:.45rem 1rem;font-size:.82rem;border-radius:var(--radius-sm)}
 .btn-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.5rem}
 
 /* ══════════════════════════════════════════
-   RESULTS
+   RESULTS / PREVIEW
    ══════════════════════════════════════════ */
 .result{display:none;margin-top:1.5rem;animation:fadeIn .35s ease}
 .result.show{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.result-frame{
-  width:100%;height:500px;
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  background:#fff;
-  margin:1rem 0;
-  box-shadow:var(--shadow-sm);
-}
+.result-frame{width:100%;height:600px;border:1px solid var(--border);border-radius:var(--radius);background:#fff;margin:1rem 0;box-shadow:var(--shadow-sm)}
 
 /* ══════════════════════════════════════════
-   SEARCH
+   SEARCH & LISTS
    ══════════════════════════════════════════ */
 .search-box{display:flex;gap:.55rem;margin-bottom:1.5rem}
-.search-box input{
-  flex:1;
-  background:var(--surface-alt);
-  border:1.5px solid var(--border);
-  border-radius:var(--radius);
-  padding:.75rem 1rem;
-  color:var(--text);
-  font-size:.93rem;
-  font-family:var(--font-body);
-  transition:border-color var(--transition),box-shadow var(--transition);
-}
+.search-box input{flex:1;background:var(--surface-alt);border:1.5px solid var(--border);border-radius:var(--radius);padding:.75rem 1rem;color:var(--text);font-size:.93rem;font-family:var(--font-body);transition:border-color var(--transition),box-shadow var(--transition)}
 .search-box input:focus{outline:none;border-color:var(--accent-cta);box-shadow:0 0 0 3px rgba(37,99,235,.1);background:var(--surface)}
-
-/* ══════════════════════════════════════════
-   SUBMISSION LIST
-   ══════════════════════════════════════════ */
 .sub-list{display:flex;flex-direction:column;gap:.6rem}
 .sub-item{
   background:var(--surface-alt);
@@ -330,65 +380,22 @@ header{
   transition:all var(--transition);
   cursor:pointer;
 }
-.sub-item:hover{
-  border-color:var(--accent);
-  background:var(--accent-light);
-  box-shadow:var(--shadow-sm);
-}
-.sub-item .sub-title{
-  font-weight:600;font-size:.93rem;margin-bottom:.25rem;
-  color:var(--text);
-}
-.sub-item .sub-meta{
-  font-size:.78rem;color:var(--text-secondary);
-  display:flex;gap:1rem;flex-wrap:wrap;
-}
-.sub-item .sub-score{
-  font-size:.75rem;
-  color:var(--accent-cta);
-  font-weight:600;
-  font-family:var(--font-mono);
-  background:rgba(37,99,235,.08);
-  padding:.15rem .5rem;
-  border-radius:4px;
-}
+.sub-item:hover{border-color:var(--accent);background:var(--accent-light);box-shadow:var(--shadow-sm)}
+.sub-item .sub-title{font-weight:600;font-size:.93rem;margin-bottom:.25rem;color:var(--text)}
+.sub-item .sub-meta{font-size:.78rem;color:var(--text-secondary);display:flex;gap:1rem;flex-wrap:wrap}
+.sub-item .sub-score{font-size:.75rem;color:var(--accent-cta);font-weight:600;font-family:var(--font-mono);background:rgba(37,99,235,.08);padding:.15rem .5rem;border-radius:4px}
 
 /* ══════════════════════════════════════════
    STATS
    ══════════════════════════════════════════ */
-.stats-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:1rem;
-  margin-bottom:1.5rem;
-}
-.stat-card{
-  background:var(--accent-light);
-  border:1px solid transparent;
-  border-radius:var(--radius);
-  padding:1.5rem 1.25rem;
-  text-align:center;
-  transition:box-shadow var(--transition),border-color var(--transition);
-}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:var(--accent-light);border:1px solid transparent;border-radius:var(--radius);padding:1.5rem 1.25rem;text-align:center;transition:box-shadow var(--transition),border-color var(--transition)}
 .stat-card:hover{box-shadow:var(--shadow-md);border-color:var(--border)}
-.stat-value{
-  font-family:var(--font-display);
-  font-size:2.25rem;
-  font-weight:700;
-  color:var(--accent);
-  line-height:1.1;
-}
-.stat-label{
-  font-size:.78rem;
-  color:var(--text-secondary);
-  margin-top:.35rem;
-  font-weight:500;
-  text-transform:uppercase;
-  letter-spacing:.04em;
-}
+.stat-value{font-family:var(--font-display);font-size:2.25rem;font-weight:700;color:var(--accent);line-height:1.1}
+.stat-label{font-size:.78rem;color:var(--text-secondary);margin-top:.35rem;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
 
 /* ══════════════════════════════════════════
-   DISCLAIMER
+   DISCLAIMER & FOOTER
    ══════════════════════════════════════════ */
 .disclaimer{
   background:var(--danger-bg);
@@ -402,11 +409,17 @@ header{
 }
 .disclaimer strong{color:#b91c1c;font-weight:600}
 .disclaimer a{color:var(--accent-cta);text-decoration:underline;text-underline-offset:2px}
-.disclaimer a:hover{color:var(--accent-cta-hover)}
-
-/* ══════════════════════════════════════════
-   FOOTER
-   ══════════════════════════════════════════ */
+.guidance-note{
+  background:var(--accent-light);
+  border:1px solid #c4d5e8;
+  border-radius:var(--radius);
+  padding:1rem 1.25rem;
+  margin-top:1.25rem;
+  font-size:.82rem;
+  color:var(--accent);
+  line-height:1.55;
+}
+.guidance-note strong{color:var(--accent-cta)}
 footer{
   text-align:center;
   padding:2.5rem 0;
@@ -415,30 +428,15 @@ footer{
   border-top:1px solid var(--border-light);
   margin-top:3rem;
 }
-footer .footer-logo{
-  font-family:var(--font-display);
-  font-size:1.1rem;
-  font-weight:600;
-  color:var(--accent);
-  margin-bottom:.35rem;
-}
+footer .footer-logo{font-family:var(--font-display);font-size:1.1rem;font-weight:600;color:var(--accent);margin-bottom:.35rem}
 footer a{color:var(--accent-cta);text-decoration:none;font-weight:500}
-footer a:hover{text-decoration:underline}
 
 /* ══════════════════════════════════════════
    LOADER & TOAST
    ══════════════════════════════════════════ */
-.loader{
-  display:none;
-  width:18px;height:18px;
-  border:2px solid rgba(255,255,255,.35);
-  border-top-color:#fff;
-  border-radius:50%;
-  animation:spin .6s linear infinite;
-}
+.loader{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
 .loader.show{display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 .toast{
   position:fixed;bottom:24px;right:24px;
   background:var(--surface);
@@ -453,21 +451,9 @@ footer a:hover{text-decoration:underline}
   box-shadow:var(--shadow-lg);
   max-width:380px;
 }
-.toast.error{
-  background:var(--danger-bg);
-  border-color:var(--danger-border);
-  color:#991b1b;
-}
-.toast.success{
-  background:var(--success-bg);
-  border-color:var(--success-border);
-  color:#065f46;
-}
-.toast.info{
-  background:var(--accent-light);
-  border-color:#c4d5e8;
-  color:var(--accent);
-}
+.toast.error{background:var(--danger-bg);border-color:var(--danger-border);color:#991b1b}
+.toast.success{background:var(--success-bg);border-color:var(--success-border);color:#065f46}
+.toast.info{background:var(--accent-light);border-color:#c4d5e8;color:var(--accent)}
 @keyframes slideIn{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
 
 /* ══════════════════════════════════════════
@@ -485,6 +471,9 @@ footer a:hover{text-decoration:underline}
   .container{padding:1.25rem 1rem 3rem}
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .result-frame{height:400px}
+  .user-type-btn{min-width:100%;flex:none}
+  .wizard-steps{gap:.3rem}
+  .wizard-step{padding:.35rem .6rem;font-size:.7rem}
 }
 @media(max-width:480px){
   .logo{font-size:1.7rem}
@@ -494,10 +483,6 @@ footer a:hover{text-decoration:underline}
   .search-box .btn{width:100%;justify-content:center}
   .stats-grid{grid-template-columns:1fr 1fr}
 }
-
-/* ══════════════════════════════════════════
-   REDUCED MOTION
-   ══════════════════════════════════════════ */
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
@@ -510,11 +495,11 @@ footer a:hover{text-decoration:underline}
 <div class="container">
   <header>
     <div class="logo">ipatent<span class="logo-accent">.me</span></div>
-    <p class="tagline">Generate a professional US Provisional Patent Disclosure in minutes. Free, secure, and confidential — with semantic search across all filings.</p>
+    <p class="tagline">Generate a professional US Provisional Patent Disclosure in minutes — with guided structure, formatted claims, and USPTO best-practice guidance. Free, secure, confidential.</p>
     <div class="badge-row">
-      <span class="badge"><svg class="icon-s check" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Free &amp; Open</span>
-      <span class="badge"><svg class="icon-s lock" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg> Encrypted &amp; Confidential</span>
-      <span class="badge"><svg class="icon-s search-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg> Semantic AI Search</span>
+      <span class="badge"><svg class="icon-s" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Free &amp; Open</span>
+      <span class="badge"><svg class="icon-s" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg> Encrypted &amp; Confidential</span>
+      <span class="badge"><svg class="icon-s" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg> Semantic AI Search</span>
       <span class="badge" id="submission-count" aria-live="polite">Loading disclosures…</span>
     </div>
   </header>
@@ -527,56 +512,207 @@ footer a:hover{text-decoration:underline}
     <button class="tab" role="tab" aria-selected="false" data-panel="stats-panel" id="tab-stats">Stats</button>
   </nav>
 
-  <!-- Generate Panel -->
+  <!-- ══════════════════════════════════════════
+       GENERATE PANEL — Comprehensive Wizard
+       ══════════════════════════════════════════ -->
   <div class="panel active" id="panel-generate" role="tabpanel" aria-labelledby="tab-generate">
+
+    <!-- Step 0: User Type -->
+    <div class="card">
+      <div class="card-title">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"></path></svg>
+        Your Role <span style="font-size:.72rem;font-weight:400;color:var(--text-secondary);margin-left:.5rem">— so we can tailor guidance for you</span>
+      </div>
+      <div class="user-type-group" role="radiogroup" aria-label="User role">
+        <button class="user-type-btn selected" role="radio" aria-checked="true" data-ut="inventor" onclick="selectUserType(this)">
+          <span class="ut-icon">🔬</span>
+          <span class="ut-title">Independent Inventor</span>
+          <span class="ut-desc">I'm inventing on my own and want to protect my idea</span>
+        </button>
+        <button class="user-type-btn" role="radio" aria-checked="false" data-ut="pro-se" onclick="selectUserType(this)">
+          <span class="ut-icon">⚖️</span>
+          <span class="ut-title">Pro Se Filer</span>
+          <span class="ut-desc">I plan to file myself without an attorney</span>
+        </button>
+        <button class="user-type-btn" role="radio" aria-checked="false" data-ut="attorney" onclick="selectUserType(this)">
+          <span class="ut-icon">🏛️</span>
+          <span class="ut-title">Working w/ Attorney</span>
+          <span class="ut-desc">I need a solid draft to share with my patent attorney</span>
+        </button>
+      </div>
+      <div class="guidance-note" id="user-type-guidance">
+        <strong>💡 Independent Inventor Tips:</strong> Start by describing what problem your invention solves and how it works. Don't worry about formal language — just explain it clearly. The more detail you provide, the stronger your priority date. Consider sketching diagrams or flowcharts to attach later.
+      </div>
+    </div>
+
+    <!-- Step 1: Basic Info -->
     <div class="card">
       <div class="card-title">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-        New Disclosure
+        Step 1: Basic Information
       </div>
       <form id="disclosure-form" novalidate>
         <div class="form-row">
-          <div class="form-group"><label for="inventor_name">Inventor Name</label><input type="text" id="inventor_name" placeholder="Your full legal name" maxlength="200" autocomplete="name"></div>
-          <div class="form-group"><label for="inventor_email">Email</label><input type="email" id="inventor_email" placeholder="you@example.com" maxlength="200" autocomplete="email"></div>
+          <div class="form-group"><label for="inventor_name">Inventor Name<span class="help-icon" data-tip="Enter the legal name of each inventor. For multiple inventors, separate with commas. This appears on the disclosure document.">?</span></label><input type="text" id="inventor_name" placeholder="Your full legal name" maxlength="200" autocomplete="name"></div>
+          <div class="form-group"><label for="inventor_email">Contact Email<span class="help-icon" data-tip="Optional. Used only for submission identification. We never share or sell your contact information.">?</span></label><input type="email" id="inventor_email" placeholder="you@example.com" maxlength="200" autocomplete="email"></div>
         </div>
         <div class="form-group">
-          <label for="title" class="required">Title of Invention</label>
-          <input type="text" id="title" placeholder="e.g., Method and Apparatus for Quantum State Stabilization" required maxlength="500">
+          <label for="title" class="required">Title of Invention<span class="help-icon" data-tip="A clear, descriptive title. Avoid marketing language ('revolutionary', 'best'). Use technical terms. Example: 'Method and Apparatus for Adaptive Noise Reduction in Digital Audio Signals'">?</span></label>
+          <input type="text" id="title" placeholder="e.g., Method and Apparatus for Quantum State Stabilization Using Error-Correction Encoding" required maxlength="500">
+          <span class="char-count" id="title-count">0/500</span>
         </div>
         <div class="form-group">
-          <label for="disclosure_text" class="required">Detailed Disclosure</label>
-          <textarea id="disclosure_text" placeholder="Describe your invention in detail:
+          <label for="technical_field">Technical Field<span class="help-icon" data-tip="Briefly state the general field of the invention. Example: 'This invention relates to semiconductor manufacturing processes, and more particularly to photolithographic patterning techniques.'">?</span></label>
+          <input type="text" id="technical_field" placeholder="e.g., This invention relates to wireless communications, and more particularly to beamforming techniques for millimeter-wave antenna arrays." maxlength="500">
+        </div>
+    </div>
 
-· Technical Field
-· Background / Problem
-· Summary of Invention
-· Detailed Description
-· Advantages
-· Alternative Embodiments" required></textarea>
-          <span class="hint">Write clearly and comprehensively. The more detail you provide, the stronger your disclosure.</span>
+    <!-- Step 2: Disclosure Body -->
+    <div class="card">
+      <div class="card-title">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        Step 2: Disclosure Details
+      </div>
+
+      <!-- Background Section -->
+      <div class="section-block open" id="sec-background">
+        <div class="section-header" onclick="toggleSection(this)" aria-expanded="true" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+          <span>📋 Background / Problem Statement</span>
+          <span class="section-toggle">+</span>
         </div>
-        <div class="btn-row">
-          <button type="submit" class="btn btn-primary" id="submit-btn"><span id="btn-text">Generate Disclosure</span><span class="loader" id="loader" aria-hidden="true"></span></button>
-          <button type="button" class="btn btn-secondary" onclick="document.getElementById('disclosure-form').reset();document.getElementById('result').classList.remove('show')">Clear Form</button>
+        <div class="section-body">
+          <div class="form-group">
+            <label for="background_text" class="optional">Describe the Problem &amp; Existing Solutions</label>
+            <textarea id="background_text" placeholder="What problem does your invention solve? What existing approaches exist, and what are their limitations?&#10;&#10;Example:&#10;Existing methods for noise reduction in digital audio rely on frequency-domain filtering, which introduces latency and artifacts. There is a need for a real-time, time-domain approach that preserves signal integrity."></textarea>
+            <span class="char-count" id="bg-count">0 chars</span>
+          </div>
+          <div class="section-tip">💡 <strong>Best Practice (MPEP §608):</strong> Describe the problem clearly. Acknowledge prior art honestly. This establishes the context for why your invention is needed and helps define the scope of what's novel.</div>
         </div>
-      </form>
-      <div class="disclaimer" role="alert">
-        <strong>⚠ Important:</strong> This tool generates a <strong>draft disclosure document only</strong>. It does NOT file with the USPTO. No patent protection is established by using this service. Always consult a registered patent attorney before filing. <a href="https://www.uspto.gov/patents/basics" target="_blank" rel="noopener">Learn more at USPTO.gov</a>.
+      </div>
+
+      <!-- Summary Section -->
+      <div class="section-block open" id="sec-summary">
+        <div class="section-header" onclick="toggleSection(this)" aria-expanded="true" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+          <span>📝 Summary of the Invention</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="form-group">
+            <label for="summary_text" class="optional">Brief Summary</label>
+            <textarea id="summary_text" placeholder="Provide a concise summary of your invention — what it does, how it works at a high level, and its key advantages.&#10;&#10;Example:&#10;The present invention provides a method for adaptive noise reduction that operates in the time domain using a predictive neural network model. The method achieves real-time performance with lower latency than frequency-domain approaches while maintaining audio fidelity."></textarea>
+            <span class="char-count" id="summary-count">0 chars</span>
+          </div>
+          <div class="section-tip">💡 <strong>Best Practice (35 USC §112):</strong> The summary should convey the essence of the invention. Include the core technical contribution and key advantages over existing approaches.</div>
+        </div>
+      </div>
+
+      <!-- Detailed Description -->
+      <div class="section-block open" id="sec-detail">
+        <div class="section-header" onclick="toggleSection(this)" aria-expanded="true" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+          <span>🔬 Detailed Description <span style="color:var(--danger);font-size:.75rem">* required</span></span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="form-group">
+            <label for="disclosure_text" class="required">Full Disclosure<span class="help-icon" data-tip="This is the most important section. Describe your invention in complete detail — enough that someone skilled in the field could make and use it. Include specific embodiments, alternatives, and variations. The USPTO calls this the 'enabling disclosure.'">?</span></label>
+            <textarea id="disclosure_text" placeholder="Describe your invention in complete detail. Include:
+
+· How it works — step by step
+· Specific components, materials, or processes
+· Working examples and test results (if available)
+· Alternative embodiments and variations
+· Advantages over existing approaches
+· Any drawings or figures you plan to include (describe them)
+· Definitions of any specialized terms" required></textarea>
+            <span class="char-count" id="detail-count">0 chars</span>
+          </div>
+          <div class="section-tip">
+            💡 <strong>Best Practice (35 USC §112 Enablement):</strong> The disclosure must enable a person of ordinary skill in the art to make and use the invention without undue experimentation. Include specific details, measurements, materials, and methods. <em>"The specification shall contain a written description of the invention, and of the manner and process of making and using it, in such full, clear, concise, and exact terms as to enable any person skilled in the art to which it pertains to make and use the same."</em>
+          </div>
+        </div>
+      </div>
+
+      <!-- Claims Section -->
+      <div class="section-block open" id="sec-claims">
+        <div class="section-header" onclick="toggleSection(this)" aria-expanded="true" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+          <span>⚖️ Patent Claims <span style="color:var(--muted);font-size:.75rem">optional but strongly recommended</span></span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="form-group">
+            <label for="claims_text" class="optional">Claims<span class="help-icon" data-tip="Claims define the legal boundary of your invention. Though optional in a provisional, strong claims establish a clearer priority date. Use proper claim format: preamble → transitional phrase ('comprising', 'consisting of') → body elements. Each claim is one sentence. Number them sequentially.">?</span></label>
+            <textarea id="claims_text" class="claims-area" placeholder="Format your claims as numbered single sentences:
+
+1. A method for [purpose], comprising:
+   (a) [first step];
+   (b) [second step]; and
+   (c) [third step].
+
+2. The method of claim 1, further comprising [additional step].
+
+3. An apparatus for [purpose], comprising:
+   a [component A] configured to [function];
+   a [component B] coupled to said [component A]; and
+   a [component C] ..."></textarea>
+            <span class="char-count" id="claims-count">0 chars</span>
+          </div>
+          <div class="section-tip">
+            💡 <strong>Claims Best Practices:</strong><br>
+            • <strong>Independent claims</strong> (standalone) define broad protection. Start with "A method…" "An apparatus…" "A system…" or "A composition…"<br>
+            • <strong>Dependent claims</strong> add specificity: "The method of claim 1, wherein…"<br>
+            • Use "comprising" (open-ended, preferred) rather than "consisting of" (closed)<br>
+            • Each claim is ONE sentence. Use semicolons and line breaks for readability.<br>
+            • Claims are NOT required in a provisional application, but including them strengthens your priority date per 35 USC §119(e).
+          </div>
+        </div>
+      </div>
+
+      <!-- Abstract -->
+      <div class="section-block open" id="sec-abstract">
+        <div class="section-header" onclick="toggleSection(this)" aria-expanded="true" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')this.click()">
+          <span>📄 Abstract <span style="color:var(--muted);font-size:.75rem">optional</span></span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="form-group">
+            <label for="abstract_text">Abstract (150 words or fewer)</label>
+            <textarea id="abstract_text" placeholder="A concise summary of the disclosure as it appears in the detailed description and claims. Example:&#10;&#10;A method for adaptive noise reduction in audio signals uses a predictive neural network to estimate and subtract noise components in the time domain. The method achieves real-time performance by..." maxlength="1000"></textarea>
+            <span class="char-count" id="abstract-count">0/1000</span>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- Submit -->
+    <div class="card">
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary" id="submit-btn" onclick="handleSubmit()">
+          <span id="btn-text">Generate Disclosure</span><span class="loader" id="loader" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear All Fields</button>
+      </div>
+      <div class="disclaimer" role="alert">
+        <strong>⚠ IMPORTANT LEGAL NOTICE:</strong> This tool generates a <strong>draft disclosure document only</strong>. It does NOT file with the USPTO. No patent protection is established by using this service. A provisional application must be filed with the USPTO (Forms SB/16, specification, drawings, and fee) to establish a priority date under 35 USC §119(e). <strong>You have 12 months from filing a provisional to file a non-provisional application.</strong> Always consult a registered patent attorney or agent before filing. <a href="https://www.uspto.gov/patents/basics" target="_blank" rel="noopener">Learn more at USPTO.gov</a>.
+      </div>
+    </div>
+    </form>
+
+    <!-- Results -->
     <div class="result" id="result">
       <div class="card">
-        <div class="card-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Your Disclosure</div>
+        <div class="card-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Your Disclosure Document</div>
         <div class="btn-row" style="margin-bottom:1rem">
-          <button class="btn btn-primary btn-sm" onclick="printResult()">Print / Save PDF</button>
-          <button class="btn btn-secondary btn-sm" onclick="downloadHTML()">Download HTML</button>
+          <button class="btn btn-primary btn-sm" onclick="printResult()">🖨️ Print / Save as PDF</button>
+          <button class="btn btn-secondary btn-sm" onclick="downloadHTML()">💾 Download HTML</button>
         </div>
         <iframe class="result-frame" id="result-frame" title="Disclosure preview"></iframe>
       </div>
     </div>
   </div>
 
-  <!-- Browse Panel -->
+  <!-- ══════════════════════════════════════════
+       BROWSE PANEL
+       ══════════════════════════════════════════ -->
   <div class="panel" id="panel-browse" role="tabpanel" aria-labelledby="tab-browse">
     <div class="card">
       <div class="card-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>Recent Disclosures</div>
@@ -584,7 +720,9 @@ footer a:hover{text-decoration:underline}
     </div>
   </div>
 
-  <!-- Search Panel -->
+  <!-- ══════════════════════════════════════════
+       SEARCH PANEL
+       ══════════════════════════════════════════ -->
   <div class="panel" id="panel-search-panel" role="tabpanel" aria-labelledby="tab-search">
     <div class="card">
       <div class="card-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>Semantic Search</div>
@@ -597,7 +735,9 @@ footer a:hover{text-decoration:underline}
     </div>
   </div>
 
-  <!-- Stats Panel -->
+  <!-- ══════════════════════════════════════════
+       STATS PANEL
+       ══════════════════════════════════════════ -->
   <div class="panel" id="panel-stats-panel" role="tabpanel" aria-labelledby="tab-stats">
     <div class="card">
       <div class="card-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 20V10M12 20V4M6 20v-6"></path></svg>Platform Analytics</div>
@@ -618,6 +758,7 @@ footer a:hover{text-decoration:underline}
 const API = 'https://ipatent-api.q08.workers.dev/api';
 const SESSION = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36);
 sessionStorage.setItem('ipatent_session', SESSION);
+let userType = 'inventor';
 
 // ── Analytics ──
 function track(eventType, extra = {}) {
@@ -634,10 +775,47 @@ function toast(msg, type) {
   t.setAttribute('role','status');
   t.setAttribute('aria-live','polite');
   document.body.appendChild(t);
-  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .3s ease'; setTimeout(() => t.remove(), 300); }, 4500);
+  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .3s ease'; setTimeout(() => t.remove(), 300); }, 5000);
 }
 
-// ── Tab Switching (with ARIA) ──
+// ── User Type ──
+function selectUserType(btn) {
+  document.querySelectorAll('.user-type-btn').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-checked','false'); });
+  btn.classList.add('selected');
+  btn.setAttribute('aria-checked','true');
+  userType = btn.dataset.ut;
+  const tips = {
+    'inventor': '<strong>💡 Independent Inventor Tips:</strong> Start by describing what problem your invention solves and how it works. Don\'t worry about formal language — just explain it clearly. The more detail you provide, the stronger your priority date. Consider sketching diagrams or flowcharts to attach later.',
+    'pro-se': '<strong>⚖️ Pro Se Filing Tips:</strong> Since you plan to file yourself, pay extra attention to the claims section and enabling disclosure. Visit <a href="https://www.uspto.gov/patents/pro-se" target="_blank">USPTO Pro Se Assistance</a>. Remember: a provisional establishes a priority date but you must file a non-provisional within 12 months.',
+    'attorney': '<strong>🏛️ Attorney Collaboration Tips:</strong> Focus on including as much technical detail as possible — your attorney will handle the legal formatting. Include alternative embodiments, test data, and all variations you can think of. A thorough disclosure saves billable hours and strengthens your filing.'
+  };
+  document.getElementById('user-type-guidance').innerHTML = tips[userType] || tips['inventor'];
+  track('user_type_select', {user_type: userType});
+}
+
+// ── Section Toggle ──
+function toggleSection(header) {
+  const block = header.parentElement;
+  block.classList.toggle('open');
+  header.setAttribute('aria-expanded', block.classList.contains('open'));
+}
+
+// ── Character Counts ──
+['title','disclosure_text','claims_text','abstract_text','background_text','summary_text'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const counterId = id === 'title' ? 'title-count' : id === 'disclosure_text' ? 'detail-count' : id === 'claims_text' ? 'claims-count' : id === 'abstract_text' ? 'abstract-count' : id === 'background_text' ? 'bg-count' : 'summary-count';
+  const counter = document.getElementById(counterId);
+  el.addEventListener('input', () => {
+    if (!counter) return;
+    const len = el.value.length;
+    const max = el.maxLength || 500;
+    counter.textContent = len + (el.maxLength > 0 ? '/'+el.maxLength : ' chars');
+    counter.className = 'char-count ' + (len > max*0.9 ? 'warn' : len > 100 ? 'good' : '');
+  });
+});
+
+// ── Tab Switching ──
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
@@ -650,7 +828,6 @@ document.querySelectorAll('.tab').forEach(tab => {
     if (tab.dataset.panel === 'browse') loadRecent();
     if (tab.dataset.panel === 'stats-panel') loadStats();
   });
-  // Keyboard accessibility
   tab.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
       e.preventDefault();
@@ -664,16 +841,28 @@ document.querySelectorAll('.tab').forEach(tab => {
 });
 
 // ── Submit ──
-document.getElementById('disclosure-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
+async function handleSubmit() {
   const btn = document.getElementById('submit-btn'), btnText = document.getElementById('btn-text'), loader = document.getElementById('loader');
+
+  // Validate required fields
+  const title = document.getElementById('title').value.trim();
+  const disclosure = document.getElementById('disclosure_text').value.trim();
+  if (!title) { toast('Please enter a Title of Invention (required)', 'error'); document.getElementById('title').focus(); return; }
+  if (!disclosure) { toast('Please enter the Detailed Description (required)', 'error'); document.getElementById('disclosure_text').focus(); return; }
+
   btn.disabled = true; btnText.textContent = 'Generating…'; loader.classList.add('show');
 
   const payload = {
     inventor_name: document.getElementById('inventor_name').value.trim(),
     inventor_email: document.getElementById('inventor_email').value.trim(),
-    title: document.getElementById('title').value.trim(),
-    disclosure_text: document.getElementById('disclosure_text').value.trim(),
+    title: title,
+    disclosure_text: disclosure,
+    claims: document.getElementById('claims_text').value.trim(),
+    abstract: document.getElementById('abstract_text').value.trim(),
+    technical_field: document.getElementById('technical_field').value.trim(),
+    background: document.getElementById('background_text').value.trim(),
+    summary: document.getElementById('summary_text').value.trim(),
+    user_type: userType,
     session_id: SESSION,
   };
 
@@ -685,12 +874,19 @@ document.getElementById('disclosure-form').addEventListener('submit', async (e) 
     document.getElementById('result-frame').srcdoc = html;
     document.getElementById('result').classList.add('show');
     document.getElementById('result').scrollIntoView({behavior:'smooth'});
-    toast('Disclosure generated successfully!', 'success');
+    toast('Disclosure generated successfully! ID: ' + sid, 'success');
     updateCount();
-    track('submit', {submission_id: sid});
+    track('submit', {submission_id: sid, user_type: userType});
   } catch (err) { toast('Error: ' + err.message, 'error'); }
   finally { btn.disabled = false; btnText.textContent = 'Generate Disclosure'; loader.classList.remove('show'); }
-});
+}
+
+function clearForm() {
+  document.querySelectorAll('#panel-generate textarea, #panel-generate input[type=text], #panel-generate input[type=email]').forEach(el => el.value = '');
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('title').focus();
+  toast('Form cleared', 'info');
+}
 
 function printResult() { const f = document.getElementById('result-frame'); if (f.contentWindow) f.contentWindow.print(); }
 function downloadHTML() {
@@ -711,12 +907,7 @@ async function loadRecent() {
     el.innerHTML = d.results.map(s => `
       <div class="sub-item" onclick="viewSubmission('${s.submission_id}')" role="button" tabindex="0" aria-label="View disclosure: ${esc(s.title)}" onkeydown="if(event.key==='Enter')viewSubmission('${s.submission_id}')">
         <div class="sub-title">${esc(s.title)}</div>
-        <div class="sub-meta">
-          <span>${esc(s.inventor_name || 'Anonymous')}</span>
-          <span>${s.country || '—'}</span>
-          <span>${s.created_at ? s.created_at.slice(0,10) : '—'}</span>
-          <span>${s.status}</span>
-        </div>
+        <div class="sub-meta"><span>${esc(s.inventor_name || 'Anonymous')}</span><span>${s.country || '—'}</span><span>${s.created_at ? s.created_at.slice(0,10) : '—'}</span><span>${s.status}</span></div>
       </div>`).join('');
   } catch { el.innerHTML = '<span style="color:var(--danger)">Failed to load disclosures. Please try again.</span>'; }
 }
@@ -741,7 +932,6 @@ async function doSearch() {
   const el = document.getElementById('search-results');
   el.innerHTML = '<span style="color:var(--muted)">Searching disclosures…</span>';
   track('search', {query: q});
-
   try {
     const r = await fetch(`${API}/search`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({query: q, limit: 20, session_id: SESSION}) });
     const d = await r.json();
@@ -761,17 +951,12 @@ async function loadStats() {
     document.getElementById('submission-count').textContent = (d.submissions?.total||0) + ' disclosures';
     document.getElementById('stats-cards').innerHTML = `
       <div class="stat-card"><div class="stat-value">${(d.submissions?.total||0).toLocaleString()}</div><div class="stat-label">Disclosures</div></div>
-      <div class="stat-card"><div class="stat-value">${(d.analytics?.total||0).toLocaleString()}</div><div class="stat-label">Events Tracked</div></div>
+      <div class="stat-card"><div class="stat-value">${(d.analytics?.total||0).toLocaleString()}</div><div class="stat-label">Events</div></div>
       <div class="stat-card"><div class="stat-value">${(d.sessions?.total||0).toLocaleString()}</div><div class="stat-label">Sessions</div></div>
       <div class="stat-card"><div class="stat-value">${((d.analytics?.by_country||[]).length).toLocaleString()}</div><div class="stat-label">Countries</div></div>`;
-
     const recent = d.submissions?.recent || [];
-    document.getElementById('stats-recent').innerHTML = recent.length === 0
-      ? '<span style="color:var(--muted)">No submissions yet.</span>'
-      : recent.map(s => `<div class="sub-item" onclick="viewSubmission('${s.submission_id}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')viewSubmission('${s.submission_id}')"><div class="sub-title">${esc(s.title)}</div><div class="sub-meta"><span>${esc(s.inventor_name||'Anonymous')}</span><span>${s.country||'—'}</span><span>${s.status}</span></div></div>`).join('');
-  } catch {
-    document.getElementById('stats-cards').innerHTML = '<span style="color:var(--danger)">Failed to load statistics.</span>';
-  }
+    document.getElementById('stats-recent').innerHTML = recent.length ? recent.map(s => `<div class="sub-item" onclick="viewSubmission('${s.submission_id}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')viewSubmission('${s.submission_id}')"><div class="sub-title">${esc(s.title)}</div><div class="sub-meta"><span>${esc(s.inventor_name||'Anonymous')}</span><span>${s.country||'—'}</span><span>${s.status}</span></div></div>`).join('') : '<span style="color:var(--muted)">No submissions yet.</span>';
+  } catch { document.getElementById('stats-cards').innerHTML = '<span style="color:var(--danger)">Failed to load statistics.</span>'; }
 }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }

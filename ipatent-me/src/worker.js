@@ -51,55 +51,176 @@ function sanitize(s, max = 100000) {
   return String(s || '').slice(0, max).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
 }
 
-// ── Disclosure Document Generator ──
+// ── Disclosure Document Generator (Professional Format) ──
+
+function escHtml(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+function formatClaims(text) {
+  if (!text || !text.trim()) return '';
+  // Split on newlines, format numbered claims
+  const lines = text.trim().split('\n').filter(l => l.trim());
+  return lines.map(line => {
+    const trimmed = line.trim();
+    // Check if it's a numbered claim
+    if (/^\d+\./.test(trimmed)) {
+      return `<p class="claim"><strong>${escHtml(trimmed)}</strong></p>`;
+    }
+    return `<p class="claim-cont">${escHtml(trimmed)}</p>`;
+  }).join('\n');
+}
 
 function generateDocHTML(data) {
   const d = new Date().toISOString().split('T')[0];
-  const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const esc = escHtml;
+  const hasClaims = data.claims && data.claims.trim();
+  const hasAbstract = data.abstract && data.abstract.trim();
+  const hasTechnicalField = data.technical_field && data.technical_field.trim();
+  const hasBackground = data.background && data.background.trim();
+  const hasSummary = data.summary && data.summary.trim();
+  const userTypeLabel = {'inventor':'Independent Inventor','pro-se':'Pro Se Filer','attorney':'Working with Patent Attorney'}[data.user_type] || '';
+  
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>US Provisional Disclosure — ${esc(data.title || 'Untitled')}</title>
+<title>US Provisional Patent Disclosure — ${esc(data.title || 'Untitled')}</title>
 <style>
-  body{font-family:'Segoe UI',system-ui,sans-serif;max-width:800px;margin:40px auto;padding:20px;color:#1a1a2e;line-height:1.7}
-  h1{font-size:1.5rem;border-bottom:3px solid #4f46e5;padding-bottom:10px}
-  h2{font-size:1.1rem;color:#4f46e5;margin-top:24px}
-  .meta{background:#f3f4f6;padding:16px;border-radius:8px;margin:16px 0;font-size:.9rem}
-  .disclosure{background:#fefefe;border:1px solid #e5e7eb;padding:24px;border-radius:8px;margin:16px 0;white-space:pre-wrap}
-  .footer{font-size:.75rem;color:#9ca3af;margin-top:40px;border-top:1px solid #e5e7eb;padding-top:16px}
-  .watermark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:6rem;color:rgba(79,70,229,.03);pointer-events:none;z-index:-1;white-space:nowrap}
-  @media print{.watermark{display:none}body{font-size:11pt}}
+  @page { margin: 1in; size: letter; }
+  body{
+    font-family: 'Georgia', 'Times New Roman', serif;
+    max-width: 7.5in;
+    margin: 0 auto;
+    padding: 0.75in 0.5in;
+    color: #1a1a1a;
+    line-height: 1.8;
+    font-size: 11.5pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  h1{font-size:14pt;text-align:center;font-weight:700;margin-bottom:18pt;text-transform:uppercase;letter-spacing:1pt;border-bottom:2pt solid #1a1a1a;padding-bottom:8pt}
+  h2{font-size:12pt;color:#1a1a1a;margin-top:22pt;margin-bottom:8pt;border-bottom:1pt solid #ccc;padding-bottom:4pt}
+  h3{font-size:11pt;color:#333;margin-top:16pt;margin-bottom:6pt}
+  .meta-section{background:#f8f8f8;border:1px solid #ddd;padding:12pt 16pt;margin:16pt 0;font-size:10pt;line-height:1.5;border-radius:4pt}
+  .meta-section p{margin:2pt 0}
+  .section-label{font-weight:700;font-size:10pt;color:#555;text-transform:uppercase;letter-spacing:.5pt;margin-top:18pt;margin-bottom:4pt}
+  .disclosure-body{white-space:pre-wrap;text-align:justify;margin:8pt 0}
+  .claim{font-family:'Georgia',serif;margin:6pt 0;padding:2pt 0;text-indent:-20pt;padding-left:20pt;line-height:1.6}
+  .claim-cont{font-family:'Georgia',serif;margin:2pt 0;padding-left:20pt;line-height:1.6}
+  .abstract-box{border:1px solid #ccc;padding:10pt 14pt;margin:14pt 0;font-size:10.5pt;background:#fafafa}
+  .abstract-box .abstract-label{font-weight:700;text-transform:uppercase;font-size:9pt;color:#666;letter-spacing:.5pt}
+  .footer{border-top:1px solid #ccc;padding-top:12pt;margin-top:30pt;font-size:8.5pt;color:#888;text-align:center}
+  .watermark{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) rotate(-20deg);font-size:72pt;color:rgba(0,0,0,.025);pointer-events:none;z-index:-1;white-space:nowrap;font-weight:700}
+  .page-break{page-break-before:always}
+  .sig-line{border-top:1px solid #1a1a1a;width:250pt;margin-top:36pt;font-size:9pt;color:#666}
+  @media print{
+    body{padding:0}
+    .watermark{display:none}
+    .meta-section{background:#f8f8f8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
 </style>
 </head>
 <body>
 <div class="watermark">DRAFT</div>
+
 <h1>UNITED STATES PROVISIONAL PATENT DISCLOSURE</h1>
-<div class="meta">
+
+<!-- Meta Information -->
+<div class="meta-section">
   <p><strong>Submission ID:</strong> ${esc(data.submission_id)}</p>
   <p><strong>Date Generated:</strong> ${d}</p>
-  <p><strong>Inventor:</strong> ${esc(data.inventor_name || 'Not provided')}</p>
+  <p><strong>Inventor(s):</strong> ${esc(data.inventor_name || 'Not provided')}</p>
   <p><strong>Contact:</strong> ${esc(data.inventor_email || 'Not provided')}</p>
-  <p><strong>Status:</strong> DRAFT — Not yet filed with USPTO</p>
+  ${userTypeLabel ? `<p><strong>Filed By:</strong> ${esc(userTypeLabel)}</p>` : ''}
+  <p><strong>Status:</strong> <em>DRAFT — NOT YET FILED WITH USPTO</em></p>
+  <p style="margin-top:6pt;font-size:9pt;color:#888">This document is a draft provisional patent disclosure generated for internal review. It does not constitute a filed patent application and no USPTO filing date has been established. File a provisional application (Forms SB/16, specification, drawings, and fee) to establish a priority date under 35 USC §119(e). You must file a non-provisional application within 12 months.</p>
 </div>
-<h2>Title of Invention</h2>
-<p>${esc(data.title || '[No title]')}</p>
-<h2>Detailed Disclosure</h2>
-<div class="disclosure">${esc(data.disclosure_text || '[No disclosure]')}</div>
-<h2>Inventor Declaration</h2>
-<p>I, <strong>${esc(data.inventor_name || '[Name not provided]')}</strong>, declare I am the original inventor of the subject matter above. This document is a <strong>draft disclosure only</strong> and does not constitute a filed provisional patent application with the USPTO.</p>
-<h2>Next Steps</h2>
-<ol>
-  <li>Review and refine this disclosure</li>
-  <li>Add drawings, diagrams, or schematics</li>
-  <li>File as USPTO provisional application (Forms SB/16, specification, drawings, fee)</li>
-  <li>Consult a registered patent attorney or agent</li>
-</ol>
+
+<!-- Title -->
+<h2>1. TITLE OF INVENTION</h2>
+<p style="font-size:12pt;font-weight:600">${esc(data.title || '[No title provided]')}</p>
+
+<!-- Technical Field -->
+${hasTechnicalField ? `
+<h2>2. TECHNICAL FIELD</h2>
+<div class="disclosure-body">${esc(data.technical_field)}</div>` : ''}
+
+<!-- Background -->
+${hasBackground ? `
+<h2>3. BACKGROUND OF THE INVENTION</h2>
+<div class="disclosure-body">${esc(data.background)}</div>` : ''}
+
+<!-- Summary -->
+${hasSummary ? `
+<h2>4. SUMMARY OF THE INVENTION</h2>
+<div class="disclosure-body">${esc(data.summary)}</div>` : ''}
+
+<!-- Detailed Description -->
+<h2>${hasBackground || hasSummary ? '5' : '2'}. DETAILED DESCRIPTION</h2>
+<div class="disclosure-body">${esc(data.disclosure_text || '[No detailed description provided]')}</div>
+
+<!-- Claims -->
+${hasClaims ? `
+<div class="page-break"></div>
+<h2>${hasBackground || hasSummary ? '6' : '3'}. CLAIMS</h2>
+<p style="font-size:9pt;color:#888;font-style:italic;margin-bottom:10pt">What is claimed is:</p>
+${formatClaims(data.claims)}
+` : `
+<div class="page-break"></div>
+<h2>${hasBackground || hasSummary ? '6' : '3'}. CLAIMS</h2>
+<p style="color:#999;font-style:italic">[No claims drafted. Claims are optional in a provisional application but are strongly recommended to establish a clear priority date. Add claims before filing.]</p>
+`}
+
+<!-- Abstract -->
+${hasAbstract ? `
+<h2>${hasBackground || hasSummary ? '7' : '4'}. ABSTRACT</h2>
+<div class="abstract-box">
+  <span class="abstract-label">Abstract</span>
+  <div class="disclosure-body" style="margin-top:6pt">${esc(data.abstract)}</div>
+</div>` : `
+<h2>${hasBackground || hasSummary ? '7' : '4'}. ABSTRACT</h2>
+<div class="abstract-box">
+  <span class="abstract-label">Abstract</span>
+  <div class="disclosure-body" style="margin-top:6pt;color:#999;font-style:italic">[Abstract not provided. An abstract of 150 words or fewer should be included before filing.]</div>
+</div>`}
+
+<!-- Declaration -->
+<h2>INVENTOR DECLARATION</h2>
+<div class="disclosure-body">
+  <p>I, <strong>${esc(data.inventor_name || '[Inventor name not provided]')}</strong>, hereby declare that:</p>
+  <ol style="margin-left:20pt">
+    <li>I am the original inventor, or an original joint inventor, of the subject matter disclosed above;</li>
+    <li>I have reviewed and understand the contents of this disclosure;</li>
+    <li>I believe the invention described herein to be novel, useful, and non-obvious;</li>
+    <li>This document is a <strong>draft disclosure</strong> and does not constitute a filed patent application with the United States Patent and Trademark Office (USPTO);</li>
+    <li>I understand that no patent rights are established until a complete application is filed with the USPTO and a patent is granted;</li>
+    <li>I understand that public disclosure of this invention before filing may affect patent rights in certain jurisdictions.</li>
+  </ol>
+  <div class="sig-line">
+    <p>Signature of Inventor</p>
+    <p>Date: ____________________</p>
+  </div>
+</div>
+
+<!-- Next Steps -->
+<h2>NEXT STEPS — Filing Checklist</h2>
+<div class="disclosure-body">
+  <ol>
+    <li><strong>Review &amp; Refine:</strong> Carefully review this disclosure for completeness, accuracy, and clarity. Ensure the description would enable a person of ordinary skill in the art to make and use the invention.</li>
+    <li><strong>Add Drawings:</strong> Prepare formal drawings, diagrams, flowcharts, or schematics. Each figure should be numbered and referenced in the detailed description. Drawings are required if necessary to understand the invention (37 CFR §1.81).</li>
+    <li><strong>Draft Claims:</strong> If not already included, draft formal patent claims defining the legal scope of protection sought. Include both independent and dependent claims.</li>
+    <li><strong>Prepare USPTO Forms:</strong> Complete Form SB/16 (Provisional Application Cover Sheet) and the applicable fee transmittal form.</li>
+    <li><strong>File with USPTO:</strong> Submit the complete provisional application (specification, drawings, cover sheet, and filing fee) to the USPTO via EFS-Web or by mail.</li>
+    <li><strong>Mark Your Calendar:</strong> You have <strong>12 months</strong> from the provisional filing date to file a non-provisional (utility) application claiming priority under 35 USC §119(e).</li>
+    <li><strong>Consult a Patent Professional:</strong> Patent law is complex. Strongly consider consulting a registered patent attorney or agent (find one at <a href="https://www.uspto.gov" style="color:#2563eb">USPTO.gov</a>).</li>
+  </ol>
+</div>
+
 <div class="footer">
-  <p>Generated by ipatent.me — US Provisional Disclosure Tool</p>
-  <p>This is NOT a filed patent application. No USPTO filing date has been established.</p>
-  <p>Generated: ${d} | Submission ID: ${esc(data.submission_id)}</p>
+  <p><strong>Generated by ipatent.me</strong> — Provisional Patent Disclosure Tool</p>
+  <p style="margin-top:4pt"><strong>IMPORTANT:</strong> This is a DRAFT document generated for informational purposes. It is NOT a filed patent application. No USPTO filing date has been established. No patent protection is in effect. This document does not constitute legal advice. Consult a registered patent attorney or agent before filing.</p>
+  <p style="margin-top:4pt">Generated: ${d} | Submission ID: ${esc(data.submission_id)} | ipatent.me</p>
 </div>
+
 </body>
 </html>`;
 }
@@ -158,6 +279,12 @@ async function handleSubmit(request, env) {
   const inventor_email = sanitize(body.inventor_email, 500);
   const title = sanitize(body.title, 1000);
   const disclosure_text = sanitize(body.disclosure_text, 50000);
+  const claims = sanitize(body.claims, 20000);
+  const abstract = sanitize(body.abstract, 2000);
+  const technical_field = sanitize(body.technical_field, 1000);
+  const background = sanitize(body.background, 20000);
+  const summary = sanitize(body.summary, 10000);
+  const user_type = sanitize(body.user_type, 100);
   const sessionId = sanitize(body.session_id, 200) || crypto.randomUUID();
 
   if (!title || !disclosure_text) {
@@ -171,6 +298,7 @@ async function handleSubmit(request, env) {
   const docHTML = generateDocHTML({
     submission_id: sid,
     inventor_name, inventor_email, title, disclosure_text,
+    claims, abstract, technical_field, background, summary, user_type,
   });
 
   // 2. Store document HTML in R2
@@ -185,9 +313,9 @@ async function handleSubmit(request, env) {
   // 3. Store VERBATIM in D1
   try {
     await env.DB.prepare(
-      `INSERT INTO submissions (submission_id, inventor_name, inventor_email, title, disclosure_text, document_html, r2_key, status, ip_address, user_agent, country, session_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?)`
-    ).bind(sid, inventor_name, inventor_email, title, disclosure_text, docHTML, r2Key, meta.ip, meta.ua, meta.country, sessionId).run();
+      `INSERT INTO submissions (submission_id, inventor_name, inventor_email, title, disclosure_text, claims, abstract, technical_field, background, summary, user_type, document_html, r2_key, status, ip_address, user_agent, country, session_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?)`
+    ).bind(sid, inventor_name, inventor_email, title, disclosure_text, claims, abstract, technical_field, background, summary, user_type, docHTML, r2Key, meta.ip, meta.ua, meta.country, sessionId).run();
   } catch (e) {
     console.error('D1 insert failed:', e.message);
     return json({ error: 'Database error. Please try again.' }, 500);
