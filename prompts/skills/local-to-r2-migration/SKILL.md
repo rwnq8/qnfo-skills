@@ -452,7 +452,7 @@ Create `_upload_manifest.json` tracking every uploaded file:
 
 
 
-### Phase 4: UPDATE DISCOVERY INDEX
+### Phase 4: Register in D1 Portfolio-State (Discovery Index DEPRECATED)
 
 
 
