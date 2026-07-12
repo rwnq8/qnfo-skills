@@ -1,5 +1,5 @@
-# QNFO CLOUDFLARE ECOSYSTEM MASTER INVENTORY — 2026-07-11 (Session 13 Update)
-## Consolidated for LLM Maintenance Capacity | Workers: 33→28→26→25, SEO: Worker-backed, QWAV: merged
+# QNFO CLOUDFLARE ECOSYSTEM MASTER INVENTORY — 2026-07-12 (Session 14 Update)
+## Consolidated for LLM Maintenance Capacity | Workers: 33→28→26→25→24, Archive: merged+queue, SEO: Worker-backed
 
 ---
 
@@ -41,9 +41,9 @@
 
 ---
 
-## WORKERS — 25 (was 33; 5 deleted Session 11, 2 deleted Session 12, 2 merged→1 Session 13)
+## WORKERS — 24 (was 33; 5 deleted Session 11, 2 deleted Session 12, 2 merged→1 Session 13, 1 deleted Session 14)
 
-### TIER 1: ESSENTIAL CORE (15)
+### TIER 1: ESSENTIAL CORE (14)
 
 | Worker | Purpose |
 |:-------|:--------|
@@ -51,7 +51,7 @@
 | graph-api | Knowledge Graph queries (3200n/4634e) |
 | papers-server | Dynamic paper rendering + SEO (v2.1, R2-backed) |
 | qnfo-lifecycle | Automated project lifecycle (cron daily) |
-| qnfo-archive-worker | Queue consumer for R2 archival migration |
+| archive-worker | **MERGED v2.0** — HTML pages + queue consumer (R2 archival), QNFO_BUCKET binding |
 | qnfo-agent-session | DO+SQLite agent sessions + locks (kg-mutex) |
 | infra-lock-manager | DEC-034 deployment concurrency control |
 | api-gateway | Single entry point (MASTER-PLAN) |
@@ -63,19 +63,18 @@
 | audit-worker | Audit trail storage |
 | cron-graph-re-seed | KG-D1 paper reconciliation (every 15 min) |
 
-### TIER 2: SUPPORT / RESEARCH (9)
+### TIER 2: SUPPORT / RESEARCH (8)
 
 | Worker | Purpose |
 |:-------|:--------|
 | qnfo-ai-worker | AI assistance |
-| paper-pipeline | Paper processing pipeline |
+| paper-pipeline | Paper processing + vectorize sync (cron daily, should be TIER 1) |
 | murtagh-engine | Murtagh research engine |
 | braid-matrix | Braid matrix research |
-| qnfo-infra-mcp | Infrastructure MCP server |
+| qnfo-infra-mcp | Infrastructure MCP stub (low value, candidate for deletion) |
 | qnfo-asset-api | Asset management |
-| qnfo-analytics-dashboard | Analytics dashboard |
-| archive-worker | Archive worker (needs queue handler merge) |
-| **paper-catalog** | **RECLASSIFIED: D1→KG paper sync DO** |
+| qnfo-analytics-dashboard | Analytics dashboard (low value, consider Pages static) |
+| **paper-catalog** | **DO: D1→KG paper sync** |
 
 ### TIER 3: MERGED/DELETED (0 remaining)
 
@@ -105,6 +104,10 @@
 | deep-qwav-meta | Merged into qwav-unified — deleted |
 | qwav-redirect | Merged into qwav-unified — deleted |
 | r2-binding-test | Session 13 test Worker — deleted after verification |
+
+### Session 14 Merge/Deletion
+| qnfo-archive-worker | Merged queue consumer into archive-worker v2.0 — deleted |
+| archive-worker | **UPGRADED to v2.0** — now serves archive.qnfo.org HTML + qnfo-lifecycle-queue consumer + QNFO_BUCKET R2 binding |
 
 ---
 
@@ -138,12 +141,12 @@
 
 ## CONSOLIDATION PROGRESS
 
-| Resource | Session 9 | Session 11 | Session 12 | Session 13 | Target |
-|:---------|:---------:|:----------:|:----------:|:----------:|:------:|
-| Workers | 33 | 28 | 26 | **25** (−8) | 15 |
-| Pages | 10 | 7 | 7 | 7 | 6 |
-| D1 | 5 | 5 | 5 | 5 | 5 |
-| Vectorize | 3 | 3 | 3 | 3 | 3 |
+| Resource | Session 9 | Session 11 | Session 12 | Session 13 | Session 14 | Target |
+|:---------|:---------:|:----------:|:----------:|:----------:|:----------:|:------:|
+| Workers | 33 | 28 | 26 | 25 | **24** (−9) | 15 |
+| Pages | 10 | 7 | 7 | 7 | 7 | 6 |
+| D1 | 5 | 5 | 5 | 5 | 5 | 5 |
+| Vectorize | 3 | 3 | 3 | 3 | 3 | 3 |
 
 ---
 
@@ -151,8 +154,9 @@
 
 | Task | Notes |
 |:-----|:------|
-| Transfer 5 domains away from Registrar | Manual Dashboard action. Zones blocked by Cloudflare Registrar (clientTransferProhibited) |
-| Merge qnfo-archive-worker → archive-worker | Queue consumer needs queue() handler added; source code archived in workers/ |
-| TIER 2 worker audit | 9 remaining support workers — check routes, bindings, traffic |
-| Disable workers_dev on papers-server | Currently auto-enabled by wrangler deploy; low risk but should be explicit |
+| Transfer 5 domains away from Registrar | Manual Dashboard action. Zones blocked by Cloudflare Registrar (clientTransferProhibited). **ipatent.me expires 2026-07-28 (16 days!)** |
+| Disable workers_dev on papers-server | Requires Dashboard (API token lacks subdomain permission). Low risk. |
+| Consider delete qnfo-infra-mcp | Stub MCP server — no bindings, no routes, minimal value |
+| Consider migrate qnfo-analytics-dashboard to Pages | Simple HTML dashboard with /api/stats — could be static |
+| Reclassify paper-pipeline as TIER 1 | Has cron trigger + critical D1/R2/Vectorize bindings |
 | Complete MASTER-PLAN Phase 1 | living-paper schema completion, Pages→Worker migration |
