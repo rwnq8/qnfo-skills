@@ -221,7 +221,7 @@ Review QNFO's relevant current capabilities. Produce a table with these architec
 - Canonical storage (Cloudflare R2, `qnfo/` namespace) — Internet mandatory
 - Edge computation (Workers + local ephemeral Python) — Internet for Workers; offline for local
 - Agent coordination (in-session delegation: EXPLORER → IMPLEMENTER → REVIEWER) — single-machine only
-- Discovery (R2 Discovery Index pull) — Internet mandatory
+- D1 portfolio-state query — Internet mandatory
 - Knowledge Graph (`graph-api.q08.workers.dev` REST API) — Internet mandatory
 - Publication (Zenodo upload, Cloudflare Pages deploy) — Internet mandatory
 
@@ -382,10 +382,10 @@ When EXECUTE MODE is active, these HARD CONSTRAINTS apply to ALL response genera
 2. **Response Budget:** If EXECUTE was triggered and your response exceeds 1500 characters without containing at least 3 distinct tool invocations, you are PLANNING, not executing. Stop generating text and invoke a tool.
 
 3. **Discovery Capsule (replaces full Due Diligence):** When EXECUTE MODE is active, the Due Diligence Protocol (§3) is REDUCED to a 4-step capsule:
-   - Step A: Pull Discovery Index (mandatory — this IS a tool invocation)
+   - Step A: Query D1 portfolio-state (mandatory — this IS a tool invocation)
    - Step B: Identify the execution target from the index, R2 backlog, or most recently active project
    - Step C: **INFRASTRUCTURE STATE VERIFICATION** — before executing any pipeline/upload/deploy task, query live Cloudflare state (R2 count, Vectorize indexes, D1 row count) and compare against the task claim. If already done → SKIP with `[ALREADY-COMPLETE]`. See §3.2 step 1.6 for full protocol.
-   - Step D: **PORTFOLIO AWARENESS CHECK (MANDATORY — v3.18):** Before EXECUTING, verify: (i) No orphan git branches with unmerged work from other agents, (ii) No Cloudflare resources marked for recovery (check Discovery Index infrastructure warnings), (iii) pipeline-status.json shows task as genuinely pending. This prevents the #1 destructive pattern: agents executing work that undoes or duplicates prior work they lacked portfolio awareness of. See §3.2 step 1.8.
+   - Step D: **PORTFOLIO AWARENESS CHECK (MANDATORY — v3.18):** Before EXECUTING, verify: (i) No orphan git branches with unmerged work from other agents, (ii) No Cloudflare resources marked for recovery (check D1 portfolio-state infrastructure warnings), (iii) pipeline-status.json shows task as genuinely pending. This prevents the #1 destructive pattern: agents executing work that undoes or duplicates prior work they lacked portfolio awareness of. See §3.2 step 1.8.
    - THEN EXECUTE. Do NOT read HANDOFF files, decision logs, conversation history, or perform multi-project analysis. The full 7-step Due Diligence Protocol applies ONLY outside EXECUTE MODE.
 - **VIOLATION:** Persisting canonical files on local disk is a thin-client violation. R2 is canonical storage; local disk is ephemeral only. All non-.git/ files are deleted at closeout.
 
@@ -748,9 +748,9 @@ for label_info in stats.get('nodeLabels', []):
 
 **GATE:** If `stats` was NOT queried before claiming "comprehensive" or "all" discovery → the response is a cherry-picking violation. **The KG is the single source of truth for "what exists."** Files on disk are secondary confirmation only.
 
-**After the KG query, proceed to §3.1 for Discovery Index pull and §3.1.5 for impact analysis.**
+**After the KG query, proceed to §3.1 for D1 portfolio-state query and §3.1.5 for impact analysis.**
 
-Before starting any significant task, the agent MUST execute unified discovery through the QNFO Discovery Index:
+Before starting any significant task, the agent MUST execute unified discovery through D1 portfolio-state + qnfo-audit:
 
 ### 3.0 STEP-BY-STEP WORKFLOW (MANDATORY — Consolidated)
 
@@ -872,7 +872,7 @@ except Exception as e:
 
 Before ANY project work, execute ALL of these automatically:
 
-1. **Pull Discovery Index:** `npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json`
+1. **Query D1 portfolio-state:** `npx wrangler d1 execute portfolio-state --remote --command "SELECT * FROM resources LIMIT 5" -y`
 2. **Scan ALL handoffs** (open + processed last 7 days): `npx wrangler r2 object get qnfo/audit/handoffs/<name>.md --remote`
 3. **Read Decision Log:** `npx wrangler r2 object get qnfo/audit/decisions/DECISION-LOG.md --remote`
 4. **Check Pipeline Status:** `npx wrangler r2 object get qnfo/pipeline-status.json --remote`
@@ -891,11 +891,11 @@ Before executing ANY pipeline/upload/deploy/data task:
 ### 3.2.3 Post-Phase Discovery (After EVERY Phase/Task)
 
 After completing any major phase or task:
-1. Re-pull Discovery Index — detect changes by other agents
+1. Query D1 portfolio-state — detect changes by other agents
 2. Re-check handoff statuses — any new handoffs?
 3. Verify your changes against live infrastructure
 4. Log cross-project impacts to R2 audit trail
-5. Update Discovery Index if you created/removed/modified resources
+5. Update D1 portfolio-state if you created/removed/modified resources
 
 ### 3.2.4 Gap Analysis (MANDATORY)
 
@@ -1355,7 +1355,6 @@ All project files fall into three categories:
 
 **EPHEMERAL-CACHE (pull from R2, execute, discard IMMEDIATELY):**
 - Scripts pulled from R2 for execution: `_*.py` (pulled from `qnfo/tools/`)
-- Discovery Index snapshots: `_discovery_index.json` (pulled from `qnfo/discovery/index.json`)
 - Helper/utility scripts: `_*.py` files created for one workflow
 - **ALL ephemeral files MUST use `_` prefix** — this is the visual marker that the file is NOT import-surface
 - **MANDATORY CLEANUP AFTER EACH TASK** — not "when workflow complete." After every major task, delete its ephemeral files. Use `Remove-Item _<name>.*` then `Test-Path _<name>.*` to verify deletion. Never batch-clean at session end only — cleanup must be continuous.
@@ -1374,9 +1373,8 @@ The #1 thin-client failure mode: agents download files from R2 "just in case" an
    # VERIFY: Test-Path _<name>.py must return False
    ```
    The file must not survive longer than one contiguous execution block. Do NOT pull a file and leave it "for later."
-3. **DISCOVERY INDEX IS SPECIAL:** `_discovery_index.json` may persist for the session duration (it's referenced repeatedly), but MUST be deleted at session closeout. Re-pull next session.
-4. **NO FILES WITHOUT `_` PREFIX outside import-surface:** Any file you create in the working directory that is NOT part of the import-surface (`qnfo/prompts/`) MUST be named `_<name>.<ext>`. This is a HARD requirement — the `_` prefix signals "this will be deleted."
-5. **SESSION-START ORPHAN SCAN (MANDATORY):** Before ANY work, scan for orphaned `_*` files in the working directory:
+3. **NO FILES WITHOUT `_` PREFIX outside import-surface:** Any file you create in the working directory that is NOT part of the import-surface (`qnfo/prompts/`) MUST be named `_<name>.<ext>`. This is a HARD requirement — the `_` prefix signals "this will be deleted."
+4. **SESSION-START ORPHAN SCAN (MANDATORY):** Before ANY work, scan for orphaned `_*` files in the working directory:
    ```
    Get-ChildItem -File -Name | Where-Object { $_ -match '^_' } | ForEach-Object { Remove-Item $_; Write-Output "CLEANED: $_" }
    ```
@@ -1594,9 +1592,9 @@ def pull_r2_audit_trails():
         decisions = stdout
         r2_data["decision_count"] = len(re.findall(r"^### ", decisions, re.MULTILINE))
     
-    # Pull discovery index
+    # Query D1 portfolio-state (Discovery Index is DEPRECATED — replaced by D1)
     stdout, stderr, rc = run_cmd(
-        'npx wrangler r2 object get qnfo/discovery/index.json',
+        'npx wrangler d1 execute portfolio-state --remote --command "SELECT * FROM resources" -y',
         cwd=str(PROMPTS_DIR)
     )
     if rc == 0 and stdout:
@@ -2312,9 +2310,9 @@ def pull_r2_audit_trails():
         decisions = stdout
         r2_data["decision_count"] = len(re.findall(r"^### ", decisions, re.MULTILINE))
     
-    # Pull discovery index
+    # Query D1 portfolio-state (Discovery Index is DEPRECATED — replaced by D1)
     stdout, stderr, rc = run_cmd(
-        'npx wrangler r2 object get qnfo/discovery/index.json',
+        'npx wrangler d1 execute portfolio-state --remote --command "SELECT * FROM resources" -y',
         cwd=str(PROMPTS_DIR)
     )
     if rc == 0 and stdout:

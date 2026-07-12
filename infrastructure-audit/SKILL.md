@@ -85,7 +85,7 @@ update_plan([
 
 ## Purpose
 
-The #1 cause of duplicate work in QNFO is agents executing tasks without checking live infrastructure state. This skill automates the Infrastructure State Verification Gate (qnfo-agent §3.2 step 1.6) by querying all Cloudflare resources including the automated lifecycle pipeline and comparing against handoff/Discovery Index claims.
+The #1 cause of duplicate work in QNFO is agents executing tasks without checking live infrastructure state. This skill automates the Infrastructure State Verification Gate (qnfo-agent §3.2 step 1.6) by querying all Cloudflare resources including the automated lifecycle pipeline and comparing against handoff/D1 portfolio-state claims.
 
 ## When to Use
 
@@ -241,7 +241,7 @@ for url, expected, name in redirects:
 
 ### Phase 2: Orphan Detection
 
-Compare live resources against Discovery Index to find unregistered or stale entries.
+Compare live resources against D1 portfolio-state + qnfo-audit to find unregistered or stale entries.
 
 ```python
 # Check for projects in DI with no R2 path
@@ -252,15 +252,21 @@ Compare live resources against Discovery Index to find unregistered or stale ent
 ### Phase 3: Archival Integrity (NEW)
 
 ```python
-import json, urllib.request
+# D1-FIRST: Query D1 instead of R2 discovery index (DEPRECATED)
+# Projects: await get from qnfo-audit D1 projects table
+# Resources: await get from portfolio-state D1 resources table
 
-# Pull Discovery Index
-# D1-FIRST: Query D1 instead of R2 discovery index
-# Projects: npx wrangler d1 execute qnfo-audit --remote --command 'SELECT * FROM discovery_projects' -y
-# Resources: npx wrangler d1 execute portfolio-state --remote --command 'SELECT * FROM resources' -y
-    headers={"Authorization": f"Bearer {TOKEN}", "User-Agent": "Mozilla/5.0"})
-di = json.loads(urllib.request.urlopen(r, timeout=15).read())
-projects = di.get("projects", {})
+# NOTE: The Discovery Index (qnfo/discovery/index.json on R2) is DEPRECATED.
+# All project/resource data lives in D1:
+#   - qnfo-audit.projects  (78 entries)
+#   - portfolio-state.resources (66 entries)
+
+# Query D1 for projects:
+#   npx wrangler d1 execute qnfo-audit --remote --command "SELECT name, status, r2_path FROM projects" -y
+
+# Check archived projects have archive paths
+# Check project paths exist on R2
+# Verify ultrametric taxonomy
 
 # Check archived projects have archive paths
 archived = [(n, p.get("r2_path","")) for n, p in projects.items() if "ARCHIVED" in (p.get("status","")).upper()]

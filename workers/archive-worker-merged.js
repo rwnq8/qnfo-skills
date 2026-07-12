@@ -69,8 +69,6 @@ const SITEMAP_XML = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http
 // ============================================================
 // ARCHIVAL QUEUE CONSUMER (from qnfo-archive-worker)
 // ============================================================
-const DISCOVERY_INDEX = "qnfo/discovery/index.json";
-
 async function listR2Objects(env, prefix) {
   try {
     const result = await env.QNFO_BUCKET.list({ prefix });
@@ -78,28 +76,6 @@ async function listR2Objects(env, prefix) {
   } catch (err) {
     console.error(`[ARCHIVE] Error listing R2 objects: ${err.message}`);
     return [];
-  }
-}
-
-async function updateDiscoveryIndex(env, project, newR2Path) {
-  try {
-    const object = await env.QNFO_BUCKET.get(DISCOVERY_INDEX);
-    if (!object) {
-      console.error("[ARCHIVE] Discovery Index not found");
-      return;
-    }
-    const index = JSON.parse(await object.text());
-    if (index.projects && index.projects[project]) {
-      index.projects[project].r2_path = newR2Path;
-      index.projects[project].archived_at = new Date().toISOString();
-      index.projects[project].status = "ARCHIVED";
-      await env.QNFO_BUCKET.put(DISCOVERY_INDEX, JSON.stringify(index, null, 2), {
-        httpMetadata: { contentType: "application/json" }
-      });
-      console.log(`[ARCHIVE] Updated Discovery Index: ${project} → ${newR2Path}`);
-    }
-  } catch (err) {
-    console.error(`[ARCHIVE] Error updating Discovery Index: ${err.message}`);
   }
 }
 
@@ -141,7 +117,6 @@ async function processArchivalJob(env, job) {
     }
   }
 
-  await updateDiscoveryIndex(env, project, targetPath);
   console.log(`[ARCHIVE] Complete for ${project}: ${copied} copied, ${failed} failed, ${objects.length} total`);
 
   return { project, sourcePath, targetPath, copied, failed, total: objects.length };

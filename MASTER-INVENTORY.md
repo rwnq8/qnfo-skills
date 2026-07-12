@@ -4,6 +4,8 @@
 
 **⚠️ MULTI-PROGRAM:** QNFO/QWAV and IPATENT share the Cloudflare Quniverse account but are ARCHITECTURALLY ISOLATED. QNFO scripts/skills must NEVER access ipatent resources. See FULL-STACK-INTEGRATION.md for program boundary rules.
 
+**🗑 DEPRECATION NOTICE (2026-07-12):** Discovery Index (`qnfo/discovery/index.json` on R2) is FULLY DEPRECATED. All structured data (projects, resources, publications, skills) lives exclusively in D1 (qnfo-audit, portfolio-state, living-paper). R2 is for file artifacts only. The local `discovery/index.json` has been deleted. See this session's Discovery Index deprecation audit for full rationale.
+
 ---
 
 ## D1 DATABASES — 6 (5 QNFO + 1 IPATENT)

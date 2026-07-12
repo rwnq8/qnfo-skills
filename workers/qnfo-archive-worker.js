@@ -5,7 +5,6 @@ var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
 // _archive_worker.js
-var DISCOVERY_INDEX = "qnfo/discovery/index.json";
 var archive_worker_default = {
   async queue(batch, env, ctx) {
     console.log(`[ARCHIVE] Processing batch of ${batch.messages.length} messages`);
@@ -68,7 +67,6 @@ async function processArchivalJob(env, job) {
       failed++;
     }
   }
-  await updateDiscoveryIndex(env, project, targetPath);
   console.log(`[ARCHIVE] Complete for ${project}: ${copied} copied, ${failed} failed, ${objects.length} total`);
   return { project, sourcePath, targetPath, copied, failed, total: objects.length };
 }
@@ -83,28 +81,6 @@ async function listR2Objects(env, prefix) {
   }
 }
 __name(listR2Objects, "listR2Objects");
-async function updateDiscoveryIndex(env, project, newR2Path) {
-  try {
-    const object = await env.QNFO_BUCKET.get(DISCOVERY_INDEX);
-    if (!object) {
-      console.error("[ARCHIVE] Discovery Index not found");
-      return;
-    }
-    const index = JSON.parse(await object.text());
-    if (index.projects && index.projects[project]) {
-      index.projects[project].r2_path = newR2Path;
-      index.projects[project].archived_at = (/* @__PURE__ */ new Date()).toISOString();
-      index.projects[project].status = "ARCHIVED";
-      await env.QNFO_BUCKET.put(DISCOVERY_INDEX, JSON.stringify(index, null, 2), {
-        httpMetadata: { contentType: "application/json" }
-      });
-      console.log(`[ARCHIVE] Updated Discovery Index: ${project} \u2192 ${newR2Path}`);
-    }
-  } catch (err) {
-    console.error(`[ARCHIVE] Error updating Discovery Index: ${err.message}`);
-  }
-}
-__name(updateDiscoveryIndex, "updateDiscoveryIndex");
 export {
   archive_worker_default as default
 };

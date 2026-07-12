@@ -93,7 +93,7 @@ except LockCollision:
 
 
 update_plan([
-  {"step": "Phase 0: Pull Discovery Index + run Kaizen audit", "status": "pending"},
+  {"step": "Phase 0: Run Kaizen audit + D1 portfolio-state query", "status": "pending"},
   {"step": "Phase 1: Update system prompts", "status": "pending"},
   {"step": "Phase 2: Audit and clean templates", "status": "pending"},
   {"step": "Phase 3: Update skill version headers", "status": "pending"},
@@ -139,7 +139,7 @@ Fill the `KAIZEN-AUTONOMOUS-UPDATE` template using `fill_prompt_template`. The t
 
 | Phase | Description | Key Output |
 |:------|:-----------|:-----------|
-| **0. Pre-Flight** | Discovery Index pull, Kaizen audit, comprehensive Python audit | Gap report |
+| **0. Pre-Flight** | D1 portfolio-state query, Kaizen audit, comprehensive Python audit, GitHub↔D1 sync check | Gap report + drift report |
 | **1. System Prompts** | Update DEFAULT.md, QWAV-DEFAULT.md, META-PROMPT-DEEPSEEK.md | Version bumps |
 | **2. Templates** | Audit staleness, merge duplicates, deprecate unused | Clean template set |
 | **3. Skills** | Version headers, tool docs, read-based loading patterns | Versioned skills |

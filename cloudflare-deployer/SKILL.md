@@ -204,7 +204,7 @@ All Cloudflare policies verified via both wrangler CLI and REST API direct calls
 
 ### Available Resources (Enumerated)
 
-**R2 Buckets:** `qnfo` (primary) — audit trails, releases, deployments, tools, projects, discovery index
+**R2 Buckets:** `qnfo` (primary) — audit trails, releases, deployments, tools, projects
 
 **D1 Databases (5):**
 - `qnfo-cms` (0458a344) — CMS content management (34 entries, 5 types)
@@ -531,7 +531,6 @@ All 28 QNFO DeepChat skills are redundantly backed up. This skill itself is reco
 |:-------|:---------|:-----------------|
 | **GitHub** | `rwnq8/qnfo-skills` | `git clone https://github.com/rwnq8/qnfo-skills.git %USERPROFILE%\.deepchat\skills` |
 | **R2** | `qnfo/prompts/skills/cloudflare-deployer/SKILL.md` | `python bootstrap_skills.py --source r2` |
-| **Discovery Index** | `qnfo/discovery/index.json` (skills_backup) | JSON lookup |
 
 **Bootstrap tools on R2:**
 - `qnfo/tools/bootstrap_skills.py` — One-command restore from GitHub or R2

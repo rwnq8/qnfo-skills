@@ -1330,7 +1330,7 @@ Before declaring this skill workflow complete:
 2. **Filesystem Verification:** `Test-Path <file>` for every file claimed as created/modified. Never claim from memory.
 3. **Git Verification:** `git log -1 --oneline` for every commit claimed. Verify commit hash exists.
 4. **R2 State Upload:** Upload session audit trail to `qnfo/audit/` — conversations, decisions, state files.
-5. **Discovery Index Update:** Update `qnfo/discovery/index.json` with any new resources created, projects modified, or publications generated.
+5. **D1 Registration:** Register any new resources in D1 portfolio-state/resources, update project status in qnfo-audit/projects, and log publication additions to living-paper/papers.
 6. **Ephemeral Cleanup:** Delete ALL _* prefixed files and __pycache__ directories. Session is not complete until `Get-ChildItem -File -Name | Where-Object { $_ -match '^_' }` returns zero results.
 
 ## RT: RED-TEAM SELF-AUDIT

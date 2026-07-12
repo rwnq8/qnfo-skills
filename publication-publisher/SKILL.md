@@ -95,7 +95,7 @@ update_plan([
 
 ## Purpose
 
-Publish QNFO/QWAV research publications through a verified pipeline: validate publication readiness, build PDF and HTML artifacts, deposit to Zenodo for DOI assignment, deploy HTML to Cloudflare Pages, archive canonical copies to R2, and register in the Discovery Index. Ensures every publication meets QNFO standards (Research Integrity Mandate, Publication Language Gate, MathJax verification).
+Publish QNFO/QWAV research publications through a verified pipeline: validate publication readiness, build PDF and HTML artifacts, deposit to Zenodo for DOI assignment, deploy HTML to Cloudflare Pages, and archive canonical copies to R2. Ensures every publication meets QNFO standards (Research Integrity Mandate, Publication Language Gate, MathJax verification).
 
 ## When to Use
 
@@ -989,29 +989,6 @@ Remove-Item _verify_kg_provenance.py
 
 **GATE:** If ANY of R2, D1, or KG provenance checks fail → `[BLOCKED: Cloudflare provenance mirror incomplete]`. Fix before claiming publication complete.
 
-### Stage 7: Discovery Index Update
-
-Register the new publication in the Discovery Index:
-
-```bash
-# Pull current index
-npx wrangler r2 object get qnfo/discovery/index.json --remote --file=_discovery_index.json
-
-# Update Discovery Index with new publication entry
-# Write update script to file, execute, discard
-echo "import json; idx = json.load(open('_discovery_index.json','r',encoding='utf-8')); idx.setdefault('publications',{})['<paper-slug>'] = {'title':'<title>','doi':'<doi>','date':'<date>','r2_path':'qnfo/releases/YYYY/MM/<paper-slug>/','pages_url':'https://papers.qnfo.org/<paper-slug>/','zenodo_url':'https://zenodo.org/records/<id>'}; json.dump(idx, open('_discovery_index.json','w',encoding='utf-8'), indent=2)" > _update_di.py
-python _update_di.py
-
-# Upload updated index
-npx wrangler r2 object put qnfo/discovery/index.json --file=_discovery_index.json --remote
-
-# Clean up
-Remove-Item _discovery_index.json
-Remove-Item _update_di.py
-```
-
----
-
 ### Stage 8: Cross-Channel Dissemination Verification (MANDATORY)
 
 > **CLOUDFLARE-FIRST POLICY (v2.2 — 2026-07-03):** R2 is canonical. GitHub is backup dissemination. Local Obsidian copy is ephemeral convenience only. NO publication is complete until all three channels are synchronized and verified.
@@ -1518,7 +1495,6 @@ All QNFO/QWAV publications use the **Silent Radix Light Theme** design system:
 | MathJax config AFTER script | `[BLOCKED: MathJax order]` — fix HTML template before deploying |
 | Cloudflare Pages deploy fails | Check wrangler auth with `npx wrangler whoami` |
 | R2 upload fails | Verify CLOUDFLARE_API_TOKEN is set and has write permissions |
-| Discovery Index corrupted | Rebuild from R2 enumeration + local state and upload fresh |
 | Provenance bundle assembly fails | `[BLOCKED: provenance]` — conversation history or project files unavailable; fix before Zenodo upload |
 | Provenance bundle > 50GB | Exclude large binaries (reference by external DOI), compress conversation, flag exclusions in PROVENANCE.md |
 

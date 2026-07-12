@@ -1,6 +1,6 @@
 ---
 name: local-to-r2-migration
-description: Migrate local project files to cloud storage — scan, classify, purge orphaned ephemeral files, upload project assets, update Discovery Index, and clean up local copies. Use when user says "clean local files," "push to cloud," "migrate files to R2," "enforce thin client," "clean up workspace," or when migrating local project clutter to Cloudflare R2.
+description: Migrate local project files to cloud storage — scan, classify, purge orphaned ephemeral files, upload project assets, update D1 portfolio-state resources, and clean up local copies. Use when user says "clean local files," "push to cloud," "migrate files to R2," "enforce thin client," "clean up workspace," or when migrating local project clutter to Cloudflare R2.
 version: "1.2"
 ---
 
