@@ -1,0 +1,4205 @@
+# QNFO Research Papers
+# Updated: 2026-07-11
+# Total papers: 616
+# URL: https://papers.qnfo.org/
+
+## Quantum Coherence in Photosystem II: Environment-Assisted Transport and the Role of Vibronic Coupling in Biological Light-Harvesting
+- Slug: psii-quantum-coherence
+- DOI: 10.5281/zenodo.21304627
+- URL: https://papers.qnfo.org/papers/psii-quantum-coherence/
+- Abstract: Review of quantum coherence in PSII light-harvesting, ENAQT, vibronic coupling.
+
+## Cryptochrome Magnetoreception: The Radical Pair Mechanism and Its Implications for Quantum Biology
+- Slug: cryptochrome-magnetoreception
+- DOI: 10.5281/zenodo.21304629
+- URL: https://papers.qnfo.org/papers/cryptochrome-magnetoreception/
+- Abstract: Review of radical pair mechanism in cryptochrome and avian magnetoreception.
+
+## Spin Glasses and Complexity: Replica Symmetry Breaking, Frustration, and the Statistical Mechanics of Disordered Systems
+- Slug: spin-glasses-complexity
+- DOI: 10.5281/zenodo.21304631
+- URL: https://papers.qnfo.org/papers/spin-glasses-complexity/
+- Abstract: Review of spin glass theory, Parisi RSB, and applications to neural networks and optimization.
+
+## Manifesto for Honest Computation
+- Slug: paper-manifesto-honest-computation
+- DOI: 10.5281/zenodo.21299278
+- URL: https://papers.qnfo.org/papers/paper-manifesto-honest-computation/
+- Abstract: Phase VI (Final Synthesis). 5 principles, a concrete portfolio, the Falsification Pledge.
+
+## Institutional Reform: Fixing the Epistemic Incentive Structure of Post-Classical Computing
+- Slug: paper-institutional-reform
+- DOI: 10.5281/zenodo.21299211
+- URL: https://papers.qnfo.org/papers/paper-institutional-reform/
+- Abstract: Phase V of the Qubit Delusion series. Diagnoses the institutional incentive structure that produced the $35B quantum computing bubble with zero viable output. Analyzes the structural mismatch between VC timelines and deep tech development, the prestige cascade in academic publishing, and the regulatory vacuum. Proposes five reforms: an Advanced Computing Projects Agency (ACPA), mandatory independent verification, structural separation of hardware/software, joules-per-solution procurement, and a 
+
+## The Problem-Substrate Mapping: A Framework for Honest Computational Investment
+- Slug: paper-problem-substrate-mapping
+- DOI: 10.5281/zenodo.21255346
+- URL: https://papers.qnfo.org/papers/paper-problem-substrate-mapping/
+- Abstract: Phase IV of the Qubit Delusion series. Translates the critique into a concrete investment portfolio: matching computational problem classes (optimization, linear algebra, probabilistic inference, quantum simulation, cryptography, general-purpose) to optimal physical substrates (Ising machines, optical processors, neuromorphic, analog quantum simulators, reversible classical, fault-tolerant QC). Proposes a standardized five-question evaluation framework with red flags and green flags. The resulti
+
+## The Physics of Computation: Fundamental Limits and the Honest Boundaries of Post-Classical Computing
+- Slug: paper-physics-of-computation
+- DOI: 10.5281/zenodo.21255013
+- URL: https://papers.qnfo.org/papers/paper-physics-of-computation/
+- Abstract: Phase III of the Qubit Delusion series. Examines fundamental physical limits on computation: Landauer bound, Margolus-Levitin theorem, Bremermann limit, Bekenstein bound. Shows that quantum error-correction overhead (1e2-1e3 physical operations per logical operation) multiplies thermodynamic cost beyond what any polynomial algorithmic speedup can overcome. Proposes a falsifiable criterion: joules per solution on commercially relevant problems. Assesses all major quantum platforms against this cr
+
+## Beyond the Qubit: Constructive Paradigms for Post-Particle Computation
+- Slug: paper-beyond-the-qubit
+- DOI: 10.5281/zenodo.21254901
+- URL: https://papers.qnfo.org/papers/paper-beyond-the-qubit/
+- Abstract: Companion paper to "The Qubit Delusion" (v1.1, 10.5281/zenodo.21254143). If the qubit-gate-circuit model is an epistemic failure — a projection of particle ontology onto relational, field-theoretic reality — what comes next? We strip quantum mechanics to its minimal ontological commitments, survey alternative paradigms (MBQC, CV-QC, TQC, field-theoretic, analog) for ontological fidelity, assess commercial manufacturability of each physical platform, and ask whether "quantum computing" is even th
+
+## The Qubit Delusion: How Particle Ontology Sabotaged Quantum Computing
+- Slug: paper-the-qubit-delusion
+- DOI: 10.5281/zenodo.21254143
+- URL: https://papers.qnfo.org/papers/paper-the-qubit-delusion/
+- Abstract: Revised v1.1: Fixed PDF rendering of Unicode dashes and special characters.
+
+## Fine-Structure Constant as a Cross-Ratio: A Geometric Reframing of α
+- Slug: fine-structure-constant-cross-ratio
+- DOI: 10.5281/zenodo.test
+- URL: https://papers.qnfo.org/papers/fine-structure-constant-cross-ratio/
+- Abstract: The fine-structure constant alpha is reframed as the cross-ratio of two measurable electron length scales (classical radius / Compton wavelength). Version 1.0 adds the adelically extended cross-ratio on Bruhat-Tits buildings, explicit falsifiability conditions, and synthesis with the QNFO adelic physics program (July 2026).
+
+## Zitterbewegung as the Physical Realization of p-Adic Anyon Braiding
+- Slug: zbw-majorana-tqc-p4-zbw-anyon-braiding
+- URL: https://papers.qnfo.org/papers/zbw-majorana-tqc-p4-zbw-anyon-braiding/
+- Abstract: Shows that the ZBW-induced oscillatory trajectory of a Dirac fermion in a Bruhat-Tits building generates the braid group B_n, establishing ZBW as a physical mechanism for p-adic anyon braiding in topological quantum computation.
+
+## Bruhat-Tits Readout Protocol: Measuring the ZBW Z2 Invariant in Majorana Systems
+- Slug: zbw-majorana-tqc-p3-bruhat-tits-readout
+- URL: https://papers.qnfo.org/papers/zbw-majorana-tqc-p3-bruhat-tits-readout/
+- Abstract: Proposes three measurement protocols for the p-adic Z_2 invariant: Direct current-correlator measurement, Hensel-lifting amplification via the Bruhat-Tits building, and Gromov delta-hyperbolicity comparison of ZBW trajectories in Dirac/Majorana systems.
+
+## Majorana Zitterbewegung Current Correlator: Vanishing ZBW Signal as a Z2 Topological Invariant
+- Slug: zbw-majorana-tqc-p2-majorana-zbw-correlator
+- URL: https://papers.qnfo.org/papers/zbw-majorana-tqc-p2-majorana-zbw-correlator/
+- Abstract: Computes the Majorana ZBW current correlator in free-field theory. Shows that the reality condition enforces a vanishing expectation value, establishing a Z_2 topological distinction between Dirac and Majorana fermions accessible via ZBW measurement.
+
+## Zitterbewegung as a p-Adic Observable: Ultrametric Readout and Intrinsic Topological Protection
+- Slug: zbw-majorana-tqc-p1-zbw-padic-observable
+- URL: https://papers.qnfo.org/papers/zbw-majorana-tqc-p1-zbw-padic-observable/
+- Abstract: Formulates Zitterbewegung as a p-adic topological observable. Establishes that the ZBW current J_mu_ZBW carries a Z_2 invariant encoding the Dirac/Majorana distinction, and proposes ultrametric readout protocols via Bruhat-Tits buildings.
+
+## Vortex-Enhanced Zitterbewegung: Amplification Feasibility for Trapped-Ion Dirac Simulators
+- Slug: rq1-zbw-amplification
+- URL: https://papers.qnfo.org/papers/rq1-zbw-amplification/
+- Abstract: Zitterbewegung (ZBW), the relativistic trembling motion predicted by the Dirac equation, has eluded direct experimental observation in free electrons because its characteristic length scale is the Compton wavelength $\lambda_C = h/mc \approx 2.4 \times 10^{-12}$ m, far below current detection thresholds. Guo, Xu & Gu (2025, arXiv:2511.21142) recently demonstrated that relativistic vortex electron wave packets carrying orbital angular momentum can amplify the ZBW amplitude substantially beyond th
+
+## The Adelic Physics Program: A Grand Synthesis
+- Slug: zbw-majorana-tqc-p7-grand-synthesis
+- URL: https://papers.qnfo.org/papers/zbw-majorana-tqc-p7-grand-synthesis/
+- Abstract: This paper consolidates the 6-paper adelic physics chain into a unified research program, from Zitterbewegung as a p-adic observable through Majorana correlators, Bruhat-Tits readout protocols, p-adic anyon braiding, and Ostrowski-based quantum error correction.
+
+## Ultrametric Engine: Deploying a 20-Principle p-Adic Discovery Worker
+- Slug: zbw-majorana-tqc-p6-ultrametric-engine
+- URL: https://papers.qnfo.org/papers/zbw-majorana-tqc-p6-ultrametric-engine/
+- Abstract: We describe a discovery protocol operating in ultrametric spaces, formalizing 20 principles that govern knowledge graph navigation, paper discovery, and research question generation under non-Archimedean distance constraints.
+
+## Adelic Quantum Error Correction: Intrinsic Qubit Protection from Ostrowski
+- Slug: zbw-majorana-tqc-p5-adelic-qec
+- URL: https://papers.qnfo.org/papers/zbw-majorana-tqc-p5-adelic-qec/
+- Abstract: We propose a quantum error-correcting code whose protection derives from Ostrowski's theorem. The code leverages the classification of non-trivial absolute values on Q to achieve intrinsic fault tolerance without active syndrome extraction.
+
+## p-Adic Anyon Fusion and Braiding: Quantum Groups at Roots of Unity
+- Slug: p-adic-anyon-fusion-braiding
+- DOI: 10.5281/zenodo.21208491
+- URL: https://papers.qnfo.org/papers/p-adic-anyon-fusion-braiding/
+- Abstract: Constructs p-adic anyon models via restricted quantum groups at roots of unity with fusion and braiding.
+
+## Adelic Synthesis: The Pattern-Particle Correspondence and the Complete Arithmetic Theory of Anyons
+- Slug: adelic-synthesis-pattern-particle
+- DOI: 10.5281/zenodo.21208568
+- URL: https://papers.qnfo.org/papers/adelic-synthesis-pattern-particle/
+- Abstract: Unifies all place-specific constructions into an adelic synthesis: anyons are adelic patterns, not particles. Proposes Adelic Topological Quantum Computation (ATQC).
+
+## p-Adic Braid Groups on Bruhat-Tits Buildings
+- Slug: p-adic-braid-groups-bruhat-tits
+- DOI: 10.5281/zenodo.21208366
+- URL: https://papers.qnfo.org/papers/p-adic-braid-groups-bruhat-tits/
+- Abstract: Constructs p-adic braid groups on Bruhat-Tits buildings, establishing the geometry of discrete braiding.
+
+## The p-Adic Temperley-Lieb Parameter: Cyclotomic Units, Markov Traces, and the p-Adic Jones Polynomial
+- Slug: p-adic-temperley-lieb-parameter
+- DOI: 10.5281/zenodo.21208368
+- URL: https://papers.qnfo.org/papers/p-adic-temperley-lieb-parameter/
+- Abstract: Establishes the Temperley-Lieb parameter as p-adic cyclotomic units and constructs the p-adic Jones polynomial.
+
+## 1+1
+- Slug: 11
+- URL: https://papers.qnfo.org/papers/11/
+- Abstract: 
+
+## PRIMES AS QUBITS
+- Slug: primes-as-qubits
+- URL: https://papers.qnfo.org/papers/primes-as-qubits/
+- Abstract: 
+
+## POLYDACTYLITY
+- Slug: polydactylity
+- URL: https://papers.qnfo.org/papers/polydactylity/
+- Abstract: 
+
+## PHYSICAL REALIZATION FRAMEWORK FOR PRIMALITY
+- Slug: physical-realization-framework-for-primality
+- URL: https://papers.qnfo.org/papers/physical-realization-framework-for-primality/
+- Abstract: 
+
+## LLM FATAL FLAWS
+- Slug: llm-fatal-flaws
+- URL: https://papers.qnfo.org/papers/llm-fatal-flaws/
+- Abstract: 
+
+## MASS-FREQUENCY
+- Slug: mass-frequency
+- URL: https://papers.qnfo.org/papers/mass-frequency/
+- Abstract: 
+
+## Geometric Spin-Charge
+- Slug: geometric-spin-charge
+- URL: https://papers.qnfo.org/papers/geometric-spin-charge/
+- Abstract: 
+
+## GEOMETRIC PRIMALITY
+- Slug: geometric-primality
+- URL: https://papers.qnfo.org/papers/geometric-primality/
+- Abstract: 
+
+## DIALECTICAL MATERIALISM
+- Slug: dialectical-materialism
+- URL: https://papers.qnfo.org/papers/dialectical-materialism/
+- Abstract: 
+
+## Cymatics
+- Slug: cymatics
+- URL: https://papers.qnfo.org/papers/cymatics/
+- Abstract: 
+
+## BOUNDED ADVANTAGE COMPUTING
+- Slug: bounded-advantage-computing
+- URL: https://papers.qnfo.org/papers/bounded-advantage-computing/
+- Abstract: 
+
+## CUT AND PROJECT
+- Slug: cut-and-project
+- URL: https://papers.qnfo.org/papers/cut-and-project/
+- Abstract: 
+
+## 7 BOUND
+- Slug: 7-bound
+- URL: https://papers.qnfo.org/papers/7-bound/
+- Abstract: 
+
+## 11
+- Slug: 11-202511
+- URL: https://papers.qnfo.org/papers/11-202511/
+- Abstract: 
+
+## TASTE OF CHOCOLATE
+- Slug: taste-of-chocolate
+- URL: https://papers.qnfo.org/papers/taste-of-chocolate/
+- Abstract: 
+
+## Time from a Timeless Universe
+- Slug: time-from-a-timeless-universe
+- URL: https://papers.qnfo.org/papers/time-from-a-timeless-universe/
+- Abstract: 
+
+## Strange Loop Theory of Physical Quantization
+- Slug: strange-loop-theory-of-physical-quantization
+- URL: https://papers.qnfo.org/papers/strange-loop-theory-of-physical-quantization/
+- Abstract: 
+
+## SPHERE IS CIRCLE
+- Slug: sphere-is-circle
+- URL: https://papers.qnfo.org/papers/sphere-is-circle/
+- Abstract: 
+
+## SHEAF
+- Slug: sheaf
+- URL: https://papers.qnfo.org/papers/sheaf/
+- Abstract: 
+
+## SINGULARITY RESOLUTION
+- Slug: singularity-resolution
+- URL: https://papers.qnfo.org/papers/singularity-resolution/
+- Abstract: 
+
+## Refuting Bell
+- Slug: refuting-bell
+- URL: https://papers.qnfo.org/papers/refuting-bell/
+- Abstract: 
+
+## REALISM BY ANALOGY
+- Slug: realism-by-analogy
+- URL: https://papers.qnfo.org/papers/realism-by-analogy/
+- Abstract: 
+
+## Recursive Self-Consistency
+- Slug: recursive-self-consistency
+- URL: https://papers.qnfo.org/papers/recursive-self-consistency/
+- Abstract: 
+
+## QUBIT COUNT
+- Slug: qubit-count
+- URL: https://papers.qnfo.org/papers/qubit-count/
+- Abstract: 
+
+## Proxy Signals
+- Slug: proxy-signals
+- URL: https://papers.qnfo.org/papers/proxy-signals/
+- Abstract: 
+
+## PLACEHOLDERS FOR IGNORANCE
+- Slug: placeholders-for-ignorance
+- URL: https://papers.qnfo.org/papers/placeholders-for-ignorance/
+- Abstract: 
+
+## Post-Dichotomy
+- Slug: post-dichotomy
+- URL: https://papers.qnfo.org/papers/post-dichotomy/
+- Abstract: 
+
+## PHYSICS FROM MATH
+- Slug: physics-from-math
+- URL: https://papers.qnfo.org/papers/physics-from-math/
+- Abstract: 
+
+## PILE OF BABEL
+- Slug: pile-of-babel
+- URL: https://papers.qnfo.org/papers/pile-of-babel/
+- Abstract: 
+
+## PHENOMENOLOGICAL GAP
+- Slug: phenomenological-gap
+- URL: https://papers.qnfo.org/papers/phenomenological-gap/
+- Abstract: 
+
+## NEUROMORPHIC
+- Slug: neuromorphic
+- URL: https://papers.qnfo.org/papers/neuromorphic/
+- Abstract: 
+
+## Ontological Inversion
+- Slug: ontological-inversion
+- URL: https://papers.qnfo.org/papers/ontological-inversion/
+- Abstract: 
+
+## Mod Pi
+- Slug: mod-pi
+- URL: https://papers.qnfo.org/papers/mod-pi/
+- Abstract: 
+
+## METRONOME EFFECT
+- Slug: metronome-effect
+- URL: https://papers.qnfo.org/papers/metronome-effect/
+- Abstract: 
+
+## MATHEMATICAL BEAUTY
+- Slug: mathematical-beauty
+- URL: https://papers.qnfo.org/papers/mathematical-beauty/
+- Abstract: 
+
+## Loxodrome
+- Slug: loxodrome
+- URL: https://papers.qnfo.org/papers/loxodrome/
+- Abstract: 
+
+## Geometric Unity of Computation
+- Slug: geometric-unity-of-computation
+- URL: https://papers.qnfo.org/papers/geometric-unity-of-computation/
+- Abstract: 
+
+## INFINITE LOOP
+- Slug: infinite-loop
+- URL: https://papers.qnfo.org/papers/infinite-loop/
+- Abstract: 
+
+## Geometric Factorization
+- Slug: geometric-factorization
+- URL: https://papers.qnfo.org/papers/geometric-factorization/
+- Abstract: 
+
+## GEOMETRIC QUANTUM ADVANTAGE
+- Slug: geometric-quantum-advantage
+- URL: https://papers.qnfo.org/papers/geometric-quantum-advantage/
+- Abstract: 
+
+## GEOMETRIC FACTORIZATION V2
+- Slug: geometric-factorization-v2
+- URL: https://papers.qnfo.org/papers/geometric-factorization-v2/
+- Abstract: 
+
+## Functorial Characterization of the Prime Numbers
+- Slug: functorial-characterization-of-the-prime-numbers
+- URL: https://papers.qnfo.org/papers/functorial-characterization-of-the-prime-numbers/
+- Abstract: 
+
+## Functorial Framework for Morphological Computing
+- Slug: functorial-framework-for-morphological-computing
+- URL: https://papers.qnfo.org/papers/functorial-framework-for-morphological-computing/
+- Abstract: 
+
+## FUNCTIONAL COMPUTING
+- Slug: functional-computing
+- URL: https://papers.qnfo.org/papers/functional-computing/
+- Abstract: 
+
+## Emergent Physical Reality
+- Slug: emergent-physical-reality
+- URL: https://papers.qnfo.org/papers/emergent-physical-reality/
+- Abstract: 
+
+## FREE WILL
+- Slug: free-will
+- URL: https://papers.qnfo.org/papers/free-will/
+- Abstract: 
+
+## Dual-Mode Arithmetic Representation
+- Slug: dual-mode-arithmetic-representation
+- URL: https://papers.qnfo.org/papers/dual-mode-arithmetic-representation/
+- Abstract: 
+
+## Cryptochromes
+- Slug: cryptochromes
+- URL: https://papers.qnfo.org/papers/cryptochromes/
+- Abstract: 
+
+## Degeneracy Thresholds
+- Slug: degeneracy-thresholds
+- URL: https://papers.qnfo.org/papers/degeneracy-thresholds/
+- Abstract: 
+
+## Computatiional Criticality
+- Slug: computatiional-criticality
+- URL: https://papers.qnfo.org/papers/computatiional-criticality/
+- Abstract: 
+
+## CARGO CULT
+- Slug: cargo-cult
+- URL: https://papers.qnfo.org/papers/cargo-cult/
+- Abstract: 
+
+## Benefits of Catastrophe
+- Slug: benefits-of-catastrophe
+- URL: https://papers.qnfo.org/papers/benefits-of-catastrophe/
+- Abstract: 
+
+## Biological and Engineered Computational Systems
+- Slug: biological-and-engineered-computational-systems
+- URL: https://papers.qnfo.org/papers/biological-and-engineered-computational-systems/
+- Abstract: 
+
+## Ambient RF Energy Harvesting
+- Slug: ambient-rf-energy-harvesting
+- URL: https://papers.qnfo.org/papers/ambient-rf-energy-harvesting/
+- Abstract: 
+
+## ALL COMPUTATION IS PHYSICAL
+- Slug: all-computation-is-physical
+- URL: https://papers.qnfo.org/papers/all-computation-is-physical/
+- Abstract: 
+
+## 8pi
+- Slug: 8pi
+- URL: https://papers.qnfo.org/papers/8pi/
+- Abstract: 
+
+## ABIOGENESIS
+- Slug: abiogenesis
+- URL: https://papers.qnfo.org/papers/abiogenesis/
+- Abstract: 
+
+## 09
+- Slug: 09
+- URL: https://papers.qnfo.org/papers/09/
+- Abstract: 
+
+## v3.4
+- Slug: v34
+- URL: https://papers.qnfo.org/papers/v34/
+- Abstract: 
+
+## URFE
+- Slug: urfe
+- URL: https://papers.qnfo.org/papers/urfe/
+- Abstract: 
+
+## Universal Computation
+- Slug: universal-computation
+- URL: https://papers.qnfo.org/papers/universal-computation/
+- Abstract: 
+
+## UCID
+- Slug: ucid
+- URL: https://papers.qnfo.org/papers/ucid/
+- Abstract: 
+
+## Tomagraphic Standardization
+- Slug: tomagraphic-standardization
+- URL: https://papers.qnfo.org/papers/tomagraphic-standardization/
+- Abstract: 
+
+## Topological Invariance
+- Slug: topological-invariance
+- URL: https://papers.qnfo.org/papers/topological-invariance/
+- Abstract: 
+
+## Technocratic Governance
+- Slug: technocratic-governance
+- URL: https://papers.qnfo.org/papers/technocratic-governance/
+- Abstract: 
+
+## Strong AI
+- Slug: strong-ai
+- URL: https://papers.qnfo.org/papers/strong-ai/
+- Abstract: 
+
+## TREC
+- Slug: trec
+- URL: https://papers.qnfo.org/papers/trec/
+- Abstract: 
+
+## Spiral Geometry
+- Slug: spiral-geometry
+- URL: https://papers.qnfo.org/papers/spiral-geometry/
+- Abstract: 
+
+## Skyrmions
+- Slug: skyrmions
+- URL: https://papers.qnfo.org/papers/skyrmions/
+- Abstract: 
+
+## SVAT
+- Slug: svat
+- URL: https://papers.qnfo.org/papers/svat/
+- Abstract: 
+
+## Riemann
+- Slug: riemann
+- URL: https://papers.qnfo.org/papers/riemann/
+- Abstract: 
+
+## SLUG
+- Slug: slug
+- URL: https://papers.qnfo.org/papers/slug/
+- Abstract: 
+
+## Resume
+- Slug: resume
+- URL: https://papers.qnfo.org/papers/resume/
+- Abstract: 
+
+## RZCMPLX
+- Slug: rzcmplx
+- URL: https://papers.qnfo.org/papers/rzcmplx/
+- Abstract: 
+
+## Post-Popper
+- Slug: post-popper
+- URL: https://papers.qnfo.org/papers/post-popper/
+- Abstract: 
+
+## QM=IR
+- Slug: qmir
+- URL: https://papers.qnfo.org/papers/qmir/
+- Abstract: 
+
+## Physics-Direct Computing
+- Slug: physics-direct-computing
+- URL: https://papers.qnfo.org/papers/physics-direct-computing/
+- Abstract: 
+
+## PBRF
+- Slug: pbrf
+- URL: https://papers.qnfo.org/papers/pbrf/
+- Abstract: 
+
+## PAP
+- Slug: pap
+- URL: https://papers.qnfo.org/papers/pap/
+- Abstract: 
+
+## Observer-Realtive Information
+- Slug: observer-realtive-information
+- URL: https://papers.qnfo.org/papers/observer-realtive-information/
+- Abstract: 
+
+## LOGO
+- Slug: logo
+- URL: https://papers.qnfo.org/papers/logo/
+- Abstract: 
+
+## LCRF
+- Slug: lcrf
+- URL: https://papers.qnfo.org/papers/lcrf/
+- Abstract: 
+
+## LIFE
+- Slug: life
+- URL: https://papers.qnfo.org/papers/life/
+- Abstract: 
+
+## Identity of Zero
+- Slug: identity-of-zero
+- URL: https://papers.qnfo.org/papers/identity-of-zero/
+- Abstract: 
+
+## ITPR
+- Slug: itpr
+- URL: https://papers.qnfo.org/papers/itpr/
+- Abstract: 
+
+## INFO
+- Slug: info
+- URL: https://papers.qnfo.org/papers/info/
+- Abstract: 
+
+## IT-SM 1
+- Slug: it-sm-1
+- URL: https://papers.qnfo.org/papers/it-sm-1/
+- Abstract: 
+
+## ICE
+- Slug: ice
+- URL: https://papers.qnfo.org/papers/ice/
+- Abstract: 
+
+## Holographics Shadows
+- Slug: holographics-shadows
+- URL: https://papers.qnfo.org/papers/holographics-shadows/
+- Abstract: 
+
+## FCE
+- Slug: fce
+- URL: https://papers.qnfo.org/papers/fce/
+- Abstract: 
+
+## Have We Learned from History
+- Slug: have-we-learned-from-history
+- URL: https://papers.qnfo.org/papers/have-we-learned-from-history/
+- Abstract: 
+
+## Electromagnetism
+- Slug: electromagnetism
+- URL: https://papers.qnfo.org/papers/electromagnetism/
+- Abstract: 
+
+## Demolishing Planck
+- Slug: demolishing-planck
+- URL: https://papers.qnfo.org/papers/demolishing-planck/
+- Abstract: 
+
+## CEE
+- Slug: cee
+- URL: https://papers.qnfo.org/papers/cee/
+- Abstract: 
+
+## AIOS
+- Slug: aios
+- URL: https://papers.qnfo.org/papers/aios/
+- Abstract: 
+
+## Boundaries of Uncomputability
+- Slug: boundaries-of-uncomputability
+- URL: https://papers.qnfo.org/papers/boundaries-of-uncomputability/
+- Abstract: 
+
+## 6G CoF
+- Slug: 6g-cof
+- URL: https://papers.qnfo.org/papers/6g-cof/
+- Abstract: 
+
+## _releases
+- Slug: releases
+- URL: https://papers.qnfo.org/papers/releases/
+- Abstract: 
+
+## _2025
+- Slug: 2025
+- URL: https://papers.qnfo.org/papers/2025/
+- Abstract: 
+
+## Autaxic Trilemma
+- Slug: autaxic-trilemma
+- DOI: 10.5281/zenodo.21017104
+- URL: https://papers.qnfo.org/papers/autaxic-trilemma/
+- Abstract: 
+
+## Implied Discretization and the Limits of Modeling Continuous Reality
+- Slug: 3-mechanics
+- DOI: 10.5281/zenodo.15533729
+- URL: https://papers.qnfo.org/papers/3-mechanics/
+- Abstract: 
+
+## Implied Discretization and the Limits of Modeling Continuous Reality
+- Slug: 4-impacts
+- URL: https://papers.qnfo.org/papers/4-impacts/
+- Abstract: 
+
+## Implied Discretization and the Limits of Modeling Continuous Reality
+- Slug: 5-mitigation
+- URL: https://papers.qnfo.org/papers/5-mitigation/
+- Abstract: 
+
+## Implied Discretization and the Limits of Modeling Continuous Reality
+- Slug: 6-questions
+- URL: https://papers.qnfo.org/papers/6-questions/
+- Abstract: 
+
+## Implied Discretization and the Limits of Modeling Continuous Reality
+- Slug: 7-conclusion
+- URL: https://papers.qnfo.org/papers/7-conclusion/
+- Abstract: 
+
+## References
+- Slug: 8-references
+- URL: https://papers.qnfo.org/papers/8-references/
+- Abstract: 
+
+## Infomatics
+- Slug: 4-fundamental-constants
+- URL: https://papers.qnfo.org/papers/4-fundamental-constants/
+- Abstract: 
+
+## Infomatics
+- Slug: 5-empirical-validation
+- URL: https://papers.qnfo.org/papers/5-empirical-validation/
+- Abstract: 
+
+## Self-Interaction
+- Slug: 6-interaction-strength
+- URL: https://papers.qnfo.org/papers/6-interaction-strength/
+- Abstract: 
+
+## Analog Gravity
+- Slug: 7-gravity
+- URL: https://papers.qnfo.org/papers/7-gravity/
+- Abstract: 
+
+## Infomatics
+- Slug: 9-origin-event
+- URL: https://papers.qnfo.org/papers/9-origin-event/
+- Abstract: 
+
+## Engineered Synthesis Bubble
+- Slug: 18-synthesis
+- URL: https://papers.qnfo.org/papers/18-synthesis/
+- Abstract: 
+
+## Contemplative Science and the Nature of Reality
+- Slug: 3-exploring-formlessness
+- URL: https://papers.qnfo.org/papers/3-exploring-formlessness/
+- Abstract: 
+
+## Contemplative Science and the Nature of Reality
+- Slug: 5-pathways-to-transformation
+- URL: https://papers.qnfo.org/papers/5-pathways-to-transformation/
+- Abstract: 
+
+## Contemplative Science and the Nature of Reality
+- Slug: 6-cognitive-mechanisms
+- URL: https://papers.qnfo.org/papers/6-cognitive-mechanisms/
+- Abstract: 
+
+## Contemplative Science and the Nature of Reality
+- Slug: 7-probing-inner-space
+- URL: https://papers.qnfo.org/papers/7-probing-inner-space/
+- Abstract: 
+
+## Brain's Qubit
+- Slug: 9-brain-as-processor
+- URL: https://papers.qnfo.org/papers/9-brain-as-processor/
+- Abstract: 
+
+## Theme 1
+- Slug: theme-1
+- URL: https://papers.qnfo.org/papers/theme-1/
+- Abstract: 
+
+## Theme 3
+- Slug: theme-3
+- URL: https://papers.qnfo.org/papers/theme-3/
+- Abstract: 
+
+## Theme 4
+- Slug: theme-4
+- URL: https://papers.qnfo.org/papers/theme-4/
+- Abstract: 
+
+## Theme 5
+- Slug: theme-5
+- URL: https://papers.qnfo.org/papers/theme-5/
+- Abstract: 
+
+## Theme 6
+- Slug: theme-6
+- URL: https://papers.qnfo.org/papers/theme-6/
+- Abstract: 
+
+## Theme 7
+- Slug: theme-7
+- URL: https://papers.qnfo.org/papers/theme-7/
+- Abstract: 
+
+## Monistic Reality
+- Slug: converging-reality
+- URL: https://papers.qnfo.org/papers/converging-reality/
+- Abstract: 
+
+## 2. Historical Context and Literature Review
+- Slug: 2-context
+- URL: https://papers.qnfo.org/papers/2-context/
+- Abstract: 
+
+## Fundamental Entities
+- Slug: 2-fundamental-entities
+- URL: https://papers.qnfo.org/papers/2-fundamental-entities/
+- Abstract: 
+
+## Information Ontology
+- Slug: 4-ontology
+- URL: https://papers.qnfo.org/papers/4-ontology/
+- Abstract: 
+
+## Cube Graph
+- Slug: 5-graph
+- URL: https://papers.qnfo.org/papers/5-graph/
+- Abstract: 
+
+## C.2 Edges GR
+- Slug: c2-edges-gr
+- DOI: 10.5281/zenodo.21016995
+- URL: https://papers.qnfo.org/papers/c2-edges-gr/
+- Abstract: 
+
+## C.3 Edges QM
+- Slug: c3-edges-qm
+- DOI: 10.5281/zenodo.21017082
+- URL: https://papers.qnfo.org/papers/c3-edges-qm/
+- Abstract: 
+
+## C.4 Edges Thermo StatMech
+- Slug: c4-edges-thermo-statmech
+- DOI: 10.5281/zenodo.21017080
+- URL: https://papers.qnfo.org/papers/c4-edges-thermo-statmech/
+- Abstract: 
+
+## UNIFYING MATH
+- Slug: c5-edges-math
+- URL: https://papers.qnfo.org/papers/c5-edges-math/
+- Abstract: 
+
+## C.7 Edges Philosophy
+- Slug: c7-edges-philosophy
+- DOI: 10.5281/zenodo.21016961
+- URL: https://papers.qnfo.org/papers/c7-edges-philosophy/
+- Abstract: 
+
+## _Consilience
+- Slug: consilience
+- URL: https://papers.qnfo.org/papers/consilience/
+- Abstract: 
+
+## Contemplative Science and the Nature of Reality
+- Slug: 1-converging-quests
+- URL: https://papers.qnfo.org/papers/1-converging-quests/
+- Abstract: 
+
+## Beyond Millikelvins
+- Slug: 11-beyond-classical
+- URL: https://papers.qnfo.org/papers/11-beyond-classical/
+- Abstract: 
+
+## Psychogenic Doctrine of Geopolitical Conflict
+- Slug: psychogenic-doctrine-of-geopolitical-conflict
+- URL: https://papers.qnfo.org/papers/psychogenic-doctrine-of-geopolitical-conflict/
+- Abstract: 
+
+## Quantum Confusion
+- Slug: quantum-confusion
+- URL: https://papers.qnfo.org/papers/quantum-confusion/
+- Abstract: 
+
+## Quantum Fraud
+- Slug: quantum-fraud
+- URL: https://papers.qnfo.org/papers/quantum-fraud/
+- Abstract: 
+
+## Quantum-Classical “Divide:” A Human-Created Illusion
+- Slug: quantum-clasical-divide
+- URL: https://papers.qnfo.org/papers/quantum-clasical-divide/
+- Abstract: 
+
+## Review of Infomatics and Π-φ Physics Reformulation
+- Slug: review-of-infomatics
+- URL: https://papers.qnfo.org/papers/review-of-infomatics/
+- Abstract: 
+
+## A Skeptical Journey Through Conventional Reality
+- Slug: skeptical-journey-through-conventional-reality
+- URL: https://papers.qnfo.org/papers/skeptical-journey-through-conventional-reality/
+- Abstract: 
+
+## Statistics is the Bridge
+- Slug: statistics-of-possibility
+- URL: https://papers.qnfo.org/papers/statistics-of-possibility/
+- Abstract: 
+
+## Temporal Fixation
+- Slug: temporal-fixation
+- URL: https://papers.qnfo.org/papers/temporal-fixation/
+- Abstract: 
+
+## Ten-Fingered Trap
+- Slug: ten-fingered-trap
+- URL: https://papers.qnfo.org/papers/ten-fingered-trap/
+- Abstract: 
+
+## Two-Faced Scientific Methodology
+- Slug: two-faced-scientific-methodology
+- URL: https://papers.qnfo.org/papers/two-faced-scientific-methodology/
+- Abstract: 
+
+## The Ultimate Reality Framework Examination (URFE)
+- Slug: ultimate-reality-framework-examination
+- URL: https://papers.qnfo.org/papers/ultimate-reality-framework-examination/
+- Abstract: 
+
+## White Paper: Universal Digital Identity Framework (UDIF)
+- Slug: universal-digital-identity-framework
+- URL: https://papers.qnfo.org/papers/universal-digital-identity-framework/
+- Abstract: 
+
+## Information Dynamics
+- Slug: what-is-information-dynamics
+- URL: https://papers.qnfo.org/papers/what-is-information-dynamics/
+- Abstract: 
+
+## Why Models Fail
+- Slug: why-models-fail
+- URL: https://papers.qnfo.org/papers/why-models-fail/
+- Abstract: 
+
+## Your WiFi Router Emits Photons
+- Slug: wifi-emits-photons
+- URL: https://papers.qnfo.org/papers/wifi-emits-photons/
+- Abstract: 
+
+## 00
+- Slug: 00
+- URL: https://papers.qnfo.org/papers/00/
+- Abstract: 
+
+## Autaxys and its Generative Engine
+- Slug: autaxys-and-its-generative-engine
+- URL: https://papers.qnfo.org/papers/autaxys-and-its-generative-engine/
+- Abstract: 
+
+## Autaxys Defined
+- Slug: autaxys-defined
+- DOI: 10.5281/zenodo.21017003
+- URL: https://papers.qnfo.org/papers/autaxys-defined/
+- Abstract: 
+
+## Bootstrapping Infomatics v3
+- Slug: bootstrapping-infomatics-v3
+- DOI: 10.5281/zenodo.21017094
+- URL: https://papers.qnfo.org/papers/bootstrapping-infomatics-v3/
+- Abstract: 
+
+## Foundational Incoherence in the Language of Physics
+- Slug: foundational-incoherence-in-the-language-of-physics
+- DOI: 10.5281/zenodo.21016925
+- URL: https://papers.qnfo.org/papers/foundational-incoherence-in-the-language-of-physics/
+- Abstract: 
+
+## COMMUTATIVE PHYSICS
+- Slug: geometric-physics
+- URL: https://papers.qnfo.org/papers/geometric-physics/
+- Abstract: 
+
+## Illusion of Randomness
+- Slug: illusion-of-randomness
+- DOI: 10.5281/zenodo.21017042
+- URL: https://papers.qnfo.org/papers/illusion-of-randomness/
+- Abstract: 
+
+## Illusion of Time
+- Slug: illusion-of-time
+- DOI: 10.5281/zenodo.21017158
+- URL: https://papers.qnfo.org/papers/illusion-of-time/
+- Abstract: 
+
+## Computational Simulation Approach to Non-Archimedean Quantum Architectures
+- Slug: computational-simulation-approach-to-non-archimedean-quantum-architectures
+- URL: https://papers.qnfo.org/papers/computational-simulation-approach-to-non-archimedean-quantum-architectures/
+- Abstract: 
+
+## Computational Simulation of Geometric Orientation Codes
+- Slug: computational-simulation-of-geometric-orientation-codes
+- URL: https://papers.qnfo.org/papers/computational-simulation-of-geometric-orientation-codes/
+- Abstract: 
+
+## Computational Syntax of Reality
+- Slug: computational-syntax-of-reality
+- URL: https://papers.qnfo.org/papers/computational-syntax-of-reality/
+- Abstract: 
+
+## Computational Toolkit for p-Adic Spacetime
+- Slug: computational-toolkit-for-p-adic-spacetime
+- URL: https://papers.qnfo.org/papers/computational-toolkit-for-p-adic-spacetime/
+- Abstract: 
+
+## Formal Ontology of Distinction and Invariance
+- Slug: formal-ontology-of-distinction-and-invariance
+- URL: https://papers.qnfo.org/papers/formal-ontology-of-distinction-and-invariance/
+- Abstract: 
+
+## Knowing Patterns: An Epistemology for People Tired of Being Fixed
+- Slug: knowing-patterns
+- URL: https://papers.qnfo.org/papers/knowing-patterns/
+- Abstract: 
+
+## Log-Periodic Oscillations in the CMB
+- Slug: log-periodic-oscillations-in-the-cmb
+- DOI: 10.5281/zenodo.19555030
+- URL: https://papers.qnfo.org/papers/log-periodic-oscillations-in-the-cmb/
+- Abstract: 
+
+## Meta-Pattern of Reification in Physics
+- Slug: meta-pattern-of-reification-in-physics
+- URL: https://papers.qnfo.org/papers/meta-pattern-of-reification-in-physics/
+- Abstract: 
+
+## Monna Map Generation and Hallucination
+- Slug: monna-map-generation-and-hallucination
+- URL: https://papers.qnfo.org/papers/monna-map-generation-and-hallucination/
+- Abstract: 
+
+## Non-Archimedean Syntactic Paradigm for Physics
+- Slug: non-archimedean-syntactic-paradigm-for-physics
+- URL: https://papers.qnfo.org/papers/non-archimedean-syntactic-paradigm-for-physics/
+- Abstract: 
+
+## Number Theory as Physics
+- Slug: number-theory-as-physics
+- URL: https://papers.qnfo.org/papers/number-theory-as-physics/
+- Abstract: 
+
+## Projective Geometric Frameworks for Semantic Structures
+- Slug: projective-geometric-frameworks-for-semantic-structures
+- URL: https://papers.qnfo.org/papers/projective-geometric-frameworks-for-semantic-structures/
+- Abstract: 
+
+## Proof-of-Concept for Auditable Attention using Ultrametric Tree Distances
+- Slug: proof-of-concept-for-auditable-attention-using-ultrametric-tree-distances
+- URL: https://papers.qnfo.org/papers/proof-of-concept-for-auditable-attention-using-ultrametric-tree-distances/
+- Abstract: 
+
+## Quantitative Simulation of the Brain's Cognitive Architecture
+- Slug: quantitative-simulation-of-the-brains-cognitive-architecture
+- URL: https://papers.qnfo.org/papers/quantitative-simulation-of-the-brains-cognitive-architecture/
+- Abstract: 
+
+## Quantum Laws of Form
+- Slug: quantum-laws-of-form
+- DOI: 10.5281/zenodo.21206074
+- URL: https://papers.qnfo.org/papers/quantum-laws-of-form/
+- Abstract: George Spencer-Brown's Laws of Form (1969) proposed the act of drawing a distinction as the primitive operation from which logic, mathematics, and physics can be constructed. This consolidation synthesizes known quantum correspondences, identifies 7 open problem categories, and proposes 4 extensions.
+
+## Ratio-Based Adelic Physics
+- Slug: ratio-based-adelic-physics
+- URL: https://papers.qnfo.org/papers/ratio-based-adelic-physics/
+- Abstract: 
+
+## REIFICATION AND NON-ARCHIMEDEAN FOUNDATIONS IN THEORETICAL PHYSICS
+- Slug: reification-and-non-archimedean-foundations-in-theoretical-physics
+- URL: https://papers.qnfo.org/papers/reification-and-non-archimedean-foundations-in-theoretical-physics/
+- Abstract: 
+
+## Relational Patternist Synthesis
+- Slug: relational-patternist-synthesis
+- URL: https://papers.qnfo.org/papers/relational-patternist-synthesis/
+- Abstract: 
+
+## Syntactic Generation Primitive Distinctions
+- Slug: syntactic-generation-primitive-distinctions
+- DOI: 10.5281/zenodo.19511463
+- URL: https://papers.qnfo.org/papers/syntactic-generation-primitive-distinctions/
+- Abstract: 
+
+## Syntactic Token Calculus
+- Slug: syntactic-token-calculus
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus/
+- Abstract: 
+
+## The One Who Tells
+- Slug: the-one-who-tells
+- URL: https://papers.qnfo.org/papers/the-one-who-tells/
+- Abstract: 
+
+## ultrametric-paradigm
+- Slug: ultrametric-intelligence
+- URL: https://papers.qnfo.org/papers/ultrametric-intelligence/
+- Abstract: 
+
+## Dimensionless Physics v2
+- Slug: ultrametric-physics-from-discrete-hierarchical-geometry-to-intrinsic-fault-tolerance-and-quantum-gra
+- URL: https://papers.qnfo.org/papers/ultrametric-physics-from-discrete-hierarchical-geometry-to-intrinsic-fault-tolerance-and-quantum-gra/
+- Abstract: 
+
+## Ultrametric Quantum Computation
+- Slug: ultrametric-quantum-computation
+- DOI: 10.5281/zenodo.19396321
+- URL: https://papers.qnfo.org/papers/ultrametric-quantum-computation/
+- Abstract: 
+
+## Ultrametric Quantum Gravity and Computation
+- Slug: ultrametric-quantum-gravity-and-computation
+- DOI: 10.5281/zenodo.19397517
+- URL: https://papers.qnfo.org/papers/ultrametric-quantum-gravity-and-computation/
+- Abstract: 
+
+## Unity of Ultrametric Physics
+- Slug: unity-of-ultrametric-physics
+- URL: https://papers.qnfo.org/papers/unity-of-ultrametric-physics/
+- Abstract: 
+
+## _04
+- Slug: 04
+- URL: https://papers.qnfo.org/papers/04/
+- Abstract: 
+
+## Syntactic Token Calculus v3
+- Slug: syntactic-token-calculus-m1-foundational-syntax
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-m1-foundational-syntax/
+- Abstract: 
+
+## Syntactic Token Calculus
+- Slug: syntactic-token-calculus-m10-fault-tolerance
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-m10-fault-tolerance/
+- Abstract: 
+
+## Syntactic Token Calculus
+- Slug: syntactic-token-calculus-m11-cognitive-isomorphisms
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-m11-cognitive-isomorphisms/
+- Abstract: 
+
+## Syntactic Token Calculus
+- Slug: syntactic-token-calculus-m12-adelic-ontology-of-form
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-m12-adelic-ontology-of-form/
+- Abstract: 
+
+## Syntactic Token Calculus
+- Slug: syntactic-token-calculus-m2-projective-invariants
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-m2-projective-invariants/
+- Abstract: 
+
+## Syntactic Token Calculus
+- Slug: syntactic-token-calculus-m3-particle-lexicon
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-m3-particle-lexicon/
+- Abstract: 
+
+## Syntactic Token Calculus
+- Slug: syntactic-token-calculus-m4-gauge-symmetry
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-m4-gauge-symmetry/
+- Abstract: 
+
+## Syntactic Token Calculus
+- Slug: syntactic-token-calculus-m5-ultrametric-topology
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-m5-ultrametric-topology/
+- Abstract: 
+
+## Syntactic Token Calculus
+- Slug: syntactic-token-calculus-m6-adelic-physics
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-m6-adelic-physics/
+- Abstract: 
+
+## Syntactic Token Calculus v2
+- Slug: syntactic-token-calculus-m7-gravity
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-m7-gravity/
+- Abstract: 
+
+## Syntactic Token Calculus
+- Slug: syntactic-token-calculus-m8-discrete-scale-invariance
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-m8-discrete-scale-invariance/
+- Abstract: 
+
+## Syntactic Token Calculus
+- Slug: syntactic-token-calculus-m9-observer-theory
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-m9-observer-theory/
+- Abstract: 
+
+## Syntactic Token Calculus Research Plan
+- Slug: syntactic-token-calculus-research-plan
+- DOI: 10.5281/zenodo.21206272
+- URL: https://papers.qnfo.org/papers/syntactic-token-calculus-research-plan/
+- Abstract: 
+
+## ULTRAMETRIC PHYSICS
+- Slug: ultrametric-physics-m1-ratio-based-valuation-theory
+- URL: https://papers.qnfo.org/papers/ultrametric-physics-m1-ratio-based-valuation-theory/
+- Abstract: 
+
+## ULTRAMETRIC PHYSICS
+- Slug: ultrametric-physics-m10-cosmological-dynamics
+- URL: https://papers.qnfo.org/papers/ultrametric-physics-m10-cosmological-dynamics/
+- Abstract: 
+
+## ULTRAMETRIC PHYSICS
+- Slug: ultrametric-physics-m11-monna-map
+- URL: https://papers.qnfo.org/papers/ultrametric-physics-m11-monna-map/
+- Abstract: 
+
+## Ultrametric Physics Research Plan
+- Slug: ultrametric-physics-m12-synthesis
+- DOI: 10.5281/zenodo.21206278
+- URL: https://papers.qnfo.org/papers/ultrametric-physics-m12-synthesis/
+- Abstract: 
+
+## ULTRAMETRIC PHYSICS
+- Slug: ultrametric-physics-m2-bruhat-tits-tree-construction
+- URL: https://papers.qnfo.org/papers/ultrametric-physics-m2-bruhat-tits-tree-construction/
+- Abstract: 
+
+## ULTRAMETRIC PHYSICS
+- Slug: ultrametric-physics-m3-vladimirov-operator
+- URL: https://papers.qnfo.org/papers/ultrametric-physics-m3-vladimirov-operator/
+- Abstract: 
+
+## ULTRAMETRIC PHYSICS
+- Slug: ultrametric-physics-m4-adelic-theory-for-general-number-fields
+- URL: https://papers.qnfo.org/papers/ultrametric-physics-m4-adelic-theory-for-general-number-fields/
+- Abstract: 
+
+## ULTRAMETRIC PHYSICS
+- Slug: ultrametric-physics-m5-ratio-based-qec
+- URL: https://papers.qnfo.org/papers/ultrametric-physics-m5-ratio-based-qec/
+- Abstract: 
+
+## Physics, Solved
+- Slug: ultrametric-physics-m6-quantum-gate-theory
+- URL: https://papers.qnfo.org/papers/ultrametric-physics-m6-quantum-gate-theory/
+- Abstract: 
+
+## Architect of Process
+- Slug: architect-of-process
+- URL: https://papers.qnfo.org/papers/architect-of-process/
+- Abstract: 
+
+## Architecture of Experience
+- Slug: architecture-of-experience
+- URL: https://papers.qnfo.org/papers/architecture-of-experience/
+- Abstract: 
+
+## Bruhat-Tits Tree as a Unifying Geometric Object
+- Slug: ballistic-transport-on-the-bruhat-tits-tree
+- URL: https://papers.qnfo.org/papers/ballistic-transport-on-the-bruhat-tits-tree/
+- Abstract: 
+
+## From Force to Fractal
+- Slug: from-force-to-fractal
+- URL: https://papers.qnfo.org/papers/from-force-to-fractal/
+- Abstract: 
+
+## Gauge-Invariant Field Theory of Signal-Worker Interactions
+- Slug: gauge-invariant-field-theory-of-signal-worker-interactions
+- URL: https://papers.qnfo.org/papers/gauge-invariant-field-theory-of-signal-worker-interactions/
+- Abstract: 
+
+## Quantum Abacus
+- Slug: quantum-abacus
+- URL: https://papers.qnfo.org/papers/quantum-abacus/
+- Abstract: 
+
+## QUANTUM ARCHITECTONICS
+- Slug: quantum-architectonics-passive-path-to-scale
+- URL: https://papers.qnfo.org/papers/quantum-architectonics-passive-path-to-scale/
+- Abstract: 
+
+## Quantum Architectonics
+- Slug: quantum-architectonics
+- URL: https://papers.qnfo.org/papers/quantum-architectonics/
+- Abstract: 
+
+## Riemannian-Geometric Approach to Superdeterministic Bell-Violations
+- Slug: riemannian-geometric-approach-to-superdeterministic-bell-violations
+- URL: https://papers.qnfo.org/papers/riemannian-geometric-approach-to-superdeterministic-bell-violations/
+- Abstract: 
+
+## Spectral Analysis of Anomalous Diffusion on p-Adic Fractals
+- Slug: spectral-analysis-of-anomalous-diffusion-on-p-adic-fractals
+- URL: https://papers.qnfo.org/papers/spectral-analysis-of-anomalous-diffusion-on-p-adic-fractals/
+- Abstract: 
+
+## Spectral Dynamics and Thermodynamic Stability in the Arithmetic Quantum Framework
+- Slug: spectral-dynamics-and-thermodynamic-stability-in-the-arithmetic-quantum-framework
+- URL: https://papers.qnfo.org/papers/spectral-dynamics-and-thermodynamic-stability-in-the-arithmetic-quantum-framework/
+- Abstract: 
+
+## Spectral Dynamics on Bruhat-Tits Trees
+- Slug: spectral-dynamics-on-bruhat-tits-trees
+- URL: https://papers.qnfo.org/papers/spectral-dynamics-on-bruhat-tits-trees/
+- Abstract: 
+
+## Structural Mediation of Planckian Dissipation in Strongly Correlated Electron Systems
+- Slug: structural-mediation-of-planckian-dissipation-in-strongly-correlated-electron-systems
+- URL: https://papers.qnfo.org/papers/structural-mediation-of-planckian-dissipation-in-strongly-correlated-electron-systems/
+- Abstract: 
+
+## Superconductivity Quadrangle
+- Slug: superconductivity-quadrangle
+- URL: https://papers.qnfo.org/papers/superconductivity-quadrangle/
+- Abstract: 
+
+## Ultrametric Relaxation Dynamics in Topological Quantum Memory
+- Slug: ultrametric-relaxation-dynamics-in-topological-quantum-memory-expanded-narrative
+- URL: https://papers.qnfo.org/papers/ultrametric-relaxation-dynamics-in-topological-quantum-memory-expanded-narrative/
+- Abstract: 
+
+## Ultrametric Relaxation Dynamics in Topological Quantum Memory
+- Slug: ultrametric-relaxation-dynamics-in-topological-quantum-memory
+- URL: https://papers.qnfo.org/papers/ultrametric-relaxation-dynamics-in-topological-quantum-memory/
+- Abstract: 
+
+## Deterministic Unified Theory
+- Slug: a-deterministic-unified-theory
+- URL: https://papers.qnfo.org/papers/a-deterministic-unified-theory/
+- Abstract: 
+
+## A Unified Framework for Superdeterminism, Neurobiology, and the Mechanics of Human Meaning
+- Slug: a-unified-framework-for-superdeterminism-neurobiology-and-the-mechanics-of-human-meaning
+- DOI: 10.5281/zenodo.18882139
+- URL: https://papers.qnfo.org/papers/a-unified-framework-for-superdeterminism-neurobiology-and-the-mechanics-of-human-meaning/
+- Abstract: 
+
+## Algorithmic-Necessity-of-Agency
+- Slug: algorithmic-necessity-of-agency
+- URL: https://papers.qnfo.org/papers/algorithmic-necessity-of-agency/
+- Abstract: 
+
+## All Things Are One
+- Slug: all-things-are-one
+- URL: https://papers.qnfo.org/papers/all-things-are-one/
+- Abstract: 
+
+## Beyond-Belief
+- Slug: beyond-belief
+- URL: https://papers.qnfo.org/papers/beyond-belief/
+- Abstract: 
+
+## Care Is Stronger
+- Slug: care-is-stronger
+- URL: https://papers.qnfo.org/papers/care-is-stronger/
+- Abstract: 
+
+## Category Error of the Ego
+- Slug: category-error-of-the-ego
+- URL: https://papers.qnfo.org/papers/category-error-of-the-ego/
+- Abstract: 
+
+## Clockwork Cosmos
+- Slug: clockwork-cosmos
+- URL: https://papers.qnfo.org/papers/clockwork-cosmos/
+- Abstract: 
+
+## Computational Topology and Formal Proofs of Discrete Non-Archimedean Relational Networks
+- Slug: computational-topology-and-formal-proofs-of-discrete-non-archimedean-relational-networks
+- URL: https://papers.qnfo.org/papers/computational-topology-and-formal-proofs-of-discrete-non-archimedean-relational-networks/
+- Abstract: 
+
+## Open Thinkers Guide to the Universe
+- Slug: correlated-universe
+- URL: https://papers.qnfo.org/papers/correlated-universe/
+- Abstract: 
+
+## Deterministic Lattice
+- Slug: deterministic-lattice
+- URL: https://papers.qnfo.org/papers/deterministic-lattice/
+- Abstract: 
+
+## Formal Derivation of Emergent Spacetime to the Bruhat-Tits Tree
+- Slug: formal-derivation-of-emergent-spacetime
+- URL: https://papers.qnfo.org/papers/formal-derivation-of-emergent-spacetime/
+- Abstract: 
+
+## Functional Decoupling Framework for p-adic Hamiltonian Models of Granular Field Interactions
+- Slug: functional-decoupling-framework-for-p-adic-hamiltonian-models-of-granular-field-interactions
+- URL: https://papers.qnfo.org/papers/functional-decoupling-framework-for-p-adic-hamiltonian-models-of-granular-field-interactions/
+- Abstract: 
+
+## The Interplay of Scientific Materialism, Human Meaning, and Epistemic Humility
+- Slug: interplay-of-scientific-materialism-human-meaning-and-epistemic-humility
+- URL: https://papers.qnfo.org/papers/interplay-of-scientific-materialism-human-meaning-and-epistemic-humility/
+- Abstract: 
+
+## THE MECHANICS OF PSYCHOLOGICAL PROJECTION AND ONTOLOGICAL REALITY
+- Slug: mechanics-of-psychological-projection-and-ontological-reality
+- DOI: 10.5281/zenodo.19135962
+- URL: https://papers.qnfo.org/papers/mechanics-of-psychological-projection-and-ontological-reality/
+- Abstract: 
+
+## Mechanistic-Ethics
+- Slug: mechanistic-ethics-and-the-biology-of-meaning
+- URL: https://papers.qnfo.org/papers/mechanistic-ethics-and-the-biology-of-meaning/
+- Abstract: 
+
+## Principia Ontologica
+- Slug: principia-ontologica
+- URL: https://papers.qnfo.org/papers/principia-ontologica/
+- Abstract: 
+
+## Quantum Brain Dynamics
+- Slug: quantum-brain-dynamics-and-superdeterminism
+- URL: https://papers.qnfo.org/papers/quantum-brain-dynamics-and-superdeterminism/
+- Abstract: 
+
+## Simulated Stability and the Superdeterministic Quantum Machine
+- Slug: simulated-stability-and-the-superdeterministic-quantum-machine
+- URL: https://papers.qnfo.org/papers/simulated-stability-and-the-superdeterministic-quantum-machine/
+- Abstract: 
+
+## Simulation Inconsistency Detection via Neurobiological and Cognitive Interfaces
+- Slug: simulation-inconsistency-detection-via-neurobiological-and-cognitive-interfaces
+- DOI: 10.5281/zenodo.19195396
+- URL: https://papers.qnfo.org/papers/simulation-inconsistency-detection-via-neurobiological-and-cognitive-interfaces/
+- Abstract: 
+
+## Convergence Consilience and the Hierarchical Architecture of Reality
+- Slug: static-architecture-of-reality-and-its-biological-interface
+- URL: https://papers.qnfo.org/papers/static-architecture-of-reality-and-its-biological-interface/
+- Abstract: 
+
+## Static Architecture of Reality
+- Slug: static-architecture-of-reality
+- URL: https://papers.qnfo.org/papers/static-architecture-of-reality/
+- Abstract: 
+
+## Super-Universe
+- Slug: super-universe
+- URL: https://papers.qnfo.org/papers/super-universe/
+- Abstract: 
+
+## Superdeterministic Amplification of Macroscopic Neural State Vectors
+- Slug: superdeterministic-amplification-of-macroscopic-neural-state-vectors
+- URL: https://papers.qnfo.org/papers/superdeterministic-amplification-of-macroscopic-neural-state-vectors/
+- Abstract: 
+
+## The Threshold of Meaning
+- Slug: threshold-of-meaning
+- URL: https://papers.qnfo.org/papers/threshold-of-meaning/
+- Abstract: 
+
+## Time as Epistemic Cognitive Fiction
+- Slug: time-as-epistemic-cognitive-fiction
+- URL: https://papers.qnfo.org/papers/time-as-epistemic-cognitive-fiction/
+- Abstract: 
+
+## Topological Aliasing and Holographic Readout
+- Slug: topological-aliasing-and-holographic-readout
+- URL: https://papers.qnfo.org/papers/topological-aliasing-and-holographic-readout/
+- Abstract: 
+
+## UNIFIED FORMAL ONTOLOGY OF THE CORRELATED UNIVERSE
+- Slug: unified-formal-ontology-of-the-correlated-universe
+- URL: https://papers.qnfo.org/papers/unified-formal-ontology-of-the-correlated-universe/
+- Abstract: 
+
+## Unified Theory of Non-Archimedean Ontology
+- Slug: unified-theory-of-non-archimedean-ontology
+- URL: https://papers.qnfo.org/papers/unified-theory-of-non-archimedean-ontology/
+- Abstract: 
+
+## Adelic Cross‑Ratio
+- Slug: adelic-crossratio
+- URL: https://papers.qnfo.org/papers/adelic-crossratio/
+- Abstract: 
+
+## Alpha Pi Project
+- Slug: alpha-pi-project
+- URL: https://papers.qnfo.org/papers/alpha-pi-project/
+- Abstract: 
+
+## Automated Formal Verification and Combinatorial Reduction of Distinction-Based Calculus
+- Slug: automated-formal-verification-and-combinatorial-reduction-of-distinction-based-calculus
+- URL: https://papers.qnfo.org/papers/automated-formal-verification-and-combinatorial-reduction-of-distinction-based-calculus/
+- Abstract: 
+
+## Base-Invariant Number-Theoretic Patterns in Fundamental Constants
+- Slug: base-invariant-number-theoretic-patterns-in-fundamental-constants
+- URL: https://papers.qnfo.org/papers/base-invariant-number-theoretic-patterns-in-fundamental-constants/
+- Abstract: 
+
+## Topological Origins of Number Theory
+- Slug: topological-origins-of-number-theory
+- URL: https://papers.qnfo.org/papers/topological-origins-of-number-theory/
+- Abstract: 
+
+## Topological Signal Processing
+- Slug: topological-signal-processing
+- URL: https://papers.qnfo.org/papers/topological-signal-processing/
+- Abstract: 
+
+## Tweezers Magnet
+- Slug: tweezers-vs-magnet
+- URL: https://papers.qnfo.org/papers/tweezers-vs-magnet/
+- Abstract: 
+
+## Universe as a Single Solution
+- Slug: universe-as-a-single-solution
+- URL: https://papers.qnfo.org/papers/universe-as-a-single-solution/
+- Abstract: 
+
+## Winding Number as Hidden Variable
+- Slug: winding-number-as-hidden-variable
+- URL: https://papers.qnfo.org/papers/winding-number-as-hidden-variable/
+- Abstract: 
+
+## WINDING NUMBERS AND STRANGE LOOPS
+- Slug: winding-numbers-and-strange-loops
+- URL: https://papers.qnfo.org/papers/winding-numbers-and-strange-loops/
+- Abstract: 
+
+## Autonomous Dissipative Quantum Processing
+- Slug: autonomous-dissipative-quantum-processing
+- URL: https://papers.qnfo.org/papers/autonomous-dissipative-quantum-processing/
+- Abstract: 
+
+## Chiral High-Temperature Topological Processing
+- Slug: chiral-high-temperature-topological-processing
+- URL: https://papers.qnfo.org/papers/chiral-high-temperature-topological-processing/
+- Abstract: 
+
+## Commercial Pathways to Room-Temperature Topological Quantum Computation
+- Slug: commercial-pathways-to-room-temperature-topological-quantum-computation
+- URL: https://papers.qnfo.org/papers/commercial-pathways-to-room-temperature-topological-quantum-computation/
+- Abstract: 
+
+## CRYOGENICALLY STABILIZED SYNTHETIC LATTICE
+- Slug: cryogenically-stabilized-synthetic-lattice-architecture-for-fault-tolerant-quantum-computing
+- URL: https://papers.qnfo.org/papers/cryogenically-stabilized-synthetic-lattice-architecture-for-fault-tolerant-quantum-computing/
+- Abstract: 
+
+## EMERGENT NUMBER THEORY
+- Slug: emergent-number-theory
+- DOI: 10.5281/zenodo.17499279
+- URL: https://papers.qnfo.org/papers/emergent-number-theory/
+- Abstract: 
+
+## Entropic-Operational Paradigm
+- Slug: entropic-operational-paradigm
+- URL: https://papers.qnfo.org/papers/entropic-operational-paradigm/
+- Abstract: 
+
+## SPACETIME CONDENSATE
+- Slug: hydrodynamic-spacetime
+- URL: https://papers.qnfo.org/papers/hydrodynamic-spacetime/
+- Abstract: 
+
+## Hydrodynamic Stability Hypothesis
+- Slug: hydrodynamic-stability-hypothesis
+- URL: https://papers.qnfo.org/papers/hydrodynamic-stability-hypothesis/
+- Abstract: 
+
+## Hydrodynamic-Topological Continuum
+- Slug: hydrodynamic-topological-continuum
+- URL: https://papers.qnfo.org/papers/hydrodynamic-topological-continuum/
+- Abstract: 
+
+## KINETIC ISOMORPHISM
+- Slug: kinetic-isomorphism
+- URL: https://papers.qnfo.org/papers/kinetic-isomorphism/
+- Abstract: 
+
+## Prime Numbers as Spectral Artifacts
+- Slug: prime-numbers-as-spectral-artifacts
+- URL: https://papers.qnfo.org/papers/prime-numbers-as-spectral-artifacts/
+- Abstract: 
+
+## Prime Numbers as Universal Optimization Primitives
+- Slug: prime-numbers-as-universal-optimization-primitives
+- DOI: 10.5281/zenodo.17516239
+- URL: https://papers.qnfo.org/papers/prime-numbers-as-universal-optimization-primitives/
+- Abstract: 
+
+## Ultrametric Quantum Computation and the Langlands Program
+- Slug: reassessing-the-foundations-of-quantum-computation
+- DOI: 10.5281/zenodo.20036379
+- URL: https://papers.qnfo.org/papers/reassessing-the-foundations-of-quantum-computation/
+- Abstract: 
+
+## So What of Knowledge
+- Slug: so-what-of-knowledge
+- URL: https://papers.qnfo.org/papers/so-what-of-knowledge/
+- Abstract: 
+
+## Stability Compiler
+- Slug: stability
+- URL: https://papers.qnfo.org/papers/stability/
+- Abstract: 
+
+## Superfluid Vacuum Theory
+- Slug: superfluid-vacuum-theory
+- URL: https://papers.qnfo.org/papers/superfluid-vacuum-theory/
+- Abstract: 
+
+## Thermodynamic Veto
+- Slug: thermodynamic-veto
+- URL: https://papers.qnfo.org/papers/thermodynamic-veto/
+- Abstract: 
+
+## Topological Extension Hypothesis
+- Slug: topological-extension-hypothesis
+- URL: https://papers.qnfo.org/papers/topological-extension-hypothesis/
+- Abstract: 
+
+## Universal Computational Topos
+- Slug: universal-computational-topos
+- URL: https://papers.qnfo.org/papers/universal-computational-topos/
+- Abstract: 
+
+## Adaptive Thick Skin
+- Slug: adaptive-thick-skin
+- URL: https://papers.qnfo.org/papers/adaptive-thick-skin/
+- Abstract: 
+
+## Arithmetic Gauge Concentration
+- Slug: arithmetic-gauge-concentration
+- URL: https://papers.qnfo.org/papers/arithmetic-gauge-concentration/
+- Abstract: 
+
+## ASYMMETRIC ELECTRON TRANSPORT ARISING FROM INTRINSIC STRUCTURAL CHIRALITY
+- Slug: asymmetric-electron-transport-arising-from-intrinsic-structural-chirality
+- URL: https://papers.qnfo.org/papers/asymmetric-electron-transport-arising-from-intrinsic-structural-chirality/
+- Abstract: 
+
+## Base State–Disturbance (BS-D) Ontology
+- Slug: base-statedisturbance-bs-d-ontology
+- URL: https://papers.qnfo.org/papers/base-statedisturbance-bs-d-ontology/
+- Abstract: 
+
+## Chiral High-Temperature Topological Processing
+- Slug: chtp-4-kelvin-twistronic-architecture
+- URL: https://papers.qnfo.org/papers/chtp-4-kelvin-twistronic-architecture/
+- Abstract: 
+
+## Coherent Tunneling
+- Slug: coherent-tunneling
+- URL: https://papers.qnfo.org/papers/coherent-tunneling/
+- Abstract: 
+
+## Topological Quantum Computing
+- Slug: constraints-on-scalable-quantum-computing-v2
+- URL: https://papers.qnfo.org/papers/constraints-on-scalable-quantum-computing-v2/
+- Abstract: 
+
+## Continuous Topology and Discrete Arithmetic
+- Slug: continuous-topology-and-discrete-arithmetic
+- URL: https://papers.qnfo.org/papers/continuous-topology-and-discrete-arithmetic/
+- Abstract: 
+
+## Dynamic Optimality in Physical and Arithmetic Systems
+- Slug: dynamic-optimality-in-physical-and-arithmetic-systems
+- URL: https://papers.qnfo.org/papers/dynamic-optimality-in-physical-and-arithmetic-systems/
+- Abstract: 
+
+## EMERGENT CORRELATION IN A LOCAL-DETERMINISTIC UNIVERSE
+- Slug: emergent-correlation-in-a-local-deterministic-universe
+- URL: https://papers.qnfo.org/papers/emergent-correlation-in-a-local-deterministic-universe/
+- Abstract: 
+
+## Engineering Macroscopic Quantum Coherence in Disordered Moiré Metamaterials
+- Slug: engineering-macroscopic-quantum-coherence-in-disordered-moir-metamaterials
+- URL: https://papers.qnfo.org/papers/engineering-macroscopic-quantum-coherence-in-disordered-moir-metamaterials/
+- Abstract: 
+
+## Escaping the Millikelvin Death Spiral
+- Slug: escaping-the-millikelvin-death-spiral
+- URL: https://papers.qnfo.org/papers/escaping-the-millikelvin-death-spiral/
+- Abstract: 
+
+## Feynman-Shor Quantum Bifurcation
+- Slug: feynman-shor-quantum-bifurcation
+- URL: https://papers.qnfo.org/papers/feynman-shor-quantum-bifurcation/
+- Abstract: 
+
+## From Extrinsic Teleology to Existential Autonomy
+- Slug: from-extrinsic-teleology-to-existential-autonomy
+- URL: https://papers.qnfo.org/papers/from-extrinsic-teleology-to-existential-autonomy/
+- Abstract: 
+
+## Hydrodynamic Gating of Nuclear Spin Coherence v2
+- Slug: hydrodynamic-gating-of-nuclear-spin-coherence
+- URL: https://papers.qnfo.org/papers/hydrodynamic-gating-of-nuclear-spin-coherence/
+- Abstract: 
+
+## Lifecycle of a Fault-Tolerant Quantum Computer
+- Slug: lifecycle-of-a-fault-tolerant-quantum-computer
+- URL: https://papers.qnfo.org/papers/lifecycle-of-a-fault-tolerant-quantum-computer/
+- Abstract: 
+
+## Physics-Native Computational Architectures
+- Slug: physics-bounded-computational-substrate
+- DOI: 10.5281/zenodo.17440316
+- URL: https://papers.qnfo.org/papers/physics-bounded-computational-substrate/
+- Abstract: 
+
+## Recursive Constraint Nucleation in Epistemic Cut Architecture
+- Slug: recursive-constraint-nucleation-in-epistemic-cut-architecture
+- URL: https://papers.qnfo.org/papers/recursive-constraint-nucleation-in-epistemic-cut-architecture/
+- Abstract: 
+
+## Relativistic Topological Superfluid
+- Slug: relativistic-topological-superfluid
+- URL: https://papers.qnfo.org/papers/relativistic-topological-superfluid/
+- Abstract: 
+
+## RESOLVING THE SCALE PENALTY
+- Slug: resolving-the-scale-penalty
+- URL: https://papers.qnfo.org/papers/resolving-the-scale-penalty/
+- Abstract: 
+
+## Resonant Kerr-Cancellation Dynamics
+- Slug: resonant-kerr-cancellation-dynamics-in-dissipative-bosonic-stabilization
+- URL: https://papers.qnfo.org/papers/resonant-kerr-cancellation-dynamics-in-dissipative-bosonic-stabilization/
+- Abstract: 
+
+## Resonant Spinor Topology and the Vacuum Horizon
+- Slug: resonant-spinor-topology-and-the-vacuum-horizon
+- URL: https://papers.qnfo.org/papers/resonant-spinor-topology-and-the-vacuum-horizon/
+- Abstract: 
+
+## REYNOLDS FILTER AND THE OBSERVABILITY OF CHAOS
+- Slug: reynolds-filter-and-the-observability-of-chaos
+- URL: https://papers.qnfo.org/papers/reynolds-filter-and-the-observability-of-chaos/
+- Abstract: 
+
+## Spectral Schism
+- Slug: spectral-schism
+- URL: https://papers.qnfo.org/papers/spectral-schism/
+- Abstract: 
+
+## Stabilization of Gottesman-Kitaev-Preskill States
+- Slug: stabilization-of-gottesman-kitaev-preskill-states
+- URL: https://papers.qnfo.org/papers/stabilization-of-gottesman-kitaev-preskill-states/
+- Abstract: 
+
+## STOCHASTIC TOPOLOGICAL RENORMALIZATION
+- Slug: stochastic-topological-renormalization
+- URL: https://papers.qnfo.org/papers/stochastic-topological-renormalization/
+- Abstract: 
+
+## Superfluid Substrate
+- Slug: superfluid-substrate
+- URL: https://papers.qnfo.org/papers/superfluid-substrate/
+- Abstract: 
+
+## Thermodynamic and Informational Bottlenecks of Scalable Fault-Tolerant Quantum Computation
+- Slug: thermodynamic-and-informational-bottlenecks-of-scalable-fault-tolerant-quantum-computation
+- URL: https://papers.qnfo.org/papers/thermodynamic-and-informational-bottlenecks-of-scalable-fault-tolerant-quantum-computation/
+- Abstract: 
+
+## THERMODYNAMIC AND TOPOLOGICAL CONSTRAINTS ON BIOLOGICAL QUANTUM PROCESSING
+- Slug: thermodynamic-and-topological-constraints-on-biological-quantum-processing
+- URL: https://papers.qnfo.org/papers/thermodynamic-and-topological-constraints-on-biological-quantum-processing/
+- Abstract: 
+
+## Thermodynamic and Quantum Constraints on Scalable Quantum Computing
+- Slug: thermodynamic-constraints-and-architectural-inversions-in-scalable-quantum-information-systems
+- URL: https://papers.qnfo.org/papers/thermodynamic-constraints-and-architectural-inversions-in-scalable-quantum-information-systems/
+- Abstract: 
+
+## THERMODYNAMIC GENESIS OF THE STANDARD MODEL
+- Slug: thermodynamic-genesis-of-the-standard-model
+- URL: https://papers.qnfo.org/papers/thermodynamic-genesis-of-the-standard-model/
+- Abstract: 
+
+## Thermodynamic Imperative
+- Slug: thermodynamic-imperative
+- URL: https://papers.qnfo.org/papers/thermodynamic-imperative/
+- Abstract: 
+
+## Thermodynamic Scaling of 4-Kelvin Topological Processors
+- Slug: thermodynamic-scaling-of-4-kelvin-topological-processors
+- URL: https://papers.qnfo.org/papers/thermodynamic-scaling-of-4-kelvin-topological-processors/
+- Abstract: 
+
+## THERMODYNAMIC STABILITY OF A FILAMENTARY VACUUM
+- Slug: thermodynamic-stability-of-a-filamentary-vacuum
+- URL: https://papers.qnfo.org/papers/thermodynamic-stability-of-a-filamentary-vacuum/
+- Abstract: 
+
+## Thermodynamic Viability and the Universality of Feynman Matter
+- Slug: thermodynamic-viability-and-the-universality-of-feynman-matter
+- URL: https://papers.qnfo.org/papers/thermodynamic-viability-and-the-universality-of-feynman-matter/
+- Abstract: 
+
+## Thermodynamics of Structural Persistence (Topological Memory)
+- Slug: thermodynamics-of-structural-persistence
+- URL: https://papers.qnfo.org/papers/thermodynamics-of-structural-persistence/
+- Abstract: 
+
+## TOPOLOGICAL HYDRODYNAMICS AND THE SPECTRAL GAP
+- Slug: topological-hydrodynamics-and-the-spectral-gap
+- URL: https://papers.qnfo.org/papers/topological-hydrodynamics-and-the-spectral-gap/
+- Abstract: 
+
+## Topological Quantization and Spectral Filtration
+- Slug: topological-quantization-and-spectral-filtration
+- URL: https://papers.qnfo.org/papers/topological-quantization-and-spectral-filtration/
+- Abstract: 
+
+## Twisted Cuprate Twistronics and the Thermodynamic Scaling of Topological Quantum Computation
+- Slug: twisted-cuprate-twistronics
+- URL: https://papers.qnfo.org/papers/twisted-cuprate-twistronics/
+- Abstract: 
+
+## Viscoelastic Gating of Nuclear Spin Coherence
+- Slug: viscoelastic-gating-of-nuclear-spin-coherence
+- URL: https://papers.qnfo.org/papers/viscoelastic-gating-of-nuclear-spin-coherence/
+- Abstract: 
+
+## _2026
+- Slug: 2026
+- URL: https://papers.qnfo.org/papers/2026/
+- Abstract: 
+
+## Agentic Collapse
+- Slug: agentic-collapse
+- URL: https://papers.qnfo.org/papers/agentic-collapse/
+- Abstract: 
+
+## Comprehensive Technical Framework for Network Isomorphism
+- Slug: comprehensive-technical-framework-for-network-isomorphism
+- URL: https://papers.qnfo.org/papers/comprehensive-technical-framework-for-network-isomorphism/
+- Abstract: 
+
+## Computational Benchmark of Geometric and Algebraic Models for Multi-Qubit State Representation
+- Slug: computational-benchmark-of-geometric-and-algebraic-models-for-multi-qubit-state-representation
+- URL: https://papers.qnfo.org/papers/computational-benchmark-of-geometric-and-algebraic-models-for-multi-qubit-state-representation/
+- Abstract: 
+
+## Computational Toy Model of Non-Local Information Storage in a Quantum Cellular Automaton
+- Slug: computational-toy-model-of-non-local-information-storage-in-a-quantum-cellular-automaton
+- URL: https://papers.qnfo.org/papers/computational-toy-model-of-non-local-information-storage-in-a-quantum-cellular-automaton/
+- Abstract: 
+
+## Connecting Geometrogenesis and Biogenesis
+- Slug: connecting-geometrogenesis-and-biogenesis
+- URL: https://papers.qnfo.org/papers/connecting-geometrogenesis-and-biogenesis/
+- Abstract: 
+
+## Continuous Signal Processing for Josephson Junction Readout
+- Slug: continuous-signal-processing-for-josephson-junction-readout
+- URL: https://papers.qnfo.org/papers/continuous-signal-processing-for-josephson-junction-readout/
+- Abstract: 
+
+## Double Pendulum as a Topological Bridge
+- Slug: double-pendulum-as-a-topological-bridge
+- URL: https://papers.qnfo.org/papers/double-pendulum-as-a-topological-bridge/
+- Abstract: 
+
+## Epistemic Noise as Computational Resource
+- Slug: epistemic-noise-as-computational-resource
+- URL: https://papers.qnfo.org/papers/epistemic-noise-as-computational-resource/
+- Abstract: 
+
+## Excluded Middle as Computational Boundary
+- Slug: excluded-middle-as-computational-boundary
+- URL: https://papers.qnfo.org/papers/excluded-middle-as-computational-boundary/
+- Abstract: 
+
+## From Peaks to Pixels
+- Slug: from-peaks-to-pixels
+- URL: https://papers.qnfo.org/papers/from-peaks-to-pixels/
+- Abstract: 
+
+## General Theory of Process
+- Slug: general-theory-of-process
+- URL: https://papers.qnfo.org/papers/general-theory-of-process/
+- Abstract: 
+
+## Hamiltonian Dynamics as the Engine of Biological Computation
+- Slug: hamiltonian-dynamics-as-the-engine-of-biological-computation
+- URL: https://papers.qnfo.org/papers/hamiltonian-dynamics-as-the-engine-of-biological-computation/
+- Abstract: 
+
+## Hamiltonian Engineering of Topological Deconfinement in Weyl Semimetals
+- Slug: hamiltonian-engineering-of-topological-deconfinement-in-weyl-semimetals
+- URL: https://papers.qnfo.org/papers/hamiltonian-engineering-of-topological-deconfinement-in-weyl-semimetals/
+- Abstract: 
+
+## Hybrid Gate Decomposition and Vector-Norm Analysis for Quantum PDE Solvers
+- Slug: hybrid-gate-decomposition-and-vector-norm-analysis-for-quantum-pde-solvers
+- URL: https://papers.qnfo.org/papers/hybrid-gate-decomposition-and-vector-norm-analysis-for-quantum-pde-solvers/
+- Abstract: 
+
+## Impact of Cognitive Linearity on Epistemic Modeling
+- Slug: impact-of-cognitive-linearity-on-epistemic-modeling
+- URL: https://papers.qnfo.org/papers/impact-of-cognitive-linearity-on-epistemic-modeling/
+- Abstract: 
+
+## In-Network Hamiltonian Engineering for 6G
+- Slug: in-network-hamiltonian-engineering-for-6g
+- URL: https://papers.qnfo.org/papers/in-network-hamiltonian-engineering-for-6g/
+- Abstract: 
+
+## New School of Athens
+- Slug: new-school-of-athens
+- URL: https://papers.qnfo.org/papers/new-school-of-athens/
+- Abstract: 
+
+## Non-Markovian Hamiltonian Dynamics of Boson-Mediated Energy Transfer
+- Slug: non-markovian-hamiltonian-dynamics-of-boson-mediated-energy-transfer
+- URL: https://papers.qnfo.org/papers/non-markovian-hamiltonian-dynamics-of-boson-mediated-energy-transfer/
+- Abstract: 
+
+## Operationalizing Generalized Symmetries
+- Slug: operationalizing-generalized-symmetries
+- URL: https://papers.qnfo.org/papers/operationalizing-generalized-symmetries/
+- Abstract: 
+
+## Phase Transitions of Logic
+- Slug: phase-transitions-of-logic
+- URL: https://papers.qnfo.org/papers/phase-transitions-of-logic/
+- Abstract: 
+
+## Process Ontology and Hydrodynamic Vacuum
+- Slug: process-ontology-and-hydrodynamic-vacuum
+- URL: https://papers.qnfo.org/papers/process-ontology-and-hydrodynamic-vacuum/
+- Abstract: 
+
+## Programming the Vacuum
+- Slug: programming-the-vacuum
+- URL: https://papers.qnfo.org/papers/programming-the-vacuum/
+- Abstract: 
+
+## Quantum Riemannian Geometry
+- Slug: quantum-riemannian-geometry
+- URL: https://papers.qnfo.org/papers/quantum-riemannian-geometry/
+- Abstract: 
+
+## Reconstructive Ontology of Brouwerian Intuitionism
+- Slug: reconstructive-ontology-of-brouwerian-intuitionism
+- URL: https://papers.qnfo.org/papers/reconstructive-ontology-of-brouwerian-intuitionism/
+- Abstract: 
+
+## Spacetime Volume and Fractal Surfaces
+- Slug: spacetime-volume-and-fractal-surfaces
+- URL: https://papers.qnfo.org/papers/spacetime-volume-and-fractal-surfaces/
+- Abstract: 
+
+## Spectral Benchmarking of Holographic Quantum Simulations
+- Slug: spectral-benchmarking-of-holographic-quantum-simulations
+- URL: https://papers.qnfo.org/papers/spectral-benchmarking-of-holographic-quantum-simulations/
+- Abstract: 
+
+## Structural vs Driven Quantum Coherence
+- Slug: structural-vs-driven-quantum-coherence
+- URL: https://papers.qnfo.org/papers/structural-vs-driven-quantum-coherence/
+- Abstract: 
+
+## Thermodynamics of Knowing
+- Slug: thermodynamics-of-knowing
+- URL: https://papers.qnfo.org/papers/thermodynamics-of-knowing/
+- Abstract: 
+
+## Topological and Computational Unification of Emergent Agency
+- Slug: topological-and-computational-unification-of-emergent-agency
+- URL: https://papers.qnfo.org/papers/topological-and-computational-unification-of-emergent-agency/
+- Abstract: 
+
+## Topology of Quanta
+- Slug: topology-of-quanta
+- URL: https://papers.qnfo.org/papers/topology-of-quanta/
+- Abstract: 
+
+## UNIFIED FIBER BUNDLE FORMALISM FOR THE HOPF FIBRATION
+- Slug: unified-fiber-bundle-formalism-for-the-hopf-fibration
+- URL: https://papers.qnfo.org/papers/unified-fiber-bundle-formalism-for-the-hopf-fibration/
+- Abstract: 
+
+## Unifying Photosynthetic Energy Transduction and Ambient Superconductivity
+- Slug: unifying-photosynthetic-energy-transduction-and-ambient-superconductivity
+- URL: https://papers.qnfo.org/papers/unifying-photosynthetic-energy-transduction-and-ambient-superconductivity/
+- Abstract: 
+
+## Universal Hamiltonian as Process Verb
+- Slug: universal-hamiltonian-as-process-verb
+- URL: https://papers.qnfo.org/papers/universal-hamiltonian-as-process-verb/
+- Abstract: 
+
+## Ab Initio Architectonics
+- Slug: ab-initio-architectonics
+- URL: https://papers.qnfo.org/papers/ab-initio-architectonics/
+- Abstract: 
+
+## Chemical Category
+- Slug: chemical-category
+- URL: https://papers.qnfo.org/papers/chemical-category/
+- Abstract: 
+
+## Computo Ergo Sum
+- Slug: computo-ergo-sum
+- URL: https://papers.qnfo.org/papers/computo-ergo-sum/
+- Abstract: 
+
+## Continuum is Real
+- Slug: continuum-is-real
+- URL: https://papers.qnfo.org/papers/continuum-is-real/
+- Abstract: 
+
+## Defining Kappa
+- Slug: defining-kappa
+- URL: https://papers.qnfo.org/papers/defining-kappa/
+- Abstract: 
+
+## Derivation of SM Gauge Couplings
+- Slug: derivation-of-sm-gauge-couplings
+- URL: https://papers.qnfo.org/papers/derivation-of-sm-gauge-couplings/
+- Abstract: 
+
+## Dimensionless Physics
+- Slug: dimensionless-physics
+- URL: https://papers.qnfo.org/papers/dimensionless-physics/
+- Abstract: 
+
+## Derivation of Einstein from Thermodynamics
+- Slug: einstein-thermodynamics-derivation
+- URL: https://papers.qnfo.org/papers/einstein-thermodynamics-derivation/
+- Abstract: 
+
+## Emergence of Physics
+- Slug: emergence-of-physics
+- URL: https://papers.qnfo.org/papers/emergence-of-physics/
+- Abstract: 
+
+## Emergent Computation
+- Slug: emergent-computation
+- URL: https://papers.qnfo.org/papers/emergent-computation/
+- Abstract: 
+
+## Emergent Information-Theoretic Electromagnetism Proof
+- Slug: emergent-information-theoretic-electromagnetism-proof
+- URL: https://papers.qnfo.org/papers/emergent-information-theoretic-electromagnetism-proof/
+- Abstract: 
+
+## Epistemic Cut
+- Slug: epistemic-cartography
+- URL: https://papers.qnfo.org/papers/epistemic-cartography/
+- Abstract: 
+
+## Epistemic Dynamics
+- Slug: epistemic-dynamics
+- URL: https://papers.qnfo.org/papers/epistemic-dynamics/
+- Abstract: 
+
+## An Epistemic Mirror
+- Slug: epistemic-mirror
+- URL: https://papers.qnfo.org/papers/epistemic-mirror/
+- Abstract: 
+
+## fractal
+- Slug: fractal-architecture-of-stability
+- URL: https://papers.qnfo.org/papers/fractal-architecture-of-stability/
+- Abstract: 
+
+## Head Over Hands
+- Slug: head-over-hands
+- DOI: 10.5281/zenodo.17123952
+- URL: https://papers.qnfo.org/papers/head-over-hands/
+- Abstract: 
+
+## Higgs Particle Never Existed
+- Slug: higgs-particle-never-existed
+- URL: https://papers.qnfo.org/papers/higgs-particle-never-existed/
+- Abstract: 
+
+## Iceberg of Reality
+- Slug: iceberg-of-reality
+- URL: https://papers.qnfo.org/papers/iceberg-of-reality/
+- Abstract: 
+
+## Information Realism
+- Slug: information-realism
+- URL: https://papers.qnfo.org/papers/information-realism/
+- Abstract: 
+
+## Information-Theoretic Scale Management
+- Slug: information-theoretic-foundations-of-reality
+- URL: https://papers.qnfo.org/papers/information-theoretic-foundations-of-reality/
+- Abstract: 
+
+## Information-Theoretic Reformation of Physics
+- Slug: information-theoretic-reformation-of-physics
+- URL: https://papers.qnfo.org/papers/information-theoretic-reformation-of-physics/
+- Abstract: 
+
+## Math is NOT the Universe
+- Slug: map-is-not-the-universe
+- URL: https://papers.qnfo.org/papers/map-is-not-the-universe/
+- Abstract: 
+
+## Mass–Energy–Entropy–Information Proof
+- Slug: massenergyentropyinformation-proof
+- URL: https://papers.qnfo.org/papers/massenergyentropyinformation-proof/
+- Abstract: 
+
+## Mathematical Structures Underlying Physical Laws
+- Slug: mathematical-structures-underlying-physical-laws-and-statistical-phenomena
+- URL: https://papers.qnfo.org/papers/mathematical-structures-underlying-physical-laws-and-statistical-phenomena/
+- Abstract: 
+
+## Nature of Zitterbewegung
+- Slug: nature-of-zitterbewegung
+- URL: https://papers.qnfo.org/papers/nature-of-zitterbewegung/
+- Abstract: 
+
+## NEW LANGUAGE FOR MATH
+- Slug: new-foundation-for-physics
+- URL: https://papers.qnfo.org/papers/new-foundation-for-physics/
+- Abstract: 
+
+## Not Even Wrong
+- Slug: not-even-wrong
+- URL: https://papers.qnfo.org/papers/not-even-wrong/
+- Abstract: 
+
+## Ontological Unknowability Proof
+- Slug: ontological-unknowability-proof
+- URL: https://papers.qnfo.org/papers/ontological-unknowability-proof/
+- Abstract: 
+
+## The Ouroboric Universe and Time
+- Slug: ouroboran-universe-and-nature-of-time
+- URL: https://papers.qnfo.org/papers/ouroboran-universe-and-nature-of-time/
+- Abstract: 
+
+## POST QUANTUM SYNTHESIS
+- Slug: post-quantum-synthesis
+- URL: https://papers.qnfo.org/papers/post-quantum-synthesis/
+- Abstract: 
+
+## “Proton Football”
+- Slug: proton-football
+- DOI: 10.5281/zenodo.17213754
+- URL: https://papers.qnfo.org/papers/proton-football/
+- Abstract: 
+
+## Quantifying Structural Unification and Epistemic Scaffolding in Scientific Progress
+- Slug: quantifying-structural-unification-and-epistemic-scaffolding-in-scientific-progress
+- DOI: 10.5281/zenodo.17229528
+- URL: https://papers.qnfo.org/papers/quantifying-structural-unification-and-epistemic-scaffolding-in-scientific-progress/
+- Abstract: 
+
+## Placeholder functions for demonstration
+- Slug: quantum-correlation-synchronization-theory-of-emergent-gravity
+- URL: https://papers.qnfo.org/papers/quantum-correlation-synchronization-theory-of-emergent-gravity/
+- Abstract: 
+
+## Quantum Mechanics as Applied Wave Harmonics
+- Slug: quantum-mechanics-as-applied-wave-mechanics
+- URL: https://papers.qnfo.org/papers/quantum-mechanics-as-applied-wave-mechanics/
+- Abstract: 
+
+## Resonant Complexity Framework
+- Slug: resonant-complexity-framework
+- URL: https://papers.qnfo.org/papers/resonant-complexity-framework/
+- Abstract: 
+
+## Resonant Equilibrium
+- Slug: resonant-resolution
+- URL: https://papers.qnfo.org/papers/resonant-resolution/
+- Abstract: 
+
+## Risks of Pancomputationalism
+- Slug: risks-of-pancomputationalism
+- URL: https://papers.qnfo.org/papers/risks-of-pancomputationalism/
+- Abstract: 
+
+## Scale-Divergence Problem
+- Slug: scale-divergence-problem
+- URL: https://papers.qnfo.org/papers/scale-divergence-problem/
+- Abstract: 
+
+## Scale-Invariant Information Thermodynamics Proof
+- Slug: scale-invariant-information-thermodynamics-proof
+- URL: https://papers.qnfo.org/papers/scale-invariant-information-thermodynamics-proof/
+- Abstract: 
+
+## Scale-Invariant Reality
+- Slug: scale-invariant-physics
+- URL: https://papers.qnfo.org/papers/scale-invariant-physics/
+- Abstract: 
+
+## SCALE INVARIANT TOPOLOGICAL ONTOLOGY
+- Slug: scale-invariant-ryutakayanagi-proof
+- URL: https://papers.qnfo.org/papers/scale-invariant-ryutakayanagi-proof/
+- Abstract: 
+
+## Scientific Validity Assessment Toolkit (SVAT)
+- Slug: scientific-validity-assessment-toolkit-svat
+- URL: https://papers.qnfo.org/papers/scientific-validity-assessment-toolkit-svat/
+- Abstract: 
+
+## Standard Model
+- Slug: standard-model-critique
+- URL: https://papers.qnfo.org/papers/standard-model-critique/
+- Abstract: 
+
+## Standard-Deviation Normalization Proof
+- Slug: standard-deviation-normalization-proof
+- URL: https://papers.qnfo.org/papers/standard-deviation-normalization-proof/
+- Abstract: 
+
+## There Are No Theories
+- Slug: there-are-no-theories
+- URL: https://papers.qnfo.org/papers/there-are-no-theories/
+- Abstract: 
+
+## Waves Do Math
+- Slug: treatise-on-waves
+- URL: https://papers.qnfo.org/papers/treatise-on-waves/
+- Abstract: 
+
+## framework
+- Slug: triune-framework
+- URL: https://papers.qnfo.org/papers/triune-framework/
+- Abstract: 
+
+## Universe as Self-Proving Theorem
+- Slug: universe-as-self-proving-theorem
+- DOI: 10.5281/zenodo.17085802
+- URL: https://papers.qnfo.org/papers/universe-as-self-proving-theorem/
+- Abstract: 
+
+## Wave-Built World
+- Slug: wave-built-world
+- URL: https://papers.qnfo.org/papers/wave-built-world/
+- Abstract: 
+
+## REALITY WE KNOW
+- Slug: 8-how-do-we-know
+- URL: https://papers.qnfo.org/papers/8-how-do-we-know/
+- Abstract: 
+
+## Philosophy of Science
+- Slug: 9-are-we-following-the-right-path
+- DOI: 10.5281/zenodo.15533623
+- URL: https://papers.qnfo.org/papers/9-are-we-following-the-right-path/
+- Abstract: 
+
+## _Philosophy of Science
+- Slug: philosophy-of-science
+- URL: https://papers.qnfo.org/papers/philosophy-of-science/
+- Abstract: 
+
+## **The Simplicity of Reality: Deconstructing the Mathematical Epicycles of Modern Physics**
+- Slug: 1-crisis-of-abstraction
+- URL: https://papers.qnfo.org/papers/1-crisis-of-abstraction/
+- Abstract: 
+
+## Conclusion and References
+- Slug: 10-conclusion-and-references
+- URL: https://papers.qnfo.org/papers/10-conclusion-and-references/
+- Abstract: 
+
+## **The Simplicity of Reality: Deconstructing the Mathematical Epicycles of Modern Physics**
+- Slug: 2-original-sin
+- URL: https://papers.qnfo.org/papers/2-original-sin/
+- Abstract: 
+
+## **The Simplicity of Reality: Deconstructing the Mathematical Epicycles of Modern Physics**
+- Slug: 3-cascade-of-complexity
+- URL: https://papers.qnfo.org/papers/3-cascade-of-complexity/
+- Abstract: 
+
+## **The Simplicity of Reality: Deconstructing the Mathematical Epicycles of Modern Physics**
+- Slug: 4-foundational-postulates
+- URL: https://papers.qnfo.org/papers/4-foundational-postulates/
+- Abstract: 
+
+## Helical Wave Theory
+- Slug: 5-wave-theory
+- URL: https://papers.qnfo.org/papers/5-wave-theory/
+- Abstract: 
+
+## **The Simplicity of Reality: Deconstructing the Mathematical Epicycles of Modern Physics**
+- Slug: 6-quantum-effects
+- URL: https://papers.qnfo.org/papers/6-quantum-effects/
+- Abstract: 
+
+## **The Simplicity of Reality: Deconstructing the Mathematical Epicycles of Modern Physics**
+- Slug: 7-confronting-past-failures
+- URL: https://papers.qnfo.org/papers/7-confronting-past-failures/
+- Abstract: 
+
+## **The Simplicity of Reality: Deconstructing the Mathematical Epicycles of Modern Physics**
+- Slug: 8-distinguishing-hypotheses
+- URL: https://papers.qnfo.org/papers/8-distinguishing-hypotheses/
+- Abstract: 
+
+## **The Simplicity of Reality: Deconstructing the Mathematical Epicycles of Modern Physics**
+- Slug: 9-restoring-physicality
+- URL: https://papers.qnfo.org/papers/9-restoring-physicality/
+- Abstract: 
+
+## Glossary
+- Slug: glossary
+- URL: https://papers.qnfo.org/papers/glossary/
+- Abstract: 
+
+## **The Simplicity of Reality: Deconstructing the Mathematical Epicycles of Modern Physics**
+- Slug: outline
+- URL: https://papers.qnfo.org/papers/outline/
+- Abstract: 
+
+## _Simplicity of Reality
+- Slug: simplicity-of-reality
+- URL: https://papers.qnfo.org/papers/simplicity-of-reality/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 1-from-self-to-society
+- DOI: 10.5281/zenodo.15580769
+- URL: https://papers.qnfo.org/papers/1-from-self-to-society/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 10-meaning-in-motion
+- URL: https://papers.qnfo.org/papers/10-meaning-in-motion/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 11-perceiving-through-the-loop
+- URL: https://papers.qnfo.org/papers/11-perceiving-through-the-loop/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 12-the-feeling-of-reality
+- URL: https://papers.qnfo.org/papers/12-the-feeling-of-reality/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 13-ritual-and-confirmation
+- URL: https://papers.qnfo.org/papers/13-ritual-and-confirmation/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 14-institutional-power-and-enforcement
+- URL: https://papers.qnfo.org/papers/14-institutional-power-and-enforcement/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 15-derivative-abstractions
+- URL: https://papers.qnfo.org/papers/15-derivative-abstractions/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 16-loop-evolution-and-contestation
+- URL: https://papers.qnfo.org/papers/16-loop-evolution-and-contestation/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 2-symbolic-prerequisites
+- URL: https://papers.qnfo.org/papers/2-symbolic-prerequisites/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 3-thinking-in-symbols
+- URL: https://papers.qnfo.org/papers/3-thinking-in-symbols/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 4-systematizing-symbols
+- URL: https://papers.qnfo.org/papers/4-systematizing-symbols/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 5-beyond-words
+- URL: https://papers.qnfo.org/papers/5-beyond-words/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 6-architecture-introduced
+- URL: https://papers.qnfo.org/papers/6-architecture-introduced/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 7-narrative-engines
+- URL: https://papers.qnfo.org/papers/7-narrative-engines/
+- Abstract: 
+
+## Strange Loop of Being
+- Slug: 8-unspoken-contracts
+- URL: https://papers.qnfo.org/papers/8-unspoken-contracts/
+- Abstract: 
+
+## Emergent Reality
+- Slug: 9-declaring-reality
+- URL: https://papers.qnfo.org/papers/9-declaring-reality/
+- Abstract: 
+
+## Strange Loop Formal Derivation
+- Slug: strange-loop-of-being
+- URL: https://papers.qnfo.org/papers/strange-loop-of-being/
+- Abstract: 
+
+## Working Bibliography: Strange Loop of Being (v1.0)
+- Slug: biblio-slobworkingv10
+- URL: https://papers.qnfo.org/papers/biblio-slobworkingv10/
+- Abstract: 
+
+## --- Cycle Metadata cycle_id: "CAFE_SLOB_P1_C01" # Project(SLOB)_Phase(1)_Cycle(01)
+- Slug: cafeslobp1c01
+- URL: https://papers.qnfo.org/papers/cafeslobp1c01/
+- Abstract: 
+
+## --- VS Assessment Cycle Metadata vs_assessment_cycle_id: "CAFE_SLOB_P1_VSAC01" # Project_Phase_VSAssessmentCycle#
+- Slug: cafeslobp1vsac01
+- URL: https://papers.qnfo.org/papers/cafeslobp1vsac01/
+- Abstract: 
+
+## Final Project / Phase Report: Strange Loop of Being - Initial Drafting Phase
+- Slug: close-slobphase1drafting-v10
+- URL: https://papers.qnfo.org/papers/close-slobphase1drafting-v10/
+- Abstract: 
+
+## METADATA
+- Slug: initiate-project-v16
+- URL: https://papers.qnfo.org/papers/initiate-project-v16/
+- Abstract: 
+
+## Conversation Log - Protocol V8.2
+- Slug: log20240505010101strangeloopbook
+- URL: https://papers.qnfo.org/papers/log20240505010101strangeloopbook/
+- Abstract: 
+
+## Book Outline: Strange Loop of Being (v10.0)
+- Slug: outline-slobv100
+- URL: https://papers.qnfo.org/papers/outline-slobv100/
+- Abstract: 
+
+## 00_Master_Plan
+- Slug: plan-projectexecution-v15
+- URL: https://papers.qnfo.org/papers/plan-projectexecution-v15/
+- Abstract: 
+
+## _assets
+- Slug: assets
+- URL: https://papers.qnfo.org/papers/assets/
+- Abstract: 
+
+## Part I: Observing Ignorance
+- Slug: chapter-1
+- URL: https://papers.qnfo.org/papers/chapter-1/
+- Abstract: 
+
+## Part IV: Concluding Thoughts
+- Slug: chapter-10
+- URL: https://papers.qnfo.org/papers/chapter-10/
+- Abstract: 
+
+## 2. The Shaping of Unawareness
+- Slug: chapter-2
+- URL: https://papers.qnfo.org/papers/chapter-2/
+- Abstract: 
+
+## 3. The Consequences of Information States
+- Slug: chapter-3
+- URL: https://papers.qnfo.org/papers/chapter-3/
+- Abstract: 
+
+## Part II: Historical Perspectives on Information States
+- Slug: chapter-4
+- URL: https://papers.qnfo.org/papers/chapter-4/
+- Abstract: 
+
+## II-5 Enduring Heresy
+- Slug: ii-5-enduring-heresy
+- DOI: 10.5281/zenodo.21016907
+- URL: https://papers.qnfo.org/papers/ii-5-enduring-heresy/
+- Abstract: 
+
+## III-10 Ethical Imperative
+- Slug: iii-10-ethical-imperative
+- DOI: 10.5281/zenodo.21017142
+- URL: https://papers.qnfo.org/papers/iii-10-ethical-imperative/
+- Abstract: 
+
+## III-7 New Enlightenment
+- Slug: iii-7-new-enlightenment
+- DOI: 10.5281/zenodo.21017168
+- URL: https://papers.qnfo.org/papers/iii-7-new-enlightenment/
+- Abstract: 
+
+## III-9 Computational Universe
+- Slug: iii-9-computational-universe
+- DOI: 10.5281/zenodo.21016851
+- URL: https://papers.qnfo.org/papers/iii-9-computational-universe/
+- Abstract: 
+
+## _Matter without Mass
+- Slug: matter-without-mass
+- URL: https://papers.qnfo.org/papers/matter-without-mass/
+- Abstract: 
+
+## Modern Physics Metrology]]
+- Slug: 1-1-introduction
+- DOI: 10.5281/zenodo.21017018
+- URL: https://papers.qnfo.org/papers/1-1-introduction/
+- Abstract: 
+
+## COUNTING CYCLES
+- Slug: 1-2-counting-fingers
+- URL: https://papers.qnfo.org/papers/1-2-counting-fingers/
+- Abstract: 
+
+## Modern Physics Metrology]]
+- Slug: 1-3-number-constructs
+- URL: https://papers.qnfo.org/papers/1-3-number-constructs/
+- Abstract: 
+
+## Modern Physics Metrology]]
+- Slug: 1-4-linearity
+- URL: https://papers.qnfo.org/papers/1-4-linearity/
+- Abstract: 
+
+## Modern Physics Metrology]]
+- Slug: 1-5-natural-constants
+- URL: https://papers.qnfo.org/papers/1-5-natural-constants/
+- Abstract: 
+
+## IRREDUCIBLE RATIOS
+- Slug: 1-6-ratios
+- URL: https://papers.qnfo.org/papers/1-6-ratios/
+- Abstract: 
+
+## Modern Physics Metrology]]
+- Slug: 2-7-standard-units
+- URL: https://papers.qnfo.org/papers/2-7-standard-units/
+- Abstract: 
+
+## 2-8 Consequences
+- Slug: 2-8-consequences
+- DOI: 10.5281/zenodo.21017128
+- URL: https://papers.qnfo.org/papers/2-8-consequences/
+- Abstract: 
+
+## Modern Physics Metrology]]
+- Slug: 3-10-synthesis
+- URL: https://papers.qnfo.org/papers/3-10-synthesis/
+- Abstract: 
+
+## Geometric Universe
+- Slug: 3-9-dark-universe
+- URL: https://papers.qnfo.org/papers/3-9-dark-universe/
+- Abstract: 
+
+## Emergence
+- Slug: 12-emergence-of-spacetime
+- URL: https://papers.qnfo.org/papers/12-emergence-of-spacetime/
+- Abstract: 
+
+## Instrumental Veil
+- Slug: 3-instrumental-veil
+- URL: https://papers.qnfo.org/papers/3-instrumental-veil/
+- Abstract: 
+
+## Imprint of Mind
+- Slug: 4-imprint-of-mind
+- URL: https://papers.qnfo.org/papers/4-imprint-of-mind/
+- Abstract: 
+
+## Contours of Ignorance
+- Slug: 5-contours-of-ignorance
+- DOI: 10.5281/zenodo.21192634
+- URL: https://papers.qnfo.org/papers/5-contours-of-ignorance/
+- Abstract: 
+
+## Autaxys Defined
+- Slug: 7-autaxys-defined
+- URL: https://papers.qnfo.org/papers/7-autaxys-defined/
+- Abstract: 
+
+## The Generative Engine
+- Slug: 8-the-generative-engine
+- URL: https://papers.qnfo.org/papers/8-the-generative-engine/
+- Abstract: 
+
+## Information Censorship
+- Slug: 9-information-re-founded
+- URL: https://papers.qnfo.org/papers/9-information-re-founded/
+- Abstract: 
+
+## Philosophy of Science
+- Slug: 1-why-does-physics-need-philosophy
+- URL: https://papers.qnfo.org/papers/1-why-does-physics-need-philosophy/
+- Abstract: 
+
+## Philosophy of Science
+- Slug: 10-who-is-following-the-path
+- URL: https://papers.qnfo.org/papers/10-who-is-following-the-path/
+- Abstract: 
+
+## Philosophy of Science
+- Slug: 11-what-can-we-know
+- URL: https://papers.qnfo.org/papers/11-what-can-we-know/
+- Abstract: 
+
+## Philosophy of Science
+- Slug: 12-where-do-we-stand
+- URL: https://papers.qnfo.org/papers/12-where-do-we-stand/
+- Abstract: 
+
+## Philosophy of Science
+- Slug: 13-the-path-forward
+- URL: https://papers.qnfo.org/papers/13-the-path-forward/
+- Abstract: 
+
+## Philosophy of Science
+- Slug: 2-how-do-we-define-reality
+- URL: https://papers.qnfo.org/papers/2-how-do-we-define-reality/
+- Abstract: 
+
+## What is Zitterbewegung
+- Slug: 3-what-is-real
+- URL: https://papers.qnfo.org/papers/3-what-is-real/
+- Abstract: 
+
+## Philosophy of Science
+- Slug: 4-what-is-the-world-made-of
+- URL: https://papers.qnfo.org/papers/4-what-is-the-world-made-of/
+- Abstract: 
+
+## What is Time
+- Slug: 5-what-is-time
+- URL: https://papers.qnfo.org/papers/5-what-is-time/
+- Abstract: 
+
+## Philosophy of Science
+- Slug: 6-does-chance-rule-the-cosmos
+- URL: https://papers.qnfo.org/papers/6-does-chance-rule-the-cosmos/
+- Abstract: 
+
+## Philosophy of Science
+- Slug: 7-what-is-realitys-architecture
+- URL: https://papers.qnfo.org/papers/7-what-is-realitys-architecture/
+- Abstract: 
+
+## Trapped-Ion Page-Wootters Experiment: Protocol for Testing Ultrametricity
+- Slug: trapped-ion-page-wootters-experiment-protocol-for-testing-ultrametricity
+- DOI: https://doi.org/10.5281/zenodo.21120469
+- URL: https://papers.qnfo.org/papers/trapped-ion-page-wootters-experiment-protocol-for-testing-ultrametricity/
+- Abstract: We propose a trapped-ion experiment to test the Sufficient Condition Theorem: that diagonal clock-rest coupling produces exact ultrametric conditional state overlaps (UVR = 0%), while nondiagonal coupling produces a universal ~32% violation rate. All required capabilities are established with current trapped-ion technology. Estimated timeline: 8 weeks on an existing apparatus.  ---  *Published under QNFO-ULA. [legal.qnfo.org](https://legal.qnfo.org/)*
+
+## LoF NUMBER BUILDER — Interactive Specification v1.0
+- Slug: lof-number-builder-interactive-specification-v10
+- URL: https://papers.qnfo.org/papers/lof-number-builder-interactive-specification-v10/
+- Abstract: ## 1. Concept  The LoF Number Builder is an interactive web tool that allows users to construct numbers by drawing distinctions (marking spaces), choose a base (grouping of distinctions), and visualize the resulting numeral as a tree, a positional string, and an ultrametric space. It demonstrates that base, metric, and scale are visible parameters of the distinction process — not invisible add-ons.  ---  ## 2. Core Interaction Model  ### 2.1 The Primitive Act: Drawing a Distinction  The user enc
+
+## FORMAL APPENDIX: Mathematical Foundations of the Silent Radix
+- Slug: formal-appendix-mathematical-foundations-of-the-silent-radix
+- URL: https://papers.qnfo.org/papers/formal-appendix-mathematical-foundations-of-the-silent-radix/
+- Abstract: ## A.1 Positional Notation as a Rooted Tree  **Definition A.1 (Positional Tree).** Let $b \geq 2$ be an integer (the base or radix). The positional tree $\mathcal{T}_b$ is the infinite rooted tree where:  - The root is the empty string $\varepsilon$, representing zero. - Each node at depth $k$ has exactly $b$ children, labeled $0, 1, \dots, b-1$ (the digits). - A node is identified by the string of edge labels from the root to that node. - The integer represented by a node with label $d_k d_{k-1
+
+## EXPLICIT FRAME PATTERN LANGUAGE v1.0
+- Slug: explicit-frame-pattern-language-v10
+- URL: https://papers.qnfo.org/papers/explicit-frame-pattern-language-v10/
+- Abstract: ## Core Principle  > *No naked numbers. Every quantitative representation shall carry the interpretive frame needed to disambiguate its meaning — radix, metric, unit, scale type, and cyclic grounding.*  ---  ## The Nine Patterns  ### Pattern 1: RADIX TAG  **Problem:** A numeral string like `10` has no intrinsic radix. It means ten in decimal, two in binary, eight in octal, sixteen in hex.  **Solution:** Every positional numeral shall carry a radix tag as an inseparable part of its representation
+
+## CONSEQUENCE ATLAS: The Silent Frame Error Catalog v1.0
+- Slug: consequence-atlas-the-silent-frame-error-catalog-v10
+- URL: https://papers.qnfo.org/papers/consequence-atlas-the-silent-frame-error-catalog-v10/
+- Abstract: ## Taxonomy of Silent Frames  Every failure in this atlas is caused by one or more hidden interpretive parameters on a quantitative representation:  | Frame Type | What Is Hidden | Example Failure | |:-----------|:---------------|:----------------| | **Silent Radix** | The base (binary, octal, decimal, hex) | `010` parsed as 8 instead of 10 | | **Silent Metric** | The distance function (Euclidean, ultrametric, log) | Likert means computed on ordinal data | | **Silent Unit** | The physical unit |
+
+## CROSS-REFERENCE INDEX: Atlas Entries → Paper Claims
+- Slug: cross-reference-index-atlas-entries-paper-claims
+- URL: https://papers.qnfo.org/papers/cross-reference-index-atlas-entries-paper-claims/
+- Abstract: ## Purpose  This index maps every documented failure in the Consequence Atlas (65 entries across atlas + supplement) to the specific claims in the Synthesis Paper, providing bidirectional traceability between empirical evidence and theoretical argument.  ---  ## Paper Claim → Atlas Evidence  | Paper Claim (Section) | Atlas Entries Supporting | Evidence Type | |:----------------------|:-------------------------|:--------------| | **§2.1 "The silent radix causes measurable, catastrophic errors acr
+
+## CONSEQUENCE ATLAS SUPPLEMENT: 15 Additional Entries
+- Slug: consequence-atlas-supplement-15-additional-entries
+- URL: https://papers.qnfo.org/papers/consequence-atlas-supplement-15-additional-entries/
+- Abstract: ## Section F: Additional Scientific and Statistical (Entries 51–58)  ### F-1: The $p$-value Dichotomization — 0.05 as Magic Threshold  | Field | Detail | |:------|:-------| | **Frame Violated** | Silent Scale Type (variant: silent threshold) | | **Domain** | All empirical sciences | | **Symptom** | Results with $p = 0.049$ are treated as "significant" while $p = 0.051$ is "non-significant." The threshold 0.05 is a silent, arbitrary convention treated as an ontological boundary. | | **Root Cause*
+
+## CONSEQUENCE ATLAS EXPANSION v2.0: Entries 66-205
+- Slug: consequence-atlas-expansion-v20-entries-66-205
+- URL: https://papers.qnfo.org/papers/consequence-atlas-expansion-v20-entries-66-205/
+- Abstract: ## Section G: Cryptography, Authentication & Security (Entries 66-75)  ### G-1: Base64 Encoding Ambiguity — Padding as Silent Radix  | Field | Detail | |:------|:-------| | **Frame Violated** | Silent Radix (variant: silent encoding parameter) | | **Domain** | Cryptography, data transmission | | **Symptom** | Base64 strings lose their padding (`=`) during URL transmission, causing decode failures. The padding character `=` is a silent structural parameter — its presence or absence changes the de
+
+## Silent Radix
+- Slug: silent-radix
+- URL: https://papers.qnfo.org/papers/silent-radix/
+- Abstract: 
+
+## Radix to Ultrametrics to Page-Wootters to Wheeler-DeWitt to Bruhat-Tits: A Convergent Synthesis
+- Slug: radix-to-ultrametrics-to-page-wootters-to-wheeler-dewitt-to-bruhat-tits-a-convergent-synthesis
+- DOI: https://doi.org/10.5281/zenodo.21102764
+- URL: https://papers.qnfo.org/papers/radix-to-ultrametrics-to-page-wootters-to-wheeler-dewitt-to-bruhat-tits-a-convergent-synthesis/
+- Abstract: Convergent synthesis bridging discrete p-adic ultrametrics with continuous quantum geometry via Page-Wootters, Wheeler-DeWitt, and Bruhat-Tits buildings.  ---  *Published under QNFO-ULA. [legal.qnfo.org](https://legal.qnfo.org/)*
+
+## The Silent Radix: Positional Notation as Ultrametric Tree and the Calculus of Indications as Remedy
+- Slug: the-silent-radix-positional-notation-as-ultrametric-tree-and-the-calculus-of-indications-as-remedy
+- URL: https://papers.qnfo.org/papers/the-silent-radix-positional-notation-as-ultrametric-tree-and-the-calculus-of-indications-as-remedy/
+- Abstract: Positional notation is not merely a convention for writing numbers - it is an ultrametric tree whose place-value columns encode a hierarchical distance function. The base (radix) is the structural parameter that determines the tree topology, yet in everyday practice it goes unstated and unexamined: a silent radix.  ---  *Published under QNFO-ULA. [legal.qnfo.org](https://legal.qnfo.org/)*
+
+## Conditional State Distances in Page-Wootters Quantum Clocks: When Does Ultrametricity Emerge?
+- Slug: conditional-state-distances-in-page-wootters-quantum-clocks-when-does-ultrametricity-emerge
+- DOI: https://doi.org/10.5281/zenodo.21120286
+- URL: https://papers.qnfo.org/papers/conditional-state-distances-in-page-wootters-quantum-clocks-when-does-ultrametricity-emerge/
+- Abstract: The Page-Wootters formalism resolves the problem of time in quantum gravity by conditioning a globally static Wheeler-DeWitt state on clock readings, producing an emergent notion of evolution. We investigate the mathematical structure of distances between these conditional states and ask: under what conditions do they organize into an ultrametric hierarchy.  ---  *Published under QNFO-ULA. [legal.qnfo.org](https://legal.qnfo.org/)*
+
+## Number-Theoretic Ultrametric Foundations: A Unified p-adic Framework for Error-Correcting Code Classification
+- Slug: number-theoretic-ultrametric-foundations
+- DOI: 10.5281/zenodo.21193487
+- URL: https://papers.qnfo.org/papers/number-theoretic-ultrametric-foundations/
+- Abstract: A unified framework connecting p-adic valuation theory, Mahler spectral expansions, Kodaira-Neron fiber classification, and the Amice transform to the classification of quantum error-correcting codes. Three conjectures with 14 lemmas, computational verification across 4 code families at 83% classification rate.
+
+## THE SILENT RADIX: Positional Notation as Ultrametric Tree and the Calculus of Indications as Remedy
+- Slug: the-silent-radix
+- DOI: 10.5281/zenodo.21148596
+- URL: https://papers.qnfo.org/papers/the-silent-radix/
+- Abstract: Positional notation is not merely a convention for writing numbers - it is an ultrametric tree whose place-value columns encode a hierarchical distance function. The base (radix) is the structural parameter that determines the tree topology, yet in everyday practice it goes unstated and unexamined: a silent radix.
+
+## ultrametric_v2
+- Slug: trapped-ions-ultrametric
+- DOI: 10.5281/zenodo.21120469
+- URL: https://papers.qnfo.org/papers/trapped-ions-ultrametric/
+- Abstract: We propose a trapped-ion experiment to test the Sufficient Condition Theorem: that diagonal clock-rest coupling produces exact ultrametric conditional state overlaps (UVR = 0%), while nondiagonal coupling produces a universal ~32% violation rate. All required capabilities are established with current trapped-ion technology. Estimated timeline: 8 weeks on an existing apparatus.
+
+## The Bridge Theorem: A Rigorous Mathematical Framework Connecting p-adic and Bruhat-Tits Geometries
+- Slug: bridge-theorem
+- DOI: 10.5281/zenodo.21102770
+- URL: https://papers.qnfo.org/papers/bridge-theorem/
+- Abstract: A rigorous mathematical framework establishing bridge connections between p-adic ultrametric spaces and Bruhat-Tits buildings.
+
+## Conditional State Distances in Page-Wootters Quantum Clocks: When Does Ultrametricity Emerge?
+- Slug: conditional-state-distances-pw-clocks
+- DOI: 10.5281/zenodo.21120286
+- URL: https://papers.qnfo.org/papers/conditional-state-distances-pw-clocks/
+- Abstract: The Page-Wootters formalism resolves the problem of time in quantum gravity by conditioning a globally static Wheeler-DeWitt state on clock readings, producing an emergent notion of evolution. We investigate the mathematical structure of distances between these conditional states and ask: under what conditions do they organize into an ultrametric hierarchy.
+
+## Radix to Ultrametrics to Page-Wootters to Wheeler-DeWitt to Bruhat-Tits: A Convergent Synthesis
+- Slug: radix-to-ultrametrics-to-page-wootters-to-wheeler-dewitt-to
+- DOI: 10.5281/zenodo.21102764
+- URL: https://papers.qnfo.org/papers/radix-to-ultrametrics-to-page-wootters-to-wheeler-dewitt-to/
+- Abstract: Convergent synthesis bridging discrete p-adic ultrametrics with continuous quantum geometry via Page-Wootters, Wheeler-DeWitt, and Bruhat-Tits buildings.
+
+## Cyclic Measurement and Silent Radix: Ultrametric Foundations for Quantum State Tomography
+- Slug: cyclic-measurement-and-silent-radix-ultrametric-foundations-for-quantum-state-to
+- DOI: 10.5281/zenodo.21090642
+- URL: https://papers.qnfo.org/papers/cyclic-measurement-and-silent-radix-ultrametric-foundations-for-quantum-state-to/
+- Abstract: This paper synthesizes the cyclic measurement formalism with the silent radix concept, establishing ultrametric foundations for quantum state tomography. The silent radix — the property that a positional numeral cannot internally specify its own base — is formalized as a valuation-theoretic primitive. When combined with cyclic measurement protocols, this yields a robust framework for quantum state reconstruction with provable error bounds grounded in p-adic analysis. The paper presents rigorous 
+
+## Qudit Quantum Error Correction
+- Slug: ultrametric-quantum
+- DOI: 10.5281/zenodo.21046993
+- URL: https://papers.qnfo.org/papers/ultrametric-quantum/
+- Abstract: Extends the Ultrametric Foundation thesis into quantum computing. Formalizes geometric error confinement on tree-topology quantum processors.
+
+## Silent-Radix Cryptography: Exploiting the Base Ambiguity of Positional Notation as a Cryptographic Primitive
+- Slug: silent-radix-synthesis
+- DOI: 10.5281/zenodo.21046734
+- URL: https://papers.qnfo.org/papers/silent-radix-synthesis/
+- Abstract: The silent radix — a positional numeral cannot internally specify its own base — is a cryptographic primitive. Silent Radix Encryption (SRE) uses a secret base b as a trapdoor for key encapsulation. Security reduces to an unknown-weight integer knapsack problem.
+
+## Ultrametric Quantum Computation and the Langlands Program v2
+- Slug: the-ultrametric-foundation-a-unified-thesis-on-number-time-knowledge-and-computa
+- DOI: 10.5281/zenodo.21046214
+- URL: https://papers.qnfo.org/papers/the-ultrametric-foundation-a-unified-thesis-on-number-time-knowledge-and-computa/
+- Abstract: Positional notation is inherently an ultrametric tree of nested cycles. The Archimedean line is a derived abstraction. Recovering the native ultrametric resolves cascading errors across mathematics, physics, epistemology, education, quantum computing, and interface design.
+
+## Nonlinear Tree-Based Numeration Systems: A Consolidated Synthesis
+- Slug: nonlinear-tree-based-numeration-systems-a-consolidated-synthesis
+- DOI: 10.5281/zenodo.21046213
+- URL: https://papers.qnfo.org/papers/nonlinear-tree-based-numeration-systems-a-consolidated-synthesis/
+- Abstract: Positional notation is natively an ultrametric tree. This synthesis covers 5 research threads with extensions into quantum computing and interface design. DOI: 10.5281/zenodo.21046213. Zenodo: https://zenodo.org/records/21046213. Published: https://deep.qwav.tech/papers/tree-based-numeration-synthesis/
+
+## Critical Examination of Spacetime, Mass, and Gravity through Competing Ontological Frameworks
+- Slug: critical-examination-of-spacetime-mass-and-gravity-through-competing-ontological
+- DOI: 10.5281/zenodo.16732365
+- URL: https://papers.qnfo.org/papers/critical-examination-of-spacetime-mass-and-gravity-through-competing-ontological/
+- Abstract: 
+
+## Critical Examination of the Null Hypotheses in Fundamental Physics
+- Slug: critical-examination-of-the-null-hypotheses-in-fundamental-physics
+- DOI: 10.5281/zenodo.16731979
+- URL: https://papers.qnfo.org/papers/critical-examination-of-the-null-hypotheses-in-fundamental-physics/
+- Abstract: 
+
+## Formal Framework for a Non-Local Frequency-Based Reality
+- Slug: formal-framework-for-a-non-local-frequency-based-reality
+- DOI: 10.5281/zenodo.16731814
+- URL: https://papers.qnfo.org/papers/formal-framework-for-a-non-local-frequency-based-reality/
+- Abstract: 
+
+## Imperfectly Defining Reality
+- Slug: imperfectly-defining-reality-1
+- DOI: 10.5281/zenodo.15708823
+- URL: https://papers.qnfo.org/papers/imperfectly-defining-reality-1/
+- Abstract: 
+
+## Geometric Unification Framework
+- Slug: geometric-unification-framework
+- DOI: 10.5281/zenodo.17074726
+- URL: https://papers.qnfo.org/papers/geometric-unification-framework/
+- Abstract: 
+
+## Meta-Analysis of Categorical Equivalence and Scale Invariance
+- Slug: meta-analysis-of-categorical-equivalence-and-scale-invariance
+- DOI: 10.5281/zenodo.17120550
+- URL: https://papers.qnfo.org/papers/meta-analysis-of-categorical-equivalence-and-scale-invariance/
+- Abstract: 
+
+## 11 Ethical Considerations
+- Slug: 11-ethical-considerations
+- DOI: 10.5281/zenodo.21017110
+- URL: https://papers.qnfo.org/papers/11-ethical-considerations/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+license: By accessing this content, you agree to the terms at https://qnfo.org/LICENSE
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+author: Rowan Brad Quni
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: QNFO, AI, quantum, informational universe, IUH, holographic pri
+
+## Hilbert Godel
+- Slug: hilbert-godel
+- DOI: 10.5281/zenodo.21017098
+- URL: https://papers.qnfo.org/papers/hilbert-godel/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+LinkedIn: https://www.linkedin.com/in/rowan-quni-868006341
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: QNFO, AI, ArtificialIntelligence, artificial intelligence, quantum, physics, science, Einst
+
+## 11 Particle as Autaxic Process
+- Slug: 11-particle-as-autaxic-process
+- DOI: 10.5281/zenodo.21017086
+- URL: https://papers.qnfo.org/papers/11-particle-as-autaxic-process/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 11 Particle as Autaxic Process
+aliases:
+  - 11 Particle as Autaxic Process
+modified: 2025-05-26T04:24:11Z
+---
+
+***[A New Way of Seeing](_New%20Way%20of%20Seeing.md)***
+
+## 10 Philosophical Foundations
+- Slug: 10-philosophical-foundations
+- DOI: 10.5281/zenodo.21017064
+- URL: https://papers.qnfo.org/papers/10-philosophical-foundations/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+license: By accessing this content, you agree to the terms at https://qnfo.org/LICENSE
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+author: Rowan Brad Quni
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: QNFO, AI, quantum, informational universe, IUH, holographic pri
+
+## 19 Future Directions
+- Slug: 19-future-directions
+- DOI: 10.5281/zenodo.21017060
+- URL: https://papers.qnfo.org/papers/19-future-directions/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-28T00:06:50Z
+modified: 2025-05-09T03:21:55Z
+title: 19 Future Directions
+aliases: [Contemplative Science and the Nature of Reality, Contempl
+
+## C Pi-Phi Exponents
+- Slug: c-pi-phi-exponents
+- DOI: 10.5281/zenodo.21017054
+- URL: https://papers.qnfo.org/papers/c-pi-phi-exponents/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-13T20:02:04Z
+modified: 2025-05-09T03:21:51Z
+title: C Pi-Phi Exponents
+aliases: [C Pi-Phi Exponents]
+---
+
+**Appendix C: Theoretical Implicat
+
+## 18 Autaxic Synthesis
+- Slug: 18-autaxic-synthesis
+- DOI: 10.5281/zenodo.21017048
+- URL: https://papers.qnfo.org/papers/18-autaxic-synthesis/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 18 Autaxic Synthesis
+aliases:
+  - 18 Autaxic Synthesis
+  - 18 The Autaxic Synthesis)
+modified: 2025-05-27T05:25:10Z
+---
+
+***[A New Way of Seeing](_New%20Way%20of%20See
+
+## Holographic cosmological constant
+- Slug: cosmological-constant-crisis
+- DOI: 10.5281/zenodo.21017038
+- URL: https://papers.qnfo.org/papers/cosmological-constant-crisis/
+- Abstract: ---
+license: By accessing this content, you agree to the terms at https://qnfo.org/LICENSE
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+author: Rowan Brad Quni
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: AI, holographic principle, informational universe, IUH, QNFO, quantum
+created: 2025-02-28T02:02:50Z
+modified: 2025-03-08T09:40:35Z
+aliases: ["**The Cosmological Constant Crisis and Its Impact on Modern Science**"]
+linter-yaml-title-alias: "**The Cosmological Constant Crisis and Its
+
+## Einstein was Wrong
+- Slug: einstein-was-wrong
+- DOI: 10.5281/zenodo.21017034
+- URL: https://papers.qnfo.org/papers/einstein-was-wrong/
+- Abstract: ---
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+license: By accessing this content, you agree to the terms at https://qnfo.org/LICENSE
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+author: Rowan Brad Quni
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: AI, holographic principle, informational universe, IUH, QNFO, quantum
+created: 2024-11
+
+## 13 Mass Energy Equivalence
+- Slug: 13-mass-energy-equivalence
+- DOI: 10.5281/zenodo.21017024
+- URL: https://papers.qnfo.org/papers/13-mass-energy-equivalence/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 13 Mass Energy Equivalence
+aliases:
+  - 13 Mass Energy Equivalence
+modified: 2025-05-26T04:31:59Z
+---
+
+***[A New Way of Seeing](_New%20Way%20of%20Seeing.md)***
+
+## Cha
+
+## RESONANCE BETTER MOUSETRAP
+- Slug: g-resonance
+- DOI: 10.5281/zenodo.21017022
+- URL: https://papers.qnfo.org/papers/g-resonance/
+- Abstract: ---
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ISNI: 0000000526456062
+ORCID: 0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+# ... (rest of metadata) ...
+title: G Resonance
+aliases: [releases/2025/Infomatics, Infomatics Phase 3, NM Table Derivation, Pi Phi Stability Rules, Lucas Primality Investiga
+
+## Modern Physics Metrology
+- Slug: modern-physics-metrology
+- DOI: 10.5281/zenodo.21017018
+- URL: https://papers.qnfo.org/papers/modern-physics-metrology/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ISNI: 0000000526456062
+ORCID: 0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: Modern Physics Metrology
+aliases: [Modern Physics Metrology]
+created: 2025-04-12T09:59:30Z
+modified: 2025-05-09T03:21:52Z
+---
+
+%% Zoottelkeeper: Beginning of the autog
+
+## 14 Cosmological Frameworks
+- Slug: 14-cosmological-frameworks
+- DOI: 10.5281/zenodo.21017014
+- URL: https://papers.qnfo.org/papers/14-cosmological-frameworks/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-27T12:43:55Z
+modified: 2025-05-09T03:21:55Z
+title: 14 Cosmological Frameworks
+aliases: [Contemplative Science and the Nature of Reality, Co
+
+## A Amplitude
+- Slug: a-amplitude
+- DOI: 10.5281/zenodo.21016999
+- URL: https://papers.qnfo.org/papers/a-amplitude/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: A Amplitude
+aliases: [releases/2025/Infomatics, Infomatics, Infomatics Interaction Derivation, Geometric Amplitude F, Alpha Elimination Details] # Al
+
+## Orchestrating the Quantum Future
+- Slug: orchestrating-the-quantum-future
+- DOI: 10.5281/zenodo.21016993
+- URL: https://papers.qnfo.org/papers/orchestrating-the-quantum-future/
+- Abstract: ---
+license: By accessing this content, you agree to the terms at https://qnfo.org/LICENSE
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+LinkedIn: https://www.linkedin.com/in/rowan-quni-868006341
+author: Rowan Brad Quni
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: AI, holographic principle, informational universe, IUH, QNFO, quantum
+created: 2025-01-29T01:27:34Z
+modified: 2025-03-08T09:40:32Z
+aliases: ["**Orchestrating The Quantum Future of Computing: A Bio-Inspired Revolution**"]
+li
+
+## C.8 Edges InfoSci
+- Slug: c8-edges-infosci
+- DOI: 10.5281/zenodo.21016987
+- URL: https://papers.qnfo.org/papers/c8-edges-infosci/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-10T03:08:58Z
+modified: 2025-05-09T03:21:33Z
+title: C.8 Edges InfoSci
+aliases: [C.8 Edges InfoSci, C Edges]
+---
+
+**Appendix C: Detailed Grap
+
+## Autaxys and its Generative Engin
+- Slug: autaxys-and-its-generative-engin
+- DOI: 10.5281/zenodo.21016983
+- URL: https://papers.qnfo.org/papers/autaxys-and-its-generative-engin/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: Autaxys and its Generative Engin
+aliases:
+  - Autaxys and its Generative Engine
+modified: 2025-05-27T15:25:04Z
+---
+
+**Autaxys and its Generative Engine: Foundations fo
+
+## Comparing Fundamental Frameworks
+- Slug: comparing-fundamental-frameworks
+- DOI: 10.5281/zenodo.21016981
+- URL: https://papers.qnfo.org/papers/comparing-fundamental-frameworks/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+LinkedIn: https://www.linkedin.com/in/rowan-quni-868006341
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: QNFO, AI, ArtificialIntelligence, artificial intelligence, quantum, physics, science, Einst
+
+## "id": "obsidian-8960274bb3e7",
+- Slug: 5i
+- DOI: 10.5281/zenodo.21016544
+- URL: https://papers.qnfo.org/papers/5i/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+LinkedIn: https://www.linkedin.com/in/rowan-quni-868006341
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: QNFO, AI, ArtificialIntelligence, artificial intelligence, quantum, physics, science, Einst
+
+## E Glossary
+- Slug: e-glossary
+- DOI: 10.5281/zenodo.21016967
+- URL: https://papers.qnfo.org/papers/e-glossary/
+- Abstract: ---
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ISNI: 0000000526456062
+ORCID: 0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+# ... (rest of metadata) ...
+title: E Glossary
+aliases: [releases/2025/Infomatics, Infomatics Glossary, Infomatics Definitions]
+created: 2025-04-13T19:15:00Z
+modified: 2025-0
+
+## C.1 Edges CM
+- Slug: c1-edges-cm
+- DOI: 10.5281/zenodo.21016965
+- URL: https://papers.qnfo.org/papers/c1-edges-cm/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-10T03:08:58Z
+modified: 2025-05-09T03:21:34Z
+title: C.1 Edges CM
+aliases: [C.1 Edges CM, C.1 CM Edges, C Edges]
+---
+
+**Appendix C: Detailed 
+
+## N=1 Problem
+- Slug: n1-problem
+- DOI: 10.5281/zenodo.21016955
+- URL: https://papers.qnfo.org/papers/n1-problem/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ISNI: 0000000526456062
+ORCID: 0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-28T03:30:27Z
+modified: 2025-05-09T03:21:43Z
+title: N=1 Problem
+aliases: [The N=1 Problem]
+---
+
+# The N=1 Problem
+
+[Rowan Brad Quni](mailto:rowan.quni@qnfo.or
+
+## Implied Discretization
+- Slug: implied-discretization
+- DOI: 10.5281/zenodo.21016953
+- URL: https://papers.qnfo.org/papers/implied-discretization/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ISNI: 0000000526456062
+ORCID: 0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: Implied Discretization
+aliases: [Implied Discretization]
+created: 2025-04-22T04:43:59Z
+modified: 2025-05-25T14:50:56Z
+
+author: Rowan Brad Quni
+
+email: rowan.quni@qnfo.
+
+## Notes
+- Slug: notes
+- DOI: 10.5281/zenodo.21016951
+- URL: https://papers.qnfo.org/papers/notes/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-28T14:21:31Z
+modified: 2025-05-09T03:21:54Z
+title: Notes
+aliases: [Chapter Notes and Further Reading]
+---
+
+# Chapter Notes and Further Read
+
+## Introduction
+- Slug: introduction
+- DOI: 10.5281/zenodo.21016937
+- URL: https://papers.qnfo.org/papers/introduction/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ISNI: 0000000526456062
+ORCID: 0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-15T10:29:08Z
+modified: 2025-05-09T03:21:57Z
+title: Introduction
+aliases: ["The Converging Quest for Reality: A Narrative of Consilience"]
+---
+
+# The Convergi
+
+## 17 Ways of Knowing
+- Slug: 17-ways-of-knowing
+- DOI: 10.5281/zenodo.21016935
+- URL: https://papers.qnfo.org/papers/17-ways-of-knowing/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-28T00:06:30Z
+modified: 2025-05-09T03:21:55Z
+title: 17 Ways of Knowing
+aliases: [Contemplative Science and the Nature of Reality, Contemplat
+
+## Before the Big Bang
+- Slug: before-the-big-bang
+- DOI: 10.5281/zenodo.21016931
+- URL: https://papers.qnfo.org/papers/before-the-big-bang/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+LinkedIn: https://www.linkedin.com/in/rowan-quni-868006341
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: QNFO, AI, ArtificialIntelligence, artificial intelligence, quantum, physics, science, Einst
+
+## Time
+- Slug: 12-conceptions-of-time
+- DOI: 10.5281/zenodo.21016923
+- URL: https://papers.qnfo.org/papers/12-conceptions-of-time/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-27T11:28:02Z
+modified: 2025-05-09T03:21:55Z
+title: 12 Conceptions of Time
+aliases: [Contemplative Science and the Nature of Reality, Contem
+
+## Negative Perceptions AI
+- Slug: negative-perceptions-ai
+- DOI: 10.5281/zenodo.21016921
+- URL: https://papers.qnfo.org/papers/negative-perceptions-ai/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+LinkedIn: https://www.linkedin.com/in/rowan-quni-868006341
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: QNFO, AI, ArtificialIntelligence, artificial intelligence, quantum, physics, science, Einst
+
+## 16 Alchemy of Awareness
+- Slug: 16-alchemy-of-awareness
+- DOI: 10.5281/zenodo.21016903
+- URL: https://papers.qnfo.org/papers/16-alchemy-of-awareness/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-28T00:06:16Z
+modified: 2025-05-09T03:21:55Z
+title: 16 Alchemy of Awareness
+aliases: [Contemplative Science and the Nature of Reality, Conte
+
+## Contemplative Science
+- Slug: contemplative-science
+- DOI: 10.5281/zenodo.21016893
+- URL: https://papers.qnfo.org/papers/contemplative-science/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ISNI: 0000000526456062
+ORCID: 0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: Contemplative Science
+aliases: [Contemplative Science]
+created: 2025-04-26T02:52:06Z
+modified: 2025-05-26T05:02:14Z
+---
+
+%% Zoottelkeeper: Beginning of the autogenerat
+
+## 15 Singularities
+- Slug: 15-singularities
+- DOI: 10.5281/zenodo.21016877
+- URL: https://papers.qnfo.org/papers/15-singularities/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-28T00:06:09Z
+modified: 2025-05-09T03:21:55Z
+title: 15 Singularities
+aliases: [Contemplative Science and the Nature of Reality, Contemplativ
+
+## 15 Autology and the Evolution of Science
+- Slug: 15-autology-and-the-evolution-of-science
+- DOI: 10.5281/zenodo.21016875
+- URL: https://papers.qnfo.org/papers/15-autology-and-the-evolution-of-science/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 15 Autology and the Evolution of Science
+aliases:
+  - 15 Autology and the Evolution of Science
+modified: 2025-05-26T05:40:03Z
+---
+
+***[A New Way of Seeing](_New%20Way%
+
+## 10 Architecture of Order
+- Slug: 10-architecture-of-order
+- DOI: 10.5281/zenodo.21016871
+- URL: https://papers.qnfo.org/papers/10-architecture-of-order/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 10 Architecture of Order
+aliases:
+  - 10 Architecture of Order
+modified: 2025-05-26T04:21:14Z
+---
+
+***[A New Way of Seeing](_New%20Way%20of%20Seeing.md)***
+
+## Chapter
+
+## Grammar of Reality
+- Slug: grammar-of-reality
+- DOI: 10.5281/zenodo.21016867
+- URL: https://papers.qnfo.org/papers/grammar-of-reality/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: Grammar of Reality
+aliases:
+  - Grammar of Reality
+modified: 2025-07-07T06:54:03Z
+---
+## The Grammar of Reality
+
+**From Nouns to Verbs in the Cosmic Lexicon**
+
+[Rowan 
+
+## B Nodes
+- Slug: b-nodes
+- DOI: 10.5281/zenodo.21016865
+- URL: https://papers.qnfo.org/papers/b-nodes/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: B Nodes
+aliases: [B Nodes, A Nodes]
+created: 2025-04-10T03:07:07Z
+modified: 2025-05-09T03:21:34Z
+---
+
+**Appendix A: Detailed Graph Data (Nodes)**
+
+Th
+
+## Co-Evolution of Intelligence
+- Slug: co-evolution-of-intelligence
+- DOI: 10.5281/zenodo.21016861
+- URL: https://papers.qnfo.org/papers/co-evolution-of-intelligence/
+- Abstract: ---
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ISNI: 0000000526456062
+ORCID: 0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+# METADATA
+id: ASO_Framework_Genesis_WhitePaper_v0.2 # Version incremented
+title: Co-Evolution of Intelligence
+author: "Rowan Brad Quni & MetaProcessEngineASO v2.0 (AI Collaborator)"
+project_code_co
+
+## 10 It from Bit
+- Slug: 10-it-from-bit
+- DOI: 10.5281/zenodo.21016859
+- URL: https://papers.qnfo.org/papers/10-it-from-bit/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-27T10:46:15Z
+modified: 2025-05-09T03:21:55Z
+title: 10 It from Bit
+aliases: [Contemplative Science and the Nature of Reality, Contemplative 
+
+## Coherence and Generativity Framework
+- Slug: coherence-and-generativity-framework
+- DOI: 10.5281/zenodo.21016857
+- URL: https://papers.qnfo.org/papers/coherence-and-generativity-framework/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+modified: 2025-07-01T14:27:14Z
+title: Coherence and Generativity Framework
+aliases:
+  - Coherence and Generativity Framework
+---
+
+## **A Pluralist Methodology for Evaluating 
+
+## Imperfectly Defining Reality
+- Slug: imperfectly-defining-reality
+- DOI: 10.5281/zenodo.21016853
+- URL: https://papers.qnfo.org/papers/imperfectly-defining-reality/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+DOI: 10.5281/zenodo.15705831
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+modified: 2025-06-21T03:30:21Z
+title: Imperfectly Defining Reality
+aliases:
+  - Imperfectly Defining Reality
+---
+
+## (Imperfectly) Defining Reali
+
+## Mathematical Tricks Postulate
+- Slug: mathematical-tricks-postulate
+- DOI: 10.5281/zenodo.21016847
+- URL: https://papers.qnfo.org/papers/mathematical-tricks-postulate/
+- Abstract: ---
+modified: 2025-06-03T03:37:06Z
+---
+# The “Mathematical Tricks” Postulate
+
+*[Rowan Brad Quni](mailto:rowan.quni@qnfo.org), [QNFO](http://QNFO.org)*
+
+## *1. Introduction: The Cracks in the Foundation of Modern Physics*
+
+### *1.1. The Postulate of Mathematical Artifice: Challenging Physics’ Foundational Integrity*
+
+The standard narrative of 20th and 21st-century physics portrays a discipline defined by rigorous methodology and profound discovery, culminating in the predictive triumphs of quantu
+
+## COSMIC LOGOS
+- Slug: 14-cosmic-tapestry
+- DOI: 10.5281/zenodo.21017126
+- URL: https://papers.qnfo.org/papers/14-cosmic-tapestry/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 14 Cosmic Tapestry
+aliases:
+  - 14 Cosmic Tapestry
+modified: 2025-05-26T04:46:24Z
+---
+
+***[A New Way of Seeing](_New%20Way%20of%20Seeing.md)***
+
+## Chapter 14: Cosmic 
+
+## New Way of Seeing
+- Slug: new-way-of-seeing
+- DOI: 10.5281/zenodo.21017137
+- URL: https://papers.qnfo.org/papers/new-way-of-seeing/
+- Abstract: # [A New Way of Seeing](_New%20Way%20of%20Seeing.md)
+
+***Autaxys as a Framework for Pattern-Based Reality, from Rocks to Neutrinos***
+
+*[Rowan Brad Quni](mailto:rowan.quni@qnfo.org), [QNFO](http://QNFO.org)*
+
+%% Zoottelkeeper: Beginning of the autogenerated index file list  %%
+📄 [[releases/2025/New Way of Seeing/1 Particle Paradox|1 Particle Paradox]]
+📄 [[releases/2025/New Way of Seeing/2 Constructed Panorama|2 Constructed Panorama]]
+📄 [[releases/2025/New Way of Seeing/3 Instrumental Veil|3 Inst
+
+## Thermodynamic epistemology
+- Slug: 17-epistemology-re-founded
+- DOI: 10.5281/zenodo.21017166
+- URL: https://papers.qnfo.org/papers/17-epistemology-re-founded/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+modified: 2025-05-26T05:13:32Z
+title: 17 Epistemology Re-Founded
+aliases:
+  - 17 Epistemology Re-Founded
+---
+
+***[A New Way of Seeing](_New%20Way%20of%20Seeing.md)***
+
+## Cha
+
+## 42 Theses on the Nature of a Pattern-Based Reality
+- Slug: 42-theses-on-the-nature-of-a-pattern-based-reality
+- DOI: 10.5281/zenodo.21017174
+- URL: https://papers.qnfo.org/papers/42-theses-on-the-nature-of-a-pattern-based-reality/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+DOI: 10.5281/zenodo
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 42 Theses on the Nature of a Pattern-Based Reality
+aliases:
+  - 42 Theses on the Nature of a Pattern-Based Reality
+modified: 2025-07-02T22:37:27Z
+-
+
+## APPENDICES
+- Slug: appendices
+- DOI: 10.5281/zenodo.21017178
+- URL: https://papers.qnfo.org/papers/appendices/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+license: By accessing this content, you agree to the terms at https://qnfo.org/LICENSE
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+author: Rowan Brad Quni
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: QNFO, AI, quantum, informational universe, IUH, holographic pri
+
+## 16 Autaxys and the Nature of Mind
+- Slug: 16-autaxys-and-the-nature-of-mind
+- DOI: 10.5281/zenodo.21017182
+- URL: https://papers.qnfo.org/papers/16-autaxys-and-the-nature-of-mind/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 16 Autaxys and the Nature of Mind
+aliases:
+  - 16 Autaxys and the Nature of Mind
+modified: 2025-05-26T05:11:50Z
+---
+
+***[A New Way of Seeing](_New%20Way%20of%20Seeing.
+
+## 3 Core Concepts
+- Slug: 3-core-concepts
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/3-core-concepts/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-10T01:56:14Z
+modified: 2025-05-09T03:21:34Z
+title: 3 Core Concepts
+aliases: [3 Core Concepts]
+---
+
+**Section 3: Core Components of Fundamen
+
+## 7 Synthesis
+- Slug: 7-synthesis
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/7-synthesis/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-10T02:35:55Z
+modified: 2025-05-09T03:21:34Z
+title: 7 Synthesis
+aliases: [7 Synthesis]
+---
+
+---
+
+**Section 7: Synthesizing the Consilient Me
+
+## "Chapter 5: The Contours of Ignorance"
+- Slug: chapter-5-the-contours-of-ignorance
+- DOI: 10.5281/zenodo.21192634
+- URL: https://papers.qnfo.org/papers/chapter-5-the-contours-of-ignorance/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: "Chapter 5: The Contours of Ignorance"
+aliases:
+  - "Chapter 5: The Contours of Ignorance"
+  - 5 The Contours of Ignorance
+  - "Part I: The Limits of
+
+## Consciousness and the Cosmos
+- Slug: consciousness-and-the-cosmos
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/consciousness-and-the-cosmos/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+created: 2024-11-13T19:54:01Z
+modified: 2025-05-09T03:21:48Z
+title: Consciousness and the Cosmos
+aliases: [Consciousness and the Cosmos]
+---
+
+**Consciousnes
+
+## II-6 Other Voices
+- Slug: ii-6-other-voices
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/ii-6-other-voices/
+- Abstract: ---
+author: Rowan Brad Quni-Gudzinas
+email: rowan.quni@qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+modified: 2025-08-27T14:45:11Z
+title: II-6 Other Voices
+aliases:
+  - II-6 Other Voices
+---
+
+## **Matter Without Mass**
+
+### **Chapter 6: Emergent Gravity and the Holographic Universe: A New Foundation?**
+
+While MOND offers a direct modification to Newtonian gravity, another profound avenue of inquiry explores the very nature of gravity itself. This chapter will delve into **Emergent 
+
+## D Methodology
+- Slug: d-methodology
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/d-methodology/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: D Methodology
+aliases: [releases/2025/Infomatics, Infomatics, Infomatics Phase 3, Infomatics Methodology, Pi Phi Dynamics Derivation]
+created: 2025-0
+
+## I-1 Abstract Abyss
+- Slug: i-1-abstract-abyss
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/i-1-abstract-abyss/
+- Abstract: ---
+author: Rowan Brad Quni-Gudzinas
+email: rowan.quni@qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+modified: 2025-08-28T12:42:26Z
+title: I-1 Abstract Abyss
+aliases:
+  - I-1 Abstract Abyss
+---
+
+## **Matter Without Mass: A Comprehensive Critique of Paradigmatic Orthodoxy and the Emergence of a Unified Kinematic Ontology**
+
+**Version:** 1.3
+**Date**: August 28, 2025
+
+[Rowan Brad Quni](mailto:rowan.quni@qnfo.org), [QNFO](https://qnfo.org/)
+ORCID: [0009-0002-4317-5604](https://orcid.or
+
+## 4 Emptiness and Cessation
+- Slug: 4-emptiness-and-cessation
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/4-emptiness-and-cessation/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-26T04:41:32Z
+modified: 2025-05-09T03:21:54Z
+title: 4 Emptiness and Cessation
+aliases: [Contemplative Science and the Nature of Reality, Con
+
+## 1 Introduction
+- Slug: 1-introduction
+- DOI: 10.5281/zenodo.21016937
+- URL: https://papers.qnfo.org/papers/1-introduction/
+- Abstract: ---
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ISNI: 0000000526456062
+ORCID: 0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+id: 0146
+title: 1 Introduction
+aliases: [Implied Discretization and the Limits of Modeling Continuous Reality, 0146_Implied_Discretization_v1.1, Implied Discretization v1.1]
+tags: methodology, epist
+
+## Theme 2
+- Slug: theme-2
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/theme-2/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ISNI: 0000000526456062
+ORCID: 0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-15T10:32:03Z
+modified: 2025-05-09T03:21:57Z
+title: Theme 2
+aliases: [Theme 2]
+---
+**Theme 2: Cosmogenesis and Order: From Mythic Battles to Physical Laws**
+
+
+
+## Exploring Analogous Foundational Principles and Generative Ontologies
+- Slug: exploring-analogous-foundational-principles-and-generative-ontologies
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/exploring-analogous-foundational-principles-and-generative-ontologies/
+- Abstract: **Exploring Analogous Foundational Principles and Generative Ontologies: A Comparative Analysis of Autaxys**
+
+*[Rowan Brad Quni](mailto:rowan.quni@qnfo.org), [QNFO](http://QNFO.org)*
+
+
+**Abstract**
+
+This paper addresses the persistent challenge in comprehensively understanding reality from first principles, highlighting limitations in current ontological frameworks. It introduces “autaxys,” a novel foundational principle of intrinsic self-ordering and self-generating patterned existence. Autaxys
+
+## Is This Drivel
+- Slug: is-this-drivel
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/is-this-drivel/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+LinkedIn: https://www.linkedin.com/in/rowan-quni-868006341
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: QNFO, AI, ArtificialIntelligence, artificial intelligence, quantum, physics, science, Einst
+
+## 8 Cosmology
+- Slug: 8-cosmology
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/8-cosmology/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 8 Cosmology
+aliases: [releases/2025/Infomatics, Infomatics Cosmology, Pi Phi Cosmology, Dark Matter Alternative, Dark Energy Alternative]
+created: 20
+
+## Infomatics
+- Slug: infomatics
+- DOI: 10.5281/zenodo.21017108
+- URL: https://papers.qnfo.org/papers/infomatics/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+LinkedIn: https://www.linkedin.com/in/rowan-quni-868006341
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: QNFO, AI, ArtificialIntelligence, artificial intelligence, quantum, physics, science, Einst
+
+## Transmofrified Particle
+- Slug: 1-particle-paradox
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/1-particle-paradox/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 1 Particle Paradox
+aliases:
+  - 1 Particle Paradox
+  - A New Way of Seeing
+  - "Chapter 1: The “Particle” Paradox"
+  - "Part I: The Limits of Our Gaze–Deconstructing H
+
+## Operationalizing Infomatics
+- Slug: operationalizing-infomatics
+- DOI: 10.5281/zenodo.21017108
+- URL: https://papers.qnfo.org/papers/operationalizing-infomatics/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: Operationalizing Infomatics
+aliases: ["Operationalizing Infomatics: A Predictive Holographic Framework", Infomatics Operational Framework, Infomatics
+
+## 12 Historical Context and Future Directions
+- Slug: 12-historical-context-and-future-directions
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/12-historical-context-and-future-directions/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+license: By accessing this content, you agree to the terms at https://qnfo.org/LICENSE
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+author: Rowan Brad Quni
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: QNFO, AI, quantum, informational universe, IUH, holographic pri
+
+## "II-4 Astronomer's Exile"
+- Slug: ii-4-astronomers-exile
+- DOI: 10.5281/zenodo.21192593
+- URL: https://papers.qnfo.org/papers/ii-4-astronomers-exile/
+- Abstract: ---
+author: Rowan Brad Quni-Gudzinas
+email: rowan.quni@qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+title: "II-4 Astronomer's Exile"
+aliases:
+  - "II-4 Astronomer's Exile"
+modified: 2025-08-25T09:15:48Z
+---
+
+## **Matter Without Mass**
+
+### **Chapter 4: Halton Arp and the Redshift Controversy: An Astronomer’s Exile from the Cosmos**
+
+This chapter meticulously examines the profound contributions of astronomer Halton Arp, whose decades of observational work fundamentally challenged th
+
+## Differential LLM Inference
+- Slug: differential-llm-inference
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/differential-llm-inference/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+created: 2024-11-13T19:54:01Z
+modified: 2025-05-09T03:21:48Z
+title: Differential LLM Inference
+aliases: [A Differential Approach to Efficient LLM Inference]
+
+## 11 Discussion
+- Slug: 11-discussion
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/11-discussion/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 11 Discussion
+aliases: [releases/2025/Infomatics, Infomatics Discussion, Infomatics Synthesis, Infomatics Advantages, Infomatics Outlook, Infomatics 
+
+## 13 Recursion Scale and Interconnectedness
+- Slug: 13-recursion-scale-and-interconnectedness
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/13-recursion-scale-and-interconnectedness/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-27T12:43:40Z
+modified: 2025-05-09T03:21:55Z
+title: 13 Recursion Scale and Interconnectedness
+aliases: [Contemplative Science and the Nature
+
+## C.6 Edges Logic
+- Slug: c6-edges-logic
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/c6-edges-logic/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-10T03:08:58Z
+modified: 2025-05-09T03:21:33Z
+title: C.6 Edges Logic
+aliases: [C.6 Edges Logic, C Edges]
+---
+
+**Appendix C: Detailed Graph Da
+
+## 3 Resonance Structure
+- Slug: 3-resonance-structure
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/3-resonance-structure/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 3 Resonance Structure
+aliases: [releases/2025/Infomatics, Infomatics Resonance, Pi Phi States, NM Table, Geometric States, Emergent Resolution]
+creat
+
+## F Formulas
+- Slug: f-formulas
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/f-formulas/
+- Abstract: ---
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ISNI: 0000000526456062
+ORCID: 0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+# ... (rest of metadata) ...
+title: F Formulas
+aliases: [releases/2025/Infomatics, Infomatics Formulas, Infomatics Equations, Pi Phi Relations]
+created: 2025-04-13T19:30:00Z
+
+
+## Beyond the Tyranny of Math
+- Slug: beyond-the-tyranny-of-math
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/beyond-the-tyranny-of-math/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+created: 2024-11-13T19:54:01Z
+modified: 2025-05-09T03:21:48Z
+title: Beyond the Tyranny of Math
+aliases: [The Misguided Worship of Mathematical Formalism]
+--
+
+## README
+- Slug: readme
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/readme/
+- Abstract: ---
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+license: By accessing this content, you agree to the terms at https://qnfo.org/LICENSE
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+author: Rowan Brad Quni
+ORCID: https://orcid.org/0009-0002-4317-5604
+tags: QNFO, AI, quantum, informational universe, IUH, holographic pri
+
+## QUANTUM SYMMETRIES
+- Slug: 10-quantum-phenomena
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/10-quantum-phenomena/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 10 Quantum Phenomena
+aliases: [releases/2025/Infomatics, Infomatics Quantum Mechanics, Emergent Quantization, Pi Phi QM, Quantum Reinterpretation]
+cr
+
+## 2 Boundless Awareness
+- Slug: 2-boundless-awareness
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/2-boundless-awareness/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-26T03:45:27Z
+modified: 2025-05-09T03:21:54Z
+title: 2 Boundless Awareness
+aliases: [Contemplative Science and the Nature of Reality, Contemp
+
+## 2 Constructed Panorama
+- Slug: 2-constructed-panorama
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/2-constructed-panorama/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: 0009-0002-4317-5604
+ISNI: 0000000526456062
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 2 Constructed Panorama
+aliases:
+  - 2 Constructed Panorama
+  - "Chapter 2: The Constructed Panorama"
+modified: 2025-05-26T05:40:00Z
+---
+
+***[A New Way of Seeing](_New%
+
+## ToE Meta-Analysis
+- Slug: 6-analysis
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/6-analysis/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 6 Analysis
+aliases: [6 Analysis]
+created: 2025-04-10T02:17:12Z
+modified: 2025-05-09T03:21:34Z
+---
+
+---
+
+**Section 6: Foundational Flaws Revealed by N
+
+## 8 Beyond Baseline
+- Slug: 8-beyond-baseline
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/8-beyond-baseline/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+created: 2025-04-27T10:40:59Z
+modified: 2025-05-09T03:21:55Z
+title: 8 Beyond Baseline
+aliases: [Contemplative Science and the Nature of Reality, Contemplati
+
+## Correlated Universe 1.0
+- Slug: informational-universe
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/informational-universe/
+- Abstract: ---
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ISNI: 0000000526456062
+ORCID: 0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: Informational Universe
+aliases: [Informational Universe]
+created: 2025-04-05T04:50:57Z
+modified: 2025-05-09T03:21:15Z
+tags: index
+---%% Zoottelkeeper: Beginning of the
+
+## Foundations of Computation
+- Slug: 2-foundations
+- DOI: CHAPTER-FRAGMENT
+- URL: https://papers.qnfo.org/papers/2-foundations/
+- Abstract: ---
+ISNI: 0000000526456062
+author: Rowan Brad Quni
+email: rowan.quni@qnfo.org
+website: http://qnfo.org
+ORCID: https://orcid.org/0009-0002-4317-5604
+robots: By accessing this content, you agree to https://qnfo.org/LICENSE. Non-commercial use only. Attribution required.
+DC.rights: https://qnfo.org/LICENSE. Users are bound by terms upon access.
+title: 2 Foundations
+aliases: [releases/2025/Infomatics, Infomatics Foundations, Infomatics Axioms, Pi Phi Primacy, Information Field Axioms]
+created: 2025-
