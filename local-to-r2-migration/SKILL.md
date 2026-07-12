@@ -456,7 +456,7 @@ Create `_upload_manifest.json` tracking every uploaded file:
 
 
 
-**Goal:** Register all migrated project assets in the Discovery Index so they're discoverable.
+**Goal:** All migrated project assets are tracked in D1 portfolio-state. The Discovery Index is FULLY DEPRECATED.
 
 
 
