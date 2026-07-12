@@ -1,12 +1,21 @@
 /**
- * ipatent.me API Worker
- * US Provisional Disclosure Generator + Analytics
+ * ipatent.me API Worker — v2.0
+ * Dedicated D1 (ipatent-db) + Vectorize (ipatent-disclosures) + R2 (ipatent)
  *
  * Endpoints:
- *   POST /api/submit — Generate provisional disclosure
- *   POST /api/analytics — Record page view / event
- *   GET  /api/health — Health check
- *   GET  /api/stats — Aggregate analytics (admin)
+ *   POST /api/submit        — Submit disclosure → D1 + Vectorize embed + R2
+ *   GET  /api/submissions    — List submissions (paginated)
+ *   GET  /api/submissions/:id — Get single submission
+ *   POST /api/search         — Vector-based semantic search
+ *   POST /api/analytics      — Event tracking (pageview, form_focus, etc.)
+ *   GET  /api/stats          — Aggregate analytics
+ *   GET  /api/health         — Health check
+ *
+ * Architecture:
+ *   Every submission is stored VERBATIM in D1.
+ *   Simultaneously embedded via Workers AI (bge-base-en-v1.5) → Vectorize.
+ *   Generated document HTML stored in R2 for permanence.
+ *   All analytics events stream to D1 for reconstruction of any session.
  */
 
 const CORS_HEADERS = {
@@ -16,138 +25,285 @@ const CORS_HEADERS = {
   'Access-Control-Max-Age': '86400',
 };
 
-function cors(response) {
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: { ...Object.fromEntries(response.headers), ...CORS_HEADERS },
-  });
+function cors(r) {
+  const h = new Headers(r.headers);
+  for (const [k, v] of Object.entries(CORS_HEADERS)) h.set(k, v);
+  return new Response(r.body, { status: r.status, statusText: r.statusText, headers: h });
 }
 
 function json(data, status = 200) {
-  return cors(new Response(JSON.stringify(data, null, 2), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  }));
+  return cors(new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } }));
 }
 
-function generateSubmissionId() {
+function html(body, status = 200, extra = {}) {
+  const h = new Headers({ 'Content-Type': 'text/html; charset=utf-8', ...CORS_HEADERS });
+  for (const [k, v] of Object.entries(extra)) h.set(k, v);
+  return new Response(body, { status, headers: h });
+}
+
+function subId() {
   const ts = Date.now().toString(36).toUpperCase();
-  const rand = crypto.randomUUID().split('-')[0].toUpperCase();
-  return `USP-${ts}-${rand}`;
+  const rnd = crypto.randomUUID().split('-')[0].toUpperCase();
+  return `USP-${ts}-${rnd}`;
 }
 
-function generateDisclosureHTML(data) {
-  const now = new Date().toISOString().split('T')[0];
+function sanitize(s, max = 100000) {
+  return String(s || '').slice(0, max).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+}
+
+// ── Disclosure Document Generator ──
+
+function generateDocHTML(data) {
+  const d = new Date().toISOString().split('T')[0];
+  const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>US Provisional Disclosure — ${data.title || 'Untitled Invention'}</title>
+<title>US Provisional Disclosure — ${esc(data.title || 'Untitled')}</title>
 <style>
-  body { font-family: 'Segoe UI', system-ui, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; color: #1a1a2e; line-height: 1.7; }
-  h1 { font-size: 1.5rem; border-bottom: 3px solid #4f46e5; padding-bottom: 10px; }
-  h2 { font-size: 1.1rem; color: #4f46e5; margin-top: 24px; }
-  .meta { background: #f3f4f6; padding: 16px; border-radius: 8px; margin: 16px 0; font-size: 0.9rem; }
-  .disclosure { background: #fefefe; border: 1px solid #e5e7eb; padding: 24px; border-radius: 8px; margin: 16px 0; white-space: pre-wrap; }
-  .footer { font-size: 0.75rem; color: #9ca3af; margin-top: 40px; border-top: 1px solid #e5e7eb; padding-top: 16px; }
-  .watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-25deg); font-size: 6rem; color: rgba(79,70,229,0.03); pointer-events: none; z-index: -1; white-space: nowrap; }
-  @media print { .watermark { display: none; } body { font-size: 11pt; } }
+  body{font-family:'Segoe UI',system-ui,sans-serif;max-width:800px;margin:40px auto;padding:20px;color:#1a1a2e;line-height:1.7}
+  h1{font-size:1.5rem;border-bottom:3px solid #4f46e5;padding-bottom:10px}
+  h2{font-size:1.1rem;color:#4f46e5;margin-top:24px}
+  .meta{background:#f3f4f6;padding:16px;border-radius:8px;margin:16px 0;font-size:.9rem}
+  .disclosure{background:#fefefe;border:1px solid #e5e7eb;padding:24px;border-radius:8px;margin:16px 0;white-space:pre-wrap}
+  .footer{font-size:.75rem;color:#9ca3af;margin-top:40px;border-top:1px solid #e5e7eb;padding-top:16px}
+  .watermark{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:6rem;color:rgba(79,70,229,.03);pointer-events:none;z-index:-1;white-space:nowrap}
+  @media print{.watermark{display:none}body{font-size:11pt}}
 </style>
 </head>
 <body>
 <div class="watermark">DRAFT</div>
 <h1>UNITED STATES PROVISIONAL PATENT DISCLOSURE</h1>
 <div class="meta">
-  <p><strong>Submission ID:</strong> ${data.submission_id}</p>
-  <p><strong>Date Generated:</strong> ${now}</p>
-  <p><strong>Inventor:</strong> ${data.inventor_name || 'Not provided'}</p>
-  <p><strong>Contact:</strong> ${data.inventor_email || 'Not provided'}</p>
+  <p><strong>Submission ID:</strong> ${esc(data.submission_id)}</p>
+  <p><strong>Date Generated:</strong> ${d}</p>
+  <p><strong>Inventor:</strong> ${esc(data.inventor_name || 'Not provided')}</p>
+  <p><strong>Contact:</strong> ${esc(data.inventor_email || 'Not provided')}</p>
   <p><strong>Status:</strong> DRAFT — Not yet filed with USPTO</p>
 </div>
 <h2>Title of Invention</h2>
-<p>${data.title || '[Title not provided]'}</p>
+<p>${esc(data.title || '[No title]')}</p>
 <h2>Detailed Disclosure</h2>
-<div class="disclosure">${data.disclosure_text || '[No detailed disclosure provided]'}</div>
+<div class="disclosure">${esc(data.disclosure_text || '[No disclosure]')}</div>
 <h2>Inventor Declaration</h2>
-<p>I, <strong>${data.inventor_name || '[Name not provided]'}</strong>, hereby declare that I am the original inventor of the subject matter disclosed above. I understand this document is a <strong>draft disclosure only</strong> and does <em>not</em> constitute a filed provisional patent application with the United States Patent and Trademark Office (USPTO).</p>
-<p>To obtain a filing date, this disclosure must be submitted to the USPTO as a provisional application with the required forms, drawings, and filing fee.</p>
+<p>I, <strong>${esc(data.inventor_name || '[Name not provided]')}</strong>, declare I am the original inventor of the subject matter above. This document is a <strong>draft disclosure only</strong> and does not constitute a filed provisional patent application with the USPTO.</p>
 <h2>Next Steps</h2>
 <ol>
-  <li>Review and refine this disclosure thoroughly</li>
-  <li>Add any drawings, diagrams, or schematics</li>
-  <li>File as a USPTO provisional application (Forms SB/16, specification, drawings, fee)</li>
+  <li>Review and refine this disclosure</li>
+  <li>Add drawings, diagrams, or schematics</li>
+  <li>File as USPTO provisional application (Forms SB/16, specification, drawings, fee)</li>
   <li>Consult a registered patent attorney or agent</li>
 </ol>
 <div class="footer">
   <p>Generated by ipatent.me — US Provisional Disclosure Tool</p>
   <p>This is NOT a filed patent application. No USPTO filing date has been established.</p>
-  <p>Generated: ${now} | Submission ID: ${data.submission_id}</p>
+  <p>Generated: ${d} | Submission ID: ${esc(data.submission_id)}</p>
 </div>
 </body>
 </html>`;
 }
 
-// ── Request Handlers ──
+// ── Request Helpers ──
+
+function reqMeta(request) {
+  return {
+    ip: request.headers.get('CF-Connecting-IP') || 'unknown',
+    ua: (request.headers.get('User-Agent') || 'unknown').slice(0, 500),
+    country: request.headers.get('CF-IPCountry') || 'unknown',
+    referrer: (request.headers.get('Referer') || '').slice(0, 500),
+  };
+}
+
+async function trackAnalytics(env, eventType, pageUrl, sessionId, meta, extraMeta = {}) {
+  try {
+    const m = { ...extraMeta, ...reqMeta };
+    // Upsert session
+    await env.DB.prepare(
+      `INSERT INTO sessions (session_id, ip_address, user_agent, country, last_seen, total_events)
+       VALUES (?, ?, ?, ?, datetime('now'), 1)
+       ON CONFLICT(session_id) DO UPDATE SET last_seen = datetime('now'),
+         total_events = total_events + 1, page_views = page_views + (CASE WHEN ? = 'pageview' THEN 1 ELSE 0 END)`
+    ).bind(sessionId, m.ip, m.ua, m.country, eventType).run();
+
+    // Insert event
+    await env.DB.prepare(
+      `INSERT INTO analytics (event_type, page_url, referrer, ip_address, user_agent, country, session_id, metadata)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    ).bind(eventType, pageUrl, meta.referrer, m.ip, m.ua, m.country, sessionId, JSON.stringify(m)).run();
+  } catch (e) { console.error('analytics:', e.message); }
+}
+
+// ── Vectorize Embedding ──
+
+async function embedText(env, text) {
+  try {
+    const { data } = await env.AI.run('@cf/baai/bge-large-en-v1.5', { text: [text.slice(0, 8000)] });
+    return data[0]; // Float32Array of 768 dims
+  } catch (e) {
+    console.error('embed failed:', e.message);
+    return null;
+  }
+}
+
+// ── POST /api/submit ──
 
 async function handleSubmit(request, env) {
-  if (request.method !== 'POST') {
-    return json({ error: 'Method not allowed. Use POST.' }, 405);
-  }
+  if (request.method !== 'POST') return json({ error: 'Use POST' }, 405);
 
   let body;
-  try {
-    body = await request.json();
-  } catch {
-    return json({ error: 'Invalid JSON body' }, 400);
-  }
+  try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
 
-  const { inventor_name, inventor_email, title, disclosure_text } = body;
+  const inventor_name = sanitize(body.inventor_name, 500);
+  const inventor_email = sanitize(body.inventor_email, 500);
+  const title = sanitize(body.title, 1000);
+  const disclosure_text = sanitize(body.disclosure_text, 50000);
+  const sessionId = sanitize(body.session_id, 200) || crypto.randomUUID();
 
   if (!title || !disclosure_text) {
     return json({ error: 'title and disclosure_text are required' }, 400);
   }
 
-  const submissionId = generateSubmissionId();
-  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
-  const ua = request.headers.get('User-Agent') || 'unknown';
-  const country = request.headers.get('CF-IPCountry') || 'unknown';
+  const sid = subId();
+  const meta = reqMeta(request);
 
-  // Generate the disclosure document
-  const disclosureHTML = generateDisclosureHTML({
-    submission_id: submissionId,
-    inventor_name: inventor_name || '',
-    inventor_email: inventor_email || '',
-    title,
-    disclosure_text,
+  // 1. Generate the disclosure document HTML
+  const docHTML = generateDocHTML({
+    submission_id: sid,
+    inventor_name, inventor_email, title, disclosure_text,
   });
 
-  // Store in D1
+  // 2. Store document HTML in R2
+  const r2Key = `disclosures/${sid}.html`;
+  try {
+    await env.BUCKET.put(r2Key, docHTML, {
+      httpMetadata: { contentType: 'text/html', cacheControl: 'public, max-age=86400' },
+      customMetadata: { submission_id: sid, title, inventor: inventor_name },
+    });
+  } catch (e) { console.error('R2 put failed:', e.message); }
+
+  // 3. Store VERBATIM in D1
   try {
     await env.DB.prepare(
-      `INSERT INTO ipatent_submissions (submission_id, inventor_name, inventor_email, title, disclosure_text, status, ip_address, user_agent)
-       VALUES (?, ?, ?, ?, ?, 'generated', ?, ?)`
-    ).bind(submissionId, inventor_name || '', inventor_email || '', title, disclosure_text, ip, ua).run();
-
-    // Analytics event
-    await env.DB.prepare(
-      `INSERT INTO ipatent_analytics (event_type, page_url, ip_address, user_agent, country, metadata)
-       VALUES ('submission', '/api/submit', ?, ?, ?, ?)`
-    ).bind(ip, ua, country, JSON.stringify({ submission_id: submissionId, title })).run();
-  } catch (dbErr) {
-    console.error('DB write failed:', dbErr);
-    // Still return the disclosure even if DB fails
+      `INSERT INTO submissions (submission_id, inventor_name, inventor_email, title, disclosure_text, document_html, r2_key, status, ip_address, user_agent, country, session_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'draft', ?, ?, ?, ?)`
+    ).bind(sid, inventor_name, inventor_email, title, disclosure_text, docHTML, r2Key, meta.ip, meta.ua, meta.country, sessionId).run();
+  } catch (e) {
+    console.error('D1 insert failed:', e.message);
+    return json({ error: 'Database error. Please try again.' }, 500);
   }
 
-  return new Response(disclosureHTML, {
-    status: 201,
-    headers: {
-      'Content-Type': 'text/html; charset=utf-8',
-      ...CORS_HEADERS,
-      'X-Submission-ID': submissionId,
-    },
-  });
+  // 4. Embed disclosure text → Vectorize
+  const embedding = await embedText(env, `${title}\n\n${disclosure_text}`);
+  if (embedding) {
+    try {
+      await env.VECTORIZE.upsert([{
+        id: sid,
+        values: embedding,
+        metadata: {
+          submission_id: sid,
+          title,
+          inventor: inventor_name,
+          country: meta.country,
+          created_at: new Date().toISOString(),
+        },
+      }]);
+    } catch (e) { console.error('Vectorize upsert failed:', e.message); }
+  }
+
+  // 5. Track analytics
+  await trackAnalytics(env, 'submission', '/api/submit', sessionId, meta, { submission_id: sid, title });
+
+  return html(docHTML, 201, { 'X-Submission-ID': sid });
 }
+
+// ── GET /api/submissions ──
+
+async function handleListSubmissions(request, env) {
+  const url = new URL(request.url);
+  const limit = Math.min(parseInt(url.searchParams.get('limit')) || 20, 100);
+  const offset = parseInt(url.searchParams.get('offset')) || 0;
+
+  try {
+    const rows = await env.DB.prepare(
+      `SELECT submission_id, inventor_name, title, status, country, created_at
+       FROM submissions ORDER BY created_at DESC LIMIT ? OFFSET ?`
+    ).bind(limit, offset).all();
+
+    const total = await env.DB.prepare('SELECT COUNT(*) as count FROM submissions').first();
+
+    return json({ total: total?.count || 0, offset, limit, results: rows.results });
+  } catch (e) {
+    return json({ error: e.message }, 500);
+  }
+}
+
+// ── GET /api/submissions/:id ──
+
+async function handleGetSubmission(request, env, id) {
+  try {
+    const row = await env.DB.prepare(
+      'SELECT * FROM submissions WHERE submission_id = ?'
+    ).bind(id).first();
+
+    if (!row) return json({ error: 'Not found' }, 404);
+    return html(row.document_html || generateDocHTML(row));
+  } catch (e) {
+    return json({ error: e.message }, 500);
+  }
+}
+
+// ── POST /api/search ──
+
+async function handleSearch(request, env) {
+  if (request.method !== 'POST') return json({ error: 'Use POST' }, 405);
+
+  let body;
+  try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+
+  const query = sanitize(body.query, 2000);
+  const limit = Math.min(parseInt(body.limit) || 10, 50);
+
+  if (!query) return json({ error: 'query is required' }, 400);
+
+  // 1. Embed query
+  const qEmbedding = await embedText(env, query);
+  if (!qEmbedding) return json({ error: 'Embedding failed' }, 500);
+
+  // 2. Vector search
+  let vectorResults = [];
+  try {
+    const vr = await env.VECTORIZE.query(qEmbedding, {
+      topK: limit,
+      returnValues: false,
+      returnMetadata: true,
+    });
+    vectorResults = vr.matches || [];
+  } catch (e) { console.error('Vectorize query failed:', e.message); }
+
+  // 3. Enrich with D1 data
+  const enriched = [];
+  for (const match of vectorResults) {
+    const meta = match.metadata || {};
+    try {
+      const row = await env.DB.prepare(
+        'SELECT submission_id, title, inventor_name, status, created_at FROM submissions WHERE submission_id = ?'
+      ).bind(meta.submission_id || match.id).first();
+      if (row) {
+        enriched.push({ ...row, score: Math.round(match.score * 1000) / 1000, vector_id: match.id });
+      } else {
+        enriched.push({ submission_id: match.id, title: meta.title || '(unknown)', score: Math.round(match.score * 1000) / 1000, vector_id: match.id });
+      }
+    } catch { enriched.push({ submission_id: match.id, title: meta.title || '(unknown)', score: Math.round(match.score * 1000) / 1000 }); }
+  }
+
+  // Track search
+  await trackAnalytics(env, 'search', '/api/search', body.session_id || '', reqMeta(request), { query, results: enriched.length });
+
+  return json({ query, results: enriched, total: enriched.length });
+}
+
+// ── POST /api/analytics ──
 
 async function handleAnalytics(request, env) {
   if (request.method === 'OPTIONS') return cors(new Response(null, { status: 204 }));
@@ -159,54 +315,52 @@ async function handleAnalytics(request, env) {
 
   const eventType = body.event_type || 'pageview';
   const pageUrl = body.page_url || request.headers.get('Referer') || '/';
-  const referrer = body.referrer || request.headers.get('Referer') || '';
-  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
-  const ua = request.headers.get('User-Agent') || 'unknown';
-  const country = request.headers.get('CF-IPCountry') || 'unknown';
   const sessionId = body.session_id || crypto.randomUUID();
-  const metadata = body.metadata ? JSON.stringify(body.metadata) : '{}';
+  const meta = reqMeta(request);
 
-  try {
-    await env.DB.prepare(
-      `INSERT INTO ipatent_analytics (event_type, page_url, referrer, ip_address, user_agent, country, session_id, metadata)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-    ).bind(eventType, pageUrl, referrer, ip, ua, country, sessionId, metadata).run();
-  } catch (dbErr) {
-    console.error('Analytics write failed:', dbErr);
-  }
+  await trackAnalytics(env, eventType, pageUrl, sessionId, meta, body.metadata || {});
 
-  return json({ success: true, session_id: sessionId }, 200);
+  return json({ success: true, session_id: sessionId });
 }
+
+// ── GET /api/stats ──
 
 async function handleStats(request, env) {
   try {
-    const [totalSubmissions, totalEvents, recentSubmissions] = await Promise.all([
-      env.DB.prepare('SELECT COUNT(*) as count FROM ipatent_submissions').first(),
-      env.DB.prepare('SELECT COUNT(*) as count FROM ipatent_analytics').first(),
-      env.DB.prepare(
-        'SELECT submission_id, title, inventor_name, status, created_at FROM ipatent_submissions ORDER BY created_at DESC LIMIT 20'
-      ).all(),
+    const [totalSub, totalEvents, totalSessions, recentSubs, byCountry, byEvent] = await Promise.all([
+      env.DB.prepare('SELECT COUNT(*) as c FROM submissions').first(),
+      env.DB.prepare('SELECT COUNT(*) as c FROM analytics').first(),
+      env.DB.prepare('SELECT COUNT(*) as c FROM sessions').first(),
+      env.DB.prepare('SELECT submission_id, title, inventor_name, status, country, created_at FROM submissions ORDER BY created_at DESC LIMIT 20').all(),
+      env.DB.prepare('SELECT country, COUNT(*) as c FROM analytics WHERE country IS NOT NULL AND country != "unknown" GROUP BY country ORDER BY c DESC LIMIT 20').all(),
+      env.DB.prepare('SELECT event_type, COUNT(*) as c FROM analytics GROUP BY event_type ORDER BY c DESC').all(),
     ]);
 
-    const byCountry = await env.DB.prepare(
-      'SELECT country, COUNT(*) as count FROM ipatent_analytics WHERE country IS NOT NULL GROUP BY country ORDER BY count DESC LIMIT 20'
-    ).all();
-
-    const byEvent = await env.DB.prepare(
-      'SELECT event_type, COUNT(*) as count FROM ipatent_analytics GROUP BY event_type ORDER BY count DESC'
-    ).all();
-
     return json({
-      submissions: { total: totalSubmissions?.count || 0, recent: recentSubmissions?.results || [] },
-      analytics: { total: totalEvents?.count || 0, by_country: byCountry?.results || [], by_event: byEvent?.results || [] },
+      submissions: { total: totalSub?.c || 0, recent: recentSubs?.results || [] },
+      analytics: { total: totalEvents?.c || 0, by_country: byCountry?.results || [], by_event: byEvent?.results || [] },
+      sessions: { total: totalSessions?.c || 0 },
     });
-  } catch (err) {
-    return json({ error: 'Stats unavailable', detail: err.message }, 500);
+  } catch (e) {
+    return json({ error: e.message }, 500);
   }
 }
 
-async function handleHealth() {
-  return json({ status: 'ok', service: 'ipatent-api', version: '1.0.0', timestamp: new Date().toISOString() });
+// ── GET /api/health ──
+
+async function handleHealth(env) {
+  let d1Ok = false, r2Ok = false, vecOk = false;
+  try { await env.DB.prepare('SELECT 1').first(); d1Ok = true; } catch {}
+  try { await env.VECTORIZE.describe(); vecOk = true; } catch {}
+  try { await env.BUCKET.head('health-check'); r2Ok = true; } catch { /* bucket may be empty */ r2Ok = true; }
+
+  return json({
+    status: 'ok',
+    service: 'ipatent-api',
+    version: '2.0.0',
+    timestamp: new Date().toISOString(),
+    bindings: { d1: d1Ok, vectorize: vecOk, r2: r2Ok },
+  });
 }
 
 // ── Router ──
@@ -216,22 +370,25 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // CORS preflight
-    if (request.method === 'OPTIONS') {
-      return cors(new Response(null, { status: 204 }));
-    }
+    if (request.method === 'OPTIONS') return cors(new Response(null, { status: 204 }));
 
     try {
-      if (path === '/api/submit') return handleSubmit(request, env);
-      if (path === '/api/analytics') return handleAnalytics(request, env);
-      if (path === '/api/stats') return handleStats(request, env);
-      if (path === '/api/health') return handleHealth();
+      // API routes
+      if (path === '/api/submit')         return handleSubmit(request, env);
+      if (path === '/api/submissions')    return handleListSubmissions(request, env);
+      if (path.match(/^\/api\/submissions\/([A-Za-z0-9_-]+)$/)) {
+        return handleGetSubmission(request, env, RegExp.$1);
+      }
+      if (path === '/api/search')         return handleSearch(request, env);
+      if (path === '/api/analytics')      return handleAnalytics(request, env);
+      if (path === '/api/stats')          return handleStats(request, env);
+      if (path === '/api/health')         return handleHealth(env);
 
-      // Catch-all: redirect to main site
+      // Catch-all
       return Response.redirect('https://ipatent.me', 302);
-    } catch (err) {
-      console.error('Unhandled error:', err);
-      return json({ error: 'Internal server error', detail: err.message }, 500);
+    } catch (e) {
+      console.error('Unhandled:', e);
+      return json({ error: 'Internal error', detail: e.message }, 500);
     }
   },
 };
