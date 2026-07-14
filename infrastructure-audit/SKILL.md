@@ -34,9 +34,9 @@ the user with the specific failure reason.
 
 ---
 
-# INFRASTRUCTURE AUDIT SKILL — v1.0 -- v2.0
+# INFRASTRUCTURE AUDIT SKILL — v2.7
 
-> **LIFECYCLE-AWARE. GAP-AUDIT INTEGRATION. RED-TEAM-DOD INTEGRATION. RESOURCE GOVERNANCE. 522-PREVENTION. UPDATED 2026-07-01.** v1.9 adds §0.8 522 Root Cause Detection (CNAME × Pages cross-reference), §0.9 CNAME Chain Detection, §0.10 Dead Worker CNAME Detection, and §0.11 Empty Zone Detection — all learned from the 2026-07-01 qwav.tech 522 outage. Prevents the #1 failure mode: CNAME to `.pages.dev` without domain registration.
+> **LIFECYCLE-AWARE. GAP-AUDIT INTEGRATION. RED-TEAM-DOD INTEGRATION. RESOURCE GOVERNANCE. 522-PREVENTION. UPDATED 2026-07-14.** v1.9 adds §0.8 522 Root Cause Detection (CNAME × Pages cross-reference), §0.9 CNAME Chain Detection, §0.10 Dead Worker CNAME Detection, and §0.11 Empty Zone Detection — all learned from the 2026-07-01 qwav.tech 522 outage. Prevents the #1 failure mode: CNAME to `.pages.dev` without domain registration.
 
 ---
 
@@ -169,7 +169,7 @@ r4 = urllib.request.Request("https://graph-api.q08.workers.dev/stats",
     headers={"User-Agent": "Mozilla/5.0"})
 kg = json.loads(urllib.request.urlopen(r4, timeout=10).read())
 print(f"Knowledge Graph: {kg.get('totalNodes',0)} nodes, {kg.get('totalEdges',0)} edges")
-# Expected: 261 nodes, 401 edges
+# Expected: 2064 nodes, 1374 edges
 ```
 
 ### Phase 1.7: DNS Resolution & Domain Classification Audit (v1.7 — 2026-07-01)
@@ -331,17 +331,17 @@ except Exception as e:
 
 | Resource | Expected Count | Current (2026-07-01) |
 |:---------|:-----:|:------|
-| D1 Databases | 5 | qnfo-cms (page content), **living-paper (CANONICAL PUBLICATIONS DATABASE — 170 papers)**, qnfo-audit, qnfo-graph, portfolio-state |
+| D1 Databases | 6 | qnfo-cms, **living-paper (CANONICAL PUBLICATIONS DATABASE — 170 papers)**, qnfo-audit, qnfo-graph, portfolio-state, ipatent-db |
 | KV Namespaces | 1 | equation-cache |
-| Vectorize Indexes | 3 | qwav-research-v2 (1024-dim, active), qnfo-handoffs, qnfo-tasks |
+| Vectorize Indexes | 4 | qwav-research-v2 (768-dim cosine, active), qnfo-handoffs (768-dim), qnfo-tasks (768-dim), ipatent-disclosures (1024-dim) |
 | Pages Projects | 10 (5 active, 5 dormant) | qnfo-hub, qnfo-publications, qnfo-legal, qwav, qnfo-design-system + 5 dormant |
-| Workers | 25 | papers-server, ask-qwav, graph-api, qnfo-agent-session (DO+SQLite), qnfo-ai-worker (Workers AI), +25 more |
+| Workers | 27 | papers-server, ask-qwav, graph-api, qnfo-agent-session (DO+SQLite), qnfo-ai-worker (Workers AI), +22 more |
 | **Durable Objects** | 2 namespaces, 3 classes | `portfolio-api_StateRegistry` (StateRegistry), `qnfo-agent-session` (AgentSession + QnfoAgentSession w/ **SQLite ON**) — Fully persistent agent state, KG mutex, lifecycle state machine |
 | Queues | 1 | qnfo-lifecycle-queue (essential) |
 | **R2 Event Rules** | 2 | releases/*.md + discovery/*.json → qnfo-lifecycle-queue (created 2026-07-04) |
 | **Secrets Store** | 1 store, 20 secrets | `default_secrets_store` (8ef28060) — CLOUDFLARE_API_TOKEN, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, ZENODO_API_TOKEN, BUFFER_ACCESS_TOKEN, GITHUB_TOKEN, S3_ENDPOINT, ADMIN_API_TOKEN, ADMIN_TOKEN, CF_API_TOKEN, GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET, BUFFER_CLIENT_ID, BUFFER_CLIENT_SECRET, FILEBASE_ACCESS_KEY, FILEBASE_ENDPOINT, FILEBASE_SECRET_KEY, PINATA_API_KEY, PINATA_API_SECRET, PINATA_JWT. **READ via env var; canonical store is Secrets Store.** |
 | **Workers AI** | 60 models, 10 task types | Text Gen, Embeddings (1024-dim), Translation, TTS, Image Gen confirmed |
-| Knowledge Graph | 2721 nodes, 3993 edges | ACTIVE — graph-api Worker, D1 qnfo-graph |
+| Knowledge Graph | 2064 nodes, 1374 edges | ACTIVE — graph-api Worker, D1 qnfo-graph |
 | R2 Bucket | 1 (qnfo) | papers, publications, discovery, archive, projects, releases, tools |
 | Live Domains | 26 (verified 2026-07-05) | 10 zones, all resolving HTTP 200 |
 
@@ -365,15 +365,15 @@ except Exception as e:
 ## Resource Inventory
 | Resource | Count | Status |
 |:---------|:-----:|:------:|
-| D1 Databases | 5 | OK |
+| D1 Databases | 6 | OK (+ipatent-db) |
 | KV Namespaces | 2→1 | OK (git-on-cloudflare-routes deprecated) |
-| Vectorize Indexes | 3 | OK (qwav-research-v2 active, 2 obsolete deleted) |
+| Vectorize Indexes | 4 | OK (qwav-research-v2 768-dim active, +ipatent-disclosures 1024-dim) |
 | Pages Projects | 10 | OK (3 essential, 4 redirecting, 3 support) |
 | Workers | 27 | OK |
 | Queues | 2 | OK (git-on-cloudflare-repo-maint deprecated) |
-| Knowledge Graph | 261n/401e | ACTIVE (needs paper REFERENCES edges) |
+| Knowledge Graph | 2064n/1374e | ACTIVE (616 Paper, 92 Projects, 57 Skills) |
 | Lifecycle Worker | Running | OK |
-| Archive Worker | Running | OK |
+| Archive Worker | 404 | ⚠️ /health endpoint missing |
 
 ## Issues Found
 **Auto-populated from gap audit (closeout-manager §2.6):**
