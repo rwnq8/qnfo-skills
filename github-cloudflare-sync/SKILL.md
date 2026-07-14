@@ -1,7 +1,7 @@
----
+﻿---
 name: github-cloudflare-sync
-version: "1.1"
-description: "AUTONOMOUS bidirectional sync between GitHub Issues/Milestones/Projects and Cloudflare D1 qnfo-audit. Priority 1 — auto-loads at session start when GITHUB_TOKEN is available. Runs sync verification, drift detection, and auto-remediation without user prompting. Use when user says 'sync GitHub,' 'sync issues,' 'cross-reference GitHub and D1,' 'check GitHub alignment,' or when infrastructure-audit detects GitHub↔D1 drift."
+version: "1.2"
+description: "AUTONOMOUS bidirectional sync between GitHub Issues/Milestones/Projects and Cloudflare D1 qnfo-audit. GitHub is CANONICAL for skills repo and project files/archives (ADR-001 REVOKED 2026-07-14). Priority 1 — auto-loads at session start when GITHUB_TOKEN is available. Runs sync verification, drift detection, and auto-remediation without user prompting. Use when user says 'sync GitHub,' 'sync issues,' 'cross-reference GitHub and D1,' 'check GitHub alignment,' or when infrastructure-audit detects GitHub↔D1 drift."
 related: infrastructure-audit, kaizen-autonomous-update, execution-guard, closeout-manager
 category: infrastructure
 ---
