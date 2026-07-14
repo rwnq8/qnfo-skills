@@ -606,6 +606,7 @@ python literature_search.py --query "topological quantum computing surface codes
 | `research-orchestrator` | Calls this skill as Phase 1, passes brief to Phase 2 |
 | `knowledge-graph` | Seeds new paper nodes with metadata |
 | `fabrication-audit` | Cross-references claims against identified papers |
+| `deep-research` | Stage 1 finding synthesis consumes paper triage (core/supporting/background) to populate gap taxonomy for paradigm-shift forecasting |
 ## Handoff Protocol (MANDATORY at Closeout)
 
 1. **Verify** ALL execute_plan items marked [EXECUTED] with tool evidence (Test-Path, exec output, git log)

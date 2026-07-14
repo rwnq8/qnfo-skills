@@ -111,6 +111,7 @@ Root (d=1.0, level 0)
 | **Due Diligence** — What exists before I start work? | Ball query: `/neighbors/{project}` filters by ultrametric distance |
 | **Impact Analysis** — What breaks if I change X? | `/impact/{nodeName}` endpoint |
 | **Ultrametric Clustering** — What projects are in my ball? | `GET /neighbors/concept-domain-X` or `/neighbors/concept-program-Y` |
+| **Paradigm Forecasting** — What research will matter most? | `query_graph` for domain nodes → feed to `deep-research` skill for Bayesian cascade modeling |
 | **Dependency Check** — What does this project depend on? | Neighbor traversal with edge type filter |
 | **Cross-Reference** — Which projects use this template? | Edge query by type |
 | **Audit Trail** — Who changed what, when? | Session → Commit → Deployment chains |
