@@ -31,7 +31,7 @@ the user with the specific failure reason.
 
 ---
 
-> **Related:** publication-publisher, literature-search
+> **Related:** deep-research, publication-publisher, literature-search
 
 ---
 

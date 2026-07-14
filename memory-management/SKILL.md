@@ -31,7 +31,7 @@ the user with the specific failure reason.
 
 ---
 
-> **Related:** qnfo-agent
+> **Related:** deep-research, qnfo-agent
 ## execute_plan (MANDATORY -- Before Any Execution)
 
 **This skill involves execution-heavy workflows.** Before executing, use update_plan to populate a concrete, verifiable checklist. Every item must be short, specific, and testable with tool evidence.

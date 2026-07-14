@@ -4,6 +4,8 @@ description: GitHub repository and project management for QNFO. GitHub is CANONI
 version: "2.0"
 ---
 
+> **Related:** deep-research
+
 # GITHUB MANAGER SKILL — v2.0
 
 > **CANONICAL.** GitHub is the canonical platform for the QNFO skills repository and project files/archives (ADR-001 REVOKED 2026-07-14). GitHub is PRIMARY for project file storage, release artifacts, and the skills monorepo. Cloudflare (R2, D1) remains primary for runtime state, structured data, and deployment infrastructure.

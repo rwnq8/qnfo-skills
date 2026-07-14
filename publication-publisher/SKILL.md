@@ -42,7 +42,7 @@ After every publication, autonomously verify:
 - **Citation integrity:** Did any citations break during PDF conversion? Verify all citation references in source exist in the generated bibliography.
 - **Artifact completeness:** Are ALL artifacts (paper.md, paper.pdf, PROVENANCE-BUNDLE.zip, README.md) present on both Zenodo and R2?
 
-> **Related:** cloudflare-deployer, citation-manager, seo-discoverability
+> **Related:** deep-research, research-planner, cloudflare-deployer, citation-manager, seo-discoverability
 
 > **Phase 4–5 of LRAP.** Handles Zenodo deposition, Cloudflare Pages deployment, PDF generation, and artifact archival for QNFO/QWAV research publications.
 

@@ -4,7 +4,7 @@ description: "Generates phased research plans, abstracts, theses, and research q
 version: "5.0"
 ---
 
-> **Related:** prompt-audit, skill-creator, literature-search, citation-manager
+> **Related:** deep-research, prompt-audit, skill-creator, literature-search, citation-manager, red-team-dod, publication-publisher
 
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration -- run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.
 
