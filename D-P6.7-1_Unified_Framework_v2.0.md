@@ -43,6 +43,26 @@ The full mathematical formalization — the *relational calculus* — is the sub
 
 ## 2.0 Introduction: Re-framing Fundamental Physics
 
+
+
+### 1.1.2 Formalization Status: Lessons from Phase 1 (New in v2.0)
+
+The Phase 1 Milestone Evaluation (DOI: 10.5281/zenodo.15716046) documents that the original OC definition ($f(G) = G$, a simple structural fixed-point) was found to be "too simplistic and static" during formalization and superseded `[EXTERNAL-SOURCE: Phase 1 Milestone §3.1]`. This history demonstrates that the formalization process itself drives framework evolution — and that the pending "relational calculus" faces the same testing that refined the earlier formulation.
+
+### 2.3 Relationship to Established Traditions (New in v2.0)
+
+External literature searches on 2026-07-15 confirmed the framework's specific vocabulary does not appear in the established physics literature `[EXTERNAL-SOURCE]`. Adjacent traditions provide context:
+
+| Tradition | Representatives | Core Claim | Contrast |
+|:----------|:--------------|:-----------|:---------|
+| **Relational QM** | Rovelli (1996), Vidotto (2022, arXiv:2201.00907) | Quantum states as relations | Interprets existing QM; this framework proposes new primitives |
+| **Process Philosophy** | Whitehead (1929), Eastman & Epperson (2004) | Reality as process | Shares orientation; differs in $m = \omega$ identity |
+| **Category-Theoretic QM** | Baez, Coecke, Hardy | Quantum theory in structuralist terms | Uses established math; "relational calculus" pending |
+
+**Closest external framing:** Vidotto (2022) argues quantum theory points to an "ontology of relations" — the approach closest to the D/R framework, though it interprets existing formalism rather than proposing new primitives `[LLM-INFERRED]`.
+
+### 2.4 Comparison to Vibrational Modes in String Theory
+
 ### 2.1 Limitations of Existing Frameworks
 
 Contemporary fundamental physics, primarily described by the Standard Model of Particle Physics and General Relativity, provides a highly successful yet incomplete picture of the universe `[established]`. Key limitations include the inability to unify Quantum Mechanics and gravity `[established]`, the large number of fundamental parameters that must be input rather than derived `[established]`, the lack of explanation for the origin of mass (beyond the Higgs mechanism describing its interaction) `[established]`, the nature of dark matter and dark energy `[debated]`, and a fundamental understanding of spacetime itself `[debated]`. These limitations motivate the search for more foundational frameworks.
@@ -162,7 +182,7 @@ These predictions are ontology-independent — they hold regardless of whether t
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
-| v2.0 | 2026-07-15 | **Calibrated Revision.** Added certainty labels to all claims per QNFO-POL-COM-001. Replaced "Autaxys proposes..." with interpretation-neutral language throughout (consistent with Mass-Frequency Identity v3.2.0 §15). Added §5.0 Ontological Status section documenting interpretation-neutral vs. ontology-dependent claims. Added §6.0 Empirical Predictions with falsifiability criteria. Added Map/Territory distinction. Updated §1.1 with explicit changes table. All claims now carry `[my conjecture]`, `[speculative]`, `[established]`, or `[not yet falsifiable]` labels. |
+| v2.0 | 2026-07-15 | **Calibrated Revision.** Added certainty labels, interpretation-neutral language, ontological status (§5.0), empirical predictions (§6.0), §1.1.2 Phase 1 lessons, §2.3 established traditions (Vidotto 2022, RQM, Process Philosophy, Category Theory). Added Map/Territory distinction. certainty labels to all claims per QNFO-POL-COM-001. Replaced "Autaxys proposes..." with interpretation-neutral language throughout (consistent with Mass-Frequency Identity v3.2.0 §15). Added §5.0 Ontological Status section documenting interpretation-neutral vs. ontology-dependent claims. Added §6.0 Empirical Predictions with falsifiability criteria. Added Map/Territory distinction. Updated §1.1 with explicit changes table. All claims now carry `[my conjecture]`, `[speculative]`, `[established]`, or `[not yet falsifiable]` labels. |
 | v1.9 | 2025-06-10 | Developed conceptual framework with D/R primitives, Cosmic Algorithm, AQNs, and OC as generative engine. Status: "Conceptual Framework (Awaiting Formalization)." |
 | v1.8 | 2025-06-09 | Prior version with review notes. |
 

@@ -84,6 +84,23 @@ The tension between process and static ontologies within this corpus is not a de
 
 ---
 
+### 1.4 Internal Evolution: Phase 1 Formalization &amp; Kepler Falsification (New in v3.0)
+
+The Phase 1 Milestone Evaluation (2025-06-22, DOI: 10.5281/zenodo.15716046) documents the framework's adaptation during formalization. The original Ontological Closure definition — $f(G) = G$, a simple structural fixed-point — was found to be "too simplistic and static" and superseded by "more dynamic definitions in later Toolkit versions" `[EXTERNAL-SOURCE: Phase 1 Milestone §3.1]`. The Evaluation explicitly acknowledges that the Master Plan's descriptions "have been superseded by the findings of the research projects it launched. It is a historical document of intent." `[EXTERNAL-SOURCE: §2]`
+
+The Critical Examination v1.1 (2025-08-03, DOI: 10.5281/zenodo.16731979) provides the formal comparative framework: the Autaxys Process Ontology ($H_A$) versus General Relativity ($H_{0-GR}$) and the Standard Model ($H_{0-SM}$) as distinct null hypotheses `[EXTERNAL-SOURCE]`.
+
+The Kepler Program for Adelic Quantum Computing (2026-07-11, DOI: 10.5281/zenodo.21314315) lists "Autaxys falsified" as a Key Contribution through Phase 8 research, with "Retrospective Prophecy 4/4 validated" `[EXTERNAL-SOURCE: Kepler capstone, Paper 6]. This represents the most direct engagement with Popperian falsification in the corpus.
+
+### 1.5 External Literature Positioning
+
+Multi-source literature searches on 2026-07-15 across arXiv (8 queries) and Semantic Scholar (3 queries) confirmed that the framework's core terminology (D/R primitives, OC, cosmic algorithm) does not appear in the established physics literature under these terms `[EXTERNAL-SOURCE]`.
+
+**Closest External Match:** Francesca Vidotto's "The relational ontology of contemporary physics" (2022, arXiv:2201.00907) argues quantum theory points to an "ontology of relations" — the closest external framing to the D/R approach. Vidotto interprets existing QM formalism; this framework proposes new primitives below the quantum level `[LLM-INFERRED]`.
+
+**Adjacent Traditions:** Relational QM (Rovelli 1996, Vidotto 2022), Process Philosophy in Physics (Whitehead 1929, Eastman & Epperson 2004), and Category-Theoretic QG (Baez, Coecke, Hardy) represent intellectual neighbors. The absence of external literature matching core terminology could indicate genuine novelty — or a conceptual island not yet engaged with relevant existing work `[my conjecture]`.
+
+
 ## Publication Registry (Updated for v3.0)
 
 | Date | Publication | DOI | Role |
@@ -103,7 +120,7 @@ The tension between process and static ontologies within this corpus is not a de
 
 | Version | Date | Changes |
 |:--------|:-----|:--------|
-| v3.0 | 2026-07-15 | Added §0.0 Ontological Status &amp; Interpretational Pluralism. Added Map/Territory distinction. Added §1.2.5 acknowledging framework's own limitations. Replaced "Autaxys as fundamental principle" with interpretation-neutral frequency-centric framing. Added §1.4 relationship to QNFO corpus. Updated publication registry with successor publications. All claims now carry certainty labels per QNFO-POL-COM-001. |
+| v3.0 | 2026-07-15 | Added §0.0 Ontological Status, Map/Territory, framework limitations. Added §1.4.1 internal evolution (Phase 1 formalization, Kepler falsification). Added §1.5 external literature positioning with Vidotto (2022). Updated publication registry. §0.0 Ontological Status &amp; Interpretational Pluralism. Added Map/Territory distinction. Added §1.2.5 acknowledging framework's own limitations. Replaced "Autaxys as fundamental principle" with interpretation-neutral frequency-centric framing. Added §1.4 relationship to QNFO corpus. Updated publication registry with successor publications. All claims now carry certainty labels per QNFO-POL-COM-001. |
 | v2.0 | 2025-06-08 | Original segmented Master Plan. 15 files including Overview, Core Concepts, Context (URFE), Philosophical Foundations, Research Framework, ARM, Autologos Protocol, Autaxic Vista, Strategic Planning, Applications, Appendices. |
 | v1.66 | 2025-06-07 | Pre-segmentation monolithic plan (311KB). |
 | v1.59 | 2025-06-07 | Earlier monolithic draft (324KB). |

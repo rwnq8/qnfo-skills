@@ -79,7 +79,7 @@ This demonstrates that the Autaxys framework's mathematical structure independen
 
 ## 3. External Literature Gap Analysis (New in v1.0)
 
-The autaxys framework's core terminology — distinctions (D), relations (R), ontological closure (OC), and the Cosmic Algorithm — does not appear in the established physics literature under these terms. External literature searches conducted on 2026-07-15 found:
+The autaxys framework's core terminology ï¿½ distinctions (D), relations (R), ontological closure (OC), and the Cosmic Algorithm ï¿½ does not appear in the established physics literature under these terms. External literature searches conducted on 2026-07-15 found:
 
 | Source | Query | Results | Implication |
 |:-------|:------|:-------|:-----------|
@@ -103,7 +103,7 @@ While no external literature directly maps onto the D/R + OC framework, three es
 | **Process Philosophy in Physics** | Whitehead (1929), Eastman, Epperson (2004) | Reality is fundamentally process, not substance | Shares the process orientation but without frequency-centric mathematical identity |
 | **Category-Theoretic Quantum Gravity** | Baez, Coecke, Hardy (2000s-present) | Quantum foundations re-expressed in category-theoretic/structuralist terms | Shares the structural/relational approach but uses established mathematical frameworks (monoidal categories) rather than proposing new primitives |
 
-The framework would benefit from explicit engagement with these traditions — both to clarify its own claims through comparison and to establish its distinctiveness within the broader landscape of relational approaches to fundamental physics `[my conjecture]`.
+The framework would benefit from explicit engagement with these traditions ï¿½ both to clarify its own claims through comparison and to establish its distinctiveness within the broader landscape of relational approaches to fundamental physics `[my conjecture]`.
 
 ### 3.2 Implications
 
@@ -113,7 +113,7 @@ The absence of external literature matching the framework's core concepts has tw
 
 2. **Isolation (if invalid):** The lack of engagement with established relational traditions (RQM, process philosophy, category-theoretic approaches) means the framework has not been tested against the strongest existing versions of relational and process-based approaches to physics. This is a gap that should be addressed before claiming novelty `[PHILOSOPHY, LLM-INFERRED]`.
 
-The fact that Relational Quantum Mechanics has 290 papers and Process Philosophy in Physics has 190 papers — while the QNFO autaxys corpus has 33 Zenodo records — indicates that these traditions have substantially more developed engagement with mainstream physics. The framework would benefit from explicit positioning relative to these traditions `[my conjecture]`.
+The fact that Relational Quantum Mechanics has 290 papers and Process Philosophy in Physics has 190 papers ï¿½ while the QNFO autaxys corpus has 33 Zenodo records ï¿½ indicates that these traditions have substantially more developed engagement with mainstream physics. The framework would benefit from explicit positioning relative to these traditions `[my conjecture]`.
 
 
 (?s)(## 3\.\s+What This Means for the Original Records)
@@ -135,6 +135,20 @@ The fact that Relational Quantum Mechanics has 290 papers and Process Philosophy
 5. **Update Section 1.1** to reflect evolution from "conceptual framework (awaiting formalization)" to "calibrated conceptual framework with documented ontological neutrality"
 
 ---
+
+
+### 3.3 Phase 1 Internal Evidence: Protective-Belt Adaptation
+
+The Phase 1 Milestone Evaluation (2025-06-22, DOI: 10.5281/zenodo.15716046) provides direct evidence of the protective-belt dynamic operating during formalization: the original OC definition ($f(G) = G$, a simple structural fixed-point) was found to be "too simplistic and static" and superseded by "more dynamic definitions in later Toolkit versions" [EXTERNAL-SOURCE: Section 3.1]. The Master Plan's descriptions were acknowledged as "superseded" and "a historical document of intent" [EXTERNAL-SOURCE: Section 2]. This is a textbook Lakatosian adaptation: formalism modified, core ontology preserved.
+
+### 3.4 Kepler Program: Claimed "Autaxys Falsified"
+
+The Kepler Program for Adelic Quantum Computing (2026-07-11, DOI: 10.5281/zenodo.21314315) lists "Autaxys falsified" as a Key Contribution through Phase 8 ("Time is a Tree"), with "Retrospective Prophecy 4/4 validated" [EXTERNAL-SOURCE: Kepler capstone, Paper 6]. If substantiated, this represents the most direct engagement with Popperian falsification in the corpus. The Kepler Program's explicit use of "falsified" demonstrates that at least some branches of the research program have internalized falsifiability norms.
+
+### 3.5 Critical Examination v1.1: Formal Comparative Framework
+
+The Critical Examination of Spacetime, Mass, and Gravity v1.1 (2025-08-03, DOI: 10.5281/zenodo.16731979) provides the formal methodology for comparing the Autaxys Process Ontology ($H_A$) against $H_{0-GR}$ (General Relativity) and $H_{0-SM}$ (Standard Model) as distinct null hypotheses [EXTERNAL-SOURCE]. It adopts a "strict constructionist" desk-based methodology â€” the most rigorous methodological framing in the autaxys corpus.
+
 
 ## 5. The Meta-Pattern: Protective Belt Dynamics
 
