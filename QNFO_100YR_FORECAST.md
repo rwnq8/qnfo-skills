@@ -1,8 +1,10 @@
+> ⚠️ **EVIDENCE DISCLAIMER:** This document contains forward-looking paradigm-shift predictions. An independent evidence synthesis (see `EVIDENCE_SYNTHESIS.md`) identifies 5 critical evidentiary gaps and 1 internal contradiction (FCI passive topological QC refuted by the same foundational paper that provides the Era 1 thesis). The evidence-adjusted cascade EV is **~13.5%** (not 52.4%). Readers should treat this forecast as a **research direction hypothesis**, not a confirmed roadmap.
+
 # QNFO 100-Year Paradigm Forecast Report
 ## A Cascading Bayesian Dependency Model of Four-Era Paradigm Shifts
 
-**Date:** 2026-07-15 | **Authors:** QNFO Research / QWAV | **Version:** 1.0
-**Status:** COMPLETE — All 9 deep-research stages executed
+**Date:** 2026-07-15 | **Authors:** QNFO Research / QWAV | **Version:** 1.1**
+**Status:** COMPLETE — All 9 deep-research stages executed | **Red-Team:** 2026-07-15 (this session)
 
 ---
 
