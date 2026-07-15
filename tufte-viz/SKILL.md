@@ -1,6 +1,7 @@
 ---
 name: tufte-viz
-description: "Ideate and critique data visualizations using Edward Tufte's principles from \"The Visual Display of Quantitative Information.\" Use this skill when:\n(1) Designing new data visualizations or charts\n(2) Critiquing or improving existing visualizations\n(3) Reviewing dashboards or reports for graphical integrity\n(4) Deciding between visualization approaches\n(5) Reducing chartjunk or improving data-ink ratio\n(6) Planning small multiples or high-density displays\nApplies principles: data-ink ratio, chartjunk elimination, graphical integrity, lie factor, small multiples, and data density."
+description: "Ideate and critique data visualizations using Edward Tufte principles from The Visual Display of Quantitative Information. Use this skill when: (1) Designing new data visualizations or charts (2) Critiquing or improving existing visualizations (3) Reviewing dashboards or reports for graphical integrity (4) Deciding between visualization approaches (5) Reducing chartjunk or improving data-ink ratio (6) Planning small multiples or high-density displays. Applies principles: data-ink ratio, chartjunk elimination, graphical integrity, lie factor, small multiples, and data density."
+version: "1.0"
 ---
 
 > **INCLUDES AUTONOMOUS RED-TEAM SELF-AUDIT.** Before claiming this skill complete, autonomously run: (1) Output Verification -- negative verification. (2) Assumption Challenge -- state and test every assumption. (3) Edge Case Check -- empty/null/max/boundary/desync. (4) DoD Integration — run _dod_enforce.py if exists. (5) Iteration -- retry on failure, max 3. ANTI-PATTERN: User should NEVER ask about quality.

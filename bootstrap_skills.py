@@ -132,6 +132,38 @@ def cmd_health(token: str = None):
         for r in results:
             if r['status'] == 'CRITICAL':
                 print(f'    - {r["skill"]}: {"; ".join(r["issues"])}')
+
+    # Stale skill detection — Phase 2.3
+    try:
+        import sqlite3
+        db_path = os.path.expandvars(r'%APPDATA%\\DeepChat\\app_db\\agent.db')
+        if os.path.exists(db_path):
+            conn = sqlite3.connect(db_path)
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT ss.skill_name, MAX(s.created_at) as last_seen
+                FROM new_session_active_skills ss
+                JOIN new_sessions s ON ss.session_id = s.id
+                GROUP BY ss.skill_name
+                ORDER BY last_seen ASC
+            """)
+            usage = {row[0]: row[1] for row in cur.fetchall()}
+            stale_days = 60
+            stale = []
+            for s in skills:
+                last_seen = usage.get(s['directory'])
+                if last_seen and (datetime.now().timestamp() - last_seen) > stale_days * 86400:
+                    stale.append(s['directory'])
+                elif not last_seen:
+                    stale.append(s['directory'])  # Never loaded
+            conn.close()
+            if stale:
+                print(f'\n  SKILL RETIREMENT CANDIDATES (unused > {stale_days}d or never loaded):')
+                for name in sorted(stale):
+                    print(f'    - {name}')
+                print(f'  [AUTO-RETIRE] {len(stale)} skills flagged for retirement review')
+    except Exception:
+        pass
     return results
 
 def cmd_sync(token: str, dry_run: bool = False):
