@@ -1,0 +1,124 @@
+# QNFO Strategic Research Roadmap 2026-2126
+## Research-Planner Pipeline Output — Phased Plan with Resource Allocation
+
+**Date:** 2026-07-15 | **Authors:** QNFO Research / QWAV | **Version:** 1.0
+
+---
+
+## Thesis
+
+**"QNFO's optimal strategy is to concentrate 45% of resources on the FCI-ultrametric synergy node — the single point in the entire 100-year cascade where P(success given prior success) exceeds 0.80 — because the leverage gained here determines everything downstream."**
+
+---
+
+## Core Invariant
+
+**Physically protected information coherence across temperature scales** — from 4 K FCI materials to 310 K viscoelastic hydrogels. This invariant persists whether the implementation is cryogenic binary qubits, topological qudits, or room-temperature spintronics.
+
+---
+
+## Resource Allocation (CFPE Doctrine)
+
+| Allocation | Target | Rationale |
+|:-----------|:-------|:----------|
+| **45%** | Era 1 FCI Engineering + Ultrametric Theory | Leverage node — P>0.80 for FCI→Ultrametric synergy |
+| **25%** | Institutional Adoption Incentives | Choke node — highest Pessimistic probability |
+| **15%** | Bell-Theorem Loophole Research + NV-Diamond Fallback | Red-team hardening loop for E3 |
+| **5%** | Room-T Superconductor Monitoring | Wildcard hedge |
+| **10%** | QNFO Infrastructure & Continuity | Publication pipeline, KG maintenance, collaboration |
+
+---
+
+## Phase 0: Immediate (LLM-Only MVP) — 5 Tasks
+
+| Task | Deliverable | Go/No-Go |
+|:-----|:-----------|:---------|
+| T0.1 | Kapitza thermal ceiling calculation (P_local vs H_K at scale) | Confirmed ceiling → E1 strategy validated |
+| T0.2 | Hydrogel T₂ meta-analysis (all published synthetic matrix data) | Any T₂ > 500ms at 300K → B1 confidence upgrade |
+| T0.3 | Bell-assumption formal audit (which assumptions can be relaxed?) | Relaxable assumption found → H1 probability upgrade |
+| T0.4 | NV-diamond vs bio-mimetic 2046 T₂ projection | NV-diamond trajectory inferior → B1 preferred |
+| T0.5 | QC industry "thermodynamic limit" language tracking | Major player acknowledgment → institutional shift signal |
+
+---
+
+## Phase 1: Foundational Clarification (3-6 Months) — 4 Tasks
+
+| Task | Deliverable |
+|:-----|:-----------|
+| P1.1 | Full QNFO corpus annotation with gap taxonomy (50+ papers) |
+| P1.2 | Madelung-Bruhat-Tits mathematical bridge formalization |
+| P1.3 | Historical paradigm shift case study analysis |
+| P1.4 | First draft: QNFO Strategy Whitepaper |
+
+---
+
+## Phase 2: Core Case Studies (1-3 Years) — 4 Tasks
+
+| Task | Deliverable |
+|:-----|:-----------|
+| P2.1 | FCI material candidate computational screening |
+| P2.2 | Viscoelastic gating molecular dynamics simulation |
+| P2.3 | Bell-theorem counterexample mathematical construction |
+| P2.4 | NV-diamond vs bio-mimetic lifecycle cost analysis |
+
+---
+
+## Phase 3: Formal/Mathematical Generalization (3-10 Years) — 4 Tasks
+
+| Task | Deliverable |
+|:-----|:-----------|
+| P3.1 | "Quantum Laws of Form" complete axiomatic framework |
+| P3.2 | α geometric derivation — automated theorem proving attempt |
+| P3.3 | Bridge Theorem extension to continuous limit recovery |
+| P3.4 | Hydrodynamic Schrödinger full numerical verification |
+
+---
+
+## Phase 4: Institutional & Dissemination (Concurrent) — 4 Tasks
+
+| Task | Type |
+|:-----|:-----|
+| P4.1 | FCI fabrication facility establishment proposal |
+| P4.2 | Synthetic hydrogel wet-lab protocol documentation |
+| P4.3 | Attosecond tracking laboratory design study |
+| P4.4 | Multi-institutional QNFO research center proposal |
+
+---
+
+## Phase 5: Synthesis & Publication — 4 Whitepapers
+
+| Whitepaper | Status |
+|:-----------|:-------|
+| **A: QNFO 100-Year Paradigm Forecast** (deep-research pipeline) | ✅ COMPLETE |
+| **B: CFPE Methodology Paper** | ✅ COMPLETE |
+| **C: QNFO Strategic Research Roadmap** (research-planner pipeline) | ✅ THIS DOCUMENT |
+| **D: Experimental Protocols Compendium** | ⏳ PENDING — Phase 1 |
+
+---
+
+## Execution Timeline
+
+```
+2026 Q3-Q4:  Phase 0 MVP (5 tasks, LLM-only) ──── GO/NO-GO GATE
+2027 Q1-Q2:  Phase 1 Foundational Clarification (4 tasks)
+2028-2030:   Phase 2 Core Case Studies (4 tasks)
+2031-2036:   Phase 3 Formal Generalization (4 tasks)
+2027-2036:   Phase 4 Institutional (4 tasks, concurrent)
+2036:        Phase 5 Publication pipeline complete
+```
+
+---
+
+## Self-Critique
+
+**What this plan likely misses:**
+1. If gate-based QC scales past the thermal ceiling, entire Era 1 thesis collapses — assume 25% chance
+2. NV-diamond pathway may overtake bio-mimetic entirely — hedge with 15% allocation
+3. Room-temperature superconductor is the "black swan" that kills all four eras — 5% monitoring hedge
+4. Institutional inertia may add 10-15 years to every timeline
+
+**When to ignore:** The plan is sound for its stated purpose — providing a resource-optimized, falsifiable, internally consistent research strategy from the QNFO perspective.
+
+---
+
+*Generated by research-planner skill v5.0 | 2026-07-15*
