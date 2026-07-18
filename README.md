@@ -3,9 +3,12 @@
 Skill definitions and skill-owned tooling for the DeepChat agent skill system.
 
 **This repository is strictly scoped to skill files.** See
-[ADR-026](./ADR-026-skills-only.md) for the full policy and
+[ADR-026](./ADR-026-skills-only.md) for the full policy,
 [ADR-027](./ADR-027-research-separation.md) for where research/project files
-belong instead (`QNFO/qnfo-research` or a dedicated project repo).
+belong instead (`QNFO/qnfo-research` or a dedicated project repo), and
+[ADR-028](./ADR-028-r2-immediate-write.md) for the R2-Immediate-Write /
+Per-Turn Checkpoint protocol governing HOW those project files must be
+persisted (R2-canonical, per-turn, never local-only).
 
 ## Skills in this repository
 
@@ -18,7 +21,7 @@ belong instead (`QNFO/qnfo-research` or a dedicated project repo).
 | `git-github` | — | — |
 | `knowledge` | kg-seed-4d | — |
 | `qnfo-agent` | — | — |
-| `research` | arweave-upload, internet-archive-submit, pinata-pin, verify-4d | deliverable-registry-template, risk-register-template |
+| `research` | arweave-upload, internet-archive-submit, pinata-pin, verify-4d | deliverable-registry-template, risk-register-template (v2.4: Zenodo versioning cross-refs ADR-028) |
 | `system` | infra-audit, skill-sync, worker-audit | — |
 
 ## The Three Sources of Truth (Keep in Sync)

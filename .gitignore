@@ -29,6 +29,7 @@
 !/README.md
 !/ADR-026-skills-only.md
 !/ADR-027-research-separation.md
+!/ADR-028-r2-immediate-write.md
 
 # ============================================================================
 # STEP 3: Explicitly allow the 9 known skill directories (root-anchored)
