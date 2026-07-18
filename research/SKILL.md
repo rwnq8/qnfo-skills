@@ -1,7 +1,7 @@
 ---
 name: research
 description: End-to-end research and publication pipeline -- project initialization (Phase 0 scaffold, pre-flight checklist, WBS), literature search (Semantic Scholar, arXiv, web, Vectorize, KG), paper triage and classification, citation management and BibTeX verification, deep paradigm forecasting (9-stage Bayesian cascade with calibration register), research planning and hypothesis generation, publication formatting and PDF building (Pandoc+XeLaTeX ONLY), Zenodo DOI upload with robust retry and versioning, Cloudflare deployment (D1 + papers-server Worker), social media dissemination via Buffer, SEO optimization, IPFS/Web3 content permanence, and phase closeout protocol with version tagging. Use for ANY research, publication, project lifecycle, or dissemination task.
-version: "2.3"
+version: "2.4"
 triggers: ["research", "paper", "literature", "preprint", "arXiv", "Semantic Scholar", "cite", "citation", "BibTeX", "bibliography", "deep dive", "paradigm forecast", "forecast", "Bayesian", "EV ranking", "publish", "Zenodo", "DOI", "manuscript", "LaTeX", "build PDF", "social media", "tweet", "post", "Buffer", "LinkedIn", "Bluesky", "SEO", "sitemap", "robots.txt", "discoverability", "llms.txt", "structured data", "meta tags", "IPFS", "pinata", "cid", "pinning", "Web3", "CAR", "DID", "Filecoin", "Arweave", "research plan", "methodology", "hypothesis", "publication", "dissemination", "write paper", "publish paper", "scientific", "academic", "LRAP", "QNFO publication", "QWAV publication"]
 related: ["knowledge", "cloudflare", "git-github"]
 priority: 1
@@ -10,7 +10,9 @@ autonomous: true
 self_sufficient: true
 ---
 
-# RESEARCH -- v2.3 (Ultra-Consolidated Pipeline + Project Lifecycle + 4-D Distribution)
+# RESEARCH -- v2.4 (Ultra-Consolidated Pipeline + Project Lifecycle + 4-D Distribution)
+
+> **v2.4 UPDATE (2026-07-18):** Added Zenodo Versioning for Phase/Session Conclusions (ADR-028) -- every project phase/session conclusion creates a NEW VERSION of the existing Zenodo deposit under one concept DOI, never a disconnected new deposit. Cross-references qnfo-agent's R2-Immediate-Write + Per-Turn Checkpoint Protocol (per-turn R2 sync, phase-end GitHub push + Zenodo version, session/project-conclusion IPFS pin + social promotion for FINAL deliverables only).
 
 > **Merges 6:** research-pipeline + deep-research + publication-publisher + buffer-integration + seo-discoverability + ipfs-web3
 > **v2.2 UPDATE (2026-07-18):** Merged in Phase 0 (Project Initialization), Pre-Flight Checklist (P1-P10), Cross-Skill Integration Checklist, Phase Closeout Protocol, Deliverable Registry / Risk Register templates, and Version Tagging Protocol (previously drafted as a separate, since-retired `research-v2` duplicate skill -- consolidated here as the single canonical research skill).
@@ -439,6 +441,33 @@ curl -s https://zenodo.org/api/records/{id} | python -c "import sys,json; r=json
 #### Zenodo Retry Protocol
 If Zenodo API returns 500 or timeout: retry up to 3 times with exponential backoff (1s, 4s, 16s). If deposit exists from prior attempt: recover draft via `GET /api/deposit/depositions?q=<title>`, update rather than recreate.
 
+#### Zenodo Versioning for Phase/Session Conclusions (MANDATORY -- see qnfo-agent §8.5 JIT Thin-Client Protocol, Phase-End and Session/Project-Conclusion Checkpoint subsections)
+
+At every session or phase conclusion for a project with an existing Zenodo
+deposit, create a NEW VERSION rather than a disconnected upload:
+```python
+# 1. Create a new version draft of the existing concept
+POST https://zenodo.org/api/deposit/depositions/{existing_id}/actions/newversion
+# Response includes a "latest_draft" link -> extract new draft deposit ID
+
+# 2. Upload the updated files to the NEW draft (remove stale files first if replacing)
+DELETE https://zenodo.org/api/deposit/depositions/{new_id}/files/{stale_file_id}
+PUT https://zenodo.org/api/deposit/depositions/{new_id}/files
+
+# 3. Update metadata (bump version string, e.g. "1.0" -> "1.1")
+PUT https://zenodo.org/api/deposit/depositions/{new_id}
+Body: {"metadata": {"version": "1.1", ...}}
+
+# 4. Publish the new version
+POST https://zenodo.org/api/deposit/depositions/{new_id}/actions/publish
+```
+This keeps ALL phase-by-phase snapshots under one **concept DOI** (stable,
+never changes) with each phase getting its own **version DOI** (changes per
+version). Never create a brand-new unrelated Zenodo deposit for what is
+really the next phase/version of an existing project -- that fragments the
+citation record and breaks `isNewVersionOf`/`isPreviousVersionOf` relations.
+Only use a genuinely NEW deposit for a genuinely NEW, unrelated publication.
+
 ---
 
 ## Phase 6: Cloudflare Deployment
@@ -810,3 +839,6 @@ research-pipeline -> deep-research -> publication-publisher -> buffer-integratio
 | No deliverable registry | All deliverables tracked with paths and archival targets from Phase 0 |
 | Creating a research phase tag/release inside `qnfo-skills` | `git remote -v` REPO-TARGET GATE before every tag/commit/release (ADR-026 Incident 3) |
 | Assuming a "clean branch" audit is sufficient | Tags and GitHub Releases are independent refs -- audit `git tag -l` and `gh release list` separately, they survive a branch force-push |
+| Project files existing ONLY on local disk across a turn boundary | R2-Immediate-Write mandate (ADR-028) -- upload every project artifact to R2 in the SAME turn it's created/edited, never deferred to closeout |
+| Creating a disconnected new Zenodo deposit for each phase | Use Zenodo's `actions/newversion` API to keep phase snapshots under one concept DOI (ADR-028) |
+| Social-promoting every internal WBS phase transition | Reserve Buffer/social posts for FINAL public deliverables only, not interim phase closeouts |
