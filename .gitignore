@@ -1,0 +1,75 @@
+# ============================================================================
+# qnfo-skills — ALLOWLIST POLICY (ADR-026, hardened 2026-07-18 remediation)
+# ============================================================================
+# THIS REPOSITORY IS STRICTLY FOR SKILL FILES. NOTHING ELSE.
+#
+# Canonical skill layout (the ONLY structure permitted in this repo):
+#   <skill-name>/SKILL.md              (required)
+#   <skill-name>/scripts/*.js|*.py      (optional)
+#   <skill-name>/references/*.md        (optional)
+#   <skill-name>/templates/*            (optional)
+#   <skill-name>/assets/*               (optional)
+#
+# Research projects, papers, WBS plans, PDFs, JSON data dumps, JIT ephemeral
+# scripts, session closeout artifacts, and ANY project-specific content
+# belong in a SEPARATE repository:
+#   - QNFO/qnfo-research      (shared research repo for all projects), OR
+#   - QNFO/<project-name>     (dedicated repo per large project)
+# NEVER commit them here. See ADR-026 and ADR-027 for full policy.
+#
+# ============================================================================
+# STEP 1: Default-deny everything at repository ROOT (anchored, non-recursive)
+# ============================================================================
+/*
+
+# ============================================================================
+# STEP 2: Explicitly allow root-level policy files
+# ============================================================================
+!/.gitignore
+!/README.md
+!/ADR-026-skills-only.md
+!/ADR-027-research-separation.md
+
+# ============================================================================
+# STEP 3: Explicitly allow the 9 known skill directories (root-anchored)
+# ============================================================================
+!/cloudflare/
+!/code/
+!/documents/
+!/frontend-design/
+!/git-github/
+!/knowledge/
+!/qnfo-agent/
+!/research/
+!/system/
+
+# ============================================================================
+# STEP 4: Defense-in-depth — inside allowed skill dirs, still block anything
+# that looks like research/project/JIT ephemera (unanchored patterns apply
+# at any depth within the allowed directories from Step 3).
+# ============================================================================
+**/*.pdf
+**/*.pptx
+**/*.docx
+**/*.xlsx
+**/*.csv
+**/releases/
+**/artifacts/
+**/projects/
+**/papers/
+**/WBS*.md
+**/wbs*.md
+**/*-cryptanalysis.md
+**/*-distribution-wbs.md
+**/_*
+**/__pycache__/
+**/.wrangler/
+**/*.log
+**/*.err
+**/*.sql
+**/*.bat
+**/*.dll
+**/*.exe
+**/*.pak
+**/*.dat
+**/*.bin
