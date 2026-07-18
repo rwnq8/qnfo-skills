@@ -69,6 +69,25 @@ rclone check <local-repo-path> primary-r2:qnfo-skills/prompts/skills/<skill>
 Get-ChildItem "$env:USERPROFILE\.deepchat\skills" -Directory |
   Group-Object { $_.Name -replace '-v\d+$','' } |
   Where-Object Count -gt 1
+
+# 4. TAG/RELEASE AUDIT (MANDATORY — a clean file tree does NOT mean a clean
+#    repo; tags and GitHub Releases are independent refs that survive branch
+#    force-pushes. See ADR-026 Incident 3, where 6 stale tags + 1 GitHub
+#    Release from pre-remediation history went undetected through two prior
+#    file-tree-only cleanups.)
+gh api repos/QNFO/qnfo-skills/tags        # expect: [] or only skill-scoped tag names
+gh release list --repo QNFO/qnfo-skills   # expect: empty — Releases are PROHIBITED in this repo
+git branch -a                              # expect: only master (no stray fully-merged branches)
+
+# For every tag returned above that is NOT an explicit skill-ecosystem
+# milestone tag, verify it is safe to delete (not an ancestor of master, i.e.
+# it points at pre-remediation/contaminated history), back it up, then delete:
+git merge-base --is-ancestor <tag> origin/master; echo $LASTEXITCODE  # 1 = safe to delete
+git bundle create backup.bundle <tag1> <tag2> ...    # backup ALL suspect tags in one bundle
+rclone copyto backup.bundle primary-r2:qnfo-backups/qnfo-skills/<date>-orphaned-tags.bundle
+rclone hashsum md5 backup.bundle; rclone hashsum md5 primary-r2:qnfo-backups/qnfo-skills/<date>-orphaned-tags.bundle  # must match
+git push --delete origin <tag1> <tag2> ...
+gh release delete <tag> --repo QNFO/qnfo-skills --yes   # if a matching Release exists
 ```
 
 ## Sync Workflow (LLM-Orchestrated)
@@ -82,8 +101,17 @@ Get-ChildItem "$env:USERPROFILE\.deepchat\skills" -Directory |
    `templates/` etc.) into the scratch clone.
 4. **Verify `git status --short` shows only skill-scoped paths** before
    staging (see Contributing below).
+4.5. **REPO-TARGET GATE:** run `git remote -v` in the scratch clone and
+   confirm it points at `QNFO/qnfo-skills` before committing — and, for any
+   OTHER git operation in ANY OTHER directory (research phases, project
+   closeouts, publication tags), confirm it does NOT point at `qnfo-skills`.
+   This check is symmetric: wrong-direction contamination goes both ways.
 5. **Commit on a feature branch** (`fix/...` or `feat/...`, never `main`),
    using format: `ACTION:EDIT FILE: <path> RATIONALE: <reason>`.
+   **Only create tags in this repo for explicit skill-ecosystem milestones**
+   (if ever) — never for research phases, publications, or project WBS steps.
+   **Never create a GitHub Release in this repo** — Releases are prohibited
+   entirely (see ADR-026).
 6. **Push and open/merge PR** (or fast-forward merge for solo maintenance).
 7. **Run `system/scripts/skill-sync.js`** (or equivalent R2 PUT) to push the
    same files to the `qnfo-skills` R2 bucket under `prompts/skills/<skill>/`.
