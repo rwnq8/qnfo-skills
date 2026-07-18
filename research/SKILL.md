@@ -1,24 +1,27 @@
 ---
 name: research
-description: End-to-end research and publication pipeline -- literature search (Semantic Scholar, arXiv, web, Vectorize, KG), paper triage and classification, citation management and BibTeX verification, deep paradigm forecasting (9-stage Bayesian cascade with calibration register), research planning and hypothesis generation, publication formatting and PDF building (Pandoc+XeLaTeX ONLY), Zenodo DOI upload with robust retry and versioning, Cloudflare deployment (D1 + papers-server Worker), social media dissemination via Buffer, SEO optimization, and IPFS/Web3 content permanence. Use for ANY research, publication, or dissemination task.
-version: "2.0"
+description: End-to-end research and publication pipeline -- project initialization (Phase 0 scaffold, pre-flight checklist, WBS), literature search (Semantic Scholar, arXiv, web, Vectorize, KG), paper triage and classification, citation management and BibTeX verification, deep paradigm forecasting (9-stage Bayesian cascade with calibration register), research planning and hypothesis generation, publication formatting and PDF building (Pandoc+XeLaTeX ONLY), Zenodo DOI upload with robust retry and versioning, Cloudflare deployment (D1 + papers-server Worker), social media dissemination via Buffer, SEO optimization, IPFS/Web3 content permanence, and phase closeout protocol with version tagging. Use for ANY research, publication, project lifecycle, or dissemination task.
+version: "2.2"
 triggers: ["research", "paper", "literature", "preprint", "arXiv", "Semantic Scholar", "cite", "citation", "BibTeX", "bibliography", "deep dive", "paradigm forecast", "forecast", "Bayesian", "EV ranking", "publish", "Zenodo", "DOI", "manuscript", "LaTeX", "build PDF", "social media", "tweet", "post", "Buffer", "LinkedIn", "Bluesky", "SEO", "sitemap", "robots.txt", "discoverability", "llms.txt", "structured data", "meta tags", "IPFS", "pinata", "cid", "pinning", "Web3", "CAR", "DID", "Filecoin", "Arweave", "research plan", "methodology", "hypothesis", "publication", "dissemination", "write paper", "publish paper", "scientific", "academic", "LRAP", "QNFO publication", "QWAV publication"]
-related: ["knowledge", "cloudflare"]
+related: ["knowledge", "cloudflare", "git-github"]
 priority: 1
 platform: all
 autonomous: true
 self_sufficient: true
 ---
 
-# RESEARCH -- v2.1 (Ultra-Consolidated Pipeline + 4-D Distribution)
+# RESEARCH -- v2.2 (Ultra-Consolidated Pipeline + Project Lifecycle + 4-D Distribution)
 
 > **Merges 6:** research-pipeline + deep-research + publication-publisher + buffer-integration + seo-discoverability + ipfs-web3
-> **Related:** Always load `knowledge` for KG/D1 discovery. Load `cloudflare` for deployment to Pages/R2/D1/Workers.
+> **v2.2 UPDATE (2026-07-18):** Merged in Phase 0 (Project Initialization), Pre-Flight Checklist (P1-P10), Cross-Skill Integration Checklist, Phase Closeout Protocol, Deliverable Registry / Risk Register templates, and Version Tagging Protocol (previously drafted as a separate, since-retired `research-v2` duplicate skill -- consolidated here as the single canonical research skill).
+> **Related:** Always load `knowledge` for KG/D1 discovery. Load `cloudflare` for deployment to Pages/R2/D1/Workers. Load `git-github` for Phase 0 init and every phase closeout.
 > **Cloudflare Full-Stack:** All publication artifacts live on R2 + D1 + Workers. Zenodo is external archival. Buffer is social dissemination.
 
 ## execute_plan
 
 update_plan([
+  {"step": "Phase 0: Project Initialization -- repo, scaffold, WBS, core claim lock", "status": "pending"},
+  {"step": "Pre-Flight: Run P1-P10 checklist -- HARD gates must pass before Phase 1", "status": "pending"},
   {"step": "Phase 1: Due Diligence -- query KG + D1 + Vectorize + external sources", "status": "pending"},
   {"step": "Phase 2: Literature Search -- 5 parallel sources, dedup, classify core/supporting/background/reject", "status": "pending"},
   {"step": "Phase 3: Citation Management -- extract citations, verify BibTeX, auto-generate missing DOIs", "status": "pending"},
@@ -28,6 +31,107 @@ update_plan([
   {"step": "Phase 7: Disseminate -- SEO audit, Buffer social media, IPFS pin + CAR archive", "status": "pending"},
   {"step": "Phase 8: 4-D Distribution -- IPFS multi-pinner, Arweave, Filecoin, DNSLink, Internet Archive, verify all 4 dimensions", "status": "pending"},
 ])
+
+**Note:** Phase 0 and the Pre-Flight checklist apply to net-new, long-lived research projects (new repo, new WBS). For a single paper/update within an existing project, skip directly to Phase 1.
+
+---
+
+## Phase 0: Project Initialization (BLOCKING GATE for new projects)
+
+> **HARD GATE:** Phase 1 MUST NOT begin until all Phase 0 deliverables are committed.
+
+### 0.1 Repository and Infrastructure
+
+Standard directory scaffold:
+```
+<project-slug>/
+├── README.md
+├── PROJECT-PLAN.md
+├── .gitignore
+├── docs/            # Source documents, prior work
+├── artifacts/       # Literature reviews, gate memos, test results
+├── notebooks/       # Working notes, calculation notebooks
+└── releases/        # Versioned Zenodo-ready bundles
+```
+
+Git init on feature branch (NEVER main/master). Create GitHub repo via `gh repo create`.
+
+### 0.2 Project Plan and WBS
+
+Write `PROJECT-PLAN.md` with: Charter, Phases with WBS, Milestones with gate criteria, Deliverable Registry (see `templates/deliverable-registry-template.md`), Risk Register (see `templates/risk-register-template.md`), Success Criteria, Version History.
+
+### 0.3 Core Claim Lock
+
+If project audits/evaluates a claim: restate in logically valid, falsifiable terms. Document original AND reformulation if original had errors. Lock in `PROJECT-PLAN.md §1.2`.
+
+### 0.4 Knowledge Graph / Memory Seed
+
+Query KG for existing related papers/projects. Log novel project to working memory.
+
+### 0.5 Closeout
+
+Execute Phase Closeout Protocol (below). Tag: `v0.1-phase0`.
+
+---
+
+## Pre-Flight Checklist (BLOCKING -- runs before Phase 1)
+
+**HARD GATE:** Every item marked HARD must pass before Phase 1 begins.
+
+| ID | Check | Gate | How to Verify |
+|---|---|---|---|
+| **P1** | Git repo initialized on feature branch? | HARD | `git branch --show-current` != main/master |
+| **P2** | GitHub remote configured and pushed? | HARD | `git remote -v` shows origin; `gh repo view` succeeds |
+| **P3** | Directory structure created? (`docs/`, `artifacts/`, `notebooks/`, `releases/`) | HARD | Directory listing shows all 4 dirs |
+| **P4** | `PROJECT-PLAN.md` written with charter, WBS, milestones, deliverables, risks? | HARD | All 6 sections populated; no placeholder text |
+| **P5** | `README.md` written with project overview? | SOFT | File exists with name, status, quick start |
+| **P6** | Core claim reformulated and locked (if applicable)? | HARD | `PROJECT-PLAN.md §1.2` contains locked, logically valid formulation |
+| **P7** | `.gitignore` present? | SOFT | File exists covering IDE, OS, build artifacts |
+| **P8** | Phase 0 committed, tagged, and pushed? | HARD | `git tag -l 'v0.1*'` returns tag; `git log -1 --oneline` shows Phase 0 commit |
+| **P9** | Project logged to Knowledge Graph / working memory? | SOFT | Memory recall returns project entry |
+| **P10** | Cross-skill integration checklist reviewed? | SOFT | All relevant skills loaded per integration table |
+
+**If any HARD gate fails:** BLOCK research launch. Fix the gap and re-run.
+
+---
+
+## Cross-Skill Integration Checklist
+
+| Skill | Load at Phase | Purpose |
+|---|---|---|
+| `git-github` | **0** (init), every closeout | Branch discipline, conventional commits, repo creation |
+| `knowledge` | **0** (KG seed), **1** (DD), every closeout | KG queries, D1 cross-reference, project state logging |
+| `cloudflare` | **6** (deployment) | R2 archive, D1 insert, Worker verification |
+| `research` | **All phases** | This skill -- the master pipeline |
+| `memory-management` | **0**, every closeout | Durable memory logging |
+| `documents` / `pdf` | **5** (publication) | PDF building, document formatting |
+| `system` | **0** (if Desktop automation needed) | App configuration |
+
+---
+
+## Phase Closeout Protocol (MANDATORY -- every phase, for net-new projects with a dedicated repo)
+
+```
+1. COMMIT:  git add <phase-artifacts> && git commit -m "ACTION:CREATE FILE: <files> RATIONALE: Phase N complete"
+2. TAG:     git tag v<major>.<minor>-<phase-slug> -m "Phase N: <description>"
+3. PUSH:    git push origin <feature-branch> --tags
+4. VERIFY:  git log -1 --oneline && git branch --show-current && git status --short
+5. LOG:     memory_remember(content="Phase N completed. Deliverables: <list>.")
+```
+
+### Version Tagging Protocol
+
+| Phase | Tag Pattern | Example |
+|---|---|---|
+| 0 -- Init | `v0.1-phase0` | `v0.1-phase0` |
+| 1 -- Due Diligence | `v0.2-phase1-dd` | `v0.2-phase1-dd` |
+| 2 -- Literature | `v0.3-phase2-lit` | `v0.3-phase2-lit` |
+| 3 -- Citations | `v0.4-phase3-cite` | `v0.4-phase3-cite` |
+| 4 -- Deep Research | `v0.5-phase4-deep` | `v0.5-phase4-deep` |
+| 5 -- Publication | `v1.0` | `v1.0` (major version bump) |
+| 6 -- Deployment | `v1.1-deploy` | `v1.1-deploy` |
+| 7 -- Dissemination | `v1.2-disseminate` | `v1.2-disseminate` |
+| 8 -- 4-D Distribution | `v1.3-distribute` | `v1.3-distribute` |
 
 ---
 
@@ -671,3 +775,8 @@ research-pipeline -> deep-research -> publication-publisher -> buffer-integratio
 | Publishing without CID in KG | Log `ipfs_cid`, `arweave_tx`, `filecoin_cid` in KG Paper node |
 | Skipping 4-D verification | `_verify_4d.py` must pass before status → "published" |
 | Relying on single IPFS pinner | Use ≥3 independent pinning services per publication |
+| Skipping Phase 0 for a net-new long-lived project | HARD GATE -- scaffold repo, WBS, PROJECT-PLAN.md before Phase 1 |
+| No pre-flight checklist before due diligence | Run P1-P10 before Phase 1 begins |
+| No phase closeout (commit/tag/push/verify/log) | 5-step Phase Closeout Protocol at every phase end |
+| No risk register at project init | ≥5 risks logged at Phase 0 using the risk register template |
+| No deliverable registry | All deliverables tracked with paths and archival targets from Phase 0 |
