@@ -1,0 +1,41 @@
+# ============================================================================
+# .gitignore template for research project repos (kaizen fix A4)
+# Copy into a new research project repo at Phase 0 (0.1 Repository setup).
+# NOT for the qnfo-skills repo -- that repo has its own allowlist .gitignore.
+# ============================================================================
+
+# --- Ephemeral / JIT scratch scripts (NEVER durable, may contain tokens) ---
+_*.py
+_*.js
+_*.sh
+__pycache__/
+*.pyc
+
+# --- OS / editor noise ---
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# --- Build artifacts (rebuild from source, don't version binaries) ---
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+build/
+
+# --- Credentials (defense in depth -- tokens should never be hardcoded,
+#     but if a script writes one to disk for local testing, never commit it) ---
+*.token
+*_token
+*_secret
+.env
+.env.*
+keys.json
+
+# --- Local-only working files ---
+*.tmp
+*.bak
+~$*
