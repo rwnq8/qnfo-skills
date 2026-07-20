@@ -1,7 +1,7 @@
 ---
 name: research
 description: End-to-end research and publication pipeline -- project initialization (Phase 0 scaffold, pre-flight checklist, WBS), literature search (Semantic Scholar, arXiv, web, Vectorize, KG), paper triage and classification, citation management and BibTeX verification, deep paradigm forecasting (9-stage Bayesian cascade with calibration register), research planning and hypothesis generation, publication formatting and PDF building (Pandoc+XeLaTeX ONLY), Zenodo DOI upload with robust retry and versioning, Cloudflare deployment (D1 + papers-server Worker), social media dissemination via Buffer, SEO optimization, IPFS/Web3 content permanence, and phase closeout protocol with version tagging. Use for ANY research, publication, project lifecycle, or dissemination task.
-version: "2.4"
+version: "2.6"
 triggers: ["research", "paper", "literature", "preprint", "arXiv", "Semantic Scholar", "cite", "citation", "BibTeX", "bibliography", "deep dive", "paradigm forecast", "forecast", "Bayesian", "EV ranking", "publish", "Zenodo", "DOI", "manuscript", "LaTeX", "build PDF", "social media", "tweet", "post", "Buffer", "LinkedIn", "Bluesky", "SEO", "sitemap", "robots.txt", "discoverability", "llms.txt", "structured data", "meta tags", "IPFS", "pinata", "cid", "pinning", "Web3", "CAR", "DID", "Filecoin", "Arweave", "research plan", "methodology", "hypothesis", "publication", "dissemination", "write paper", "publish paper", "scientific", "academic", "LRAP", "QNFO publication", "QWAV publication"]
 related: ["knowledge", "cloudflare", "git-github"]
 priority: 1
@@ -10,7 +10,9 @@ autonomous: true
 self_sufficient: true
 ---
 
-# RESEARCH -- v2.5 (Ultra-Consolidated Pipeline + Project Lifecycle + 4-D Distribution)
+# RESEARCH -- v2.6 (Ultra-Consolidated Pipeline + Project Lifecycle + 4-D Distribution)
+
+> **v2.6 UPDATE (2026-07-20, kaizen audit):** Added `scripts/unicode-latex-preprocess.py` (fixes XeLaTeX Unicode-glyph and `keywords:`-field build failures -- A1/A2), `scripts/check-pdf.py` (PyMuPDF preflight + file-lock-safe replace -- B4/B5), `scripts/credential-scan.py` (pre-commit + pre-publish token leak scanner -- A4/C1/D2) wired into the Phase Closeout Protocol STEP 0.5 and the Publication Language Gate, `templates/gitignore-research-project-template.txt` for new project repos, a PROVENANCE-BUNDLE.zip hard gate before Zenodo upload (A3), `.zenodo_versions.json` version-chain tracking convention (C2), a Vectorize confirmation-bias disclosure requirement (C3), a multi-pinner IPFS fallback order Pinata→Filebase→Lighthouse (C4), documented Windows/PowerShell anti-patterns for inline `python -c`, `&&` chaining, and `curl` aliasing (B1/B2/B3), a YAML `---` delimiter conflict check (D3), an auto-discover related_identifiers KG query step (D4), a tag-backfill check in Phase Closeout (D1), and an Obsidian/external-path source material limitation note (C5/D5).
 
 > **v2.5 UPDATE (2026-07-19): Added OSF Project Registration (Phase 5.5) for major research with falsifiable predictions. Added P11 (OSF GATE-CONDITIONAL) to Pre-Flight checklist. OSF policy: all resources public by default, API-only automation, external links (Zenodo/GitHub/IPFS) replace file uploads � NEVER require manual browser interaction.
 
@@ -61,6 +63,13 @@ Standard directory scaffold:
 
 Git init on feature branch (NEVER main/master). Create GitHub repo via `gh repo create`.
 
+**`.gitignore` (kaizen fix A4):** copy `templates/gitignore-research-project-template.txt`
+into the new project's `.gitignore`. It excludes `_*.py`/`_*.js` (ephemeral
+scripts frequently contain hardcoded tokens during development), `.env`,
+`*.token`, `keys.json`, and standard build/OS noise. A project repo is NOT
+the qnfo-skills allowlist repo -- it needs its own permissive `.gitignore`,
+not the skills repo's default-deny one.
+
 **REPO-TARGET GATE (HARD, MANDATORY — check before `git init`/`git tag`/`gh repo create`):**
 ```
 git remote -v   # or: git -C <target-dir> remote -v
@@ -91,6 +100,15 @@ Query KG for existing related papers/projects. Log novel project to working memo
 ### 0.5 Closeout
 
 Execute Phase Closeout Protocol (below). Tag: `v0.1-phase0`.
+
+**Source material path limitation (kaizen fix C5):** if source materials
+(e.g. Obsidian vault notes) live outside the workspace/allowed directories
+(e.g. `D:\Obsidian`), `glob`/`read` cannot access them directly. This is a
+platform limitation, not a bug to work around silently -- document it and
+ask the user to either (a) copy the specific files into the project
+workspace, or (b) run an `exec` command with an explicit `cwd` pointing at
+the external path if the environment permits Full Access mode. Do not
+assume such files don't exist just because a glob search returns empty.
 
 ---
 
@@ -145,13 +163,30 @@ single check prevents the exact failure mode documented in ADR-026 Incident 3
 Release were mistakenly created inside `qnfo-skills`, requiring a full
 backup+delete remediation).
 
+**STEP 0.5 (HARD GATE, kaizen fix A4/C1/D2 -- credential pre-commit scan):**
+```bash
+python <research-skill-path>/scripts/credential-scan.py --staged
 ```
-1. COMMIT:  git add <phase-artifacts> && git commit -m "ACTION:CREATE FILE: <files> RATIONALE: Phase N complete"
+Run this AFTER `git add` and BEFORE `git commit`. If it exits non-zero,
+BLOCK the commit, remove the hardcoded secret (move to env var or a
+`~/.{service}_token` file), re-stage, and re-scan. GitHub push protection
+will otherwise reject the push after the fact -- catching it pre-commit
+avoids a rewritten-history remediation.
+
+```
+1. COMMIT:  git add <phase-artifacts> ; python <research-skill-path>/scripts/credential-scan.py --staged ; git commit -m "ACTION:CREATE FILE: <files> RATIONALE: Phase N complete"
 2. TAG:     git tag v<major>.<minor>-<phase-slug> -m "Phase N: <description>"
 3. PUSH:    git push origin <feature-branch> --tags
 4. VERIFY:  git log -1 --oneline && git branch --show-current && git status --short
 5. LOG:     memory_remember(content="Phase N completed. Deliverables: <list>.")
+6. TAG-BACKFILL-CHECK (kaizen fix D1): git tag -l 'v*'  # confirm ALL prior
+   phase tags exist -- a missing tag from an earlier phase (e.g. Phase 0's
+   v0.1-phase0 never created) should be discovered and backfilled NOW, not
+   discovered later during an audit.
 ```
+*(Windows PowerShell note -- kaizen fix B2: use `;` to chain commands, not
+`&&`. `cmd /c "cmd1 && cmd2"` also works but breaks on inner quoting; prefer
+`;` or separate sequential tool calls.)*
 
 ### Version Tagging Protocol
 
@@ -191,6 +226,17 @@ backup+delete remediation).
 - If already covered -> flag `[DUPLICATE-WARNING: topic covered by existing QNFO publications <DOIs>]`
 
 **GATE:** If (a) and (b) NOT executed -> research pipeline launch BLOCKED.
+
+**Vectorize Confirmation-Bias Disclosure (kaizen fix C3, HARD when triggered):**
+QNFO's Vectorize index currently contains ONLY QNFO-internal papers. If a
+`search_papers` call returns results and ALL of them are QNFO-authored, this
+is NOT external corroboration -- it is the corpus searching itself. Any
+report claiming "confirmed by literature search" MUST distinguish:
+`[QNFO-INTERNAL: N hits, self-referential]` vs `[EXTERNAL: M hits from arXiv/
+Semantic Scholar/web]`. If external search step (b) was skipped or returned
+zero results while internal search (a) returned nonzero, explicitly flag
+`[CONFIRMATION-BIAS-RISK: only internal corpus searched]` in the due
+diligence report -- do not silently present internal-only hits as validation.
 
 ---
 
@@ -340,6 +386,20 @@ status: "draft" | "published"
 ---
 ```
 
+**YAML delimiter conflict check (kaizen fix D3):** a markdown table
+separator row (`|---|---|`) or a horizontal rule elsewhere in the body can
+contain the bare string `---`, which some naive frontmatter parsers
+misinterpret as a second frontmatter block. Before building, count `---`
+occurrences on their own line at column 0:
+```bash
+python -c "import sys; t=open('paper.md',encoding='utf-8').read(); print(sum(1 for l in t.split(chr(10)) if l.strip()=='---'))"
+```
+Only the FIRST TWO such lines (opening and closing the YAML block) are valid
+frontmatter delimiters. `scripts/unicode-latex-preprocess.py` already
+handles this correctly (it anchors the frontmatter regex to the START of the
+file with `^---\n...\n---\n`), but any custom tooling touching `paper.md`
+must apply the same anchoring rule -- never a naive "split on ---".
+
 #### Visible Author Block (MANDATORY)
 **Author:** [Name] | **Date:** [YYYY-MM-DD] | **License:** QNFO-ULA: https://legal.qnfo.org/
 
@@ -348,6 +408,7 @@ Scan for ALL of:
 - **INTERNAL LANGUAGE:** "Module N", "Task N", "SPRINT", "PROCEED", "RESUME", "0.N.py", "PROJECT STATE", "ready for handoff", "new agent starting from cold" -> BLOCKING
 - **INTERNAL METADATA:** Version numbers as visible headers, project identifiers, commit references -> absent from visible content
 - **STYLE:** Straight quotes in body, bare Unicode math outside $...$, generation artifacts -> BLOCKING
+- **CREDENTIAL LEAKS (kaizen fix D2):** `cfat_[a-zA-Z0-9_]{20,}`, `ghp_[a-zA-Z0-9]{36}`, `sk-[a-zA-Z0-9]{20,}`, `AKIA[0-9A-Z]{16}`, `Bearer [A-Za-z0-9._-]{20,}` -> BLOCKING. Run `scripts/credential-scan.py paper.md` as part of this gate, not just at git-commit time -- a token could be pasted into the paper body itself, which is a worse leak than a script file since it gets published to Zenodo/IPFS permanently.
 
 #### Physics Writing Standards (18-point -- see qnfo-agent §7)
 All 18 points apply. Minimum: certainty calibration on every non-textbook claim, falsifiability conditions on speculative claims, banned word operational definitions.
@@ -363,8 +424,21 @@ All 18 points apply. Minimum: certainty calibration on every non-textbook claim,
 **Publish only if ALL >= 3 AND average >= 4.0.**
 
 ### PDF Building (Pandoc+XeLaTeX ONLY)
+
+**STEP 0 (MANDATORY, run BEFORE pandoc -- kaizen fix A1/A2):** XeLaTeX's
+default font (Latin Modern) lacks glyphs for many Unicode Greek/math/
+subscript/superscript/bra-ket characters used in physics prose outside
+`$...$`, and Pandoc's `keywords:` YAML field crashes some XeLaTeX templates
+with an undefined `\xmpquote` macro. Run the preprocessor first:
 ```bash
-pandoc paper.md -o paper.pdf --pdf-engine=xelatex \
+python scripts/unicode-latex-preprocess.py paper.md --out paper.build.md
+```
+This converts Unicode math characters to LaTeX math (wrapped in `$...$`,
+never double-converting characters already inside math spans) and strips
+the `keywords:` field. Build FROM `paper.build.md`, not the original.
+
+```bash
+pandoc paper.build.md -o paper.pdf --pdf-engine=xelatex \
   --template=default \
   --metadata date="$(date +%Y-%m-%d)" \
   --metadata link-citations=true \
@@ -372,6 +446,14 @@ pandoc paper.md -o paper.pdf --pdf-engine=xelatex \
   --citeproc
 ```
 **NEVER use reportlab or HTML fallbacks for publication-grade PDFs.**
+
+**If the build still fails with a LaTeX error mentioning a specific missing
+character or macro:** check whether the character is inside `$$...$$` and
+was written directly in LaTeX already (not Unicode) -- some math symbols
+(e.g. `\ket{}`, `\langle`) require the `physics` or `braket` LaTeX package;
+add `--metadata header-includes="\usepackage{braket}"` if bra-ket macros are
+used directly in the source rather than relying on the preprocessor's
+`\langle`/`\rangle` fallback.
 
 ### IPFS Pinning (MANDATORY — every publication)
 ```bash
@@ -382,22 +464,24 @@ node _distribute.js paper.md "Paper Title" "10.5281/zenodo.XXXXXXX" "paper-slug"
 **CID is stored in D1 `ipfs_cid` column and used for DNSLink records. This is MANDATORY for all publications — no publication is complete without an IPFS CID.**
 
 ### PDF Rendering Verification (MANDATORY)
-```python
-# _check_pdf.py -- ephemeral, delete after execution
-import fitz  # PyMuPDF
-doc = fitz.open("paper.pdf")
-errors = []
-for page in doc:
-    text = page.get_text()
-    if '\ufffd' in text:
-        errors.append(f"Page {page.number}: REPLACEMENT CHARACTER found")
-if errors:
-    print("[BLOCKED] PDF contains Unicode replacement characters:")
-    for e in errors:
-        print(f"  {e}")
-    sys.exit(1)
-print("[OK] PDF rendering verified -- no replacement characters")
+
+**Preflight (kaizen fix B4):** verify PyMuPDF is installed before relying on
+it -- `pip show PyMuPDF`. If missing: `pip install PyMuPDF`.
+
+```bash
+python scripts/check-pdf.py paper.pdf
 ```
+This checks: PDF opens without error (corrupt-file detection), zero pages
+contain `\ufffd` (Unicode replacement character -- glyph miss), zero
+completely empty pages, page count > 0, and prints a per-page character
+count for a quick sanity skim. Exit code 0 = pass, 1 = BLOCKED.
+
+**File-lock handling (kaizen fix B5):** if the build script needs to replace
+an existing `paper.pdf` that a PDF viewer currently has open, `os.replace()`
+raises `PermissionError` on Windows. Use `replace_with_retry()` from
+`scripts/check-pdf.py` (retries with backoff, falls back to a timestamped
+sibling file rather than silently failing) instead of calling
+`os.replace()` directly in build scripts.
 
 ### OSF Project Registration (MANDATORY for qualifying projects)
 
@@ -499,6 +583,18 @@ GET https://api.osf.io/v2/users/me/nodes/
 
 ### Zenodo Upload (with retry + versioning)
 
+**HARD GATE (kaizen fix A3):** `PROVENANCE-BUNDLE.zip` MUST be built and
+verified BEFORE any Zenodo upload begins -- not added ad hoc during the
+upload step. The bundle MUST contain: `paper.md`, `paper.pdf`,
+`PROJECT-PLAN.md`, `README.md`, all `artifacts/*.md`, all `docs/*.md`.
+Verify before upload:
+```bash
+python -c "import zipfile,sys; z=zipfile.ZipFile('PROVENANCE-BUNDLE.zip'); names=z.namelist(); required=['paper.md','paper.pdf']; missing=[r for r in required if not any(r in n for n in names)]; print('Bundle contents:', names); sys.exit(1 if missing else 0)"
+```
+If this check is not run and passed, the Zenodo deposit is INCOMPLETE even
+if `actions/publish` succeeds -- missing provenance is a silent failure, not
+a hard error, so it must be caught here.
+
 #### 1. Create Deposit
 ```python
 POST https://zenodo.org/api/deposit/depositions
@@ -511,6 +607,8 @@ Body: {}  # Empty metadata to create draft
 PUT https://zenodo.org/api/deposit/depositions/{id}/files
 Files: paper.md, paper.pdf, PROVENANCE-BUNDLE.zip, README.md
 ```
+**GATE:** Do not proceed to Step 3 until all 4 files are confirmed present in
+the deposit's file list (`GET /api/deposit/depositions/{id}/files`).
 
 #### 3. Set Metadata
 ```python
@@ -528,6 +626,14 @@ Body: {
     ]
 }
 ```
+**Auto-discover related QNFO papers (kaizen fix D4):** before hand-writing
+`related_identifiers`, query the KG for prior QNFO publications on the same
+topic/program so cross-references aren't missed:
+```
+query_graph({endpoint: "query", params: {query: "MATCH (p:Paper)-[:BELONGS_TO]->(d) WHERE d.name CONTAINS '<domain>' RETURN p.title, p.doi"}})
+```
+Add a `{"relation": "cites", "identifier": "<doi>"}` entry for each relevant
+result found this way, in addition to any DOIs the author already knows to cite.
 
 #### 4. Publish
 ```python
@@ -542,6 +648,31 @@ curl -s https://zenodo.org/api/records/{id} | python -c "import sys,json; r=json
 
 #### Zenodo Retry Protocol
 If Zenodo API returns 500 or timeout: retry up to 3 times with exponential backoff (1s, 4s, 16s). If deposit exists from prior attempt: recover draft via `GET /api/deposit/depositions?q=<title>`, update rather than recreate.
+
+#### Version Chain Tracking (kaizen fix C2 -- `.zenodo_versions.json`)
+Zenodo's concept-DOI/version-DOI split is easy to get wrong: calling
+`actions/newversion` on a STALE deposit ID (not the latest version) returns
+HTTP 403. Maintain a tracking file at the project root:
+```json
+{
+  "concept_doi": "10.5281/zenodo.XXXXXXX",
+  "latest_deposit_id": "YYYYYYY",
+  "versions": [
+    {"doi": "10.5281/zenodo.XXXXXXX", "deposit_id": "YYYYYYY", "tag": "v1.0", "published_at": "2026-07-20"}
+  ]
+}
+```
+Before calling `actions/newversion`, ALWAYS verify with a GET first:
+```bash
+curl -s -H "Authorization: Bearer $ZENODO_TOKEN" https://zenodo.org/api/deposit/depositions/<latest_deposit_id>
+```
+If the GET fails or the record's `state` shows it is not the latest, look up
+the current latest via the concept DOI's `GET /api/records/?q=conceptdoi:"<concept_doi>"`
+before proceeding. Update `.zenodo_versions.json` immediately after every
+successful publish -- this file is the single source of truth for "what is
+the latest deposit ID", preventing the fragmented-citation-record failure
+mode where a disconnected new deposit gets created because the correct ID
+was lost or misremembered.
 
 #### Zenodo Versioning for Phase/Session Conclusions (MANDATORY -- see qnfo-agent §8.5 JIT Thin-Client Protocol, Phase-End and Session/Project-Conclusion Checkpoint subsections)
 
@@ -756,6 +887,12 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/{ZONE_ID}/dns_records" 
 #### Workflow
 1. Compute CID for paper artifacts (paper.md + paper.pdf + PROVENANCE-BUNDLE.zip)
 2. **Pinata** (primary): Pin with metadata `{"name": "<paper-title>-v<version>", "keyvalues": {"doi": "<DOI>", "type": "publication", "slug": "<slug>"}}`
+   **Multi-pinner fallback order (kaizen fix C4):** if Pinata returns a
+   rate-limit error (HTTP 429, free-tier plan limit) or any non-2xx, do NOT
+   stop -- fall back automatically: Pinata → **Filebase** (S3-compatible
+   `PUT`, auto-pins to IPFS) → **Lighthouse** (Filecoin). At least one
+   pinner MUST succeed before proceeding to step 5 (DNSLink), since DNSLink
+   needs a real CID to point at.
 3. **Lighthouse** (Filecoin): Upload for perpetual decentralized storage
 4. **Arweave/Irys** (when wallet available): Permanent blockchain archival
 5. **DNSLink**: Create `_dnslink.<paper-subdomain>.qnfo.org` TXT → `/ipfs/{CID}`
@@ -964,4 +1101,10 @@ research-pipeline -> deep-research -> publication-publisher -> buffer-integratio
 | Creating OSF registrations for non-executable research | LLM-Executable Research Gate: no human subjects, no external resources, no IRB. If the protocol cannot be executed in this chat thread, link to Zenodo/GitHub only. |
 | Leaving draft registrations with partial registration_responses | If the research will not be completed and submitted, DELETE the draft. Partial stubs are a reputational risk. |
 | Not storing OSF registration tracking in D1/KG | Store registration_id, doi, status, and dates in D1 + KG for lifecycle tracking and closeout audit. |
+| `python -c "..."` inline scripts on Windows (kaizen fix B1) | Nested double-quotes in f-strings collide with `python -c "..."` outer quotes; Windows escaping of `\n`, dict literals, and Unicode breaks silently. `write` the script to a `_*.py` file first, `exec` it, then delete -- never inline for anything beyond a one-liner with zero quotes/dicts/regex. |
+| `curl` on Windows PowerShell (kaizen fix B3) | PowerShell aliases `curl` to `Invoke-WebRequest`, which has different flags (`-s` is not recognized) and fails. Use `python -c 'import urllib.request; ...'` (single-line, no nested quotes) or invoke `curl.exe` explicitly (the real binary, bypassing the alias). |
+| Unicode math left unconverted for XeLaTeX (kaizen fix A1) | Run `scripts/unicode-latex-preprocess.py` before every Pandoc+XeLaTeX build -- see PDF Building section above. |
+| `keywords:` YAML field in Pandoc frontmatter (kaizen fix A2) | Strip it -- `scripts/unicode-latex-preprocess.py` does this automatically. It crashes some XeLaTeX templates via an undefined `\xmpquote` macro. |
+| Ephemeral scripts with hardcoded API tokens reaching `git add` (kaizen fix A4) | Run `scripts/credential-scan.py --staged` before every commit (Phase Closeout Protocol STEP 0.5). Add `_*.py`/`.env`/`*.token` to `.gitignore` from Phase 0. |
+| Obsidian/external-drive source notes assumed inaccessible or silently skipped (kaizen fix C5/D5) | Document the path limitation and ask the user to copy files in, or use `exec` with explicit `cwd` in Full Access mode. If imported notes mix internal monologue with delivered content and lack YAML frontmatter, load `doc-coauthoring` to help the user separate meta-planning from publishable content before it enters the research pipeline. |
 
