@@ -232,7 +232,7 @@ for (const z of (zones.result||[])) {
 - [ ] No skill has external file references (self-sufficiency)
 - [ ] No skill has fewer than 15 trigger keywords
 - [ ] **4-D Gate:** Critical assets (ULA, publications, deliverables) verified across ≥4 distribution stores
-- [ ] **IPFS:** Content pinned via Pinata, CID logged in KG
+- [ ] **IPFS:** Content pinned via Filebase (PRIMARY, free/unlimited) or Lighthouse (SECONDARY) — Pinata REMOVED 2026-07-20 (quota exceeded, blocked), CID logged in KG
 - [ ] **DNSLink:** `_dnslink` TXT records exist for all publication subdomains
 - [ ] **Worker fleet:** ≤7 Workers (consolidation pattern enforced), 0 orphaned Workers
 - [ ] **R2 hygiene:** No `qnfo/qnfo/` double-prefix paths in qnfo bucket

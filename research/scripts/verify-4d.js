@@ -2,6 +2,9 @@
 // verify-4d.js — Verify a publication meets the 4-D Distribution Gate:
 // Distributed (>=2 IPFS gateways), Durable (Arweave/Zenodo/IA), Discoverable (DNSLink/DOI/KG), Duplicated (>=4 stores)
 // Usage: node verify-4d.js <ipfs-cid> [arweave-tx] [doi] [dnslink-subdomain]
+// NOTE (2026-07-20): gateway.pinata.cloud REMOVED from the gateway list —
+// Pinata's free quota was exceeded and the account is blocked. Only free,
+// unlimited-request public gateways are checked below.
 
 async function checkUrl(url, timeoutMs = 8000) {
   try {
@@ -20,7 +23,7 @@ async function verify4D(cid, arweaveTx, doi, dnslinkSubdomain) {
     const gateways = [
       `https://ipfs.io/ipfs/${cid}`,
       `https://cloudflare-ipfs.com/ipfs/${cid}`,
-      `https://gateway.pinata.cloud/ipfs/${cid}`
+      `https://dweb.link/ipfs/${cid}`
     ];
     const checks = await Promise.all(gateways.map(g => checkUrl(g)));
     const passCount = checks.filter(Boolean).length;

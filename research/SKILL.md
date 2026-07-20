@@ -1,8 +1,8 @@
 ---
 name: research
 description: End-to-end research and publication pipeline -- project initialization (Phase 0 scaffold, pre-flight checklist, WBS), literature search (Semantic Scholar, arXiv, web, Vectorize, KG), paper triage and classification, citation management and BibTeX verification, deep paradigm forecasting (9-stage Bayesian cascade with calibration register), research planning and hypothesis generation, publication formatting and PDF building (Pandoc+XeLaTeX ONLY), Zenodo DOI upload with robust retry and versioning, Cloudflare deployment (D1 + papers-server Worker), social media dissemination via Buffer, SEO optimization, IPFS/Web3 content permanence, and phase closeout protocol with version tagging. Use for ANY research, publication, project lifecycle, or dissemination task.
-version: "2.6"
-triggers: ["research", "paper", "literature", "preprint", "arXiv", "Semantic Scholar", "cite", "citation", "BibTeX", "bibliography", "deep dive", "paradigm forecast", "forecast", "Bayesian", "EV ranking", "publish", "Zenodo", "DOI", "manuscript", "LaTeX", "build PDF", "social media", "tweet", "post", "Buffer", "LinkedIn", "Bluesky", "SEO", "sitemap", "robots.txt", "discoverability", "llms.txt", "structured data", "meta tags", "IPFS", "pinata", "cid", "pinning", "Web3", "CAR", "DID", "Filecoin", "Arweave", "research plan", "methodology", "hypothesis", "publication", "dissemination", "write paper", "publish paper", "scientific", "academic", "LRAP", "QNFO publication", "QWAV publication"]
+version: "2.7"
+triggers: ["research", "paper", "literature", "preprint", "arXiv", "Semantic Scholar", "cite", "citation", "BibTeX", "bibliography", "deep dive", "paradigm forecast", "forecast", "Bayesian", "EV ranking", "publish", "Zenodo", "DOI", "manuscript", "LaTeX", "build PDF", "social media", "tweet", "post", "Buffer", "LinkedIn", "Bluesky", "SEO", "sitemap", "robots.txt", "discoverability", "llms.txt", "structured data", "meta tags", "IPFS", "filebase", "cid", "pinning", "Web3", "CAR", "DID", "Filecoin", "Arweave", "research plan", "methodology", "hypothesis", "publication", "dissemination", "write paper", "publish paper", "scientific", "academic", "LRAP", "QNFO publication", "QWAV publication"]
 related: ["knowledge", "cloudflare", "git-github"]
 priority: 1
 platform: all
@@ -10,7 +10,20 @@ autonomous: true
 self_sufficient: true
 ---
 
-# RESEARCH -- v2.6 (Ultra-Consolidated Pipeline + Project Lifecycle + 4-D Distribution)
+# RESEARCH -- v2.7 (Ultra-Consolidated Pipeline + Project Lifecycle + 4-D Distribution)
+
+> **v2.7 UPDATE (2026-07-20, Pinata quota exceeded):** Pinata IPFS pinning
+> REMOVED from all publication steps — the free-tier account hit its quota
+> and is blocked. Replaced with **Filebase** (free 5GB S3-compatible bucket,
+> auto-pins to IPFS, no request-volume limit) as the PRIMARY pinner, backed
+> by **Lighthouse** (free Filecoin tier) as secondary pinner, **Cloudflare
+> R2** as the canonical durable host, and **Cloudflare DNS** for DNSLink —
+> all free, unlimited-request services. Every `api.pinata.cloud` reference,
+> credential check, and gateway URL (`gateway.pinata.cloud`) has been
+> removed or replaced. See `scripts/filebase-pin.js` (new) and the updated
+> `cloudflare` skill's `scripts/filebase-upload.js` for the SigV4 upload
+> helper. `scripts/pinata-pin.js` is retained on disk for historical
+> reference only and MUST NOT be invoked — see its deprecation header.
 
 > **v2.6 UPDATE (2026-07-20, kaizen audit):** Added `scripts/unicode-latex-preprocess.py` (fixes XeLaTeX Unicode-glyph and `keywords:`-field build failures -- A1/A2), `scripts/check-pdf.py` (PyMuPDF preflight + file-lock-safe replace -- B4/B5), `scripts/credential-scan.py` (pre-commit + pre-publish token leak scanner -- A4/C1/D2) wired into the Phase Closeout Protocol STEP 0.5 and the Publication Language Gate, `templates/gitignore-research-project-template.txt` for new project repos, a PROVENANCE-BUNDLE.zip hard gate before Zenodo upload (A3), `.zenodo_versions.json` version-chain tracking convention (C2), a Vectorize confirmation-bias disclosure requirement (C3), a multi-pinner IPFS fallback order Pinata→Filebase→Lighthouse (C4), documented Windows/PowerShell anti-patterns for inline `python -c`, `&&` chaining, and `curl` aliasing (B1/B2/B3), a YAML `---` delimiter conflict check (D3), an auto-discover related_identifiers KG query step (D4), a tag-backfill check in Phase Closeout (D1), and an Obsidian/external-path source material limitation note (C5/D5).
 
@@ -456,10 +469,18 @@ used directly in the source rather than relying on the preprocessor's
 `\langle`/`\rangle` fallback.
 
 ### IPFS Pinning (MANDATORY — every publication)
+
+**PINATA REMOVED (2026-07-20, free quota exceeded):** Pinata is no longer the
+primary or fallback pinner. Its free tier was hit and blocked mid-pipeline.
+Use **Filebase** (free 5GB S3-compatible bucket, auto-pins to IPFS, no rate
+limit on request volume) as the PRIMARY pinner, backed by **Cloudflare R2**
+(free egress, unlimited storage subject to plan) as the canonical durable
+host and **Lighthouse** (free Filecoin tier) as secondary pinner.
+
 ```bash
-# Pin publication to IPFS via Pinata. Generates a permanent content identifier (CID).
-# Credentials: PINATA_API_KEY + PINATA_API_SECRET (from ~/.pinata_api, ~/.pinata_secret)
-node _distribute.js paper.md "Paper Title" "10.5281/zenodo.XXXXXXX" "paper-slug"
+# Pin publication to IPFS via Filebase (S3-compatible, auto-pins to IPFS on PUT).
+# Credentials: FILEBASE_ACCESS_KEY + FILEBASE_SECRET_KEY (from ~/.filebase_access_key, ~/.filebase_secret_key)
+node scripts/filebase-pin.js paper.md paper-slug
 ```
 **CID is stored in D1 `ipfs_cid` column and used for DNSLink records. This is MANDATORY for all publications — no publication is complete without an IPFS CID.**
 
@@ -757,7 +778,7 @@ ON CONFLICT(slug) DO UPDATE SET body = excluded.body, doi = excluded.doi, ipfs_c
 
 ### D1 IPFS CID Backfill (MANDATORY — after IPFS pinning)
 ```sql
--- Backfill IPFS CID into living-paper D1 after Pinata pinning
+-- Backfill IPFS CID into living-paper D1 after Filebase pinning
 UPDATE papers SET ipfs_cid = 'bafkreibq...', updated_at = datetime('now') WHERE identifier = 'paper-slug';
 ```
 **Every publication MUST have its IPFS CID stored in D1. The `ipfs_cid` column enables cross-system discovery: D1 → KG → DNSLink → IPFS gateway resolution.**
@@ -843,48 +864,62 @@ Every QNFO publication MUST achieve all four dimensions before publication is de
 
 | D | Requirement | Minimum Implementation |
 |:--|:-----------|:----------------------|
-| **Distributed** | Content served without centralized gatekeeper | IPFS (Pinata) + Filecoin (Lighthouse) + Arweave (Irys) |
+| **Distributed** | Content served without centralized gatekeeper | IPFS (Filebase) + Filecoin (Lighthouse) + Arweave (Irys) |
 | **Durable** | Permanent storage without ongoing maintenance | Arweave (300+ yr), Zenodo (CERN-backed), Internet Archive |
 | **Discoverable** | Findable without specific URI/address | DOI, IPFS CID (content-addressed), DNSLink, Knowledge Graph |
 | **Duplicated** | Multiple redundant independent copies | ≥4 pinning services across ≥2 protocols |
 
 ### Multi-Service Pinning Credentials Reference
 ```
-Pinata:        PINATA_API_KEY + PINATA_API_SECRET
-Filebase:      FILEBASE_ACCESS_KEY + FILEBASE_SECRET_KEY
+Filebase:      FILEBASE_ACCESS_KEY + FILEBASE_SECRET_KEY   (PRIMARY IPFS pinner)
+Lighthouse:    LIGHTHOUSE_API_KEY                           (SECONDARY IPFS pinner, free Filecoin tier)
 Arweave:       ARWEAVE_KEYFILE (wallet file path)
 Zenodo:        ZENODO_TOKEN
 Cloudflare:    CLOUDFLARE_API_TOKEN
+# Pinata REMOVED 2026-07-20 (free quota exceeded, account blocked) — do not add PINATA_API_KEY back
 ```
-Check: `Object.keys(process.env).filter(k=>k.includes('PINATA')||k.includes('FILEBASE')||k.includes('ARWEAVE')||k.includes('ZENODO')||k.includes('CLOUDFLARE')).forEach(k=>console.log(k+': available'))`
+Check: `Object.keys(process.env).filter(k=>k.includes('FILEBASE')||k.includes('LIGHTHOUSE')||k.includes('ARWEAVE')||k.includes('ZENODO')||k.includes('CLOUDFLARE')).forEach(k=>console.log(k+': available'))`
 
-#### Pinata IPFS Pinning Script
+**PINATA REMOVED (2026-07-20):** Free quota exceeded and the account is
+blocked. Do NOT use `api.pinata.cloud` for any new pinning. Filebase (below)
+is the new PRIMARY pinner: free 5GB S3-compatible bucket, no request-volume
+rate limit, auto-pins every object written to IPFS.
+
+#### Filebase IPFS Pinning Script (PRIMARY — free, unlimited requests)
 ```js
-// _pinata_pin.js — Pin any content to IPFS via Pinata
-const PKEY = process.env.PINATA_API_KEY;
-const PSEC = process.env.PINATA_API_SECRET;
+// filebase-pin.js — Pin any content to IPFS via Filebase (S3-compatible PUT, auto-pins)
+// Requires: FILEBASE_ACCESS_KEY + FILEBASE_SECRET_KEY (AWS SigV4 auth against s3.filebase.com)
+// See cloudflare skill scripts/filebase-upload.js for the full SigV4 implementation.
+const { s3Put } = require('../../cloudflare/scripts/filebase-upload.js'); // or inline the SigV4 helper
 const fs = require('fs');
-const content = fs.readFileSync('path/to/file', 'utf8');
+const content = fs.readFileSync('path/to/file');
 
 (async () => {
-  const form = new FormData();
-  form.append('file', new Blob([content], { type: 'text/plain' }), 'document.txt');
-  form.append('pinataMetadata', JSON.stringify({ 
-    name: 'Document Title',
-    keyvalues: { type: 'publication', version: '1.0' }
-  }));
-  form.append('pinataOptions', JSON.stringify({ cidVersion: 1, wrapWithDirectory: false }));
+  const result = await s3Put('qnfo-archive', 'publications/document.md', content, 'text/markdown');
+  console.log('Filebase upload:', result.status, result.ok);
+  console.log('IPFS CID (from x-ipfs-cid header):', result.ipfsCid);
+  console.log('Gateway: https://ipfs.io/ipfs/' + result.ipfsCid);
+  // Verify: fetch('https://ipfs.io/ipfs/' + result.ipfsCid) -> 200
+  return result.ipfsCid;
+})();
+```
 
-  const r = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
+#### Lighthouse IPFS Pinning Script (SECONDARY — free Filecoin tier)
+```js
+// lighthouse-pin.js — Pin to IPFS/Filecoin via Lighthouse (free tier, no CC required)
+const LKEY = process.env.LIGHTHOUSE_API_KEY;
+const fs = require('fs');
+const content = fs.readFileSync('path/to/file');
+
+(async () => {
+  const r = await fetch('https://node.lighthouse.storage/api/v0/add', {
     method: 'POST',
-    headers: { pinata_api_key: PKEY, pinata_secret_api_key: PSEC },
-    body: form
+    headers: { Authorization: 'Bearer ' + LKEY },
+    body: content
   });
   const d = await r.json();
-  console.log('IPFS CID:', d.IpfsHash);
-  console.log('Gateway: https://ipfs.io/ipfs/' + d.IpfsHash);
-  // Verify: fetch('https://ipfs.io/ipfs/' + d.IpfsHash) -> 200
-  return d.IpfsHash;
+  console.log('IPFS CID:', d.Hash);
+  console.log('Gateway: https://ipfs.io/ipfs/' + d.Hash);
 })();
 ```
 
@@ -911,11 +946,11 @@ const content = fs.readFileSync('path/to/publication.md', 'utf8');
 
 | Service | API | Purpose | Credential |
 |:--------|:----|:--------|:-----------|
-| **Pinata** | `POST https://api.pinata.cloud/pinning/pinFileToIPFS` | Primary IPFS pinning, CID computation | `PINATA_API_KEY` + `PINATA_API_SECRET` |
-| **Lighthouse** | `POST https://node.lighthouse.storage/api/v0/add` | Filecoin storage deals (perpetual) | `LIGHTHOUSE_API_KEY` (free tier at files.lighthouse.storage) |
+| **Filebase** (PRIMARY) | S3-compatible `PUT https://s3.filebase.com/{bucket}/{key}` | Free 5GB, unlimited requests, S3→IPFS auto-pinning bridge | `FILEBASE_ACCESS_KEY` + `FILEBASE_SECRET_KEY` |
+| **Lighthouse** (SECONDARY) | `POST https://node.lighthouse.storage/api/v0/add` | Free-tier Filecoin storage deals (perpetual) | `LIGHTHOUSE_API_KEY` (free tier at files.lighthouse.storage) |
 | **Arweave/Irys** | `POST https://node1.irys.xyz/tx/arweave` | Permanent blockchain storage (pay-once) | Requires AR wallet + ~$0.02 in AR tokens |
-| **Filebase** | S3-compatible `PUT https://s3.filebase.com/{bucket}/{key}` | S3→IPFS auto-pinning bridge | `FILEBASE_ACCESS_KEY` + `FILEBASE_SECRET_KEY` |
 | **Internet Archive** | `POST https://web.archive.org/save/{url}` | Wayback Machine snapshot | None required |
+| ~~Pinata~~ | ~~`api.pinata.cloud`~~ | **REMOVED 2026-07-20 — free quota exceeded, account blocked. Do not use.** | -- |
 
 #### DNSLink (MANDATORY for every publication)
 ```bash
@@ -927,21 +962,22 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/{ZONE_ID}/dns_records" 
 # Verify: cloudflare-ipfs.com/ipns/{subdomain}.qnfo.org
 ```
 
-#### Workflow
+#### Workflow (PINATA-FREE, 2026-07-20)
 1. Compute CID for paper artifacts (paper.md + paper.pdf + PROVENANCE-BUNDLE.zip)
-2. **Pinata** (primary): Pin with metadata `{"name": "<paper-title>-v<version>", "keyvalues": {"doi": "<DOI>", "type": "publication", "slug": "<slug>"}}`
-   **Multi-pinner fallback order (kaizen fix C4):** if Pinata returns a
-   rate-limit error (HTTP 429, free-tier plan limit) or any non-2xx, do NOT
-   stop -- fall back automatically: Pinata → **Filebase** (S3-compatible
-   `PUT`, auto-pins to IPFS) → **Lighthouse** (Filecoin). At least one
-   pinner MUST succeed before proceeding to step 5 (DNSLink), since DNSLink
-   needs a real CID to point at.
-3. **Lighthouse** (Filecoin): Upload for perpetual decentralized storage
+2. **Filebase** (PRIMARY, free & unlimited requests): S3 `PUT` to `s3.filebase.com/{bucket}/{key}` — auto-pins to IPFS on write, returns CID via `x-ipfs-cid` response header.
+   **Multi-pinner fallback order (updated 2026-07-20, Pinata removed):** if
+   Filebase returns a non-2xx (bucket over its free 5GB quota, auth error,
+   etc.), fall back automatically: Filebase → **Lighthouse** (free Filecoin
+   tier) → **web3.storage** (free tier, if a token is configured). At least
+   one pinner MUST succeed before proceeding to step 4 (DNSLink), since
+   DNSLink needs a real CID to point at. NEVER fall back to Pinata — the
+   account is quota-blocked and must not be retried.
+3. **Lighthouse** (Filecoin, secondary): Upload for perpetual decentralized storage if Filebase's CID needs a second independent pinner
 4. **Arweave/Irys** (when wallet available): Permanent blockchain archival
-5. **DNSLink**: Create `_dnslink.<paper-subdomain>.qnfo.org` TXT → `/ipfs/{CID}`
-6. **Internet Archive**: Submit papers.qnfo.org/papers/{slug} and IPFS gateway URLs
-7. **Filebase** (when bucket exists): S3 upload → auto-IPFS pin
-8. Verify availability: `https://ipfs.io/ipfs/{CID}`, `https://cloudflare-ipfs.com/ipns/{subdomain}.qnfo.org`, `https://gateway.pinata.cloud/ipfs/{CID}`
+5. **DNSLink**: Create `_dnslink.<paper-subdomain>.qnfo.org` TXT → `/ipfs/{CID}` via Cloudflare API (free, unlimited DNS records)
+6. **Internet Archive**: Submit papers.qnfo.org/papers/{slug} and IPFS gateway URLs (free, no auth)
+7. **Cloudflare R2**: Canonical durable host — upload paper.md/paper.pdf to R2 (free egress) as the primary non-IPFS backup, independent of any pinning-service quota
+8. Verify availability via free public gateways only: `https://ipfs.io/ipfs/{CID}`, `https://cloudflare-ipfs.com/ipfs/{CID}`, `https://dweb.link/ipfs/{CID}`, `https://cloudflare-ipfs.com/ipns/{subdomain}.qnfo.org` — do NOT reference `gateway.pinata.cloud` (service discontinued for this account)
 9. Create CAR archive: `ipfs-car --pack paper-artifacts/ --output paper.car`
 10. **Log in KG**: Seed Paper node with `ipfs_cid`, `arweave_tx`, `filecoin_cid`, `dns_link` properties
 
@@ -981,25 +1017,27 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/{ZONE_ID}/dns_records" 
 ### Trigger
 Every publication MUST complete Phase 8 before publication status is set to "published." This is NO LONGER OPTIONAL. IPFS CIDs, DNSLink records, D1 backfill, and multi-gateway verification are DEFAULT requirements for all QNFO research outputs.
 
-### IPFS Distribution Defaults (Hard Requirements)
-1. **Pinata IPFS pinning** — MANDATORY. Every publication gets a permanent CID.
+### IPFS Distribution Defaults (Hard Requirements, updated 2026-07-20 — Pinata removed)
+1. **Filebase IPFS pinning** — MANDATORY (PRIMARY, replaces Pinata). Free 5GB S3-compatible bucket, no request-volume limit, auto-pins every publication to a permanent CID.
 2. **D1 `ipfs_cid` backfill** — MANDATORY. CID must be stored in `living-paper` D1 within 5 minutes of pinning.
-3. **DNSLink TXT record** — MANDATORY. `_dnslink.{slug}.qnfo.org` → `dnslink=/ipfs/{CID}` on Cloudflare DNS.
-4. **Multi-gateway verification** — MANDATORY. At least 1 public gateway must serve the content (run `_verify-gateways.js`).
-5. **CID in Knowledge Graph** — RECOMMENDED. Store CID in KG node properties for cross-system discovery.
+3. **DNSLink TXT record** — MANDATORY. `_dnslink.{slug}.qnfo.org` → `dnslink=/ipfs/{CID}` on Cloudflare DNS (free, unlimited).
+4. **Multi-gateway verification** — MANDATORY. At least 1 public gateway must serve the content (run `scripts/verify-4d.js`), using only free/unlimited gateways (`ipfs.io`, `cloudflare-ipfs.com`, `dweb.link`) — never `gateway.pinata.cloud`.
+5. **Cloudflare R2** — MANDATORY as canonical durable host, independent of IPFS pinning-service quotas.
+6. **CID in Knowledge Graph** — RECOMMENDED. Store CID in KG node properties for cross-system discovery.
 
 ### Pipeline
 ```
 Publication Ready (Phase 5 PDF + Phase 6 D1/R2)
     │
-    ├──► Pinata (primary IPFS) ──► CID
-    ├──► Lighthouse (Filecoin)  ──► Filecoin CID
+    ├──► Filebase (PRIMARY IPFS, free/unlimited) ──► CID
+    ├──► Lighthouse (Filecoin, free tier)  ──► Filecoin CID
     ├──► Arweave/Irys (when AR wallet available) ──► TX ID
-    ├──► DNSLink: _dnslink.{slug}.qnfo.org → /ipfs/{CID}
-    ├──► Internet Archive: submit all gateway URLs
-    ├──► Filebase (when bucket exists): S3→IPFS auto-pin
+    ├──► DNSLink: _dnslink.{slug}.qnfo.org → /ipfs/{CID}  [Cloudflare DNS, free]
+    ├──► Internet Archive: submit all gateway URLs  [free]
+    ├──► Cloudflare R2: canonical durable host  [free egress]
     ├──► KG: seed Paper node with 4-D properties
     └──► Legacy stores: GitHub push, R2 archive, Zenodo DOI
+    (Pinata REMOVED 2026-07-20 — quota exceeded, do not reference or retry)
 ```
 
 ### Deployment Workflow (LLM Agent Steps)
@@ -1038,15 +1076,14 @@ def distribute(content: str, metadata: dict) -> dict:
     Returns: {ipfs_cid, dns_link, zenodo_doi, ia_url, filebase_url, distribution_status}
     """
     
-    # === Step 1: Primary IPFS (Pinata) ===
-    # POST https://api.pinata.cloud/pinning/pinFileToIPFS
-    # Headers: pinata_api_key, pinata_secret_api_key
-    # Body: FormData with file + pinataMetadata
-    
-    # === Step 2: Secondary IPFS (Filebase) ===
+    # === Step 1: Primary IPFS (Filebase) — Pinata REMOVED 2026-07-20 (quota exceeded) ===
     # S3 PUT to https://s3.filebase.com/{bucket}/{key}
     # Auth: AWS SigV4 with FILEBASE_ACCESS_KEY + FILEBASE_SECRET_KEY
-    # Filebase auto-pins all S3 objects to IPFS
+    # Filebase auto-pins all S3 objects to IPFS. Free 5GB, no request-volume limit.
+    
+    # === Step 2: Secondary IPFS (Lighthouse, free Filecoin tier) ===
+    # POST https://node.lighthouse.storage/api/v0/add
+    # Auth: Bearer LIGHTHOUSE_API_KEY (free tier at files.lighthouse.storage)
     
     # === Step 3: Arweave Permanent (when wallet available) ===
     # POST https://node1.irys.xyz/tx/arweave
@@ -1151,4 +1188,6 @@ research-pipeline -> deep-research -> publication-publisher -> buffer-integratio
 | `keywords:` YAML field in Pandoc frontmatter (kaizen fix A2) | Strip it -- `scripts/unicode-latex-preprocess.py` does this automatically. It crashes some XeLaTeX templates via an undefined `\xmpquote` macro. |
 | Ephemeral scripts with hardcoded API tokens reaching `git add` (kaizen fix A4) | Run `scripts/credential-scan.py --staged` before every commit (Phase Closeout Protocol STEP 0.5). Add `_*.py`/`.env`/`*.token` to `.gitignore` from Phase 0. |
 | Obsidian/external-drive source notes assumed inaccessible or silently skipped (kaizen fix C5/D5) | Document the path limitation and ask the user to copy files in, or use `exec` with explicit `cwd` in Full Access mode. If imported notes mix internal monologue with delivered content and lack YAML frontmatter, load `doc-coauthoring` to help the user separate meta-planning from publishable content before it enters the research pipeline. |
+| Using Pinata for any new IPFS pinning (REMOVED 2026-07-20) | Pinata's free quota was exceeded and the account is blocked. Use Filebase (PRIMARY, free 5GB S3-compatible, no request limit) → Lighthouse (SECONDARY, free Filecoin tier) → Arweave (when funded). Never retry `api.pinata.cloud` or reference `gateway.pinata.cloud` in verification steps. |
+| Assuming a paid/quota-limited service is still available without checking first | Before any pinning/distribution run, verify the target free-tier service hasn't hit its quota (e.g., a 429 or account-suspended response) and have a free fallback pinner already configured — don't discover the outage mid-publication. |
 

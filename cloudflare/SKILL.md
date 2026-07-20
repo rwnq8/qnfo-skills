@@ -1,7 +1,7 @@
 ---
 name: cloudflare
 description: ULTRA-CONSOLIDATED Cloudflare Full-Stack -- Workers, Pages, D1, R2, KV, Vectorize, Queues, Durable Objects, AI, DNS, Zero Trust, Email, WAF, CDN, Turnstile, Infrastructure Audit. The ONLY infrastructure skill. NEVER treat Cloudflare components in isolation -- ALL code, outputs, and deliverables must evaluate the full Cloudflare stack end-to-end.
-version: "3.0"
+version: "3.1"
 triggers: ["cloudflare-deployer", "deploy", "wrangler", "Pages", "Workers", "R2", "D1", "DNS", "KV", "Vectorize", "Queues", "AI", "Durable Objects", "Zero Trust", "Access", "Gateway", "WARP", "Tunnel", "WAF", "CDN", "Turnstile", "email", "SPF", "DKIM", "DMARC", "infrastructure", "audit", "health check", "orphan", "lifecycle", "worker route", "route conflict", "522", "CNAME", "Cloudflare", "upload", "migrate", "Pages Functions", "Workers for Platforms", "Cron Triggers", "Tail Workers", "Smart Placement", "Hyperdrive", "Secrets Store", "Pipelines", "Browser Rendering", "Zaraz", "Argo", "Spectrum", "TURN", "Network Interconnect", "Cache Reserve", "Bot Management", "API Shield", "DDoS", "Analytics Engine", "Web Analytics", "GraphQL API", "Observability", "Miniflare", "Sandbox", "Workerd", "Terraform", "Pulumi", "Snippets", "Containers", "Workflows", "Artifacts", "R2 Data Catalog", "R2 SQL", "Static Assets", "Bindings", "Image", "Stream", "RealtimeKit", "Flagship", "feature flags", "Agents SDK", "AI Gateway", "AI Search", "Workers AI", "do", "durable", "sandbox", "turnstile", "web-perf", "thin client", "IaC", "consolidation", "4-D", "IPFS bridge", "DNSLink", "Arweave", "Filecoin", "distributed", "durable", "discoverable", "duplicated"]
 related: ["qnfo-agent", "research"]
 priority: 1
@@ -10,7 +10,15 @@ autonomous: true
 self_sufficient: true
 ---
 
-# CLOUDFLARE -- v3.0 (Full-Stack + 4-D + Consolidation)
+# CLOUDFLARE -- v3.1 (Full-Stack + 4-D + Consolidation)
+
+> **v3.1 UPDATE (2026-07-20, Pinata quota exceeded):** Removed Pinata from
+> the R2→IPFS Bridge. Filebase (free 5GB S3-compatible, no request-volume
+> limit, auto-pins on write) is now the PRIMARY pinner; Lighthouse (free
+> Filecoin tier) is SECONDARY. See `scripts/filebase-upload.js` for the
+> SigV4 helper — this same helper is reused by the `research` skill's
+> `scripts/filebase-pin.js`. Do not add `PINATA_API_KEY`/`PINATA_API_SECRET`
+> back to any Worker env or wrangler secret.
 
 > **Merges 9:** cloudflare + cloudflare-deployer + cloudflare-one + cloudflare-email-service + email + infrastructure-audit + web-perf + workers-best-practices + wrangler
 > **Added v3.0:** Worker Consolidation Pattern, R2→IPFS Bridge, DNSLink Deployment, 4-D Architecture
@@ -289,37 +297,42 @@ REST API -> Cloudflare API
 
 ## R2→IPFS Bridge (4-D Integration)
 
+**PINATA REMOVED (2026-07-20, free quota exceeded, account blocked).** The
+R2→IPFS bridge now routes through **Filebase** (free 5GB S3-compatible
+bucket, no request-volume limit, auto-pins every object on write) as the
+PRIMARY pinner. This eliminates the extra `pinByHash` API hop entirely —
+writing to Filebase via S3 `PUT` auto-pins in one step.
+
 ### Architecture
 ```
-R2 Write Event ──► qnfo-archive Worker (queue) ──► Pinata API ──► IPFS Network
-                         │
+R2 Write Event ──► qnfo-archive Worker (queue) ──► Filebase S3 PUT ──► IPFS Network (auto-pin)
+                         │                              │
+                         │                        (fallback: Lighthouse free Filecoin tier)
   Cloudflare IPFS Gateway ◄── DNSLink ◄── _dnslink TXT
-  (CDN-accelerated edge delivery)
+  (CDN-accelerated edge delivery, free/unlimited)
 ```
 
-### qnfo-archive Worker Extension
+### qnfo-archive Worker Extension (Filebase, replaces Pinata pinByHash)
 ```js
-// On R2 archival event, auto-pin to IPFS
-async function pinToIPFS(env, cid, metadata) {
-  const form = new FormData();
-  form.append('hashToPin', cid);
-  form.append('pinataMetadata', JSON.stringify(metadata));
-  await fetch('https://api.pinata.cloud/pinning/pinByHash', {
-    method: 'POST',
-    headers: {
-      pinata_api_key: env.PINATA_API_KEY,
-      pinata_secret_api_key: env.PINATA_API_SECRET
-    },
-    body: form
-  });
+// On R2 archival event, auto-pin to IPFS via Filebase S3-compatible PUT.
+// Filebase pins on write — no separate "pin" API call needed.
+// Requires: FILEBASE_ACCESS_KEY, FILEBASE_SECRET_KEY (AWS SigV4 auth against s3.filebase.com)
+// See scripts/filebase-upload.js in this skill for the full SigV4 helper (s3Put).
+async function pinToIPFSViaFilebase(env, key, body, contentType, metadata) {
+  const result = await s3Put(env.FILEBASE_BUCKET || 'qnfo-archive', key, body, contentType);
+  if (!result.ok) {
+    throw new Error('Filebase PUT failed: HTTP ' + result.status + ' — do NOT fall back to Pinata (quota exceeded, blocked). Try Lighthouse instead.');
+  }
+  return result.ipfsCid; // returned via x-ipfs-cid response header
 }
 ```
 
 ### Multi-Service Pinning Credentials
 | Service | Credential | Purpose |
 |:--------|:-----------|:--------|
-| Pinata | `PINATA_API_KEY` + `PINATA_API_SECRET` | Primary IPFS pinning |
-| Filebase | `FILEBASE_ACCESS_KEY` + `FILEBASE_SECRET_KEY` | S3→IPFS auto-pinning |
+| Filebase (PRIMARY) | `FILEBASE_ACCESS_KEY` + `FILEBASE_SECRET_KEY` | Free 5GB, no request-volume limit, S3→IPFS auto-pinning |
+| Lighthouse (SECONDARY) | `LIGHTHOUSE_API_KEY` | Free-tier Filecoin storage deals, no CC required |
+| ~~Pinata~~ | ~~`PINATA_API_KEY` + `PINATA_API_SECRET`~~ | **REMOVED 2026-07-20 — free quota exceeded, account blocked. Do not use, do not add credentials back.** |
 
 ---
 
@@ -525,3 +538,4 @@ CNAME pointing to non-existent Worker.
 | Assuming infra-audit narrative (handoff notes) over live D1 row counts | ALWAYS query live D1 `SELECT COUNT(*)` before trusting audit_sessions.notes — narrative logs can be stale or describe a different table than what actually shipped. |
 | Vectorize binding declared in wrangler config but never called in fetch handler (dead binding masked by LIKE/stub fallback) | Read full Worker source and cross-reference every declared binding name against actual usage in handler code. Found 2026-07-18 in both `qnfo-ipatent` (`/api/search` literal stub despite populated 1024-dim `DISCLOSURES_VZ` index) and `qnfo-qwav` (`/ask` used SQL `LIKE` despite unused `QWAV_VZ` binding to 768-dim `qwav-research-v2` index). Fix: embed query via Workers AI (matching the index's original embedding model), `.query()` the Vectorize index, keep LIKE only as a fallback when AI/Vectorize is unavailable. |
 | Restoring a production D1 database via Time Travel without first exporting a full row/table snapshot of ANY concurrent writes to R2 | Before any Time Travel restore, run `SELECT *` (explicit column list, avoid FTS5 tables which break `d1 export`) and upload the JSON to R2 as a safety net. Verified 2026-07-18: C-01 living-paper restore preceded by snapshot to `qnfo-backups/living-paper/pre-restore-snapshot-*.json`; post-restore diff confirmed zero data loss. |
+| Using Pinata for R2→IPFS pinning (REMOVED 2026-07-20) | Pinata's free quota was exceeded and the account is blocked. Use Filebase (PRIMARY, free 5GB, auto-pins on S3 PUT) → Lighthouse (SECONDARY, free Filecoin tier). Never add `PINATA_API_KEY`/`PINATA_API_SECRET` back to Worker env vars or wrangler secrets. |

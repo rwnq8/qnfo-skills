@@ -1,51 +1,45 @@
 #!/usr/bin/env node
-// pinata-pin.js — Pin a file to IPFS via Pinata
-// Usage: node pinata-pin.js <file-path> [name]
-// Requires: PINATA_API_KEY, PINATA_API_SECRET env vars
+// pinata-pin.js — DEPRECATED 2026-07-20. DO NOT USE.
+//
+// Pinata's free-tier quota was exceeded and the account is blocked.
+// This script is retained on disk ONLY for historical reference (prior
+// publications that were pinned via Pinata before the quota exceeded event).
+//
+// For all NEW IPFS pinning, use:
+//   - scripts/filebase-pin.js   (PRIMARY — free 5GB, no request-volume limit)
+//   - scripts/lighthouse-pin.js (SECONDARY — free Filecoin tier)
+//
+// See research/SKILL.md v2.7 "IPFS Pinning" section for the full
+// Filebase-primary workflow and multi-pinner fallback order.
 
-const fs = require('fs');
-const path = require('path');
+throw new Error(
+  'pinata-pin.js is DEPRECATED (2026-07-20, free quota exceeded, account blocked). ' +
+  'Use scripts/filebase-pin.js (primary) or scripts/lighthouse-pin.js (secondary) instead. ' +
+  'Do not retry Pinata for any new publication.'
+);
 
-const PKEY = process.env.PINATA_API_KEY;
-const PSEC = process.env.PINATA_API_SECRET;
-
-async function pinataPin(filePath, name) {
-  if (!PKEY || !PSEC) throw new Error('PINATA_API_KEY / PINATA_API_SECRET not set');
-  const content = fs.readFileSync(filePath);
-  const fileName = name || path.basename(filePath);
-
-  const form = new FormData();
-  form.append('file', new Blob([content]), fileName);
-  form.append('pinataMetadata', JSON.stringify({
-    name: fileName,
-    keyvalues: { type: 'publication', uploaded_at: new Date().toISOString() }
-  }));
-  form.append('pinataOptions', JSON.stringify({ cidVersion: 1, wrapWithDirectory: false }));
-
-  const r = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
-    method: 'POST',
-    headers: { pinata_api_key: PKEY, pinata_secret_api_key: PSEC },
-    body: form
-  });
-  const d = await r.json();
-  if (d.IpfsHash) {
-    console.log('IPFS CID:', d.IpfsHash);
-    console.log('Gateway:', 'https://ipfs.io/ipfs/' + d.IpfsHash);
-    console.log('Pinata Gateway:', 'https://gateway.pinata.cloud/ipfs/' + d.IpfsHash);
-  } else {
-    console.error('Pinata pin failed:', JSON.stringify(d));
-    process.exitCode = 1;
-  }
-  return d.IpfsHash;
-}
-
-if (require.main === module) {
-  const [filePath, name] = process.argv.slice(2);
-  if (!filePath) {
-    console.error('Usage: node pinata-pin.js <file-path> [name]');
-    process.exit(1);
-  }
-  pinataPin(filePath, name).catch(e => { console.error('FATAL:', e.message); process.exitCode = 1; });
-}
-
-module.exports = { pinataPin };
+// --- Original implementation preserved below for historical reference only ---
+// const fs = require('fs');
+// const path = require('path');
+// const PKEY = process.env.PINATA_API_KEY;
+// const PSEC = process.env.PINATA_API_SECRET;
+// async function pinataPin(filePath, name) {
+//   if (!PKEY || !PSEC) throw new Error('PINATA_API_KEY / PINATA_API_SECRET not set');
+//   const content = fs.readFileSync(filePath);
+//   const fileName = name || path.basename(filePath);
+//   const form = new FormData();
+//   form.append('file', new Blob([content]), fileName);
+//   form.append('pinataMetadata', JSON.stringify({
+//     name: fileName,
+//     keyvalues: { type: 'publication', uploaded_at: new Date().toISOString() }
+//   }));
+//   form.append('pinataOptions', JSON.stringify({ cidVersion: 1, wrapWithDirectory: false }));
+//   const r = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
+//     method: 'POST',
+//     headers: { pinata_api_key: PKEY, pinata_secret_api_key: PSEC },
+//     body: form
+//   });
+//   const d = await r.json();
+//   return d.IpfsHash;
+// }
+// module.exports = { pinataPin };
