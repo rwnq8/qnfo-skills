@@ -19,13 +19,25 @@ self_sufficient: true
 > turn — a `"success": true` API response or a Dashboard-style assumption
 > is NOT sufficient evidence.
 
-> **v3.1 UPDATE (2026-07-20, Pinata quota exceeded):** Removed Pinata from
-> the R2→IPFS Bridge. Filebase (free 5GB S3-compatible, no request-volume
-> limit, auto-pins on write) is now the PRIMARY pinner; Lighthouse (free
-> Filecoin tier) is SECONDARY. See `scripts/filebase-upload.js` for the
-> SigV4 helper — this same helper is reused by the `research` skill's
-> `scripts/filebase-pin.js`. Do not add `PINATA_API_KEY`/`PINATA_API_SECRET`
-> back to any Worker env or wrangler secret.
+> **v3.4 UPDATE (2026-07-21, orphan-script audit):** Deleted
+> `scripts/filebase-upload.js` — a stale SigV4 helper for the Filebase
+> pinning service that the v3.2 deprecation banner below already declared
+> removed, but the script file itself survived that commit untouched,
+> creating a live contradiction between this skill's text (Filebase
+> deprecated) and its shipped scripts (a working Filebase uploader still
+> present). Filebase/Pinata/Lighthouse/Arweave remain fully out of scope;
+> the v3.1 banner immediately below is retained ONLY as historical record
+> of why the (now-deleted) script once existed — do not resurrect it.
+
+> **v3.1 UPDATE (2026-07-20, Pinata quota exceeded) — SUPERSEDED, script DELETED v3.4:**
+> Removed Pinata from the R2→IPFS Bridge. Filebase (free 5GB S3-compatible,
+> no request-volume limit, auto-pins on write) was made PRIMARY pinner;
+> Lighthouse (free Filecoin tier) was SECONDARY. `scripts/filebase-upload.js`
+> and the `research` skill's `scripts/filebase-pin.js` implemented this —
+> BOTH are deprecated per the v3.2 banner below and the script has now
+> been physically deleted (v3.4). Do not add `PINATA_API_KEY`/
+> `PINATA_API_SECRET`/`FILEBASE_ACCESS_KEY`/`FILEBASE_SECRET_KEY` back to
+> any Worker env or wrangler secret.
 
 > **v3.2 UPDATE (2026-07-20, red-team audit):** Deprecated "R2→IPFS Bridge"
 > section, Filebase S3 SigV4 upload script, and all external pinning service
@@ -312,7 +324,11 @@ curl -X POST "https://api.cloudflare.com/client/v4/zones/{ZONE_ID}/dns_records" 
   -d '{"type":"TXT","name":"_dnslink.{subdomain}","content":"dnslink=/ipfs/{CID}","ttl":1}'
 ```
 
-### Verification
+### Verification (script/policy consistency)
+- [ ] No skill script implements a service the SKILL.md text declares deprecated (orphan-script check — v3.4 caught `filebase-upload.js`)
+- [ ] `git log --oneline -- <script>` reviewed for any script older than the SKILL.md's last deprecation banner before trusting it as current
+
+## Verification
 - `https://dweb.link/ipns/{subdomain}.qnfo.org` → serves content from IPFS
   (RED-TEAM FIX 2026-07-20: `cloudflare-ipfs.com` and `cf-ipfs.com` no
   longer resolve via DNS at all — confirmed by direct probe, ENODATA.

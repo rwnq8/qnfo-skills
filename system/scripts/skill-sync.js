@@ -39,8 +39,15 @@ async function syncSkills(skillsRoot) {
   skillsRoot = skillsRoot || process.env.USERPROFILE + '\\.deepchat\\skills';
 
   // 1. Git commit + push (best-effort; ignore if no changes)
+  // NOTE (2026-07-21 compliance fix): commit message now follows the
+  // qnfo-agent §4 Git Protocol format (ACTION:TYPE FILE: ... RATIONALE: ...)
+  // instead of a bare "chore: skill sync" -- required for all commits to
+  // the qnfo-skills repo. Also split into separate PowerShell-safe steps
+  // (no `&&` chaining -- qnfo-agent §8.6 Rule 1).
   try {
-    execSync('git add -A && git commit -m "chore: skill sync" && git push', { cwd: skillsRoot, stdio: 'inherit' });
+    execSync('git add -A', { cwd: skillsRoot, stdio: 'inherit' });
+    execSync('git commit -m "ACTION:SYNC FILES: skills/* RATIONALE: automated skill-sync.js run -- propagate local SKILL.md/script edits to git history"', { cwd: skillsRoot, stdio: 'inherit' });
+    execSync('git push', { cwd: skillsRoot, stdio: 'inherit' });
   } catch (e) {
     console.log('Git commit/push skipped (no changes or push failed):', e.message.split('\n')[0]);
   }
