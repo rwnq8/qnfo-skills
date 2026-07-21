@@ -1,7 +1,7 @@
 ---
 name: knowledge
 description: QNFO Knowledge Graph and durable memory management -- graph querying for due diligence and impact analysis (stats, nodes, neighbors, impact, query endpoints), ultrametric clustering and taxonomy edge seeding, semantic memory search via Vectorize, persistent fact storage in D1/Vectorize, cross-system discovery, and paper context retrieval. Use for remembering, recalling, and discovering knowledge across the QNFO ecosystem.
-version: "2.0"
+version: "2.1"
 triggers: ["knowledge graph", "KG", "graph", "graph-api", "dependencies", "impact", "neighbors", "nodes", "edges", "due diligence", "memory", "remember", "recall", "durable learning", "semantic search", "Vectorize", "D1 memory", "fact storage", "discovery", "cross-system", "ultrametric", "p-adic", "taxonomy", "impact analysis", "what exists", "who depends", "ecosystem", "paper search", "memory search", "fact", "knowledge base"]
 related: ["qnfo-agent"]
 priority: 1
@@ -10,7 +10,12 @@ autonomous: true
 self_sufficient: true
 ---
 
-# KNOWLEDGE -- v2.0 (Ultra-Consolidated KG + Memory)
+# KNOWLEDGE -- v2.1 (Ultra-Consolidated KG + Memory)
+
+> **v2.1 UPDATE (2026-07-21, phantom-claim audit):** Added the
+> **Tool-Call Execution Mandate** section below. A KG edge/node write or a
+> `remember_fact` call is not "stored" until re-queried and shown present
+> in this turn.
 
 > **Merges 2:** knowledge-graph + memory-management
 > **Related:** Always load with `qnfo-agent` for Due Diligence Protocol (§3) -- KG-First Discovery Gate.
@@ -25,6 +30,20 @@ update_plan([
   {"step": "Perform impact analysis or store new facts as needed", "status": "pending"},
   {"step": "Seed taxonomy edges for orphaned KG nodes (minimum 1 edge per entity)", "status": "pending"},
 ])
+
+---
+
+## Tool-Call Execution Mandate (Anti-Phantom Gate — MANDATORY)
+
+Claiming a fact is "remembered", a KG edge is "seeded", or a D1 row is
+"stored" without an invoked tool call showing evidence in this turn is a
+PHANTOM CLAIM (`qnfo-agent` §9.11 Rule 14) — BLOCKED.
+
+1. **`remember_fact`** — after storing, re-run `recall_facts` or `search_memories` with a matching keyword/query and show the stored entry in the response, not just the write call's ack.
+2. **KG edge seeding** — after seeding, re-query `/neighbors/{entity}` and show neighbor count > 0; a POST/insert success response alone does not confirm the edge exists.
+3. **D1 writes** — re-run a `SELECT` against the exact row just written before claiming "stored" or "synced".
+4. **"Comprehensive"/"all" discovery claims** — must be preceded by an actual `query_graph('stats')` call in this turn; a claim of completeness from memory/assumption alone is BLOCKED per the KG-First Discovery Gate below.
+5. If re-verification cannot be run in this turn, say `[NOT-VERIFIED: reason]` instead of "stored"/"remembered"/"seeded".
 
 ---
 

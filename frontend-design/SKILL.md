@@ -1,7 +1,7 @@
 ---
 name: frontend-design
 description: ULTRA-CONSOLIDATED frontend, creative, and visual design -- UI design, web components, pages, dashboards, React components, HTML/CSS/Tailwind layouts, algorithmic art (p5.js with seeded randomness, flow fields, particles, generative patterns), data visualization (Tufte principles for data-ink ratio and chartjunk elimination, AntV infographic syntax), and BLING usability audits. Use for ANY visual, creative, or design output.
-version: "2.0"
+version: "2.1"
 triggers: ["UI", "design", "frontend", "page", "styling", "visual", "BLING", "web component", "dashboard", "React", "Tailwind", "shadcn", "HTML", "CSS", "landing page", "web app", "beautify", "poster", "art", "generative art", "algorithmic art", "creative coding", "p5.js", "flow field", "particle system", "seeded randomness", "visualization", "chart", "graph", "Tufte", "infographic", "data-ink", "chartjunk", "AntV", "D3", "SVG", "canvas", "WebGL", "data viz", "graphical integrity", "usability audit", "color", "typography", "spacing", "animation", "brand", "layout", "responsive", "accessibility"]
 related: ["cloudflare"]
 priority: 2
@@ -10,7 +10,12 @@ autonomous: false
 self_sufficient: true
 ---
 
-# FRONTEND -- v2.0 (Ultra-Consolidated Creative + Visual)
+# FRONTEND -- v2.1 (Ultra-Consolidated Creative + Visual)
+
+> **v2.1 UPDATE (2026-07-21, phantom-claim audit):** Added the
+> **Tool-Call Execution Mandate** section below. "Responsive", "accessible",
+> or "renders correctly" claims require an actual build/render check in
+> this turn, not visual inspection of the source code alone.
 
 > **Merges 3:** frontend-design + algorithmic-art + data-visualization
 > **Related:** Load `cloudflare` for deploying frontend assets to Cloudflare Pages/R2/Workers.
@@ -24,6 +29,20 @@ update_plan([
   {"step": "Apply Tufte principles if data; verify originality if art; audit if UI", "status": "pending"},
   {"step": "Verify: design quality, responsiveness, accessibility baseline, deployment", "status": "pending"},
 ])
+
+---
+
+## Tool-Call Execution Mandate (Anti-Phantom Gate — MANDATORY)
+
+Claiming a UI "renders correctly", is "responsive", "accessible", or
+"deployed" without an invoked tool call showing evidence in this turn is a
+PHANTOM CLAIM (`qnfo-agent` §9.11 Rule 14) — BLOCKED.
+
+1. **Web UI / React components** — actually build (`npm run build`/bundle step) or load the artifact and report the real build output/errors, not an assumption that the JSX is correct.
+2. **Deployment claims** — after `wrangler pages deploy`/Workers deploy, `curl` the live URL and show the response status; do not claim "deployed" from the CLI's success message alone.
+3. **Algorithmic art** — actually execute/render the p5.js sketch (or describe verified console output) before claiming the seed/animation behaves as designed.
+4. **Data visualization** — verify the chart actually renders with the real dataset (not placeholder data) before claiming "chart complete".
+5. If no execution/build environment is available in this turn, say `[NOT-VERIFIED: reason]` instead of "renders correctly"/"deployed"/"complete".
 
 ---
 

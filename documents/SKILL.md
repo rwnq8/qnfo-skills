@@ -1,7 +1,7 @@
 ---
 name: documents
 description: Create, edit, and analyze all document formats -- Word (.docx) with formatting and tracked changes, PowerPoint (.pptx) presentations from outlines, Excel (.xlsx/.csv/.tsv) spreadsheets with formulas and analysis, and PDF manipulation (form filling, merge, split, text/table extraction). For publication-grade LaTeX PDF builds, use the research skill.
-version: "2.0"
+version: "2.1"
 triggers: ["docx", "Word", "document", "PowerPoint", "presentation", "slides", "Excel", "spreadsheet", "CSV", "TSV", "xlsx", "pptx", "PDF", "form", "fill form", "merge PDF", "split PDF", "extract PDF", "table extraction", "tracked changes", "comments", "speaker notes", "formula", "chart", "pivot table", "data analysis", "import", "export", "office", "formatting", "styles", "headers", "footers"]
 related: ["research"]
 priority: 2
@@ -10,7 +10,13 @@ autonomous: false
 self_sufficient: true
 ---
 
-# DOCUMENTS -- v2.1 (Office + PDF + 4-D Export)
+# DOCUMENTS -- v2.2 (Office + PDF + 4-D Export)
+
+> **v2.2 UPDATE (2026-07-21, phantom-claim audit):** Added the
+> **Tool-Call Execution Mandate** section below. A document is not
+> "created"/"updated"/"filled" until it has been read back and its content
+> verified in this turn — the write-tool's return value alone is not proof
+> the file is correct.
 
 > **Merges 2:** office-documents + pdf-documents
 > **Related:** Load `research` for publication-grade PDFs + 4-D distribution. Load `cloudflare` for R2/IPFS archival.
@@ -24,6 +30,20 @@ update_plan([
   {"step": "Read source data and create/edit document with appropriate tooling", "status": "pending"},
   {"step": "Verify: Test-Path output.ext AND (Get-Item output.ext).Length > 0", "status": "pending"},
 ])
+
+---
+
+## Tool-Call Execution Mandate (Anti-Phantom Gate — MANDATORY)
+
+Claiming a document was "created", "updated", "filled", or "extracted"
+without an invoked tool call showing evidence in this turn is a PHANTOM
+CLAIM (`qnfo-agent` §9.11 Rule 14) — BLOCKED.
+
+1. **Every creation/edit** — after writing, `Test-Path` (or `read`) the output file AND re-open/re-parse it (extract text or read cell values back) to confirm content matches intent. A successful write-tool return code is NOT proof the document is correct.
+2. **.xlsx formula edits** — re-read the saved file and confirm formulas are still formulas (not baked-in values) before claiming "formulas preserved".
+3. **PDF form fills** — re-extract the filled field values from the saved PDF and show them; do not claim "form filled" from the fill-call's return alone.
+4. **.pptx/.docx from outline** — re-open the generated file and report the actual slide/paragraph count achieved vs the outline requested.
+5. If the output cannot be re-verified in this turn, say `[NOT-VERIFIED: reason]` instead of "done"/"created"/"filled".
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: code
 description: Code quality review, security audit, and MCP server building. Analyze code for quality/security/anti-patterns with specific line numbers. Build MCP servers in Python (FastMCP) or Node/TypeScript (MCP SDK) for integrating external APIs. Deploy MCP servers as Cloudflare Workers when possible.
-version: "2.0"
+version: "2.1"
 triggers: ["code review", "security audit", "code quality", "best practices", "anti-pattern", "review this code", "audit this", "MCP", "Model Context Protocol", "FastMCP", "MCP server", "API integration", "tool building", "external API", "MCP SDK", "type safety", "SQL injection", "secrets", "race condition", "error handling", "code smell", "refactor"]
 related: ["cloudflare"]
 priority: 2
@@ -10,7 +10,13 @@ autonomous: false
 self_sufficient: true
 ---
 
-# CODE -- v2.0 (Ultra-Consolidated Review + MCP)
+# CODE -- v2.1 (Ultra-Consolidated Review + MCP)
+
+> **v2.1 UPDATE (2026-07-21, phantom-claim audit):** Added the
+> **Tool-Call Execution Mandate** section below. A code review finding or
+> an MCP tool description is NOT verified until the code has actually been
+> read/run/tested via a tool call in this turn — "this looks correct" is
+> not a review, and "the tool should return X" is not a working MCP server.
 
 > **Merges 2:** code-review + mcp-builder
 > **Related:** Load `cloudflare` for deploying MCP servers as Workers with D1/R2/KV/Vectorize bindings.
@@ -24,6 +30,18 @@ update_plan([
   {"step": "Execute review or build with proper tooling", "status": "pending"},
   {"step": "Verify: all quality gates pass, tests run, MCP tools respond correctly", "status": "pending"},
 ])
+
+---
+
+## Tool-Call Execution Mandate (Anti-Phantom Gate — MANDATORY)
+
+A finding, fix, or MCP tool claim without an invoked tool call showing
+actual output is a PHANTOM CLAIM (`qnfo-agent` §9.11 Rule 14) — BLOCKED.
+
+1. **Code review** — every file MUST be `read` in this turn before a finding is reported; never review "from memory" of an earlier turn or from the diff summary alone. If the language toolchain is available, actually run the linter/type-checker/build (`tsc --noEmit`, `eslint`, `pytest`, etc.) and show the exit code and output rather than asserting "this compiles" or "tests would pass".
+2. **MCP server build** — after writing a tool, actually invoke it (via the MCP client/test harness or a direct function call) and show the real response. "The tool should return the papers list" is a phantom claim until a real call returns real JSON.
+3. **Security/quality findings** — cite the exact line number from the `read` output, not a paraphrase; do not report a vulnerability class without pointing at the specific line that exhibits it.
+4. If a build/test/lint tool is unavailable in this environment, the response MUST say `[NOT-VERIFIED: no toolchain available]` instead of "passes" or "verified".
 
 ---
 

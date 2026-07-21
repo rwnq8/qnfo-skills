@@ -1,7 +1,7 @@
 ---
 name: cloudflare
 description: ULTRA-CONSOLIDATED Cloudflare Full-Stack -- Workers, Pages, D1, R2, KV, Vectorize, Queues, Durable Objects, AI, DNS, Zero Trust, Email, WAF, CDN, Turnstile, Infrastructure Audit. The ONLY infrastructure skill. NEVER treat Cloudflare components in isolation -- ALL code, outputs, and deliverables must evaluate the full Cloudflare stack end-to-end.
-version: "3.1"
+version: "3.3"
 triggers: ["cloudflare-deployer", "deploy", "wrangler", "Pages", "Workers", "R2", "D1", "DNS", "KV", "Vectorize", "Queues", "AI", "Durable Objects", "Zero Trust", "Access", "Gateway", "WARP", "Tunnel", "WAF", "CDN", "Turnstile", "email", "SPF", "DKIM", "DMARC", "infrastructure", "audit", "health check", "orphan", "lifecycle", "worker route", "route conflict", "522", "CNAME", "Cloudflare", "upload", "migrate", "Pages Functions", "Workers for Platforms", "Cron Triggers", "Tail Workers", "Smart Placement", "Hyperdrive", "Secrets Store", "Pipelines", "Browser Rendering", "Zaraz", "Argo", "Spectrum", "TURN", "Network Interconnect", "Cache Reserve", "Bot Management", "API Shield", "DDoS", "Analytics Engine", "Web Analytics", "GraphQL API", "Observability", "Miniflare", "Sandbox", "Workerd", "Terraform", "Pulumi", "Snippets", "Containers", "Workflows", "Artifacts", "R2 Data Catalog", "R2 SQL", "Static Assets", "Bindings", "Image", "Stream", "RealtimeKit", "Flagship", "feature flags", "Agents SDK", "AI Gateway", "AI Search", "Workers AI", "do", "durable", "sandbox", "turnstile", "web-perf", "thin client", "IaC", "consolidation", "4-D", "IPFS bridge", "DNSLink", "Arweave", "Filecoin", "distributed", "durable", "discoverable", "duplicated"]
 related: ["qnfo-agent", "research"]
 priority: 1
@@ -10,7 +10,14 @@ autonomous: true
 self_sufficient: true
 ---
 
-# CLOUDFLARE -- v3.2 (Full-Stack + Consolidation, v2.8 no external IPFS)
+# CLOUDFLARE -- v3.3 (Full-Stack + Consolidation, v2.8 no external IPFS)
+
+> **v3.3 UPDATE (2026-07-21, phantom-claim audit):** Added the **Tool-Call
+> Execution Mandate** section below (immediately after `execute_plan`).
+> Every "deployed"/"fixed"/"live"/"healthy" claim in this domain now
+> requires an independently re-queried live-state tool result in the same
+> turn — a `"success": true` API response or a Dashboard-style assumption
+> is NOT sufficient evidence.
 
 > **v3.1 UPDATE (2026-07-20, Pinata quota exceeded):** Removed Pinata from
 > the R2→IPFS Bridge. Filebase (free 5GB S3-compatible, no request-volume
@@ -44,6 +51,25 @@ update_plan([
   {"step": "Audit: check for orphans, 522-RISK, CNAME chains, resource drift", "status": "pending"},
   {"step": "Core Distribution Gate: Verify GitHub, Zenodo, R2, D1/KG layers", "status": "pending"},
 ])
+
+---
+
+## Tool-Call Execution Mandate (Anti-Phantom Gate — MANDATORY)
+
+No claim that a Worker is "deployed", a DNS record is "live", a D1 write
+"succeeded", an R2 object "exists", or an infrastructure issue is "fixed"
+may appear in a response without an actually-invoked tool call in the SAME
+turn whose output is shown. Future-tense or narrative-only claims
+("this should now route correctly", "the deploy will fix it") are PHANTOM
+CLAIMS per `qnfo-agent` §9.11 Rule 14 — BLOCKED.
+
+**Domain-specific verification (pick the ones relevant to the claim):**
+1. **Worker deploy** — `npx wrangler deployments list --name <worker>` shows the new deployment, AND `curl -sI https://<worker>.<subdomain>.workers.dev/` (or the production route) returns the expected status. A `200 OK` from the deploy API response body alone is NOT verification.
+2. **D1 write** — re-run a `SELECT` against the exact row/table just written; do not trust the `"success": true` wrapper on the `INSERT`/`UPDATE` response.
+3. **R2 object** — `npx wrangler r2 object get <bucket>/<key> --remote` round-trip after every `put`; compare byte length or hash to the source file.
+4. **DNS record** — `GET /zones/{id}/dns_records` (or `dig`) after any create/update; confirm the record resolves as intended, not just that the API accepted the write.
+5. **Health/status endpoints** — actually call the endpoint (`curl`/`fetch`) and show the HTTP status + body; do not infer health from deploy success alone.
+6. If verification cannot be run in this turn, the response MUST read `[NOT-VERIFIED: <reason>]` — never "deployed", "fixed", "healthy", or "confirmed".
 
 ---
 

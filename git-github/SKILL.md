@@ -1,7 +1,7 @@
 ---
 name: git-github
 description: Git workflow operations and GitHub project management -- conventional commits, branch recovery, merge conflicts, detached HEAD, stash recovery, GitHub Issues, PRs, Wikis, Releases, Milestones, project boards, and GitHub-D1 sync. GitHub is CANONICAL for skills repository and project files/archives.
-version: "2.0"
+version: "2.2"
 triggers: ["git", "commit", "merge", "rebase", "branch", "push", "pull", "detached HEAD", "conflict", "stash", "reflog", "GitHub", "Issues", "PRs", "pull request", "wiki", "releases", "Milestones", "project board", "GitHub sync", "D1 sync", "repo", "repository", "fork", "clone", "remote", "origin", "main", "master", "feature branch"]
 related: []
 priority: 2
@@ -10,7 +10,13 @@ autonomous: false
 self_sufficient: true
 ---
 
-# GIT-GITHUB -- v2.1 (Ultra-Consolidated VC + PM)
+# GIT-GITHUB -- v2.2 (Ultra-Consolidated VC + PM)
+
+> **v2.2 UPDATE (2026-07-21, phantom-claim audit):** Added the
+> **Tool-Call Execution Mandate** section below, extending the existing
+> "tool success messages are NOT verification" rule with an explicit
+> requirement to independently re-query GitHub's API (not just local git)
+> before claiming a push, tag, release, or PR is live remotely.
 
 > **Merges 2:** git-operations + github-manager
 > **Cloudflare Full-Stack:** Git is version control for the import surface ONLY. R2 + D1 are canonical for project artifacts. GitHub is secondary to D1 for project state. Skills repo (`qnfo-skills`) is for skills exclusively -- NEVER place project data there (ADR-026).
@@ -24,6 +30,20 @@ update_plan([
   {"step": "Execute git or GitHub operation", "status": "pending"},
   {"step": "Verify: git log -1 --oneline, git status --short (must be clean)", "status": "pending"},
 ])
+
+---
+
+## Tool-Call Execution Mandate (Anti-Phantom Gate — MANDATORY)
+
+Claiming a commit is "pushed", a tag/release is "created", or a PR/Issue
+is "opened" without an invoked tool call showing evidence in this turn is a
+PHANTOM CLAIM (`qnfo-agent` §9.11 Rule 14) — BLOCKED.
+
+1. **Local commit** — `git log -1 --oneline` must show the hash; `git status --short` must be empty.
+2. **Push** — a local `git push` returning exit 0 is NOT sufficient. Independently re-query the GitHub API (`GET /repos/{owner}/{repo}/commits/{sha}` or `git ls-remote origin <branch>`) to confirm the commit is actually visible on the remote before claiming "pushed".
+3. **Tags/Releases** — after `git tag`/`gh release create`, re-query `GET /repos/{owner}/{repo}/releases` or `git ls-remote --tags origin` to confirm the ref exists remotely, not just locally.
+4. **Issues/PRs** — after creation, `GET` the issue/PR number back from the API and show its real state (open/number/URL) rather than trusting the creation response body alone.
+5. If remote verification cannot be run in this turn, say `[NOT-VERIFIED: reason]` instead of "pushed"/"released"/"opened".
 
 ---
 

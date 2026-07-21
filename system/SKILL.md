@@ -1,7 +1,7 @@
 ---
 name: system
 description: DeepChat application configuration, skill ecosystem management, and desktop automation -- settings and preferences (theme, language, font, model config), MCP server configuration, skill creation/deployment/sync, skill lifecycle management, and Computer Use tools for desktop GUI automation (launch apps, click, type, inspect windows).
-version: "2.0"
+version: "2.1"
 triggers: ["settings", "preferences", "theme", "language", "font", "config", "DeepChat settings", "MCP config", "skill", "create skill", "new skill", "update skill", "deploy skill", "sync skill", "skill lifecycle", "Kaizen", "system update", "improve", "desktop", "app", "GUI", "automate", "click", "type", "window", "Computer Use", "CUA", "launch", "screen", "screenshot", "process", "notepad", "calculator", "browser app", "desktop app"]
 related: ["cloudflare"]
 priority: 3
@@ -10,7 +10,13 @@ autonomous: false
 self_sufficient: true
 ---
 
-# SYSTEM -- v2.0 (Ultra-Consolidated Config + Skills + Desktop)
+# SYSTEM -- v2.1 (Ultra-Consolidated Config + Skills + Desktop)
+
+> **v2.1 UPDATE (2026-07-21, phantom-claim audit):** Added the
+> **Tool-Call Execution Mandate** section below. Skill sync is not "done"
+> until all 3 layers (disk/GitHub/R2) are independently re-read back in
+> the same turn — a script's exit code alone does not prove GitHub or R2
+> actually received the content.
 
 > **Merges 3:** deepchat-config + skill-management + computer-use
 > **Related:** Load `cloudflare` for skill deployment to R2 bucket `qnfo-skills/prompts/skills/`. Desktop automation is platform-local only.
@@ -23,6 +29,19 @@ update_plan([
   {"step": "Execute with proper tooling", "status": "pending"},
   {"step": "Verify: settings persisted, skills deployed, or action confirmed", "status": "pending"},
 ])
+
+---
+
+## Tool-Call Execution Mandate (Anti-Phantom Gate — MANDATORY)
+
+Claiming a setting is "changed", a skill is "deployed"/"synced", or a
+desktop action is "done" without an invoked tool call showing evidence in
+this turn is a PHANTOM CLAIM (`qnfo-agent` §9.11 Rule 14) — BLOCKED.
+
+1. **Settings changes** — call the actual `deepchat_settings_*` tool and confirm the returned value matches the requested change; do not assert a setting changed without the tool's confirmed return value.
+2. **Skill deploy/sync** — a `git push`/R2 `object put` script's exit code 0 is NOT sufficient. Independently re-read back all 3 layers in this turn: `Test-Path` (disk), `git log -1 --oneline` on the skill's own commit (GitHub), AND `npx wrangler r2 object get qnfo-skills/prompts/skills/<name>/SKILL.md --remote` (R2) — compare content, not just presence.
+3. **Desktop automation** — after any click/type/launch action, call `get_window_state` again and show the resulting UI state; do not claim an action succeeded from the dispatch call's return alone.
+4. If any of the 3 sync layers cannot be re-verified in this turn, say `[NOT-VERIFIED: layer X unconfirmed]` instead of "synced"/"deployed"/"done".
 
 ---
 

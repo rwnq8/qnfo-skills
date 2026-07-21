@@ -1,7 +1,7 @@
 ---
 name: research
 description: End-to-end research and publication pipeline -- GitHub + Zenodo + R2 + D1/KG core distribution stack (v2.8, deprecated proprietary IPFS/blockchain pinning). Project initialization, literature search, citation management, deep research, publication, deployment, and core distribution -- project initialization (Phase 0 scaffold, pre-flight checklist, WBS), literature search (Semantic Scholar, arXiv, web, Vectorize, KG), paper triage and classification, citation management and BibTeX verification, deep paradigm forecasting (9-stage Bayesian cascade with calibration register), research planning and hypothesis generation, publication formatting and PDF building (Pandoc+XeLaTeX ONLY), Zenodo DOI upload with robust retry and versioning, Cloudflare deployment (D1 + papers-server Worker), social media dissemination via Buffer, SEO optimization, core distribution stack (GitHub + Zenodo + R2 + D1/KG), and phase closeout protocol with version tagging. Use for ANY research, publication, project lifecycle, or dissemination task.
-version: "2.7"
+version: "2.9"
 triggers: ["research", "paper", "literature", "preprint", "arXiv", "Semantic Scholar", "cite", "citation", "BibTeX", "bibliography", "deep dive", "paradigm forecast", "forecast", "Bayesian", "EV ranking", "publish", "Zenodo", "DOI", "manuscript", "LaTeX", "build PDF", "social media", "tweet", "post", "Buffer", "LinkedIn", "Bluesky", "SEO", "sitemap", "robots.txt", "discoverability", "llms.txt", "structured data", "meta tags", "IPFS", "filebase", "cid", "pinning", "Web3", "CAR", "DID", "Filecoin", "Arweave", "research plan", "methodology", "hypothesis", "publication", "dissemination", "write paper", "publish paper", "scientific", "academic", "LRAP", "QNFO publication", "QWAV publication"]
 related: ["knowledge", "cloudflare", "git-github"]
 priority: 1
@@ -67,6 +67,28 @@ update_plan([
 ])
 
 **Note:** Phase 0 and the Pre-Flight checklist apply to net-new, long-lived research projects (new repo, new WBS). For a single paper/update within an existing project, skip directly to Phase 1.
+
+---
+
+## Tool-Call Execution Mandate (Anti-Phantom Gate — MANDATORY, 2026-07-21)
+
+This skill already carries extensive per-phase verification gates (BibTeX
+audit, PDF rendering check, DOI resolution, papers-server HTTP 200, etc.).
+This section is the umbrella rule they all serve: **no remote publication
+action — Zenodo deposit, GitHub push/tag/release, R2 upload, D1
+living-paper insert, OSF registration, Buffer post — may be reported as
+successful without an INDEPENDENT re-query of the live state in the SAME
+turn.** An API's immediate `"success": true`/`201 Created` response is the
+FIRST signal, not the LAST — it confirms the request was accepted, not
+that the artifact is durably live and correct.
+
+1. **Zenodo** — never report "published" from the create/publish API response alone. Wait for indexing, then verify via `curl -sI https://doi.org/10.5281/zenodo.<id>` returning HTTP 200 (not the Zenodo API's own state field).
+2. **Git push** — verify via an independent GitHub API query (`GET /repos/{owner}/{repo}/commits/{sha}`) or `git ls-remote origin <branch>`, not the local push exit code alone.
+3. **R2 upload** — download the file back (`wrangler r2 object get ... --remote`) and compare size/hash to the source.
+4. **D1 living-paper / KG inserts** — re-run a `SELECT`/`/neighbors` query and show the row/edge actually present.
+5. **OSF registrations** — confirm via `GET /v2/registrations/{id}/` showing the real `date_registered`/`pending_registration_approval` state, never assert "registered" from the POST response body alone.
+6. **Any claim this session already reported success on** — if closing out or continuing a prior session's claim, re-verify live state before repeating the claim; a prior turn's phantom claim propagates if not re-checked (see memory: never trust a remote action as successful without confirming actual server-side state).
+7. If live re-verification cannot be run in this turn, the response MUST read `[NOT-VERIFIED: reason]` instead of "published"/"deployed"/"live"/"confirmed".
 
 ---
 
