@@ -10,7 +10,28 @@ autonomous: true
 self_sufficient: true
 ---
 
-# RESEARCH -- v2.10 (Core Pipeline: GitHub + Zenodo + R2 + D1/KG)
+# RESEARCH -- v2.14 (Core Pipeline: GitHub + Zenodo + R2 + D1/KG)
+
+> **v2.14 UPDATE (2026-07-22, Buffer inline-fragment false-claim correction):**
+> v2.13 wrongly claimed "`PostActionPayload` union type members are NOT
+> directly accessible as fragment targets" and instructed querying only
+> `__typename`. This was FALSE and is retracted. Live testing this session
+> (The Two-Level Lie paper dissemination) proved inline fragments work
+> correctly: `... on PostActionSuccess { post { id } }` returned a real post
+> ID on success, and `... on LimitReachedError { message }` /
+> `... on InvalidInputError { message }` returned the EXACT actionable error
+> text (e.g. "You have 10 scheduled posts out of 10 allowed.") instead of a
+> bare, undiagnostic `__typename`. The v2.13 `Unknown type "PostActionSuccess"`
+> error that led to the false claim was caused by fragmenting on a
+> **non-existent** type name (`Post`) in an earlier attempt, not by any
+> actual GraphQL union restriction — a schema-shape mistake mis-generalized
+> into a false rule. `scripts/buffer-post.py` bumped to v1.1 with the
+> corrected mutation (requests `message` on every error variant, `post.id`
+> on success) and tested live for both the success and
+> failure(`LimitReachedError`) paths. Also added explicit guidance that
+> `LimitReachedError` (an account-level queue cap, not a bug) must be
+> disclosed as `[BLOCKED: account queue limit]` rather than retried or
+> misreported.
 
 > **v2.10 UPDATE (2026-07-21, credential/protocol kaizen after a session with
 > repeated Buffer/D1/IPFS failures):** Root-caused and permanently fixed three
@@ -1175,14 +1196,15 @@ mutation {
 }
 ```
 
-**CRITICAL RULES (v2.13 — 2026-07-22):**
+**CRITICAL RULES (v2.14 — 2026-07-22, corrected):**
 1. NEVER use `createDraft` — it no longer exists. Use `createPost`.
 2. **The `assets` field is NON_NULL and REQUIRED.** Always pass `assets: []` (empty list). Omitting it causes `InvalidInputError`.
-3. **Do NOT use inline fragments (`... on PostActionSuccess`, `... on InvalidInputError`).** The `PostActionPayload` union type members are NOT directly accessible as fragment targets — attempting `... on PostActionSuccess { post { id status } }` raises `GRAPHQL_VALIDATION_FAILED: Unknown type "PostActionSuccess"`. Just query `__typename` and check the response: `"PostActionSuccess"` = success; `"InvalidInputError"` = failure (usually text-too-long or missing required field).
+3. **Inline fragments on `PostActionPayload` DO WORK — v2.13's claim otherwise was FALSE and is retracted.** `PostActionPayload` is a real GraphQL union and its members (`PostActionSuccess`, `InvalidInputError`, `UnauthorizedError`, `UnexpectedError`, `NotFoundError`, `LimitReachedError`, `RestProxyError` — confirmed via `__type(name: "PostActionPayload") { possibleTypes { name } }`) ARE valid inline-fragment targets. The v2.13 error (`Unknown type "PostActionSuccess"`) was caused by fragmenting on a NON-existent type name (e.g. `Post`), not by a union limitation. **Always request `message` inside every error-variant fragment and `post { id }` inside `PostActionSuccess`** — querying only `__typename` throws away the single most useful piece of debugging information Buffer provides (e.g. the exact "10 scheduled posts out of 10 allowed" queue-limit text). See `scripts/buffer-post.py` v1.1 for the corrected, verified-live mutation.
 4. `schedulingType: automatic` and `mode: addToQueue` are both REQUIRED. The `notification` enum value exists in the schema but does NOT work for posting — use `automatic`.
-5. Twitter text limit: ~280 characters AFTER URL shortening (Buffer shortens URLs to ~23 chars, so raw text including URL can be up to ~410 chars). Violations return `InvalidInputError` (inside `data.createPost.__typename`, NOT as GraphQL errors). Bluesky limit: ~300 characters raw text.
+5. Twitter text limit: ~280 characters AFTER URL shortening (Buffer shortens URLs to ~23 chars, so raw text including URL can be up to ~410 chars). Bluesky limit: ~300 characters raw text. Violations return `InvalidInputError` with an exact message inside `data.createPost` (via the `... on InvalidInputError { message }` fragment) — read it rather than guessing.
 6. Endpoint is `https://api.buffer.com/graphql` (preferred). The bare `https://api.buffer.com` also works. Legacy endpoint `https://api.bufferapp.com/1.0/graphql.json` returns 404.
 7. **All enum values MUST be unquoted GraphQL identifiers** (e.g., `automatic` not `"automatic"`). Quoting them as strings causes `Enum "SchedulingType" cannot represent non-enum value`.
+8. **`LimitReachedError` is a genuine account-level constraint (e.g. "10 scheduled posts out of 10 allowed"), not an agent/script failure.** It requires the human user to clear their Buffer queue or upgrade their plan — do not retry, do not treat as a bug to fix, and disclose it plainly as `[BLOCKED: account queue limit, user action required]` rather than a phantom "posted" claim.
 
 #### Post Deletion
 
@@ -1242,7 +1264,8 @@ resp = json.loads(urllib.request.urlopen(req).read())
 | `createDraft` mutation | `createPost` (v2.11 migration) |
 | `api.bufferapp.com/1.0/graphql.json` endpoint | `https://api.buffer.com/graphql` |
 | Hardcoded channel IDs | Discover live via channels query |
-| Using inline fragment `... on PostActionSuccess` | Just use `__typename` — union members are NOT fragment targets (v2.13 fix) |
+| Querying only `__typename` without `message` on error fragments | Request `message` inside every error-variant fragment (`InvalidInputError`, `LimitReachedError`, etc.) — it contains the exact actionable reason (v2.14 fix) |
+| Claiming "inline fragments don't work on PostActionPayload" | FALSE (v2.13 error) — fragments DO work; the real bug was fragmenting on a non-existent type name like `Post` instead of a real union member (v2.14 fix, verified live) |
 | Omitting `assets: []` in input | `assets` is NON_NULL required — always pass `assets: []` |
 | Quoting enum values like `"automatic"` | Unquoted GraphQL identifiers: `automatic` (v2.13 fix) |
 | Using `schedulingType: notification` | Use `automatic` — `notification` exists in schema but doesn't work |
@@ -1251,6 +1274,7 @@ resp = json.loads(urllib.request.urlopen(req).read())
 | Diagnosing Buffer 401 as "stale token" without diagnostic | Run Buffer 401 Diagnostic Protocol — test GraphQL at `api.buffer.com` first; a single HTTP 401 is INSUFFICIENT evidence to declare a token dead |
 | Twitter text > 280 chars after URL-shorten | Trim raw text to ≤410 chars (Buffer shortens URLs to ~23 chars) |
 | Diagnosing "stale token" from truncated PowerShell output | ALWAYS read token via Python `open().read().strip()` — PowerShell `Get-Content` can return stale/cached values |
+| Treating `LimitReachedError` as an agent bug and retrying indefinitely | It's a genuine account-level queue cap (e.g. 10/10 scheduled posts) — disclose as `[BLOCKED: account queue limit]`, do not retry, requires user to clear queue or upgrade plan (v2.14) |
 
 #### Post Format
 ```
