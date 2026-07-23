@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Ephemeral scripts (frequently contain tokens during dev — NEVER commit)
+_*.py
+_*.js
+
+# Secrets
+.env
+*.token
+keys.json
+credentials.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Build artifacts
+*.pdf
+*.zip
+*.aux
+*.log
+*.out
+*.toc
+
+# Node
+node_modules/
+package-lock.json
