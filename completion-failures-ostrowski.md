@@ -316,7 +316,7 @@ The adelic product formula may select which completions are physically relevant:
 |:---|:---|:---|
 | Phase 0: Scoping | ✅ COMPLETE | Programme defined, taxonomy established, 4 categories (A/B/C/D) |
 | Phase 1: Catalog | ✅ COMPLETE | 50+ objects catalogued across Categories A-G; 21 non-cosmetic predictions classified in 4 tiers |
-| Phase 2: p-adic Constructions | 🔄 60% COMPLETE | 10/22 workstream tasks executed; Tier 3 (deepest obstacles) largely resolved; Tier 1 numerics partially executed |
+| Phase 2: p-adic Constructions | 🔄 67% COMPLETE | 12/22 workstream tasks executed; Tier 1 Priority (A1, A2, A3) fully executed; Tier 3 fully resolved; Tier 2 partially executed |
 | Phase 3: Causal Structure Development | 🔄 SPECIFIED | Bruhat–Tits/p-adic AdS/CFT pipeline defined (C1-RT.2–RT.5); zero computations executed |
 | Phase 4: Falsification | ⬜ PLANNED | Falsifiability matrix designed (D4); experimental protocols at conceptual stage only |
 | Phase 5: Publication | ⬜ PLANNED | Synthesis paper structure outlined; no draft written |
@@ -327,8 +327,8 @@ The adelic product formula may select which completions are physically relevant:
 
 | Task | Status | Deliverable |
 |:---|:---|:---|
-| A1. Stefan-Boltzmann p-adic analog | ⬜ PENDING | `artifacts/p-adic-stefan-boltzmann.md` |
-| A2. Casimir p-adic analog | ⬜ PENDING | `artifacts/p-adic-casimir-energy.md` |
+| A1. Stefan-Boltzmann p-adic analog | ✅ EXECUTED | `artifacts/p-adic-stefan-boltzmann.md` |
+| A2. Casimir p-adic analog | ✅ EXECUTED | `artifacts/p-adic-casimir-energy.md` |
 | A3. ζ(2n) Basel sums | ✅ EXECUTED | `artifacts/zeta-even-values-basel-p-adic.md` |
 | A4. Wien displacement p-adic | ⬜ PENDING | — |
 | A5. Loop integral volumes π^{d/2} | ⬜ PENDING | — |
@@ -380,7 +380,7 @@ The adelic product formula may select which completions are physically relevant:
 | 21-prediction catalog | ✅ EXECUTED | `non-cosmetic-archimedean-predictions.md` |
 | Phase 2 WBS | ✅ EXECUTED | `artifacts/completion-failures-phase2-wbs.md` |
 
-**Phase 2 totals: 10/22 workstream tasks executed + 4/4 cross-cutting = 14/26 (54%)**
+**Phase 2 totals: 12/22 workstream tasks executed + 4/4 cross-cutting = 16/26 (62%)**
 
 ### 11.3 Phase 3 — Causal Structure Development (0/4 executed)
 
