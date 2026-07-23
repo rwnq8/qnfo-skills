@@ -84,7 +84,7 @@ The catalog is organized in four tiers:
 | Task | Deliverable | Status |
 |:---|:---|:---|
 | **D1.** α adelic constraint engine | Artifact: Product formula applied to α, bounds on α_∞ from p-adic α_p, RS-1 Rosetta Stone decomposition (α⁻¹ = 137 + Δ_adelic + Δ_RG) analysis | [PENDING] |
-| **D2.** Product formula for σ, Casimir, β | Artifact: Cross-place constraints on Tier 1-2 predictions via ∏|·|_v = 1 | [PENDING] |
+| **D2.** Adelic Product Formula Constraint Engine | Artifact: product-formula-constraint-engine.md — σ̂_∞=π²/60→∏_p|σ̂_p|_p=60/π²; C_∞=π²/240→∏_p|C_p|_p=240/π²; β_1=3/(16π²)→∏_p|C_p|_p=16π²/3; cross-ratio σ̂/C=4 (exact, π-independent, strongest test); Δ(O)=1 idèle-norm hypothesis (falsifiable in Phase 3) | [EXECUTED] |
 | **D3.** Cosmological constant cancellation | Artifact: Adelic zero-point energy sum, 10⁻¹²² as residual after near-perfect cancellation (SPECULATIVE) | [PENDING] |
 | **D4.** Falsifiability matrix | Artifact: Complete matrix mapping every prediction to its falsification path (direct/indirect/product-formula/conceptual) | [PENDING] |
 
