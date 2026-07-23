@@ -58,7 +58,7 @@ The catalog is organized in four tiers:
 | **B2.** β-function coefficients (Missarov) | Artifact: Numerical extraction of Missarov 1989 coefficients, comparison to 3/(16π²), RG flow divergence | [PENDING] |
 | **B3.** Critical exponents (ν, η, γ, β) | Artifact: p-adic φ⁴ universality class, hierarchical model exponents, comparison to conformal bootstrap values | [PENDING] |
 | **B4.** Anomalous dimensions γ_φ | Artifact: p-adic OPE, scaling dimension differences, recursion relations | [PENDING] |
-| **B5.** S-matrix structural failure | Artifact: LSZ reduction breakdown, T-product absence, p-adic asymptotic states | [PENDING] |
+| **B5.** S-matrix Structural Failure | Artifact: s-matrix-structural-failure.md — LSZ collapse (no θ(t), no T-products, no Wick, no asymptotic states, no optical theorem); Bruhat-Tits tree S-matrix as constructive alternative (Witten diagrams on T_p, UV-finite, tree-unitary); 5 surviving concepts, 9 that perish; integer-spaced bound state poles as sharpest falsifiable prediction | [EXECUTED] |
 | **B6.** Uncertainty principle constant C_p | Artifact: p-adic Fourier normalization, Parseval identity, C_p vs. 1/2 boundary | [PENDING] |
 
 ### Workstream C: Tier 3 — Existentially Non-Cosmetic (4 predictions)
