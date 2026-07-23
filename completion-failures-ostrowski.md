@@ -2,7 +2,7 @@
 
 > **A Systematic Research Programme into the Adelic Incompleteness of Mathematical Physics**
 >
-> Status: ACTIVE | Started: 2026-07-22 | Last updated: 2026-07-22
+> Status: ACTIVE | Started: 2026-07-22 | Last updated: 2026-07-23
 > Handoff anchor: `handoff/adelic-completion-failures-research`
 
 ---
@@ -313,9 +313,9 @@ The adelic product formula may select which completions are physically relevant:
 | Phase | Status | Description |
 |:---|:---|:---|
 | Phase 0: Scoping | ✅ COMPLETE | Programme defined, taxonomy established |
-| Phase 1: Catalog | 🔄 IN PROGRESS | Building the completion failure database |
-| Phase 2: p-adic Constructions | ⬜ PLANNED | Building p-adic analogs of physics formulas |
-| Phase 3: Adelic Constraints | ⬜ PLANNED | Implementing the adelic constraint engine |
+| Phase 1: Catalog | ✅ COMPLETE | 50+ objects catalogued across Categories A-G (see `adelic-constraint-engine.md`) |
+| Phase 2: p-adic Constructions | 🔄 IN PROGRESS | Gaussian integral constructed; propagator, Casimir, S-matrix pending |
+| Phase 3: Adelic Constraints | 🔄 IN PROGRESS | Engine specified; α application started; product formula as selection rule established |
 | Phase 4: Falsification | ⬜ PLANNED | Designing distinguishing experiments |
 | Phase 5: Publication | ⬜ PLANNED | Writing the methodology paper |
 
@@ -324,7 +324,13 @@ The adelic product formula may select which completions are physically relevant:
 ## Supporting Documents
 
 - `pi-adelic-decomposition.md` — Deep dive on π's adelic meaning and the solid-angle problem
+- `adelic-constraint-engine.md` — Expanded catalog (Categories E-G), p-adic Gaussian integral construction, adelic constraint engine for α, refined π hypothesis (cosmetic vs. non-cosmetic), product formula as physical selection rule
 - `kappa-siit-extended-reduction-test.md` — SU(2)_L × U(1)_Y extension of the Kappa reduction (the physics case study)
+
+### Related Cross-Domain Work
+
+- `releases/cross-domain/X1.1-alpha-cross-domain-invariant.md` — α as a Cross-Domain Invariant: Derivation of the Adelic-Compton-Harmonic normalization
+- `releases/cross-domain/X1.2-adelic-alpha-product.md` — The Adelic Fine-Structure Product: Computing α_adelic from Prime-Indexed p-Adic Couplings
 
 ---
 
