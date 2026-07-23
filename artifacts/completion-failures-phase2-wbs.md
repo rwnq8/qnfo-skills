@@ -67,7 +67,12 @@ The catalog is organized in four tiers:
 
 | Task | Deliverable | Status |
 |:---|:---|:---|
-| **C1.** Causality in ℚ_p (DEEPEST OBSTACLE) | Artifact: Proof that ℚ_p is not ordered, consequences for physics, possible resolutions (ultrametric time, crystalline time, emergent causality) | [PENDING] |
+| **C1.** Causality in ℚ_p (DEEPEST OBSTACLE) | Artifact: causality-in-qp.md — Proof ℚ_p not ordered, cascade analysis (11/21 affected), possible resolutions | [IN PROGRESS — Red-Team Complete] |
+| **C1-RT.** Causality Red-Team: 4 Frameworks | Artifact: causality-redteam-full-analysis.md — Page-Wootters, Wheeler-DeWitt, Superdeterminism, Bruhat-Tits/p-adic AdS/CFT. Full verdict table. | [EXECUTED] |
+| **C1-RT.2.** p-adic AdS/CFT → Archimedean coupling | Artifact: Compute p-adic Mellin amplitudes A_p(s,t) for p=2,3,5; extract pole structure; coupling constraints from product formula | [PENDING — Phase 3] |
+| **C1-RT.3.** Tree-to-Building generalization | Artifact: Extend from PGL(2) tree to PGL(n) buildings (n=3,4); partial order on buildings; Green's function unitarity | [PENDING — Phase 3] |
+| **C1-RT.4.** Adelic S-matrix product | Artifact: Restricted tensor product ⊗'_p S_p; convergence of ∏_p A_p(s,t); factorization analysis | [PENDING — Phase 3] |
+| **C1-RT.5.** Page-Wootters adelic clock | Artifact: Interaction Hamiltonian on L²(ℝ)⊗L²(ℚ_p^n); ultrametric conditional states; unique-clock proof via Ostrowski | [PENDING — Phase 3] |
 | **C2.** Time evolution via exp | Artifact: p-adic exp convergence domain analysis, restricted-time evolution operators, global evolution failure | [PENDING] |
 | **C3.** Continuous symmetries / Noether | Artifact: Totally disconnected topology → no continuous Lie groups, p-adic variational calculus (Vladimirov-Volovich), conserved currents changes | [PENDING] |
 | **C4.** WKB / geometric quantization | Artifact: Absence of closed orbits in ℚ_p, p-adic integration, alternative quantization conditions | [PENDING] |
@@ -137,7 +142,58 @@ The catalog is organized in four tiers:
 
 ---
 
-## 6. Priority Stack (Execution Order)
+### 6. Priority Stack (Execution Order — Updated per C1 Red-Team)
+
+### Phase 2 (Remaining)
+
+`
+Priority 1: Tier 1 (strongest falsifiable predictions)
+   → A1: Stefan-Boltzmann (highest impact, σ is directly measured)
+   → A2: Casimir (second strongest, measured)
+   → B1: p-adic Feynman propagator (foundational for all Tier 2)
+
+Priority 2: Tier 3 (deepest conceptual obstacles)
+   → C1-RT: Causality Red-Team [EXECUTED — see artifacts/causality-redteam-full-analysis.md]
+   → C2: Time evolution (connected to C1)
+   → C1-RT.2–RT.5: Causal structure development [Phase 3 — see below]
+
+Priority 3: Constraint Engine
+   → D1: α engine (already started, commit b0a8981)
+   → D4: Falsifiability matrix (already executed, commit 2e0d49f)
+
+Priority 4: Tier 2 (structural, important but harder to compute)
+   → B2: β-functions (Missarov comparison — executed, commit ff10546)
+   → B3: Critical exponents
+
+Priority 5: External Literature
+   → E1-E3: Scan and validate (literature scan executed, commit c6bd968)
+
+Priority 6: Tier 4 (borderline, lowest priority for publication)
+   → A5: Loop volumes
+   → D3: CC hierarchy (speculative)
+`
+
+### Phase 3 — Causal Structure Development (NEW, per C1 Red-Team Verdict)
+
+**Primary resolution: Bruhat-Tits / p-adic AdS/CFT (Verdict: MOST PROMISING, Evidence 4/5)**
+
+`
+Priority 3A: p-adic AdS/CFT S-matrix computation
+   → C1-RT.2: Compute A_p(s,t) Mellin amplitudes for p=2,3,5
+   → C1-RT.3: Extend to PGL(n) buildings (n=3,4)
+   → C1-RT.4: Construct adelic S-matrix product ⊗'_p S_p
+
+Priority 3B: Page-Wootters adelic clock (supporting mechanism)
+   → C1-RT.5: Interaction Hamiltonian on L²(ℝ)⊗L²(ℚ_p^n)
+   → Prove: ∞-place is unique clock per Ostrowski's theorem
+
+Priority 3C: Falsifiability (experimental signatures)
+   → Derive p-adic corrections to cross sections
+   → Compare p-adic bound state poles to hadron spectrum
+`
+
+**Abandoned:** Superdeterminism (NOT VIABLE, Evidence 1/5 — adds no predictive value)
+**Deferred:** Wheeler-DeWitt p-adic minisuperspace (requires novel mathematics; conceptual value retained)
 
 ```
 Priority 1: Tier 1 (strongest falsifiable predictions)
@@ -168,6 +224,11 @@ Priority 6: Tier 4 (borderline, lowest priority for publication)
 ---
 
 ## 7. Version History
+
+| Version | Date | Changes |
+|:--------|:-----|:--------|
+| v1.0 | 2026-07-23 | Initial WBS: 4 tiers × 21 predictions, 5 workstreams, 10 deliverables |
+| v1.1 | 2026-07-23 | C1 Red-Team complete — added Workstream C1-RT (6 new tasks), updated Priority Stack with Phase 3 Bruhat-Tits/p-adic AdS/CFT pipeline, updated Deliverables Registry (#11) |
 
 | Version | Date | Change |
 |:---|:---|:---|
