@@ -127,6 +127,30 @@ where the measure of the sphere |k|_p = p^n is p^{2n}(1 − p^{−2}).
 
 **No factor of (2π)² appears.** The p-adic Fourier transform uses the normalized Haar measure with ∫_{ℤ_p} dx = 1.
 
+### 3.2.1 Explicit Haar Measure Computation for p = 2, 3
+
+In ℝ², the angular integration gives: ∫₀^{2π} dφ = 2π, so the full measure factor is:
+```
+∫ d²k/(2π)² = (2π)/(2π)² = 1/(2π) ≈ 0.159
+```
+
+In ℚ_p², the Haar measure of the "unit sphere" {|k|_p = 1} is (1 − p^{−2}), normalized so ∫_{ℤ_p²} d²k = 1:
+
+| Prime p | (1 − p^{−2}) | μ_sphere | Compare: ℝ² gives 1/(2π) |
+|:---|:---|:---|:---|
+| 2 | 3/4 = 0.75 | 0.75 | 0.159 (factor of ~4.7 difference) |
+| 3 | 8/9 ≈ 0.889 | 0.889 | 0.159 |
+| 5 | 24/25 = 0.96 | 0.96 | 0.159 |
+| p → ∞ | → 1 | 1 | 0.159 (never reached) |
+
+The p-adic measure coefficient is **always rational** and **always larger** than the Archimedean 1/(2π) for the dimensions relevant to Casimir. This difference propagates directly into the Casimir coefficient C_p ≠ π²/240.
+
+For the sphere of radius pⁿ, the measure is p^{2n}(1 − p^{−2}), which for p = 2 gives:
+```
+μ({|k|_2 = 2ⁿ}) = 2^{2n} · (1 − 2^{−2}) = 4ⁿ · 3/4
+```
+compared to the Archimedean factor (2π) · r² for spherical shells.
+
 ### 3.3 The p-Adic Zeta Function ζ_p(s)
 
 The Kubota-Leopoldt p-adic zeta function is the unique p-adic meromorphic function interpolating the values of the Riemann zeta at negative odd integers:
@@ -291,4 +315,4 @@ If we can compute C_p for each prime p (or at least bound it), the product formu
 
 ---
 
-*Document status: DRAFT | Next: Haar measure explicit computation, ζ_p(−3) regularization structural analysis*
+*Document status: EXECUTED | Key findings: (1) C_∞ = π²/240 ≈ 0.0411 cannot be a principal adele (π is transcendental); (2) ζ_p(−3) = (p³−1)/120 — a rational number but enters the regularization differently due to p-adic norm |n|_p; (3) Haar measure on ℚ_p² replaces 1/(2π) with rational (1−p^{−2}) — factor ~4.7 difference at p=2; (4) p-adic mode sum uses p-adic norm, fundamentally different from real absolute value; (5) product formula constraint: ∏_p |C_p|_p = 240/π² ≈ 24.3 — at least some C_p must NOT be p-adic integers*
